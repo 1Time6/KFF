@@ -217,8 +217,8 @@
       "title": "现有模块主数据决定",
       "parent_id": "PLAN-F0-02",
       "gate": "G0",
-      "status": "TODO",
-      "scope": "逐项查 Video OS、站点、订单、客户、队列与号池",
+      "status": "IN_PROGRESS",
+      "scope": "定向只读核对两个已登记站点候选的代码与接口；待用户确认 KFF 的实际复用范围，未连接或修改源系统",
       "authorized_objective": "按项目规划实施，Facebook 为首平台，真实测试后置",
       "authorization_basis": "2026-09-12 当前会话用户指令",
       "source_refs": [
@@ -240,14 +240,22 @@
       "inputs": [
         "当前主规划 v2.1"
       ],
-      "outputs": [],
+      "outputs": [
+        "docs/discovery-existing-systems.md",
+        "docs/evidence/existing-systems-readonly.json"
+      ],
       "acceptance_ids": [],
       "actual_test_commands": [],
       "live_effects": "none",
       "pilot_permit_ref": null,
       "rollback_plan": "停止本项目 Web/Worker/Agent，回退本任务代码提交；已提交动作保留未知并对账，已应用迁移不反向改写",
-      "known_blockers": [],
-      "evidence_refs": [],
+      "known_blockers": [
+        "发现 EasternWisdom 与 Pearl 两套独立站点代码，但 KFF 的接入对象、品牌与主数据归属未确定；按用户指令暂停询问",
+        "Video OS、WhatsApp 号池及其他存量系统仍待确认；源工程与线上部署未运行验收"
+      ],
+      "evidence_refs": [
+        "docs/evidence/existing-systems-readonly.json"
+      ],
       "reviewer": "Codex 实现；用户与独立审查尚未验收",
       "next_task": null,
       "continue_within_authorized_scope": true
@@ -7160,5 +7168,5 @@
       "continue_within_authorized_scope": true
     }
   ],
-  "updated_at": "2026-09-11T23:03:09.585Z"
+  "updated_at": "2026-09-11T23:05:56.475Z"
 }

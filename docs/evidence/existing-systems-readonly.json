@@ -1,0 +1,76 @@
+{
+  "schema_version": "kff.existing-systems.v1",
+  "recorded_at": "2026-09-11T23:05:56.475Z",
+  "method": "Codex saved project metadata and targeted local source reads",
+  "mode": "read_only",
+  "candidate_selection": null,
+  "source_projects_modified": false,
+  "source_project_tests_run": false,
+  "production_accessed": false,
+  "groups": [
+    {
+      "name": "EasternWisdom",
+      "root": "C:/Users/17731/Desktop/fb",
+      "commit": "fe8a312bfac0c20dd53407aeff262617e3adaddd",
+      "files": [
+        {
+          "path": "C:/Users/17731/Desktop/fb/README.md",
+          "bytes": 3001,
+          "sha256": "44218e21d2e08c2e454772241d680b6a1838f25b9991e8168fede13f18ebb644"
+        },
+        {
+          "path": "C:/Users/17731/Desktop/fb/package.json",
+          "bytes": 4646,
+          "sha256": "126f40e2ca63110b23cfa73899e900a9f2cf1c47795240f0ed8b07227e53b604"
+        },
+        {
+          "path": "C:/Users/17731/Desktop/fb/docs/data-model.md",
+          "bytes": 5294,
+          "sha256": "2b3ab4f32a9457f548e1838b65137ac7d6fa706bf07aa0c313320a940602c816"
+        },
+        {
+          "path": "C:/Users/17731/Desktop/fb/app/api/admin/orders/route.ts",
+          "bytes": 5705,
+          "sha256": "1b899910ffd42b3d003175c2dae78da839f7b49dc58007214a6623a19ea62b7a"
+        },
+        {
+          "path": "C:/Users/17731/Desktop/fb/app/api/messages/route.ts",
+          "bytes": 17782,
+          "sha256": "1b56cbf3da5e49dd7305bd5a19557d29773e46de15029f15ade42bbc63140340"
+        }
+      ]
+    },
+    {
+      "name": "Pearl",
+      "root": "C:/Users/17731/Desktop/pearl (3)/pearl",
+      "commit": null,
+      "files": [
+        {
+          "path": "C:/Users/17731/Desktop/pearl (3)/pearl/package.json",
+          "bytes": 2037,
+          "sha256": "bb868a2bd2aeef56b40d6055f12746c30f7e89c9ed228d724aee88c43f1e2cfc"
+        },
+        {
+          "path": "C:/Users/17731/Desktop/pearl (3)/pearl/src/types/order.ts",
+          "bytes": 2318,
+          "sha256": "43a2a46dca1790c0a8b02c0a114692727508b0896a7c48708aa4caefa8165a18"
+        },
+        {
+          "path": "C:/Users/17731/Desktop/pearl (3)/pearl/supabase/migrations/001_initial_schema.sql",
+          "bytes": 6511,
+          "sha256": "3c5bee3ff2821a11907ed83887c46517fda4ba851afa01349c80690bebc3b1fe"
+        },
+        {
+          "path": "C:/Users/17731/Desktop/pearl (3)/pearl/src/app/api/orders/route.ts",
+          "bytes": 2657,
+          "sha256": "25d7e77a0efee0d737deb68aaf9f868e8a4839457fb0915f90a4ab694b642bfe"
+        },
+        {
+          "path": "C:/Users/17731/Desktop/pearl (3)/pearl/src/app/api/admin/orders/export/route.ts",
+          "bytes": 3228,
+          "sha256": "99ea99ecff344ee84ff69abed79e788e5ab3aa06bd65e8529c85487a0f0ee8e0"
+        }
+      ]
+    }
+  ]
+}
