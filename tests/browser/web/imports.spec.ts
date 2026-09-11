@@ -1,0 +1,33 @@
+import {test,expect} from '@playwright/test';
+import {readFileSync} from 'node:fs';
+import {randomUUID} from 'node:crypto';
+
+test('uploads, maps, previews, confirms and exports the independent Excel sample with precise IDs',async({page})=>{
+  const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
+  await page.route('**/*',route=>new URL(route.request().url()).origin==='http://127.0.0.1:3000'?route.continue():route.abort());
+  await page.goto('/collections');const config=JSON.parse(readFileSync('.kff/local-config.json','utf8'));
+  await page.getByLabel('密码',{exact:true}).fill(config.operator_password);await page.getByRole('button',{name:'进入工作台'}).click();
+  await expect(page.getByRole('heading',{name:'查询与结果',exact:true})).toBeVisible();
+  const title='Excel import '+randomUUID().slice(0,8);await page.getByText('Excel / CSV 导入',{exact:true}).click();
+  const form=page.getByRole('form',{name:'上传导入文件'});await form.getByLabel('导入名称',{exact:true}).fill(title);
+  await form.getByLabel('CSV 或 Excel 文件',{exact:true}).setInputFiles('tests/fixtures/import-fixture.xlsx');
+  await form.getByLabel('人工来源标识',{exact:true}).fill('browser-'+randomUUID().slice(0,8));
+  await form.getByLabel('来源说明',{exact:true}).fill('本项目独立生成的 Excel 合成样本。');await form.getByLabel('数据处理依据',{exact:true}).fill('本项目自有合成数据，只用于导入功能验证。');
+  await form.getByRole('button',{name:'上传并解析文件'}).click();const detail=page.locator('[aria-label="导入文件详情"]');
+  await expect(detail.getByRole('heading',{name:title,exact:true})).toBeVisible();await detail.getByRole('button',{name:'生成验证预览'}).click();
+  const preview=page.locator('[aria-label="导入验证预览"]');await expect(preview).toContainText('原始 7 行 · 有效 5 行 · 错误 2 行 · 去重后 4 个对象');
+  await expect(preview).toContainText('正文：包含公式，请改为原始值后导入');await expect(preview).toContainText('对象 ID：需要文本格式；数值 ID 已丢失的精度无法还原');
+  await expect(preview).toContainText('000123456789012345678901234567890');await preview.screenshot({path:'output/playwright/import-preview.png'});
+  await page.setViewportSize({width:390,height:844});await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+  await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:'output/playwright/import-preview-mobile.png',fullPage:true});await page.setViewportSize({width:1440,height:1000});
+  await preview.getByLabel('仅显示错误行',{exact:true}).check();await expect(preview.getByRole('table').getByRole('row')).toHaveCount(3);await preview.getByLabel('仅显示错误行',{exact:true}).uncheck();
+  await preview.getByLabel('我已核对预览，确认导入 5 个有效行，排除 2 个错误行。',{exact:true}).check();await preview.getByRole('button',{name:'确认有效行入库'}).click();
+  const collection=page.getByRole('region',{name:'采集查询详情'});await expect(collection.getByRole('heading',{name:title,exact:true})).toBeVisible();
+  await expect(collection).toContainText('已返回 5 条观察，去重后 4 个对象');await expect(collection).toContainText('人工导入不作为自动采集证据');
+  await collection.getByText('导出查询结果',{exact:true}).click();await collection.getByLabel('导出格式',{exact:true}).selectOption('csv');
+  const downloadEvent=page.waitForEvent('download');await collection.getByRole('button',{name:'下载所选结果'}).click();const downloaded=await downloadEvent;await downloaded.saveAs('.kff/browser-import-export.csv');
+  const text=readFileSync('.kff/browser-import-export.csv','utf8');expect(text).toContain("'000123456789012345678901234567890");expect(text).toContain("'=1+1");expect(text).toContain('apostrophe-v1');
+  const queryLink=await page.request.get('/api/collections');const queries=await queryLink.json();const current=queries.find((row:{title:string})=>row.title===title);expect(current.snapshot.source_type).toBe('MANUAL_IMPORT');
+  const wrong=await page.request.post('/api/collections/'+current.id+'/exports',{headers:{origin:'http://127.0.0.1:3000'},data:{format:'csv',fields:['created_time']}});expect(wrong.status()).toBe(403);
+  expect(errors).toEqual([]);
+});

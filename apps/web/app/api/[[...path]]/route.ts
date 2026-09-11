@@ -16,6 +16,9 @@ import { templateVersionInput, templatePolicyInput, templatePreviewInput } from 
 import { templateWorkspace, createTemplateVersion, setTemplatePolicy, previewTemplate } from '@kff/core/templates';
 import { collectionInput, collectionResumeInput } from '@kff/contracts';
 import { collectionWorkspace, createCollection, collectionDetail, collectionObservationHistory, controlCollection } from '@kff/core/collections';
+import { importUploadInput, importMappingInput, importConfirmationInput, collectionExportInput, importLimits } from '@kff/contracts';
+import { uploadImport, importWorkspace, importDetail, previewImport, confirmImport, downloadImportOriginal } from '@kff/core/imports';
+import { exportCollection } from '@kff/core/collection-export';
 import { requestScope, checkOrigin, login, logout } from '../../../lib/auth';
 
 export const runtime = 'nodejs';
@@ -31,6 +34,16 @@ async function body(request: Request): Promise<unknown> {
 }
 function json(data: unknown, status = 200, extra: Record<string, string> = {}) {
   return Response.json(data, { status, headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', ...extra } });
+}
+async function uploadBytes(request:Request) {
+  requireCondition(Number(request.headers.get('content-length')??0)<=importLimits.file_bytes,'FILE_LIMIT_EXCEEDED','上传文件超过 8 MiB',413);
+  requireCondition(request.headers.get('content-type')==='application/octet-stream','INVALID_INPUT','上传需要原始文件内容');
+  const reader=request.body?.getReader(); requireCondition(reader,'INVALID_INPUT','上传文件为空'); const chunks:Uint8Array[]=[]; let length=0;
+  while(true) { const {value,done}=await reader.read(); if(done) break; length+=value.byteLength; if(length>importLimits.file_bytes) { await reader.cancel(); throw new AppError('FILE_LIMIT_EXCEEDED','上传文件超过 8 MiB',413); } chunks.push(value); }
+  return Buffer.concat(chunks);
+}
+function download(file:{bytes:Buffer;filename:string;format:string;content_type?:string}) {
+  return new Response(new Uint8Array(file.bytes),{headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Content-Security-Policy':"sandbox; default-src 'none'",'Content-Type':file.content_type??(file.format==='xlsx'?'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':'text/csv; charset=utf-8'),'Content-Disposition':"attachment; filename*=UTF-8''"+encodeURIComponent(file.filename)}});
 }
 async function handle(request: Request, context: Context) {
   const requestId = randomUUID();
@@ -53,10 +66,25 @@ async function handle(request: Request, context: Context) {
     const scope = await requestScope(request);
     if (write) checkOrigin(request);
     if (path === 'workspace' && !write) return json(await workspace(scope));
+    if (path === 'imports' && !write) return json(await importWorkspace(scope));
+    if (path === 'imports' && write) {
+      requireCondition(scope.role!=='viewer','FORBIDDEN_SCOPE','当前角色仅可查看',403);
+      const metadata=request.headers.get('x-kff-import-metadata')??''; requireCondition(metadata.length>0 && metadata.length<=8000,'INVALID_INPUT','上传配置缺失或过长');
+      let decoded:unknown; try { decoded=JSON.parse(decodeURIComponent(metadata)); } catch { throw new AppError('INVALID_INPUT','上传配置无法读取'); }
+      const input=importUploadInput.parse(decoded); return json(await uploadImport(scope,input,await uploadBytes(request)),201);
+    }
+    if(parts[0]==='imports' && parts.length>=2) {
+      const id=uuid.parse(parts[1]);
+      if(parts.length===2 && !write) return json(await importDetail(scope,id));
+      if(parts.length===3 && parts[2]==='previews' && write) return json(await previewImport(scope,id,importMappingInput.parse(await body(request))));
+      if(parts.length===3 && parts[2]==='confirmations' && write) return json(await confirmImport(scope,id,importConfirmationInput.parse(await body(request))));
+      if(parts.length===3 && parts[2]==='original' && !write) return download(await downloadImportOriginal(scope,id));
+    }
     if (path === 'collections' && !write) return json(await collectionWorkspace(scope));
     if (path === 'collections' && write) { const result = await createCollection(scope, collectionInput.parse(await body(request))); return json({ ...result, status_url: '/api/collections/' + result.id }, 202); }
     if (parts[0] === 'collections' && parts.length >= 2) {
       const id = uuid.parse(parts[1]);
+      if (parts.length === 3 && parts[2] === 'exports' && write) return download(await exportCollection(scope,id,collectionExportInput.parse(await body(request))));
       if (parts.length === 2 && !write) { const search = new URL(request.url).searchParams; return json(await collectionDetail(scope, id, search.get('after') ?? '0', Number(search.get('limit') ?? 25))); }
       if (parts.length === 3 && write && ['stop-requests','resume'].includes(parts[2])) return json(await controlCollection(scope, id, parts[2] === 'resume' ? 'RESUME' : 'STOP', collectionResumeInput.parse(await body(request))));
       if (parts.length === 4 && parts[2] === 'results' && !write) return json(await collectionObservationHistory(scope, id, uuid.parse(parts[3])));

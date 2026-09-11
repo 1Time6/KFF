@@ -19,7 +19,7 @@ if (!Object.hasOwn(commands, name)) throw new Error('Unknown check');
 const directory = path.resolve('.kff/checks'); mkdirSync(directory, { recursive: true });
 const log = openSync(path.join(directory, name + '.log'), 'w');
 const startedAt = new Date().toISOString();
-const sourceFiles = [...new Set(execFileSync('git', ['-c','core.quotepath=false','ls-files','--cached','--others','--exclude-standard'], { encoding: 'utf8' }).split(/\r?\n/))].filter(file => !file.endsWith('next-env.d.ts') && ((/^(apps|packages|scripts|tests|supabase)\//.test(file) && /\.(ts|tsx|mjs|sql|css|json|toml)$/.test(file)) || ['package.json','pnpm-lock.yaml','pnpm-workspace.yaml','tsconfig.json','eslint.config.mjs','vitest.config.ts','playwright.config.ts'].includes(file))).sort();
+const sourceFiles = [...new Set(execFileSync('git', ['-c','core.quotepath=false','ls-files','--cached','--others','--exclude-standard'], { encoding: 'utf8' }).split(/\r?\n/))].filter(file => !file.endsWith('next-env.d.ts') && ((/^(apps|packages|scripts|tests|supabase)\//.test(file) && /\.(ts|tsx|mjs|sql|css|json|toml|xlsx)$/.test(file)) || ['package.json','pnpm-lock.yaml','pnpm-workspace.yaml','tsconfig.json','eslint.config.mjs','vitest.config.ts','playwright.config.ts'].includes(file))).sort();
 const sourceHashes = Object.fromEntries(sourceFiles.map(file => [file, createHash('sha256').update(readFileSync(file)).digest('hex')]));
 const child = spawn(process.execPath, commands[name], { cwd: process.cwd(), stdio: ['ignore', log, log], windowsHide: true, env: { ...process.env, KFF_ROOT: process.cwd(), KFF_CHECK_NAME: name, NEXT_TELEMETRY_DISABLED: '1' } });
 child.on('exit', (code, signal) => {

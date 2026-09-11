@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { ManualImportSnapshot } from './imports';
 
 export const collectionField = z.enum(['message', 'author_id', 'reaction_count', 'comment_count', 'created_time']);
 export const collectionFieldValue = z.discriminatedUnion('kind', [
@@ -43,5 +44,5 @@ export interface CollectionRun {
   version: number; committed_pages: number; returned_count: number; unique_count: number; reported_total: number | null;
   stop_reason: string | null; error_code: string | null; started_at: string | null; finished_at: string | null; created_at: string;
 }
-export interface CollectionQuery { id: string; title: string; snapshot: CollectionSnapshot; snapshot_hash: string; created_at: string; expires_at: string }
+export interface CollectionQuery { id: string; title: string; snapshot: CollectionSnapshot | ManualImportSnapshot; snapshot_hash: string; created_at: string; expires_at: string }
 export interface CollectionResult { id: string; source_object_id: string; observation_id: string; observed_at: string; source_url: string; fields: CollectionRecord['fields']; evidence_hash: string; allowed_purposes: string[]; expires_at: string; object_version: number; result_order: string }

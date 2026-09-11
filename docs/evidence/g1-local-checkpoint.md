@@ -24,7 +24,9 @@ TASK-057 模板版本补充 13 个隔离数据库样本、3 个模板合同样�
 
 TASK-047/049/050 与 TASK-052 的查询详情子范围新增 4 项合同、19 项隔离数据库与 1 项浏览器流程。五次合成观察正确保存为四个对象，长 ID 与前导零不丢失；空值、隐藏、未返回、空字符串与真实零分别保存。分页提交前实际终止进程时整页回滚，提交后终止时从下一确认页继续；旧 token 拒绝回写。游标循环/失效、读取失败、数量/页数上限与正常空结果分别显示。跨查询关联、跨账号身份、到期观察清理与有效观察保留通过测试。新增第八个工作区 `/collections`，截图为 `output/playwright/collection-observations.png` 和 `output/playwright/collection-mobile.png`。真实来源、Excel/CSV 和目标转任务仍未纳入此子范围。
 
-曾发现并修复：Windows PostgreSQL 包版本不可用；终端进程回执异常；表单标签把下拉选项并入可访问名称；测试启动器在服务重载时重复占用端口；生产构建目录进入 lint；动态路径导致打包器追踪整个项目。最终结果以当前摘要中的通过记录为准，早期失败没有计入通过。
+TASK-051 新增 3 项合同、14 项隔离数据库和 1 项浏览器流程：独立生成的 XLSX → 上传 → 映射 → 逐行错误/重复预览 → 确认有效行 → 人工来源观察 → CSV/XLSX 导出与回导。长 ID、前导零、中文编码、逗号换行、公式文本、真正公式单元格、数值 ID、四种字段状态、精确选中对象、字段权限、原文件访问、重复提交和到期清理分别验证。ZIP 解压膨胀、外部关系、错误容器及行列上限被拒绝。生产构建另走通受限解析进程和完整 CSV 流程。截图为 `output/playwright/import-preview.png` 与 `output/playwright/import-preview-mobile.png`，独立样本及说明在 `tests/fixtures/`。不把人工来源计为 Facebook 自动采集或实际外联许可。
+
+曾发现并修复：Windows PostgreSQL 包版本不可用；终端进程回执异常；表单标签把下拉选项并入可访问名称；测试启动器在服务重载时重复占用端口；生产构建目录进入 lint；动态路径导致打包器追踪整个项目；ExcelJS 对合法 Open XML 命名空间前缀的读取限制（改为受限命名空间读取器）；原始 CSV 下载编码声明。最终结果以当前摘要中的通过记录为准，早期失败没有计入通过。
 
 保存的截图：`output/playwright/e1-verified-detail.png`、`output/playwright/e1-reconciled-detail.png`、`output/playwright/workbench-mobile.png`。都是本项目合成操作，未包含真实客户或平台登录资料。
 
