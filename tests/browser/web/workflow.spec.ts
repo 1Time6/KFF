@@ -128,3 +128,36 @@ test('registers an unused Agent, offers one scoped pairing file and revokes it',
   await expect(row.getByText('已撤销', { exact: true })).toBeVisible();
   await expect(row.getByRole('button')).toHaveCount(0);
 });
+
+test('records a contact basis and prevents its use after opt-out in the account workbench', async ({ page }) => {
+  const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
+  await page.getByRole('link', { name: '账号中心', exact: true }).click();
+  await page.getByLabel('联系依据所属账号', { exact: true }).selectOption('44444444-4444-4444-8444-444444444444');
+  await page.getByRole('button', { name: '管理联系依据', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: '联系依据与退出', exact: true });
+  await dialog.getByLabel('目标在此账号下的标识', { exact: true }).fill('synthetic-ui-' + randomUUID());
+  await dialog.getByRole('button', { name: '登记联系目标', exact: true }).click();
+  await expect(dialog.getByText('尚未记录退出', { exact: true })).toBeVisible();
+  await dialog.getByLabel('联系依据类型', { exact: true }).selectOption('explicit_consent');
+  await dialog.getByLabel('本次用途', { exact: true }).selectOption('marketing');
+  await dialog.getByLabel('依据记录编号或出处', { exact: true }).fill('synthetic-ui-consent-' + randomUUID().slice(0, 8));
+  const past = new Date(Date.now()-86400000).toISOString().slice(0, 16); const future = new Date(Date.now()+86400000).toISOString().slice(0, 16);
+  await dialog.getByLabel('依据发生时间', { exact: true }).fill(past);
+  await dialog.getByLabel('依据生效时间', { exact: true }).fill(past);
+  await dialog.getByLabel('依据到期时间', { exact: true }).fill(future);
+  await dialog.getByLabel('渠道规则出处或版本', { exact: true }).fill('synthetic-ui-policy-v1');
+  await dialog.getByLabel('联系窗口规则', { exact: true }).selectOption('NOT_REQUIRED');
+  await dialog.getByLabel('依据说明', { exact: true }).fill('本项目合成记录，仅验证联系依据管理，不产生真实发送授权。');
+  await dialog.getByLabel('已核对来源用途与渠道规则', { exact: true }).check();
+  await dialog.getByRole('button', { name: '保存联系依据', exact: true }).click();
+  await expect(dialog.getByLabel('检查哪条联系依据', { exact: true })).not.toHaveValue('');
+  await dialog.getByRole('button', { name: '检查选中依据', exact: true }).click();
+  await expect(dialog.getByRole('status')).toContainText('检查时的联系依据满足要求');
+  await dialog.getByLabel('退出或撤销原因', { exact: true }).fill('合成退出请求');
+  await dialog.getByRole('button', { name: '记录退出', exact: true }).click();
+  await expect(dialog.getByText('已退出联系', { exact: true })).toBeVisible();
+  await dialog.getByRole('button', { name: '检查选中依据', exact: true }).click();
+  await expect(dialog.getByRole('status')).toContainText('目标已退出联系');
+  await page.screenshot({ path: 'output/playwright/contact-permission-exit.png', fullPage: true });
+  expect(errors).toEqual([]);
+});

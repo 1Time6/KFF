@@ -1,4 +1,5 @@
 import { z } from 'zod';
+export * from './contact';
 
 export const uuid = z.string().uuid();
 export const externalId = z.string().regex(/^[0-9]{1,128}$/, '平台 ID 必须使用数字字符串');

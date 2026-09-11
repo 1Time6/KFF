@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { randomUUID } from 'node:crypto';
-import { loginInput, uuid, taskInput, accountInput, environmentInput, approvalInput, heartbeatInput, resultInput, stopInput, permitInput, pauseInput, agentInput, agentControlInput, quiescenceInput } from '@kff/contracts';
+import { loginInput, uuid, taskInput, accountInput, environmentInput, approvalInput, heartbeatInput, resultInput, stopInput, permitInput, pauseInput, agentInput, agentControlInput, quiescenceInput, contactTargetInput, contactPermissionInput, contactExitInput, contactReviewInput } from '@kff/contracts';
 import { AppError, redactError, requireCondition } from '@kff/core';
 import { workspace, createAccount, createEnvironment, createTask, approveTask, enqueueTask, stopRun, runDetail, setBrandPause } from '@kff/core/service';
 import { authenticateAgent, agentHeartbeat, claimCommand, beginSubmission, acceptReport, commandStatus } from '@kff/core/execution';
@@ -8,6 +8,7 @@ import { exportDiagnostic, reconcileSynthetic, releaseQuarantine, recordQuiescen
 import { createPermit, revokePermit } from '@kff/core/permits';
 import { attachLocalEvidence } from '@kff/core/capabilities';
 import { setOrganizationPause, setAccountPause, createAgent, controlAgent } from '@kff/core/controls';
+import { createContactTarget, grantContactPermission, exitContact, revokeContactPermission, reviewContactBasis, listContactRecords } from '@kff/core/contacts';
 import { requestScope, checkOrigin, login, logout } from '../../../lib/auth';
 
 export const runtime = 'nodejs';
@@ -45,6 +46,12 @@ async function handle(request: Request, context: Context) {
     const scope = await requestScope(request);
     if (write) checkOrigin(request);
     if (path === 'workspace' && !write) return json(await workspace(scope));
+    if (path === 'contacts' && !write) return json(await listContactRecords(scope));
+    if (path === 'contacts' && write) return json(await createContactTarget(scope, contactTargetInput.parse(await body(request))), 201);
+    if (path === 'contacts/permissions' && write) return json(await grantContactPermission(scope, contactPermissionInput.parse(await body(request))), 201);
+    if (path === 'contacts/eligibility' && write) return json(await reviewContactBasis(scope, contactReviewInput.parse(await body(request))));
+    if (parts.length === 3 && parts[0] === 'contacts' && parts[2] === 'exit' && write) return json(await exitContact(scope, uuid.parse(parts[1]), contactExitInput.parse(await body(request))));
+    if (parts.length === 4 && parts[0] === 'contacts' && parts[1] === 'permissions' && parts[3] === 'revoke' && write) return json(await revokeContactPermission(scope, uuid.parse(parts[2]), stopInput.parse(await body(request)).reason));
     if (path === 'accounts' && write) return json(await createAccount(scope, accountInput.parse(await body(request))), 201);
     if (path === 'agents' && write) return json(await createAgent(scope, agentInput.parse(await body(request))), 201);
     if (parts.length === 3 && parts[0] === 'agents' && parts[2] === 'control' && write) return json(await controlAgent(scope, uuid.parse(parts[1]), agentControlInput.parse(await body(request))));

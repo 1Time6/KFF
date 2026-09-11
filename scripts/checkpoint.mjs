@@ -47,6 +47,7 @@ const scoped = {
   'TASK-035': ['合成页面的单一身份读取及身份错误拒绝；真实 Facebook 只读待验', ['packages/adapters/src/fixture.ts'], ['fixtures','contracts']],
   'TASK-036': ['账号、环境、任务、运行详情、能力及总览工作台的本地流程', ['apps/web/components/workbench.tsx','apps/web/components/pilot-permit-form.tsx'], ['web','production']],
   'TASK-044': ['最小 D1 语义计数、D0 降级、导出权限/审计/白名单；其他驱动和截图未纳入', ['packages/core/src/reconciliation.ts','packages/core/src/index.ts'], ['unit','integration','web']],
+  'TASK-054': ['联系依据、用途与显式窗口、退出/新同意、不可变选择及事务内复核；账号页管理入口；具体消息执行门槛尚待接入', ['packages/contracts/src/contact.ts','packages/core/src/contacts.ts','apps/web/components/contact-permissions.tsx','supabase/migrations/20260911185039_g1_contact_eligibility.sql'], ['integration','web']],
   'TASK-065': ['首个 Graph/fixture URL 白名单、响应上限与 UUID profile 路径边界；附件尚待实施', ['packages/core/src/index.ts','packages/adapters/src/facebook.ts'], ['unit','contracts','fixtures']],
 };
 for (const card of ledger.tasks) {
@@ -59,7 +60,7 @@ for (const card of ledger.tasks) {
   if (['TASK-003','TASK-004','TASK-005'].includes(card.task_id)) { card.status = 'BLOCKED'; card.known_blockers = ['原 PDF/DOC/视频/旧追踪表未提供；不影响已授权的独立代码实现']; }
   if (['TASK-039','TASK-042','TASK-043'].includes(card.task_id)) { card.status = 'TODO'; card.known_blockers = ['用户已要求真实测试后置；未配置已授权主页、实际 API 版本和真实试验凭据，未取得真实结果']; }
   if (card.task_id === 'TASK-038') { card.status = 'IN_PROGRESS'; card.outputs = ['tests/browser/web/workflow.spec.ts','tests/browser/fixtures/agent-recovery.spec.ts','tests/browser/fixtures/executor.spec.ts','tests/integration/durability.test.ts','tests/integration/execution.test.ts']; card.evidence_refs = ['docs/evidence/g1-local-checkpoint.json']; card.known_blockers = ['所列本地故障已验；系统断网/掉电、不同宿主及完整外部接管矩阵仍需环境级验收']; }
-  if (card.task_id === 'TASK-054') { card.status = 'TODO'; card.known_blockers = ['当前动作是自有主页文本发布，未实施联系动作；消息资格公共组件尚待实现']; }
+  if (card.task_id === 'TASK-054') { card.selected_contact_path = 'basis_component_only'; card.known_blockers = ['当前 E1 是主页发布；具体消息动作仍需将此依据检查接入共同平台能力、审核、预算、租约与组织停止门槛。采集来源扩展和真实消息验收未完成']; }
 }
 ledger.updated_at = evidence.created_at; writeFileSync('docs/tasks/ledger.json', JSON.stringify(ledger,null,2) + '\n');
 console.log(JSON.stringify({ total_tests: evidence.total_tests, checks: checks.length, full_delivery: false, source_tree_sha256: evidence.source_tree_sha256 }));
