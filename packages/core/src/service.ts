@@ -22,11 +22,13 @@ export async function workspace(scope: Scope) {
     const brand = (await client.query('SELECT id,name,outbound_paused FROM kff.brands')).rows[0];
     const organization = (await client.query("SELECT o.id,o.name,o.outbound_paused,EXISTS(SELECT 1 FROM kff.organization_memberships m WHERE m.organization_id=o.id AND m.role IN ('owner','admin')) AS can_manage FROM kff.organizations o")).rows[0];
     const permits = (await client.query<Permit>("SELECT *,starts_at<=clock_timestamp() AND expires_at>clock_timestamp() AND revoked_at IS NULL AND halted_at IS NULL AS valid FROM kff.pilot_permits ORDER BY created_at DESC LIMIT 100")).rows;
+    const budgets = (await client.query<{ currency: string; available_minor: string }>("SELECT b.currency,(b.limit_minor-COALESCE(sum(c.reserved_minor) FILTER(WHERE c.state IN ('RESERVED','PENDING_RECONCILIATION')),0)-COALESCE(sum(c.actual_cost_minor),0))::text AS available_minor FROM kff.cost_budgets b LEFT JOIN kff.cost_reservations c ON c.brand_id=b.brand_id AND c.currency=b.currency GROUP BY b.id")).rows;
     const eligibility = Object.fromEntries(tasks.map(task => {
       const capability = capabilities.find(value => value.id === task.capability_id)!;
       const permit = permits.find(value => value.task_id === task.id && permitMatches(value, task.snapshot) && value.reserved_actions < value.max_actions && BigInt(value.reserved_cost_minor) + BigInt(value.per_action_max_minor) <= BigInt(value.max_cost_minor));
       const paused = organization.outbound_paused || brand.outbound_paused || accounts.find(account => account.id === task.account_id)?.outbound_paused;
-      const decision = paused ? { allowed: false, reason_code: 'STOP_REQUESTED' } : canExecute(capability, task.snapshot.mode, process.env.KFF_ENABLE_LIVE === 'true', Boolean(permit));
+      let decision = paused ? { allowed: false, reason_code: 'STOP_REQUESTED' } : canExecute(capability, task.snapshot.mode, process.env.KFF_ENABLE_LIVE === 'true', Boolean(permit));
+      if (decision.allowed && permit) { const budget = budgets.find(value => value.currency === permit.currency); if (!budget || BigInt(budget.available_minor) < BigInt(permit.per_action_max_minor)) decision = { allowed: false, reason_code: budget ? 'BUDGET_EXCEEDED' : 'BUDGET_UNCONFIGURED' }; }
       return [task.id, decision];
     }));
     const totals = (await client.query("SELECT count(*)::int AS total,count(*) FILTER(WHERE state='VERIFIED_SUCCEEDED')::int AS verified,count(*) FILTER(WHERE state='UNKNOWN_OUTCOME')::int AS unknown,count(*) FILTER(WHERE state IN ('QUEUED','PREPARING','SUBMITTING','SUBMITTED'))::int AS active,count(*) FILTER(WHERE state IN ('VERIFIED_FAILED','BLOCKED','NEEDS_HUMAN'))::int AS failed,count(*) FILTER(WHERE state='CANCELED')::int AS canceled FROM kff.actions")).rows[0];

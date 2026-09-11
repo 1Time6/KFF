@@ -5,6 +5,7 @@ import { resultInput, type AgentCommand, type TaskSnapshot, type Capability, typ
 import { assertTransition, buildDiagnostic, canExecute, digest, isWrite, requireCondition } from './index';
 import { findPermit, haltPilot } from './permits';
 import { adapterImplementationDigest } from './artifacts';
+import { markCostPending } from './costs';
 
 export interface AgentIdentity { id: string; organization_id: string; brand_id: string; status: string }
 interface CommandRow { id: string; organization_id: string; brand_id: string; action_id: string; attempt_id: string; agent_id: string; state: string; expires_at: Date; run_id: string; task_id: string; snapshot: TaskSnapshot; snapshot_hash: string; leases: LeaseToken[]; action_state: ActionState; stop_requested: boolean }
@@ -161,6 +162,7 @@ export async function acceptReport(agent: AgentIdentity, input: ActionReport) {
     await client.query('INSERT INTO kff.inbound_events(id,organization_id,brand_id,agent_id,command_id,payload_hash) VALUES($1,$2,$3,$4,$5,$6)', [report.event_id, agent.organization_id, agent.brand_id, agent.id, command.id, payloadHash]);
     await client.query('UPDATE kff.actions SET state=$1,error_code=$2,receipt=$3 WHERE id=$4', [report.outcome, report.error_code ?? null, report.receipt ?? null, command.action_id]);
     if (report.outcome !== 'VERIFIED_SUCCEEDED') await haltPilot(client, command.action_id);
+    await markCostPending(client, command.action_id, 'ACTION_' + report.outcome);
     if (report.outcome === 'VERIFIED_SUCCEEDED' && !command.snapshot.is_synthetic && !isWrite(command.snapshot)) await client.query("UPDATE kff.accounts SET state='ACTIVE' WHERE id=$1 AND version=$2 AND credential_ref=$3", [command.snapshot.account_id, command.snapshot.account_version, command.snapshot.credential_ref]);
     await client.query('UPDATE kff.action_attempts SET state=$1,completed_at=now() WHERE id=$2', [report.outcome, command.attempt_id]);
     await client.query("UPDATE kff.agent_commands SET state='DONE' WHERE id=$1", [command.id]);
@@ -189,6 +191,7 @@ export async function recoverExpired(): Promise<number> {
     assertTransition(command.action_state, outcome);
     await client.query('UPDATE kff.actions SET state=$1,error_code=$2 WHERE id=$3', [outcome, neverClaimed ? 'COMMAND_NOT_STARTED' : 'LEASE_EXPIRED', command.action_id]);
     await haltPilot(client, command.action_id);
+    await markCostPending(client, command.action_id, neverClaimed ? 'COMMAND_NEVER_CLAIMED' : 'EXECUTION_LEASE_EXPIRED');
     await client.query("UPDATE kff.action_attempts SET state=$1,completed_at=now() WHERE id=$2", [outcome, command.attempt_id]);
     await client.query("UPDATE kff.agent_commands SET state='EXPIRED',quiesced_at=CASE WHEN $1 THEN now() ELSE quiesced_at END WHERE id=$2", [neverClaimed, command.id]);
     await client.query('UPDATE kff.resource_leases SET quarantined=NOT $1,holder_attempt_id=CASE WHEN $1 THEN NULL ELSE holder_attempt_id END,expires_at=now() WHERE holder_attempt_id=$2', [neverClaimed, command.attempt_id]);

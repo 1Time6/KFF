@@ -806,7 +806,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 46
+          "test_count": 59
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
@@ -1150,7 +1150,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 46
+          "test_count": 59
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=fixtures",
@@ -1233,7 +1233,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 46
+          "test_count": 59
         }
       ],
       "live_effects": "none",
@@ -1309,12 +1309,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 46
+          "test_count": 59
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 8
+          "test_count": 9
         }
       ],
       "live_effects": "none",
@@ -1387,7 +1387,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 46
+          "test_count": 59
         }
       ],
       "live_effects": "none",
@@ -1464,12 +1464,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 46
+          "test_count": 59
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 8
+          "test_count": 9
         }
       ],
       "live_effects": "none",
@@ -1543,7 +1543,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 46
+          "test_count": 59
         }
       ],
       "live_effects": "none",
@@ -1615,7 +1615,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 46
+          "test_count": 59
         }
       ],
       "live_effects": "none",
@@ -1752,12 +1752,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 46
+          "test_count": 59
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 8
+          "test_count": 9
         }
       ],
       "live_effects": "none",
@@ -1829,12 +1829,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 46
+          "test_count": 59
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 8
+          "test_count": 9
         }
       ],
       "live_effects": "none",
@@ -1907,7 +1907,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 46
+          "test_count": 59
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=fixtures",
@@ -2059,7 +2059,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 46
+          "test_count": 59
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=fixtures",
@@ -2069,7 +2069,7 @@
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 8
+          "test_count": 9
         }
       ],
       "live_effects": "none",
@@ -2146,12 +2146,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 46
+          "test_count": 59
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 8
+          "test_count": 9
         }
       ],
       "live_effects": "none",
@@ -2303,12 +2303,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 46
+          "test_count": 59
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 8
+          "test_count": 9
         }
       ],
       "live_effects": "none",
@@ -2460,7 +2460,7 @@
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 8
+          "test_count": 9
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
@@ -3602,8 +3602,8 @@
       "title": "最小费用台账与配额扩展",
       "parent_id": "PLAN-F1-04",
       "gate": "G2",
-      "status": "TODO",
-      "scope": "先交付单槽预占/结算/未知费用台账供首链复用；批次与多品牌公平调度在 TASK-060 后扩展，同一账本分范围验收",
+      "status": "DONE_SCOPED",
+      "scope": "单槽动作费用预占、按币种的显式预算和精度、未知保留、人工结算/释放/差异调整及工作台；释放不退试验次数，继续执行复查预算；批次和多品牌公平调度未验",
       "authorized_objective": "按项目规划实施，Facebook 为首平台，真实测试后置",
       "authorization_basis": "2026-09-12 当前会话用户指令",
       "source_refs": [
@@ -3626,17 +3626,38 @@
       "inputs": [
         "当前主规划 v2.1"
       ],
-      "outputs": [],
+      "outputs": [
+        "packages/contracts/src/cost.ts",
+        "packages/core/src/costs.ts",
+        "apps/web/components/cost-ledger.tsx",
+        "supabase/migrations/20260911190913_g2_cost_ledger.sql",
+        "tests/integration/costs.test.ts"
+      ],
       "acceptance_ids": [
         "ACC-58",
         "ACC-66"
       ],
-      "actual_test_commands": [],
+      "actual_test_commands": [
+        {
+          "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
+          "exit_code": 0,
+          "test_count": 59
+        },
+        {
+          "command": "node node_modules/@playwright/test/cli.js test --project=web",
+          "exit_code": 0,
+          "test_count": 9
+        }
+      ],
       "live_effects": "none",
       "pilot_permit_ref": null,
       "rollback_plan": "停止本项目 Web/Worker/Agent，回退本任务代码提交；已提交动作保留未知并对账，已应用迁移不反向改写",
-      "known_blockers": [],
-      "evidence_refs": [],
+      "known_blockers": [
+        "本次仅单槽费用基础；真实账单提供方、旧数据实样迁移验收、批次与多品牌公平调度在对应后续范围验收"
+      ],
+      "evidence_refs": [
+        "docs/evidence/g1-local-checkpoint.json"
+      ],
       "reviewer": "Codex 实现；用户与独立审查尚未验收",
       "next_task": null,
       "continue_within_authorized_scope": true
@@ -6800,5 +6821,5 @@
       "continue_within_authorized_scope": true
     }
   ],
-  "updated_at": "2026-09-11T19:08:26.457Z"
+  "updated_at": "2026-09-11T19:39:37.981Z"
 }

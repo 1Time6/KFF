@@ -10,6 +10,7 @@ import { exportDiagnostic, reconcileSynthetic, releaseQuarantine, recordQuiescen
 import { createPermit, findPermit } from '../../packages/core/src/permits';
 import { adapterImplementationDigest } from '../../packages/core/src/artifacts';
 import { setOrganizationPause, setAccountPause, createAgent, controlAgent } from '../../packages/core/src/controls';
+import { configureBudget, reconcileCost } from '../../packages/core/src/costs';
 
 const scope: Scope = { organization_id: localIds.organization, brand_id: localIds.brand, user_id: localIds.user, role: 'admin' };
 const agent: AgentIdentity = { id: localIds.agent, organization_id: localIds.organization, brand_id: localIds.brand, status: 'ONLINE' };
@@ -30,7 +31,7 @@ beforeEach(async () => {
   // This guard is authoritative: destructive fixture cleanup is restricted to the newly created test database.
   const database = (await query<{ name: string }>('SELECT current_database() AS name'))[0].name;
   if (database !== process.env.KFF_TEST_DATABASE || !/^kff_test_[a-f0-9]{20}$/.test(database)) throw new Error('Wrong database');
-  await query('TRUNCATE kff.content_versions,kff.audit_events CASCADE');
+  await query('TRUNCATE kff.content_versions,kff.audit_events,kff.cost_budgets CASCADE');
   await query("UPDATE kff.agents SET status='ONLINE',heartbeat_at=now() WHERE id=$1", [agent.id]);
   await query("UPDATE kff.environments SET state='IDLE'");
   await query('UPDATE kff.brands SET outbound_paused=false');
@@ -205,6 +206,7 @@ describe('Postgres execution and failure boundaries', () => {
     await expect(exportDiagnostic(scope, bundle.id)).rejects.toMatchObject({ code: 'DIAGNOSTIC_REDACTION_FAILED' });
   });
   it('reserves a controlled read exactly once, rejects expiry and keeps scope immutable', async () => {
+    await configureBudget(scope, { request_id: randomUUID(), expected_version: 0, currency: 'USD', minor_unit_exponent: 2, precision_source: 'Synthetic test precision rule', limit_minor: '100', reason: 'Isolated contract test budget' });
     const account = await createAccount(scope, { display_name: 'Contract-only Facebook account', external_id: '90909090', platform: 'facebook', account_type: 'page', credential_ref: 'FACEBOOK_TEST_CREDENTIAL' });
     const environment = await createEnvironment(scope, { name: 'Contract test environment', account_id: account.id, agent_id: agent.id });
     const capability = (await query("UPDATE kff.capabilities SET mode='CONTROLLED_PILOT',evidence_state='IMPLEMENTED_TEST_ONLY',implementation_digest=$2 WHERE account_id=$1 AND capability_key='facebook.page.read.api' RETURNING id", [account.id, adapterImplementationDigest(process.cwd(), 'facebook')]))[0];
@@ -218,6 +220,10 @@ describe('Postgres execution and failure boundaries', () => {
     expect((await query('SELECT reserved_actions,reserved_cost_minor FROM kff.pilot_permits WHERE id=$1', [permit.id]))[0]).toEqual({ reserved_actions: 1, reserved_cost_minor: '75' });
     await expect(scoped(scope, client => findPermit(client, task.id, task.snapshot))).rejects.toMatchObject({ code: 'BUDGET_EXCEEDED' });
     await expect(query('UPDATE kff.pilot_permits SET reserved_actions=0 WHERE id=$1', [permit.id])).rejects.toThrow('PILOT_RESERVATION_CANNOT_RESET');
+    await stopRun(scope, run.id, 'Cancel isolated test before dispatch');
+    await reconcileCost(scope, action.id, { request_id: randomUUID(), expected_version: 1, decision: 'RELEASE', actual_cost_minor: '0', evidence_ref: 'synthetic/no-charge-confirmation', note: 'Synthetic zero-charge bill; no external request was sent', confirmation: 'I_RECONCILED_THIS_COST' });
+    expect((await query('SELECT reserved_actions,reserved_cost_minor FROM kff.pilot_permits WHERE id=$1', [permit.id]))[0]).toEqual({ reserved_actions: 1, reserved_cost_minor: '75' });
+    await expect(scoped(scope, client => findPermit(client, task.id, task.snapshot, action.id))).rejects.toMatchObject({ code: 'COST_ALREADY_FINAL' });
     await query('UPDATE kff.pilot_permits SET revoked_at=now() WHERE id=$1', [permit.id]);
     await expect(scoped(scope, client => findPermit(client, task.id, task.snapshot, action.id))).rejects.toMatchObject({ code: 'PILOT_PERMIT_REQUIRED' });
   });

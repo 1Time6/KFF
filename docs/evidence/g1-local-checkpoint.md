@@ -14,6 +14,10 @@ TASK-054 依据基础新增 14 个隔离数据库样本和账号页操作样本�
 
 联系窗口另做了实际浏览器窄屏检查：390 像素视口下弹窗宽 368，无文档横向溢出、无页面异常。截图为 `output/playwright/contact-permission-exit.png` 和 `output/playwright/contact-permission-mobile.png`，均为合成目标。该手工编排检查不另计入自动测试数量。
 
+TASK-061 已接入单槽费用基础：币种/精度/预算登记 → 动作预占 → 未知保留 → 有依据的人工结算、零费用释放或差异调整。并发预占不能超出预算，重放不重复计费或覆盖后续更正，释放不退试验次数。实际费用高于估算时如实登记，并拒绝预算不足情况下的新预占及旧预占继续执行。费用结算要求动作终止和上下文关闭，保留原未知执行结果与环境隔离。旧费用迁移的实样升级、真实账单和多品牌公平性未计通过。
+
+费用界面验证使用明确标注的合成 QAA 记账规则和提前撤销的未启动执行端；未生成 Agent 命令。浏览器走通登记预算、保留待核账、确认零费用、查看不可变事件，检查 390 像素视口。截图保存在 `output/playwright/cost-ledger-reconciled.png` 与 `output/playwright/cost-ledger-mobile.png`。测试数量以同目录 JSON 检查点为准。
+
 曾发现并修复：Windows PostgreSQL 包版本不可用；终端进程回执异常；表单标签把下拉选项并入可访问名称；测试启动器在服务重载时重复占用端口；生产构建目录进入 lint；动态路径导致打包器追踪整个项目。最终结果以当前摘要中的通过记录为准，早期失败没有计入通过。
 
 保存的截图：`output/playwright/e1-verified-detail.png`、`output/playwright/e1-reconciled-detail.png`、`output/playwright/workbench-mobile.png`。都是本项目合成操作，未包含真实客户或平台登录资料。

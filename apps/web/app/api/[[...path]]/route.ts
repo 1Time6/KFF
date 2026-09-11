@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { randomUUID } from 'node:crypto';
-import { loginInput, uuid, taskInput, accountInput, environmentInput, approvalInput, heartbeatInput, resultInput, stopInput, permitInput, pauseInput, agentInput, agentControlInput, quiescenceInput, contactTargetInput, contactPermissionInput, contactExitInput, contactReviewInput } from '@kff/contracts';
+import { loginInput, uuid, taskInput, accountInput, environmentInput, approvalInput, heartbeatInput, resultInput, stopInput, permitInput, pauseInput, agentInput, agentControlInput, quiescenceInput, contactTargetInput, contactPermissionInput, contactExitInput, contactReviewInput, budgetInput, costReconciliationInput } from '@kff/contracts';
 import { AppError, redactError, requireCondition } from '@kff/core';
 import { workspace, createAccount, createEnvironment, createTask, approveTask, enqueueTask, stopRun, runDetail, setBrandPause } from '@kff/core/service';
 import { authenticateAgent, agentHeartbeat, claimCommand, beginSubmission, acceptReport, commandStatus } from '@kff/core/execution';
@@ -9,6 +9,7 @@ import { createPermit, revokePermit } from '@kff/core/permits';
 import { attachLocalEvidence } from '@kff/core/capabilities';
 import { setOrganizationPause, setAccountPause, createAgent, controlAgent } from '@kff/core/controls';
 import { createContactTarget, grantContactPermission, exitContact, revokeContactPermission, reviewContactBasis, listContactRecords } from '@kff/core/contacts';
+import { costWorkspace, configureBudget, reconcileCost } from '@kff/core/costs';
 import { requestScope, checkOrigin, login, logout } from '../../../lib/auth';
 
 export const runtime = 'nodejs';
@@ -46,6 +47,9 @@ async function handle(request: Request, context: Context) {
     const scope = await requestScope(request);
     if (write) checkOrigin(request);
     if (path === 'workspace' && !write) return json(await workspace(scope));
+    if (path === 'costs' && !write) return json(await costWorkspace(scope));
+    if (path === 'cost-budgets' && write) return json(await configureBudget(scope, budgetInput.parse(await body(request))));
+    if (parts.length === 3 && parts[0] === 'costs' && parts[2] === 'reconciliation' && write) return json(await reconcileCost(scope, uuid.parse(parts[1]), costReconciliationInput.parse(await body(request))));
     if (path === 'contacts' && !write) return json(await listContactRecords(scope));
     if (path === 'contacts' && write) return json(await createContactTarget(scope, contactTargetInput.parse(await body(request))), 201);
     if (path === 'contacts/permissions' && write) return json(await grantContactPermission(scope, contactPermissionInput.parse(await body(request))), 201);

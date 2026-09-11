@@ -4,26 +4,30 @@ import { permitInput, type Scope, type Task, type TaskSnapshot } from '@kff/cont
 import { scoped } from '@kff/database';
 import { digest, isWrite, requireCondition } from './index';
 import { audit, requireAdmin } from './service';
+import { checkCostCapacity, reserveCostForAction } from './costs';
 
-export interface Permit { id: string; task_id: string; snapshot_hash: string; account_id: string; target_id: string; capability_id: string; capability_revision: number; adapter_version: string; content_hash: string; max_actions: number; reserved_actions: number; max_cost_minor: string; reserved_cost_minor: string; per_action_max_minor: string; currency: string; valid: boolean }
+export interface Permit { id: string; organization_id: string; brand_id: string; task_id: string; snapshot_hash: string; account_id: string; target_id: string; capability_id: string; capability_revision: number; adapter_version: string; content_hash: string; max_actions: number; reserved_actions: number; max_cost_minor: string; reserved_cost_minor: string; per_action_max_minor: string; currency: string; cost_basis: string; valid: boolean }
 export function permitMatches(permit: Permit, snapshot: TaskSnapshot) {
   return permit.valid && permit.snapshot_hash === digest(snapshot) && permit.account_id === snapshot.account_id && permit.target_id === snapshot.external_account_id && permit.capability_id === snapshot.capability_id && permit.capability_revision === snapshot.capability_revision && permit.adapter_version === snapshot.adapter_version && permit.content_hash === snapshot.content_hash;
 }
 export async function findPermit(client: PoolClient, taskId: string, snapshot: TaskSnapshot, reserveForAction?: string): Promise<Permit> {
   if (reserveForAction) {
-    const action = await client.query('SELECT id FROM kff.actions WHERE id=$1 AND task_id=$2', [reserveForAction, taskId]);
-    requireCondition(action.rowCount, 'FORBIDDEN_SCOPE', '预占动作与许可任务不匹配', 403);
+    const action = (await client.query('SELECT id,run_id FROM kff.actions WHERE id=$1 AND task_id=$2', [reserveForAction, taskId])).rows[0];
+    requireCondition(action, 'FORBIDDEN_SCOPE', '预占动作与许可任务不匹配', 403);
+    await client.query('SELECT id FROM kff.runs WHERE id=$1 FOR UPDATE', [action.run_id]);
+    await client.query('SELECT id FROM kff.actions WHERE id=$1 FOR UPDATE', [action.id]);
   }
   const rows = (await client.query<Permit>("SELECT *,starts_at<=clock_timestamp() AND expires_at>clock_timestamp() AND revoked_at IS NULL AND halted_at IS NULL AS valid FROM kff.pilot_permits WHERE task_id=$1 ORDER BY created_at DESC FOR UPDATE", [taskId])).rows;
   const permit = rows.find(value => permitMatches(value, snapshot));
   requireCondition(permit, 'PILOT_PERMIT_REQUIRED', '当前任务缺少有效且范围匹配的试验许可', 409);
   const existing = reserveForAction ? (await client.query('SELECT permit_id FROM kff.pilot_reservations WHERE action_id=$1', [reserveForAction])).rows[0] : undefined;
-  if (existing) { requireCondition(existing.permit_id === permit.id, 'PILOT_PERMIT_REQUIRED', '动作已有其他许可预占', 409); return permit; }
+  if (existing) { requireCondition(existing.permit_id === permit.id, 'PILOT_PERMIT_REQUIRED', '动作已有其他许可预占', 409); await reserveCostForAction(client, reserveForAction!, { permit_id: permit.id, currency: permit.currency, reserved_minor: permit.per_action_max_minor, cost_basis: permit.cost_basis }); return permit; }
   requireCondition(permit.reserved_actions < permit.max_actions && BigInt(permit.reserved_cost_minor) + BigInt(permit.per_action_max_minor) <= BigInt(permit.max_cost_minor), 'BUDGET_EXCEEDED', '试验次数或费用上限已用尽', 409);
   if (reserveForAction) {
+    await reserveCostForAction(client, reserveForAction, { permit_id: permit.id, currency: permit.currency, reserved_minor: permit.per_action_max_minor, cost_basis: permit.cost_basis });
     await client.query('UPDATE kff.pilot_permits SET reserved_actions=reserved_actions+1,reserved_cost_minor=reserved_cost_minor+per_action_max_minor WHERE id=$1', [permit.id]);
     await client.query('INSERT INTO kff.pilot_reservations(action_id,organization_id,brand_id,permit_id,cost_minor,currency) SELECT $1,organization_id,brand_id,id,per_action_max_minor,currency FROM kff.pilot_permits WHERE id=$2', [reserveForAction, permit.id]);
-  }
+  } else await checkCostCapacity(client, permit, permit.currency, permit.per_action_max_minor);
   return permit;
 }
 export async function createPermit(scope: Scope, input: z.infer<typeof permitInput>) {
@@ -43,6 +47,7 @@ export async function createPermit(scope: Scope, input: z.infer<typeof permitInp
       requireCondition(identity.rowCount, 'ACCOUNT_UNVERIFIED', '必须先核实此凭据版本的真实主页身份', 409);
     }
     requireCondition(BigInt(value.per_action_max_minor) <= BigInt(value.max_cost_minor), 'BUDGET_EXCEEDED', '单次费用上限超过总上限');
+    await checkCostCapacity(client, scope, value.currency, value.per_action_max_minor);
     const permit = (await client.query('INSERT INTO kff.pilot_permits(organization_id,brand_id,task_id,account_id,capability_id,snapshot_hash,content_hash,target_id,capability_revision,adapter_version,access_path,approved_by,starts_at,expires_at,max_actions,currency,max_cost_minor,per_action_max_minor,cost_basis,authorization_evidence,platform_conditions,expected_evidence,stop_rule) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,\'api\',$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22) RETURNING *', [scope.organization_id, scope.brand_id, task.id, task.account_id, task.capability_id, task.snapshot_hash, task.snapshot.content_hash, task.snapshot.external_account_id, task.snapshot.capability_revision, task.snapshot.adapter_version, scope.user_id, value.starts_at, value.expires_at, value.max_actions, value.currency, value.max_cost_minor, value.per_action_max_minor, value.cost_basis, value.authorization_evidence, value.platform_conditions, value.expected_evidence, value.stop_rule])).rows[0];
     await audit(client, scope, 'pilot.approved', permit.id, { task_id: task.id, snapshot_hash: task.snapshot_hash, max_actions: value.max_actions }); return permit;
   });

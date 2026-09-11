@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 
 test.describe.configure({ mode: 'serial' });
 test.beforeEach(async ({ page }) => {
@@ -159,5 +160,56 @@ test('records a contact basis and prevents its use after opt-out in the account 
   await dialog.getByRole('button', { name: '检查选中依据', exact: true }).click();
   await expect(dialog.getByRole('status')).toContainText('目标已退出联系');
   await page.screenshot({ path: 'output/playwright/contact-permission-exit.png', fullPage: true });
+  expect(errors).toEqual([]);
+});
+
+test('configures a currency budget and reconciles an unknown synthetic cost through the workbench', async ({ page }) => {
+  const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
+  await page.getByRole('link', { name: '能力与验证', exact: true }).click();
+  const ledger = page.getByRole('region', { name: '费用与预算' });
+  await ledger.getByText('登记或调整预算', { exact: true }).click();
+  await ledger.getByLabel('预算币种代码', { exact: true }).fill('QAA');
+  const exponent = ledger.getByLabel('币种小数位数', { exact: true });
+  if (await exponent.isEditable()) await exponent.fill('0');
+  await ledger.getByLabel('币种精度依据', { exact: true }).fill('合成费用测试规定为零位小数，不对应真实币种账单');
+  await ledger.getByLabel('预算上限（最小单位）', { exact: true }).fill('100000');
+  await ledger.getByLabel('预算设置原因', { exact: true }).fill('本地界面合成核账检查，不产生付款');
+  await ledger.getByRole('button', { name: '保存预算', exact: true }).click();
+  await expect(ledger.getByRole('status')).toHaveText('预算已保存');
+  const budgetRow = ledger.getByRole('table', { name: '币种预算', exact: true }).getByRole('row').filter({ hasText: 'QAA' });
+  await expect(budgetRow.getByText('小数位数 0', { exact: true })).toBeVisible();
+  const fixture = JSON.parse(execFileSync(process.execPath, ['node_modules/tsx/dist/cli.mjs', 'tests/helpers/cost-ui-fixture.ts'], { encoding: 'utf8', windowsHide: true, env: { ...process.env, KFF_ROOT: process.cwd(), KFF_LOCAL_COST_UI_FIXTURE: '1', KFF_ENABLE_LIVE: 'false' } }));
+  await ledger.getByRole('button', { name: '刷新费用记录', exact: true }).click();
+  const row = ledger.getByRole('table', { name: '动作费用', exact: true }).getByRole('row').filter({ hasText: fixture.title });
+  await expect(row.getByRole('cell').nth(2)).toHaveText('123');
+  await expect(row.getByRole('cell').nth(3)).toHaveText('待核账');
+  await ledger.getByLabel('选择核账动作', { exact: true }).selectOption(fixture.action_id);
+  await ledger.getByLabel('核账处理', { exact: true }).selectOption('PENDING');
+  await ledger.getByLabel('账单或核查依据', { exact: true }).fill('synthetic-ui/pending/' + fixture.action_id);
+  await ledger.getByLabel('核账说明', { exact: true }).fill('合成账单尚待核查，继续保留全部预占费用。');
+  await ledger.getByLabel('已核对本动作的费用依据与处理结果', { exact: true }).check();
+  await ledger.getByRole('button', { name: '保存核账记录', exact: true }).click();
+  await expect(ledger.getByRole('status')).toHaveText('核账记录已保存，试验次数保持不变');
+  await expect(row.getByRole('cell').nth(3)).toHaveText('待核账');
+  await ledger.getByLabel('选择核账动作', { exact: true }).selectOption(fixture.action_id);
+  await ledger.getByLabel('核账处理', { exact: true }).selectOption('RELEASE');
+  await ledger.getByLabel('账单或核查依据', { exact: true }).fill('synthetic-ui/zero-charge/' + fixture.action_id);
+  await ledger.getByLabel('核账说明', { exact: true }).fill('合成执行端已提前撤销，没有命令和平台调用，核查为零费用。');
+  await ledger.getByLabel('已核对本动作的费用依据与处理结果', { exact: true }).check();
+  await ledger.getByRole('button', { name: '保存核账记录', exact: true }).click();
+  await expect(row.getByRole('cell').nth(3)).toHaveText('0');
+  await expect(row.getByRole('cell').nth(4)).toHaveText('零费用已释放');
+  const detail = await (await page.request.get('/api/runs/' + fixture.run_id)).json();
+  expect(detail.run.action_state).toBe('CANCELED');
+  await ledger.getByText(/^费用事件 · 最近/).click();
+  await expect(ledger.getByRole('table', { name: '费用事件', exact: true }).getByText('synthetic-ui/zero-charge/' + fixture.action_id)).toBeVisible();
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.screenshot({ path: 'output/playwright/cost-ledger-reconciled.png', fullPage: true });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await ledger.getByText('登记或调整预算', { exact: true }).click();
+  await ledger.getByLabel('选择核账动作', { exact: true }).selectOption(fixture.action_id);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.screenshot({ path: 'output/playwright/cost-ledger-mobile.png', fullPage: true });
   expect(errors).toEqual([]);
 });
