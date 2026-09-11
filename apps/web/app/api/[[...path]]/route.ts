@@ -12,6 +12,8 @@ import { createContactTarget, grantContactPermission, exitContact, revokeContact
 import { costWorkspace, configureBudget, reconcileCost } from '@kff/core/costs';
 import { adjudicationInput } from '@kff/contracts';
 import { adjudicateAction } from '@kff/core/adjudication';
+import { templateVersionInput, templatePolicyInput, templatePreviewInput } from '@kff/contracts';
+import { templateWorkspace, createTemplateVersion, setTemplatePolicy, previewTemplate } from '@kff/core/templates';
 import { requestScope, checkOrigin, login, logout } from '../../../lib/auth';
 
 export const runtime = 'nodejs';
@@ -49,6 +51,10 @@ async function handle(request: Request, context: Context) {
     const scope = await requestScope(request);
     if (write) checkOrigin(request);
     if (path === 'workspace' && !write) return json(await workspace(scope));
+    if (path === 'templates' && !write) return json(await templateWorkspace(scope));
+    if (path === 'templates' && write) return json(await createTemplateVersion(scope, templateVersionInput.parse(await body(request))), 201);
+    if (parts.length === 3 && parts[0] === 'templates' && parts[2] === 'previews' && write) return json(await previewTemplate(scope, uuid.parse(parts[1]), templatePreviewInput.parse(await body(request))));
+    if (parts.length === 3 && parts[0] === 'templates' && parts[2] === 'policy' && write) return json(await setTemplatePolicy(scope, uuid.parse(parts[1]), templatePolicyInput.parse(await body(request))));
     if (path === 'costs' && !write) return json(await costWorkspace(scope));
     if (path === 'cost-budgets' && write) return json(await configureBudget(scope, budgetInput.parse(await body(request))));
     if (parts.length === 3 && parts[0] === 'costs' && parts[2] === 'reconciliation' && write) return json(await reconcileCost(scope, uuid.parse(parts[1]), costReconciliationInput.parse(await body(request))));

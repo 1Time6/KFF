@@ -2,6 +2,7 @@ import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
+import type { TemplateVersion, Task } from '@kff/contracts';
 
 test.describe.configure({ mode: 'serial' });
 test.beforeEach(async ({ page }) => {
@@ -80,8 +81,8 @@ test('reconciles an unknown publication and then releases the quarantined enviro
   await expect(detail.getByText('执行尝试 2', { exact: true })).toHaveCount(0);
   await page.screenshot({ path: 'output/playwright/e1-reconciled-detail.png', fullPage: true });
 });
-test('all six workspace pages stay usable at desktop and narrow widths', async ({ page }) => {
-  for (const [section, title] of [['overview', '执行总览'], ['accounts', '账号中心'], ['environments', '环境中心'], ['tasks', '任务工作台'], ['runs', '运行记录'], ['capabilities', '能力与验证']]) {
+test('all seven workspace pages stay usable at desktop and narrow widths', async ({ page }) => {
+  for (const [section, title] of [['overview', '执行总览'], ['accounts', '账号中心'], ['environments', '环境中心'], ['tasks', '任务工作台'], ['runs', '运行记录'], ['capabilities', '能力与验证'], ['templates', '模板与版本']]) {
     await page.goto('/' + section); await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
     expect(await page.locator('body').innerText()).not.toContain('Internal Server Error');
   }
@@ -89,6 +90,98 @@ test('all six workspace pages stay usable at desktop and narrow widths', async (
   await expect(page.getByRole('button', { name: '创建任务', exact: true })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: 'output/playwright/workbench-mobile.png', fullPage: true });
+});
+
+test('previews, pins, executes and deprecates a derived template while preserving the original result', async ({ page }) => {
+  test.setTimeout(90000);
+  const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
+  const suffix = randomUUID().slice(0, 8); const name = '合成模板界面验证 ' + suffix;
+  let version: TemplateVersion | undefined;
+  try {
+    await page.getByRole('link', { name: '模板与版本', exact: true }).click();
+    await page.getByRole('table', { name: '模板版本列表' }).getByRole('button', { name: '本地合成主页 · 文本发布', exact: true }).click();
+    const panel = page.getByRole('region', { name: '选中模板版本' });
+    await panel.getByText('从此版本派生新版本', { exact: true }).click();
+    await panel.getByLabel('新模板名称', { exact: true }).fill(name);
+    await panel.getByLabel('新版本标签', { exact: true }).fill('ui-' + suffix);
+    await panel.getByLabel('新版本输入上限', { exact: true }).fill('120');
+    await panel.getByLabel('新版本变更原因', { exact: true }).fill('本地合成页面验证版本固定与弃用边界');
+    const creation = page.waitForResponse(response => response.url().endsWith('/api/templates') && response.request().method() === 'POST');
+    await panel.getByRole('button', { name: '保存新模板版本', exact: true }).click();
+    const response = await creation; expect(response.ok()).toBe(true); version = await response.json() as TemplateVersion;
+    await expect(panel.getByRole('heading', { name, exact: true })).toBeVisible();
+    await expect(panel.getByText('ui-' + suffix + ' · 待预演', { exact: true })).toBeVisible();
+    await panel.getByLabel('预演账号', { exact: true }).selectOption('44444444-4444-4444-8444-444444444444');
+    await panel.getByLabel('预演环境', { exact: true }).selectOption('55555555-5555-4555-8555-555555555555');
+    await panel.getByLabel('预演输入内容', { exact: true }).fill('仅检查合成内容与本地关联，不连接外部平台。');
+    await panel.getByRole('button', { name: '运行输入预演', exact: true }).click();
+    const preview = panel.getByRole('region', { name: '模板预演结果' });
+    await expect(preview.getByText('输入与关联检查通过', { exact: true })).toBeVisible();
+    await expect(preview.getByText('未检查', { exact: true })).toHaveCount(2);
+    await panel.getByLabel('模板策略调整原因', { exact: true }).fill('本地输入预演已检查，允许合成执行验证');
+    await panel.getByRole('button', { name: '允许此版本', exact: true }).click();
+    await expect(panel.getByText('ui-' + suffix + ' · 允许使用', { exact: true })).toBeVisible();
+    const pinnedVersion = version;
+    async function createApproved(title: string) {
+      await page.goto('/tasks'); await page.getByRole('button', { name: '创建任务', exact: true }).click();
+      const dialog = page.getByRole('dialog', { name: '创建任务', exact: true });
+      await dialog.getByLabel('任务名称', { exact: true }).fill(title);
+      await dialog.getByLabel('模板版本', { exact: true }).selectOption(pinnedVersion.id);
+      await expect(dialog.getByLabel('发布内容', { exact: false })).toHaveAttribute('maxlength', '120');
+      await dialog.getByLabel('发布内容', { exact: false }).fill('合成模板版本验证 ' + suffix);
+      await dialog.getByRole('button', { name: '保存草稿', exact: true }).click();
+      const row = page.getByRole('row').filter({ has: page.getByRole('button', { name: title, exact: true }) });
+      await row.getByRole('button', { name: '审核', exact: true }).click();
+      const review = page.getByRole('dialog', { name: '核对任务', exact: true });
+      await expect(review.getByText('版本 ' + pinnedVersion.version_number, { exact: true })).toBeVisible();
+      await expect(review.getByText(pinnedVersion.manifest_hash.slice(0, 16), { exact: true })).toBeVisible();
+      await review.getByRole('button', { name: '审核通过', exact: true }).click();
+      const workspace = await (await page.request.get('/api/workspace')).json();
+      const task = workspace.tasks.find((value: Task) => value.title === title) as Task;
+      expect(task.snapshot.template?.version_id).toBe(pinnedVersion.id); return { row, task };
+    }
+    const executedTitle = '模板已执行 ' + suffix;
+    const executed = await createApproved(executedTitle);
+    await executed.row.getByRole('button', { name: '执行', exact: true }).click();
+    await expect(executed.row.getByText('核实成功', { exact: true })).toBeVisible({ timeout: 30000 });
+    const waitingTitle = '模板待执行 ' + suffix; const waiting = await createApproved(waitingTitle);
+    await expect(waiting.row.getByRole('button', { name: '执行', exact: true })).toBeEnabled();
+    await page.getByRole('link', { name: '模板与版本', exact: true }).click();
+    await page.getByRole('table', { name: '模板版本列表' }).getByRole('button', { name, exact: true }).click();
+    await panel.getByLabel('模板策略调整原因', { exact: true }).fill('合成验证结束，弃用此版并保留原执行结果');
+    await panel.getByRole('button', { name: '弃用此版本', exact: true }).click();
+    await expect(panel.getByText('此版本已永久弃用，可从它派生新版本。', { exact: true })).toBeVisible();
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.screenshot({ path: 'output/playwright/template-deprecated.png', fullPage: true });
+    await page.setViewportSize({ width: 390, height: 844 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.evaluate(() => window.scrollTo(0, 0));
+    await page.screenshot({ path: 'output/playwright/template-mobile.png', fullPage: true });
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.goto('/tasks');
+    await expect(waiting.row.getByRole('button', { name: '等待模板', exact: true })).toBeDisabled();
+    const refused = await page.request.post('/api/tasks/' + waiting.task.id + '/runs', { data: {}, headers: { Origin: 'http://127.0.0.1:3000' } });
+    expect(refused.status()).toBe(409); expect((await refused.json()).error.code).toBe('TEMPLATE_UNAVAILABLE');
+    const latest = await (await page.request.get('/api/workspace')).json();
+    expect(latest.tasks.find((value: Task) => value.id === waiting.task.id).snapshot_hash).toBe(waiting.task.snapshot_hash);
+    await page.getByRole('link', { name: '运行记录', exact: true }).click();
+    await page.getByRole('button', { name: executedTitle, exact: true }).click();
+    const detail = page.getByRole('dialog', { name: '运行详情', exact: true });
+    await expect(detail.getByText('核实成功', { exact: true }).first()).toBeVisible();
+    await expect(detail.getByText('版本 ' + version.version_number, { exact: true })).toBeVisible();
+    await expect(detail.getByText('执行尝试 1', { exact: true })).toBeVisible();
+    await expect(detail.getByText('执行尝试 2', { exact: true })).toHaveCount(0);
+    expect(errors).toEqual([]);
+  } finally {
+    if (version) {
+      const records = await (await page.request.get('/api/templates')).json();
+      const current = records.versions.find((value: TemplateVersion) => value.id === version?.id) as TemplateVersion | undefined;
+      if (current && current.state !== 'DEPRECATED') {
+        const cleanup = await page.request.post('/api/templates/' + current.id + '/policy', { data: { request_id: randomUUID(), expected_policy_version: current.policy_version, action: 'DEPRECATE', reason: '本地界面验证结束，防止合成派生版本影响后续任务' }, headers: { Origin: 'http://127.0.0.1:3000' } });
+        expect(cleanup.ok()).toBe(true);
+      }
+    }
+  }
 });
 test('organization, account and Agent pause controls reflect the stored state', async ({ page }) => {
   await page.getByRole('button', { name: '暂停整个组织', exact: true }).click();

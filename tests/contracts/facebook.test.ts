@@ -57,7 +57,8 @@ describe('Facebook Graph adapter contract only; no platform calls', () => {
   });
   it('reads without entering the write gate', async () => {
     const { adapter, calls } = transport([{ id: pageId, name: 'Contract page' }]);
-    const receipt = await adapter.execute({ ...snapshot, capability_key: 'facebook.page.read.api' }, async () => { throw new Error('Unexpected write'); });
+    const readSnapshot = fixtureCommand({ ...snapshot, capability_key: 'facebook.page.read.api', template: undefined }).snapshot;
+    const receipt = await adapter.execute(readSnapshot, async () => { throw new Error('Unexpected write'); });
     expect(receipt.remote_id).toBe(pageId); expect(calls.length).toBe(1);
   });
   it('rejects the POST if guardian control is lost immediately after the final gate', async () => {

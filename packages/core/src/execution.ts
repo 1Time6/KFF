@@ -6,6 +6,7 @@ import { assertTransition, buildDiagnostic, canExecute, digest, isWrite, require
 import { findPermit, haltPilot } from './permits';
 import { adapterImplementationDigest } from './artifacts';
 import { markCostPending } from './costs';
+import { assertCurrentTemplate } from './templates';
 
 export interface AgentIdentity { id: string; organization_id: string; brand_id: string; status: string }
 interface CommandRow { id: string; organization_id: string; brand_id: string; action_id: string; attempt_id: string; agent_id: string; state: string; expires_at: Date; run_id: string; task_id: string; snapshot: TaskSnapshot; snapshot_hash: string; leases: LeaseToken[]; action_state: ActionState; stop_requested: boolean }
@@ -38,7 +39,8 @@ async function dispatchAllowed(client: PoolClient, snapshot: TaskSnapshot, taskI
   const capability = (await client.query<Capability>('SELECT * FROM kff.capabilities WHERE id=$1', [snapshot.capability_id])).rows[0];
   requireCondition((account.state === 'ACTIVE' || (account.state === 'DRAFT' && !isWrite(snapshot) && snapshot.mode === 'CONTROLLED_PILOT')) && account.external_id === snapshot.external_account_id && (snapshot.account_version === undefined || account.version === snapshot.account_version) && (snapshot.credential_ref === undefined || account.credential_ref === snapshot.credential_ref), 'AUTH_EXPIRED', '账号已停用、凭据或身份已变化', 409);
   requireCondition(!account.organization_paused && !account.brand_paused && !account.outbound_paused, 'STOP_REQUESTED', '组织、品牌或账号已暂停', 409);
-  requireCondition(capability.revision === snapshot.capability_revision && capability.adapter_version === snapshot.adapter_version, 'VERSION_CONFLICT', '能力版本已变化', 409);
+    requireCondition(capability.revision === snapshot.capability_revision && capability.adapter_version === snapshot.adapter_version, 'VERSION_CONFLICT', '能力版本已变化', 409);
+    await assertCurrentTemplate(client, taskId, snapshot);
   if (!snapshot.is_synthetic) requireCondition(snapshot.implementation_digest && snapshot.implementation_digest === capability.implementation_digest && snapshot.implementation_digest === adapterImplementationDigest(projectRoot, 'facebook'), 'VERSION_CONFLICT', '适配器实现已变化，旧试验许可不可复用', 409);
   if (!snapshot.is_synthetic) requireCondition(snapshot.platform_api_version && snapshot.platform_api_version === process.env.KFF_FACEBOOK_GRAPH_VERSION, 'VERSION_CONFLICT', 'Graph API 配置版本与任务快照不符', 409);
   if (snapshot.mode === 'CONTROLLED_PILOT') await findPermit(client, taskId, snapshot, reserveForAction);

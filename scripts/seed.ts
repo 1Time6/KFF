@@ -1,6 +1,7 @@
 import { pathToFileURL } from 'node:url';
 import { transaction, initializeLocalConfig, closePool } from '@kff/database';
 import { digest, hashPassword, requireCondition } from '@kff/core';
+import { ensureBundledTemplates } from '../packages/core/src/templates';
 
 export const localIds = { organization: '11111111-1111-4111-8111-111111111111', brand: '22222222-2222-4222-8222-222222222222', user: '33333333-3333-4333-8333-333333333333', account: '44444444-4444-4444-8444-444444444444', environment: '55555555-5555-4555-8555-555555555555', agent: '66666666-6666-4666-8666-666666666666', read: '77777777-7777-4777-8777-777777777777', publish: '88888888-8888-4888-8888-888888888888' };
 export async function seed() {
@@ -16,6 +17,7 @@ export async function seed() {
     await client.query("INSERT INTO kff.agents(id,organization_id,brand_id,name,token_hash,status) VALUES($1,$2,$3,'本机开发 Agent',$4,'PAIRED') ON CONFLICT DO NOTHING", [localIds.agent, localIds.organization, localIds.brand, digest(config.agent_token)]);
     await client.query("INSERT INTO kff.environments(id,organization_id,brand_id,name,account_id,agent_id) VALUES($1,$2,$3,'隔离验证环境',$4,$5) ON CONFLICT DO NOTHING", [localIds.environment, localIds.organization, localIds.brand, localIds.account, localIds.agent]);
     for (const [action, id] of [['read', localIds.read], ['publish', localIds.publish]]) await client.query("INSERT INTO kff.capabilities(id,organization_id,brand_id,account_id,capability_key,adapter_version,evidence_state,mode,is_synthetic,description) VALUES($1,$2,$3,$4,$5,'fixture-page-v1','FEASIBLE','TEST_ONLY',true,$6) ON CONFLICT DO NOTHING", [id, localIds.organization, localIds.brand, localIds.account, 'kff.fixture.page.' + action + '.browser', action === 'read' ? '在本项目合成页面读取主页身份，用于验证执行链' : '在本项目合成页面发布文本并回读结果，不产生 Facebook 动作']);
+    await ensureBundledTemplates(client, { organization_id: localIds.organization, brand_id: localIds.brand, user_id: localIds.user, role: 'admin' });
   });
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) { await seed(); await closePool(); console.log('Local development identity and synthetic environment ready.'); }

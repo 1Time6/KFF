@@ -53,6 +53,7 @@ const scoped = {
   'TASK-041': ['单动作试验次数及最大成本原子预占与重放去重；未知保留费用，释放不退试验次数', ['packages/core/src/permits.ts','packages/core/src/costs.ts','tests/integration/execution.test.ts'], ['integration']],
   'TASK-044': ['最小 D1 语义计数、D0 降级、导出权限/审计/白名单；其他驱动和截图未纳入', ['packages/core/src/reconciliation.ts','packages/core/src/index.ts'], ['unit','integration','web']],
   'TASK-054': ['联系依据、用途与显式窗口、退出/新同意、不可变选择及事务内复核；账号页管理入口；具体消息执行门槛尚待接入', ['packages/contracts/src/contact.ts','packages/core/src/contacts.ts','apps/web/components/contact-permissions.tsx','supabase/migrations/20260911185039_g1_contact_eligibility.sql'], ['integration','web']],
+  'TASK-057': ['当前四种主页动作的不可变模板、输入/关联预演、允许集合、固定任务版本和弃用边界；原结果继续核验；任意流程编辑器及真实版本试验未验', ['packages/contracts/src/template.ts','packages/core/src/templates.ts','packages/adapters/src/templates.ts','apps/web/components/template-workbench.tsx','supabase/migrations/20260911200056_g2_template_versions.sql','tests/integration/templates.test.ts'], ['contracts','integration','fixtures','web']],
   'TASK-061': ['单槽动作费用预占、按币种的显式预算和精度、未知保留、人工结算/释放/差异调整及工作台；释放不退试验次数，继续执行复查预算；批次和多品牌公平调度未验', ['packages/contracts/src/cost.ts','packages/core/src/costs.ts','apps/web/components/cost-ledger.tsx','supabase/migrations/20260911190913_g2_cost_ledger.sql','tests/integration/costs.test.ts'], ['integration','web']],
   'TASK-065': ['首个 Graph/fixture URL 白名单、响应上限与 UUID profile 路径边界；附件尚待实施', ['packages/core/src/index.ts','packages/adapters/src/facebook.ts'], ['unit','contracts','fixtures']],
 };
@@ -68,6 +69,7 @@ for (const card of ledger.tasks) {
   if (card.task_id === 'TASK-038') { card.status = 'IN_PROGRESS'; card.outputs = ['tests/browser/web/workflow.spec.ts','tests/browser/fixtures/agent-recovery.spec.ts','tests/browser/fixtures/executor.spec.ts','tests/integration/durability.test.ts','tests/integration/execution.test.ts']; card.evidence_refs = ['docs/evidence/g1-local-checkpoint.json']; card.known_blockers = ['所列本地故障已验；系统断网/掉电、不同宿主及完整外部接管矩阵仍需环境级验收']; }
   if (card.task_id === 'TASK-054') { card.selected_contact_path = 'basis_component_only'; card.known_blockers = ['当前 E1 是主页发布；具体消息动作仍需将此依据检查接入共同平台能力、审核、预算、租约与组织停止门槛。采集来源扩展和真实消息验收未完成']; }
   if (card.task_id === 'TASK-061') { card.known_blockers = ['本次仅单槽费用基础；真实账单提供方、旧数据实样迁移验收、批次与多品牌公平调度在对应后续范围验收']; }
+  if (card.task_id === 'TASK-057') { card.known_blockers = ['当前只支持已有四种固定主页动作与输入约束；任意流程编辑器、新动作及真实版本小流量试验待后续验收']; }
   if (card.task_id === 'TASK-037') { card.known_blockers = ['人工裁定当前已验合成样本；真实 Graph 只读对账命令、等待策略与实际平台证据仍待实施/实测，不计真实通过']; }
 }
 ledger.updated_at = evidence.created_at; writeFileSync('docs/tasks/ledger.json', JSON.stringify(ledger,null,2) + '\n');

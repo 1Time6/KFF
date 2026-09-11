@@ -2,11 +2,13 @@ import { chromium, type BrowserContext } from '@playwright/test';
 import { mkdir } from 'node:fs/promises';
 import type { AgentCommand, ActionReport } from '@kff/contracts';
 import { AppError, digest, isWrite, profilePath, requireCondition, validateTargetUrl } from '@kff/core';
+import { assertTemplateSnapshot } from './templates';
 
 export interface ExecutorHooks { beforeSubmit(): Promise<void>; assertControlled(): void; onContext(context: BrowserContext | null): void }
 export async function executeFixture(command: AgentCommand, root: string, hooks: ExecutorHooks, fixtureOrigin = 'http://127.0.0.1:4311'): Promise<Omit<ActionReport, 'event_id' | 'command_id'>> {
   requireCondition(command.snapshot.is_synthetic && command.snapshot.mode === 'TEST_ONLY' && command.snapshot.adapter_version === 'fixture-page-v1', 'FORBIDDEN_SCOPE', '此执行器仅支持本项目的合成输入');
   requireCondition(digest(command.snapshot) === command.snapshot_hash, 'APPROVAL_STALE', '任务快照不一致');
+  assertTemplateSnapshot(command.snapshot);
   const directory = profilePath(root, command.snapshot.profile_key); await mkdir(directory, { recursive: true });
   const context = await chromium.launchPersistentContext(directory, { headless: true, serviceWorkers: 'block', args: ['--disable-background-networking'], viewport: { width: 1100, height: 760 } });
   hooks.onContext(context);

@@ -1,7 +1,9 @@
 import { z } from 'zod';
+import { templateSnapshotSchema } from './template';
 export * from './contact';
 export * from './cost';
 export * from './adjudication';
+export * from './template';
 
 export const uuid = z.string().uuid();
 export const externalId = z.string().regex(/^[0-9]{1,128}$/, '平台 ID 必须使用数字字符串');
@@ -25,6 +27,7 @@ export const taskInput = z.object({
   account_id: uuid,
   environment_id: uuid,
   capability_id: uuid,
+  template_version_id: uuid.optional(),
   body: z.string().trim().max(5000).default(''),
   mode: modeSchema,
   fixture_scenario: fixtureScenarioSchema.default('normal'),
@@ -87,6 +90,7 @@ export const taskSnapshotSchema = z.object({
   implementation_digest: hashSchema.nullable().optional(),
   platform_api_version: z.string().regex(/^v[0-9]{1,3}\.[0-9]+$/).nullable().optional(),
   body: z.string().max(5000), content_hash: hashSchema, mode: modeSchema,
+  template: templateSnapshotSchema.optional(),
   fixture_scenario: fixtureScenarioSchema, is_synthetic: z.boolean(),
 }).strict();
 export const agentCommandSchema = z.object({

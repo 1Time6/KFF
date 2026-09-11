@@ -20,6 +20,8 @@ TASK-061 已接入单槽费用基础：币种/精度/预算登记 → 动作预�
 
 TASK-037 人工裁定新增 12 个隔离数据库样本及浏览器完整操作：未知 → 证据不足待人工 → 人工确认原提交成功 → 单独解除隔离。数据库拒绝无提交意图的写成功、错误账号/内容/来源、缺关闭确认、过期版本和互相覆盖；不可变事件必须与状态投影同时提交。旧回执和自动核验不能覆盖人工来源，费用仍待核账，原执行尝试和远端对象均只有一个。界面显示两次裁定记录和 `human_review` 来源，并通过 390 像素检查。截图为 `output/playwright/human-adjudication.png` 和 `output/playwright/human-adjudication-mobile.png`；仅合成证据，无真实平台人工验收。
 
+TASK-057 模板版本补充 13 个隔离数据库样本、3 个模板合同样本及浏览器操作：派生草稿 → 输入/关联预演 → 允许版本 → 固定版本审核并完成合成发布 → 弃用 → 阻止尚未执行的旧版本任务，同时保留已成功运行的历史详情。版本定义不可改，重复请求去重，默认新版本不改变原任务，Agent 拒绝无模板或被改动的快照，停用与最终提交竞争保持一致，弃用后原未知结果仍可核验。截图为 `output/playwright/template-deprecated.png` 与 `output/playwright/template-mobile.png`。工作台七个页面已纳入浏览器检查，真实模板版本试验未进行。
+
 曾发现并修复：Windows PostgreSQL 包版本不可用；终端进程回执异常；表单标签把下拉选项并入可访问名称；测试启动器在服务重载时重复占用端口；生产构建目录进入 lint；动态路径导致打包器追踪整个项目。最终结果以当前摘要中的通过记录为准，早期失败没有计入通过。
 
 保存的截图：`output/playwright/e1-verified-detail.png`、`output/playwright/e1-reconciled-detail.png`、`output/playwright/workbench-mobile.png`。都是本项目合成操作，未包含真实客户或平台登录资料。
