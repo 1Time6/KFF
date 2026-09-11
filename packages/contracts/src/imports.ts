@@ -24,7 +24,7 @@ export const importMappingInput = z.object({
   .refine(value => Object.keys(value.kind_columns).every(key => key in value.fields), '状态列必须匹配数据字段')
   .refine(value => { const columns = [value.source_object_id,...Object.values(value.fields),...Object.values(value.kind_columns)]; return new Set(columns).size === columns.length; }, '映射列不能重复');
 export const importConfirmationInput = z.object({ request_id: z.string().uuid(), preview_id: z.string().uuid(), preview_hash: z.string().regex(/^[a-f0-9]{64}$/), excluded_error_rows: z.number().int().min(0).max(1000), confirm_valid_rows: z.literal(true) }).strict();
-export const collectionExportInput = z.object({ format: z.enum(['csv','xlsx']), fields: fieldList, result_ids: z.array(z.string().uuid()).min(1).max(1000).refine(items => new Set(items).size === items.length).optional() }).strict();
+export const collectionExportInput = z.object({ format: z.enum(['csv','xlsx']), fields: fieldList, result_ids: z.array(z.string().uuid()).min(1).max(1000).refine(items => new Set(items).size === items.length).optional(),target_snapshot_id:z.string().uuid().optional() }).strict().refine(value=>!value.result_ids||!value.target_snapshot_id,'快照导出不能混入当前结果选择');
 export const importCellSchema = z.discriminatedUnion('type', [
   z.object({type:z.literal('text'),value:z.string().max(5000)}).strict(),
   z.object({type:z.literal('number'),value:z.number().finite()}).strict(),

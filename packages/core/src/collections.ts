@@ -2,9 +2,11 @@ import { randomUUID } from 'node:crypto';
 import type { PoolClient } from 'pg';
 import { z } from 'zod';
 import { scoped, transaction } from '@kff/database';
-import { collectionInput, collectionSnapshotSchema, collectionResumeInput, type CollectionQueryInput, type CollectionSnapshot, type CollectionQuery, type CollectionRun, type CollectionResult, type Scope } from '@kff/contracts';
+import { collectionInput, collectionSnapshotSchema, collectionResumeInput, type CollectionQueryInput, type CollectionSnapshot, type CollectionQuery, type CollectionRun, type Scope } from '@kff/contracts';
 import { AppError, digest, requireCondition } from './index';
 import { audit, requireWrite } from './service';
+import {collectionFilterSchema,type CollectionFilter} from '../../contracts/src/target-selection';
+import {filteredCollectionRows,collectionResultPage} from './collection-filter';
 import { fixtureCollectionAdapter, normalizeCollectionPage, type CollectionRead, type CollectionAdapter } from '../../adapters/src/collection-fixture';
 
 const runColumns = 'r.id,r.query_id,r.state,r.version,r.committed_pages,r.returned_count,r.unique_count,r.reported_total::integer,r.stop_reason,r.error_code,r.started_at,r.finished_at,r.created_at';
@@ -101,16 +103,16 @@ export async function processCollectionPage(adapter: CollectionAdapter = fixture
 export async function collectionWorkspace(scope: Scope) {
   return scoped(scope, async client => (await client.query('SELECT q.id,q.title,q.snapshot,q.snapshot_hash,q.created_at,q.expires_at,r.id AS run_id,r.state,r.stop_reason,r.error_code,r.committed_pages,r.returned_count,r.unique_count,r.reported_total::integer,r.version FROM kff.collection_queries q JOIN kff.collection_runs r ON r.query_id=q.id ORDER BY q.created_at DESC,q.id LIMIT 100')).rows);
 }
-export async function collectionDetail(scope: Scope, queryId: string, after = '0', limit = 25) {
+export async function collectionDetail(scope: Scope, queryId: string, after = '0', limit = 25, inputFilter:CollectionFilter=collectionFilterSchema.parse({})) {
   requireCondition(/^(0|[1-9][0-9]{0,18})$/.test(after) && BigInt(after) <= 9223372036854775807n && Number.isInteger(limit) && limit >= 1 && limit <= 100, 'INVALID_INPUT', '结果分页参数无效');
   return scoped(scope, async client => {
     const query = (await client.query<CollectionQuery>('SELECT id,title,snapshot,snapshot_hash,created_at,expires_at FROM kff.collection_queries WHERE id=$1', [queryId])).rows[0];
     requireCondition(query, 'NOT_FOUND', '查询不存在', 404);
-    const run = (await client.query<CollectionRun>('SELECT ' + runColumns + ' FROM kff.collection_runs r WHERE query_id=$1', [queryId])).rows[0];
+    const run = (await client.query<CollectionRun>('SELECT ' + runColumns + ' FROM kff.collection_runs r WHERE query_id=$1 FOR SHARE', [queryId])).rows[0];
     const expired = (await client.query('SELECT $1::timestamptz<=clock_timestamp() AS expired', [query.expires_at])).rows[0].expired as boolean;
-    const rows = (await client.query<CollectionResult>('SELECT r.id,r.observation_id,r.result_order::text,o.source_object_id,o.observed_at,o.source_url,o.fields,o.evidence_hash,o.allowed_purposes,o.expires_at,o.object_version FROM kff.collection_results r JOIN kff.collection_observations o ON o.id=r.observation_id WHERE r.run_id=$1 AND r.result_order>$2::bigint AND o.expires_at>clock_timestamp() ORDER BY r.result_order LIMIT $3', [run.id, after, limit + 1])).rows;
+    const filter=collectionFilterSchema.parse(inputFilter);const rows=await filteredCollectionRows(client,query,run.id,filter);
     const pages = (await client.query('SELECT page_number,evidence_hash,observed_at,returned_count FROM kff.collection_pages WHERE run_id=$1 ORDER BY page_number', [run.id])).rows;
-    return { query, run, results: rows.slice(0, limit), next_cursor: rows.length > limit ? rows[limit - 1].result_order : null, expired, pages };
+    return { query, run, ...collectionResultPage(query,rows,filter,after,limit), filter, expired, pages };
   });
 }
 export async function collectionObservationHistory(scope: Scope, queryId: string, resultId: string) {

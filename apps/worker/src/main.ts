@@ -3,12 +3,13 @@ import { dispatchOne, recoverExpired } from '../../../packages/core/src/executio
 import { closePool } from '@kff/database';
 import { processCollectionPage, purgeExpiredCollectionData } from '../../../packages/core/src/collections';
 import { purgeExpiredImports } from '../../../packages/core/src/imports';
+import { purgeExpiredTargetSets } from '../../../packages/core/src/target-snapshots';
 let stopped = false;
 let lastRetentionCheck = 0;
 process.on('SIGINT', () => { stopped = true; }); process.on('SIGTERM', () => { stopped = true; });
 console.log('KFF Worker started');
 while (!stopped) {
-  try { await recoverExpired(); await dispatchOne(); await processCollectionPage(); if (Date.now() - lastRetentionCheck > 60000) { await purgeExpiredCollectionData(); await purgeExpiredImports(); lastRetentionCheck = Date.now(); } }
+  try { await recoverExpired(); await dispatchOne(); await processCollectionPage(); if (Date.now() - lastRetentionCheck > 60000) { await purgeExpiredCollectionData(); await purgeExpiredImports(); await purgeExpiredTargetSets(); lastRetentionCheck = Date.now(); } }
   catch { console.error('Worker cycle failed; pending database jobs remain durable.'); }
   await delay(750);
 }

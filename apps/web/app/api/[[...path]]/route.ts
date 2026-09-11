@@ -19,17 +19,19 @@ import { collectionWorkspace, createCollection, collectionDetail, collectionObse
 import { importUploadInput, importMappingInput, importConfirmationInput, collectionExportInput, importLimits } from '@kff/contracts';
 import { uploadImport, importWorkspace, importDetail, previewImport, confirmImport, downloadImportOriginal } from '@kff/core/imports';
 import { exportCollection } from '@kff/core/collection-export';
+import { collectionFilterSchema,targetPreviewInput,targetSnapshotInput,targetRevokeInput } from '../../../../../packages/contracts/src/target-selection';
+import { previewTargets,saveTargetSnapshot,targetSnapshots,readTargetSnapshot,revokeTargetSnapshot } from '@kff/core/target-snapshots';
 import { requestScope, checkOrigin, login, logout } from '../../../lib/auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 type Context = { params: Promise<{ path?: string[] }> };
-async function body(request: Request): Promise<unknown> {
-  requireCondition(Number(request.headers.get('content-length') ?? 0) <= 65536, 'INVALID_INPUT', '请求内容过大', 413);
+async function body(request: Request,maximum=65536): Promise<unknown> {
+  requireCondition(Number(request.headers.get('content-length') ?? 0) <= maximum, 'INVALID_INPUT', '请求内容过大', 413);
   requireCondition(request.headers.get('content-type')?.includes('application/json'), 'INVALID_INPUT', '请求必须使用 JSON');
   const reader = request.body?.getReader(); requireCondition(reader, 'INVALID_INPUT', '请求内容为空');
   const chunks: Uint8Array[] = []; let length = 0;
-  while (true) { const { value, done } = await reader.read(); if (done) break; length += value.byteLength; if (length > 65536) { await reader.cancel(); throw new AppError('INVALID_INPUT', '请求内容过大', 413); } chunks.push(value); }
+  while (true) { const { value, done } = await reader.read(); if (done) break; length += value.byteLength; if (length > maximum) { await reader.cancel(); throw new AppError('INVALID_INPUT', '请求内容过大', 413); } chunks.push(value); }
   try { return JSON.parse(Buffer.concat(chunks).toString('utf8')); } catch { throw new AppError('INVALID_INPUT', 'JSON 内容无法读取'); }
 }
 function json(data: unknown, status = 200, extra: Record<string, string> = {}) {
@@ -66,6 +68,10 @@ async function handle(request: Request, context: Context) {
     const scope = await requestScope(request);
     if (write) checkOrigin(request);
     if (path === 'workspace' && !write) return json(await workspace(scope));
+    if(path==='target-previews'&&write)return json(await previewTargets(scope,targetPreviewInput.parse(await body(request,262144))),201);
+    if(path==='target-snapshots'&&write)return json(await saveTargetSnapshot(scope,targetSnapshotInput.parse(await body(request))),201);
+    if(parts[0]==='target-snapshots'&&parts.length===2&&!write)return json(await readTargetSnapshot(scope,uuid.parse(parts[1])));
+    if(parts[0]==='target-snapshots'&&parts.length===3&&parts[2]==='revoke'&&write)return json(await revokeTargetSnapshot(scope,uuid.parse(parts[1]),targetRevokeInput.parse(await body(request))));
     if (path === 'imports' && !write) return json(await importWorkspace(scope));
     if (path === 'imports' && write) {
       requireCondition(scope.role!=='viewer','FORBIDDEN_SCOPE','当前角色仅可查看',403);
@@ -85,7 +91,8 @@ async function handle(request: Request, context: Context) {
     if (parts[0] === 'collections' && parts.length >= 2) {
       const id = uuid.parse(parts[1]);
       if (parts.length === 3 && parts[2] === 'exports' && write) return download(await exportCollection(scope,id,collectionExportInput.parse(await body(request))));
-      if (parts.length === 2 && !write) { const search = new URL(request.url).searchParams; return json(await collectionDetail(scope, id, search.get('after') ?? '0', Number(search.get('limit') ?? 25))); }
+      if (parts.length === 2 && !write) { const search = new URL(request.url).searchParams; const encoded=search.get('filter')??'{}';requireCondition(encoded.length<=2048,'INVALID_INPUT','筛选条件过长');let filter:unknown;try{filter=JSON.parse(encoded);}catch{throw new AppError('INVALID_INPUT','筛选条件无法读取');}return json(await collectionDetail(scope, id, search.get('after') ?? '0', Number(search.get('limit') ?? 25),collectionFilterSchema.parse(filter))); }
+      if(parts.length===3&&parts[2]==='target-snapshots'&&!write)return json(await targetSnapshots(scope,id));
       if (parts.length === 3 && write && ['stop-requests','resume'].includes(parts[2])) return json(await controlCollection(scope, id, parts[2] === 'resume' ? 'RESUME' : 'STOP', collectionResumeInput.parse(await body(request))));
       if (parts.length === 4 && parts[2] === 'results' && !write) return json(await collectionObservationHistory(scope, id, uuid.parse(parts[3])));
     }

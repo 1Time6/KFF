@@ -67,7 +67,7 @@ export async function confirmImport(scope:Scope,id:string,input:z.infer<typeof i
   requireWrite(scope); const value=importConfirmationInput.parse(input); const requestHash=digest({import_id:id,...value});
   return scoped(scope,async client => {
     const file=await readFile(client,id); canReadOriginal(scope,file); await sourceLock(client,scope,file);
-    const old=(await client.query('SELECT c.*,p.preview_hash,p.summary FROM kff.import_confirmations c JOIN kff.import_previews p ON p.id=c.preview_id WHERE c.import_id=$1 OR c.id=$2',[id,value.request_id])).rows[0];
+    const old=(await client.query('SELECT c.*,p.preview_hash,p.summary FROM kff.import_confirmations c JOIN kff.import_previews p ON p.id=c.preview_id WHERE c.import_id=$1 OR c.id=$2 ORDER BY (c.id=$2) DESC LIMIT 1',[id,value.request_id])).rows[0];
     if(old) { requireCondition(old.import_id===id && old.preview_id===value.preview_id && old.preview_hash===value.preview_hash && old.summary.error_rows===value.excluded_error_rows && (old.id!==value.request_id || old.request_hash===requestHash),'IDEMPOTENCY_CONFLICT','确认请求已有不同内容',409); return {query_id:old.query_id as string,reused:true}; }
     requireCondition(file.data_valid,'RETENTION_EXPIRED','导入数据保留期已结束',410);
     const preview=(await client.query('SELECT * FROM kff.import_previews WHERE id=$1 AND import_id=$2',[value.preview_id,id])).rows[0];

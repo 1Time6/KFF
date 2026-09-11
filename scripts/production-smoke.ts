@@ -37,8 +37,14 @@ try {
   const confirmation=await (await jsonPost('imports/'+imported.id+'/confirmations',{request_id:randomUUID(),preview_id:preview.id,preview_hash:preview.preview_hash,excluded_error_rows:0,confirm_valid_rows:true})).json();
   const exported=await (await jsonPost('collections/'+confirmation.query_id+'/exports',{format:'csv',fields:['message']})).text();
   requireCondition(exported.includes("'000123456789012345678901234567890")&&exported.includes("'=1+1"),'TEST_FAILED','生产构建 CSV 导出未保留文本标识或公式保护');
+  const targetPreview=await (await jsonPost('target-previews',{request_id:randomUUID(),query_id:confirmation.query_id,mode:'ALL_FILTERED',filter:{id_prefix:'000123'},fields:['message'],purpose:'data_review'})).json();
+  requireCondition(targetPreview.definition?.included_count===1&&targetPreview.definition.execution_authorized===false,'TEST_FAILED','生产构建目标预览范围错误');
+  const target=await (await jsonPost('target-snapshots',{request_id:randomUUID(),preview_id:targetPreview.id,preview_hash:targetPreview.definition_hash,title:'Production fixed selection',confirmed_included_count:1,confirmed_excluded_count:0})).json();
+  const fixedExport=await (await jsonPost('collections/'+confirmation.query_id+'/exports',{format:'csv',fields:['message'],target_snapshot_id:target.id})).text();
+  requireCondition(fixedExport.includes(target.id)&&fixedExport.includes("'000123456789012345678901234567890"),'TEST_FAILED','生产构建未导出固定目标及快照标识');
+  await jsonPost('target-snapshots/'+target.id+'/revoke',{request_id:randomUUID(),expected_version:1,reason:'Production synthetic snapshot verification completed'});
   await fetch(origin + '/api/auth/logout', { method: 'POST', headers: { Cookie: cookie, Origin: origin, 'Content-Type': 'application/json' }, body: '{}' });
-  console.log('Production smoke: health, auth, scoped workspace, forged brand, CSRF, task route, bounded CSV upload, mapping, confirmation, protected export and logout passed; no external actions.');
+  console.log('Production smoke: health, auth, scoped workspace, forged brand, CSRF, task route, bounded CSV upload, mapping, confirmation, protected export, frozen target selection, revocation and logout passed; no external actions.');
 } finally {
   child.kill('SIGTERM');
   if (child.exitCode === null) await new Promise<void>(resolve => { child.once('exit', () => resolve()); setTimeout(resolve, 5000); });

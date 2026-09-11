@@ -77,6 +77,11 @@ it('rejects a stale duplicate preview then appends new same-source observations 
   expect((await collectionDetail(scope,result.query_id)).results[0]).toMatchObject({source_object_id:'000001',object_version:3});
   expect((await query('SELECT count(*)::int AS n FROM kff.collection_objects'))[0].n).toBe(2);
 });
+it('does not reassign a confirmation request ID when both its import and another import already exist',async()=>{
+  const first=await prepared();const firstRequest=confirmation(first.preview);await confirmImport(scope,first.id,firstRequest);
+  const second=await prepared(Buffer.from('source_object_id,message,author_id,reaction_count,comment_count\n99999,other,00002,0,0'));const secondRequest=confirmation(second.preview);await confirmImport(scope,second.id,secondRequest);
+  await expect(confirmImport(scope,first.id,{...firstRequest,request_id:secondRequest.request_id})).rejects.toMatchObject({code:'IDEMPOTENCY_CONFLICT'});
+});
 it('prevents cross-brand file, preview, confirmation, export and object selection access',async()=>{
   const row=await prepared();const confirmed=await confirmImport(scope,row.id,confirmation(row.preview));const other={...scope,brand_id:randomUUID()};
   for(const call of [()=>importDetail(other,row.id),()=>downloadImportOriginal(other,row.id),()=>previewImport(other,row.id,mapping()),()=>confirmImport(other,row.id,confirmation(row.preview)),()=>exportCollection(other,confirmed.query_id,{format:'csv',fields:['message']})])await expect(call()).rejects.toMatchObject({code:'NOT_FOUND'});
