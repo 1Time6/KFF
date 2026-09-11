@@ -10,3 +10,5 @@
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
 .permit-form{margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}.permit-confirm{display:flex;gap:8px;align-items:flex-start;font-size:11px;margin:16px 0}.permit-confirm input{margin-top:4px}.permit-form>.button{width:100%}
+
+.control-panel{margin-top:24px}.control-panel .panel-head>span{font-size:11px}.agent-registration{padding:20px 24px;border-top:1px solid var(--line)}.agent-registration summary{font-size:12px;cursor:pointer}.agent-registration form{max-width:480px;margin-top:18px}.pairing-result{padding:20px;background:var(--accent-soft);margin-top:18px;border-radius:8px}.pairing-result p{font-size:11px;margin:10px 0 15px}.pairing-result button{margin-right:10px}

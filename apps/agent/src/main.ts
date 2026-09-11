@@ -58,6 +58,7 @@ async function flushJournal() {
   }
 }
 async function runCommand(command: AgentCommand) {
+  const startedAt = performance.now();
   requireCondition(!journal[command.id], 'SUBMISSION_UNCERTAIN', '已接收过此命令，不能再次执行');
   journal[command.id] = { command_id: command.id, action_id: command.action_id, phase: 'claimed' }; saveJournal();
   let lastControl = performance.now(); let controlled = true; let controlCode = 'LEASE_STALE'; let heartbeatBusy = false;
@@ -68,7 +69,9 @@ async function runCommand(command: AgentCommand) {
       const reply = await api<{ continue: boolean }>('heartbeats', { command_id: command.id, protocol_version: 'kff.agent.v1' });
       lastControl = performance.now();
       if (!reply.continue) { controlled = false; controlCode = 'STOP_REQUESTED'; await context?.close(); }
-    } catch { if (performance.now() - lastControl >= 15000) { controlled = false; await context?.close(); } }
+    } catch (error) {
+      if ((error instanceof AppError && [401, 403].includes(error.status)) || performance.now() - lastControl >= 15000) { controlled = false; controlCode = 'STOP_REQUESTED'; await context?.close(); }
+    }
     finally { heartbeatBusy = false; }
   }, 4000);
   let result: Omit<ActionReport, 'event_id' | 'command_id'>;
@@ -85,7 +88,8 @@ async function runCommand(command: AgentCommand) {
       requireCondition(command.snapshot.credential_ref, 'AUTH_EXPIRED', '任务缺少已审核的凭据引用');
       const credential = process.env[command.snapshot.credential_ref];
       requireCondition(credential && process.env.KFF_FACEBOOK_GRAPH_VERSION, 'AUTH_EXPIRED', 'Facebook 凭据和版本尚未配置');
-      const adapter = new FacebookPageAdapter({ version: process.env.KFF_FACEBOOK_GRAPH_VERSION, pageToken: credential });
+      requireCondition(command.snapshot.platform_api_version && command.snapshot.platform_api_version === process.env.KFF_FACEBOOK_GRAPH_VERSION, 'VERSION_CONFLICT', '本机 Graph API 版本与已审核版本不符');
+      const adapter = new FacebookPageAdapter({ version: command.snapshot.platform_api_version, pageToken: credential });
       const receipt = await adapter.execute(command.snapshot, beforeSubmit);
       result = { outcome: 'VERIFIED_SUCCEEDED', receipt, diagnostic: { step: 'graph-verified' } };
     }
@@ -94,7 +98,8 @@ async function runCommand(command: AgentCommand) {
   try {
     const status = await api<{ action_state: ActionState }>('commands/' + command.id + '/status');
     if (['SUBMITTING', 'SUBMITTED'].includes(status.action_state) && result.outcome !== 'VERIFIED_SUCCEEDED') result.outcome = 'UNKNOWN_OUTCOME';
-    if (status.action_state === 'PREPARING' && controlCode === 'STOP_REQUESTED' && !controlled) { result.outcome = 'CANCELED'; result.error_code = 'STOP_REQUESTED'; }
+    if (status.action_state === 'PREPARING' && ((controlCode === 'STOP_REQUESTED' && !controlled) || result.error_code === 'STOP_REQUESTED')) { result.outcome = 'CANCELED'; result.error_code = 'STOP_REQUESTED'; }
+    result.diagnostic.duration_ms = Math.round(performance.now() - startedAt); result.diagnostic.executor_version = 'kff-agent-0.1.0_node-' + process.versions.node;
     journal[command.id].report = { ...result, event_id: randomUUID(), command_id: command.id }; journal[command.id].phase = 'reported'; saveJournal();
   } catch { /* Persisted intent will be reconciled after the connection recovers. */ }
   await flushJournal();

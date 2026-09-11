@@ -29,6 +29,9 @@ export const taskInput = z.object({
 }).strict();
 export const approvalInput = z.object({ snapshot_hash: z.string().regex(/^[a-f0-9]{64}$/), decision: z.enum(['APPROVED', 'REJECTED']) }).strict();
 export const stopInput = z.object({ reason: z.string().trim().min(1).max(300) }).strict();
+export const pauseInput = z.object({ paused: z.boolean(), reason: z.string().trim().min(1).max(300) }).strict();
+export const agentInput = z.object({ name: z.string().trim().min(1).max(80) }).strict();
+export const agentControlInput = z.object({ action: z.enum(['DRAIN','RESUME','REVOKE']), reason: z.string().trim().min(1).max(300) }).strict();
 export const heartbeatInput = z.object({ command_id: uuid.optional(), protocol_version: z.literal('kff.agent.v1') }).strict();
 export const resultInput = z.object({
   event_id: uuid,
@@ -44,6 +47,9 @@ export const resultInput = z.object({
   }).strict().optional(),
   diagnostic: z.object({
     step: z.string().regex(/^[a-z0-9_-]{1,60}$/),
+    duration_ms: z.number().int().min(0).max(3600000).optional(),
+    executor_version: z.string().regex(/^[A-Za-z0-9._-]{1,80}$/).optional(),
+    browser_version: z.string().regex(/^[A-Za-z0-9._-]{1,80}$/).optional(),
     scene: z.object({ identity_count: z.number().int().min(0).max(100), submit_controls: z.number().int().min(0).max(100), result_count: z.number().int().min(0).max(100) }).strict().optional(),
   }).strict(),
 }).strict();
@@ -72,6 +78,7 @@ export const taskSnapshotSchema = z.object({
   capability_key: z.enum(['kff.fixture.page.read.browser', 'kff.fixture.page.publish.browser', 'facebook.page.read.api', 'facebook.page.publish.api']),
   capability_revision: z.number().int().positive(), adapter_version: z.enum(['fixture-page-v1', 'facebook-graph-v1']),
   implementation_digest: hashSchema.nullable().optional(),
+  platform_api_version: z.string().regex(/^v[0-9]{1,3}\.[0-9]+$/).nullable().optional(),
   body: z.string().max(5000), content_hash: hashSchema, mode: modeSchema,
   fixture_scenario: fixtureScenarioSchema, is_synthetic: z.boolean(),
 }).strict();
@@ -84,7 +91,7 @@ export const agentCommandSchema = z.object({
 }).strict();
 
 export interface Scope { organization_id: string; brand_id: string; user_id: string; role: 'admin' | 'operator' | 'viewer' }
-export interface Account { id: string; organization_id: string; brand_id: string; display_name: string; platform: string; account_type: string; external_id: string; credential_ref: string | null; state: string; is_synthetic: boolean; version: number; created_at: string }
+export interface Account { id: string; organization_id: string; brand_id: string; display_name: string; platform: string; account_type: string; external_id: string; credential_ref: string | null; state: string; outbound_paused: boolean; is_synthetic: boolean; version: number; created_at: string }
 export interface Environment { id: string; account_id: string; agent_id: string; name: string; profile_key: string; state: string; created_at: string }
 export interface Capability { id: string; account_id: string; capability_key: string; revision: number; adapter_version: string; implementation_digest?: string | null; evidence_state: EvidenceState; mode: ExecutionMode; is_synthetic: boolean; description: string; last_verified_at: string | null }
 export type TaskSnapshot = z.infer<typeof taskSnapshotSchema>;

@@ -806,7 +806,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 28
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
@@ -1150,7 +1150,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 28
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=fixtures",
@@ -1233,7 +1233,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 28
         }
       ],
       "live_effects": "none",
@@ -1369,7 +1369,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 28
         }
       ],
       "live_effects": "none",
@@ -1446,12 +1446,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 28
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 5
+          "test_count": 7
         }
       ],
       "live_effects": "none",
@@ -1585,7 +1585,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 28
         }
       ],
       "live_effects": "none",
@@ -1666,8 +1666,8 @@
       "title": "停止与隔离",
       "parent_id": "PLAN-F1-04",
       "gate": "G1",
-      "status": "IN_PROGRESS",
-      "scope": "组织/账号/任务停止检查，隔离在途和旧执行者",
+      "status": "DONE_SCOPED",
+      "scope": "组织、品牌、账号与任务停止；与提交锁排序协调、展示在途数量；未领取命令有未启动证明",
       "authorized_objective": "按项目规划实施，Facebook 为首平台，真实测试后置",
       "authorization_basis": "2026-09-12 当前会话用户指令",
       "source_refs": [
@@ -1708,18 +1708,35 @@
       "inputs": [
         "当前主规划 v2.1"
       ],
-      "outputs": [],
+      "outputs": [
+        "packages/core/src/controls.ts",
+        "packages/core/src/execution.ts",
+        "apps/web/components/workbench.tsx"
+      ],
       "acceptance_ids": [
         "ACC-13",
         "ACC-44",
         "ACC-68"
       ],
-      "actual_test_commands": [],
+      "actual_test_commands": [
+        {
+          "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
+          "exit_code": 0,
+          "test_count": 28
+        },
+        {
+          "command": "node node_modules/@playwright/test/cli.js test --project=web",
+          "exit_code": 0,
+          "test_count": 7
+        }
+      ],
       "live_effects": "none",
       "pilot_permit_ref": null,
       "rollback_plan": "停止本项目 Web/Worker/Agent，回退本任务代码提交；已提交动作保留未知并对账，已应用迁移不反向改写",
       "known_blockers": [],
-      "evidence_refs": [],
+      "evidence_refs": [
+        "docs/evidence/g1-local-checkpoint.json"
+      ],
       "reviewer": "Codex 实现；用户与独立审查尚未验收",
       "next_task": null,
       "continue_within_authorized_scope": true
@@ -1729,8 +1746,8 @@
       "title": "Agent 配对与出站连接",
       "parent_id": "PLAN-F3-01",
       "gate": "G1",
-      "status": "IN_PROGRESS",
-      "scope": "限定宿主身份、命令有效期和能力；不下发全库凭据",
+      "status": "DONE_SCOPED",
+      "scope": "作用域配对文件、令牌仅首次下载、Agent 排空与不可逆撤销；远程宿主联调未验",
       "authorized_objective": "按项目规划实施，Facebook 为首平台，真实测试后置",
       "authorization_basis": "2026-09-12 当前会话用户指令",
       "source_refs": [
@@ -1770,16 +1787,33 @@
       "inputs": [
         "当前主规划 v2.1"
       ],
-      "outputs": [],
+      "outputs": [
+        "packages/core/src/controls.ts",
+        "apps/web/components/executor-controls.tsx",
+        "apps/agent/src/config.ts"
+      ],
       "acceptance_ids": [
         "ACC-53"
       ],
-      "actual_test_commands": [],
+      "actual_test_commands": [
+        {
+          "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
+          "exit_code": 0,
+          "test_count": 28
+        },
+        {
+          "command": "node node_modules/@playwright/test/cli.js test --project=web",
+          "exit_code": 0,
+          "test_count": 7
+        }
+      ],
       "live_effects": "none",
       "pilot_permit_ref": null,
       "rollback_plan": "停止本项目 Web/Worker/Agent，回退本任务代码提交；已提交动作保留未知并对账，已应用迁移不反向改写",
       "known_blockers": [],
-      "evidence_refs": [],
+      "evidence_refs": [
+        "docs/evidence/g1-local-checkpoint.json"
+      ],
       "reviewer": "Codex 实现；用户与独立审查尚未验收",
       "next_task": null,
       "continue_within_authorized_scope": true
@@ -1986,8 +2020,8 @@
       "title": "D0 最小诊断记录",
       "parent_id": "PLAN-X-01",
       "gate": "G1",
-      "status": "IN_PROGRESS",
-      "scope": "统一版本、步骤、状态、错误、耗时和字段白名单",
+      "status": "DONE_SCOPED",
+      "scope": "D0 v2 协议、适配器与执行器版本、尝试、状态、步骤、错误、耗时白名单；兼容旧导出",
       "authorized_objective": "按项目规划实施，Facebook 为首平台，真实测试后置",
       "authorization_basis": "2026-09-12 当前会话用户指令",
       "source_refs": [
@@ -2027,16 +2061,38 @@
       "inputs": [
         "当前主规划 v2.1"
       ],
-      "outputs": [],
+      "outputs": [
+        "packages/core/src/index.ts",
+        "packages/core/src/reconciliation.ts",
+        "apps/agent/src/main.ts"
+      ],
       "acceptance_ids": [
         "ACC-37"
       ],
-      "actual_test_commands": [],
+      "actual_test_commands": [
+        {
+          "command": "node node_modules/vitest/vitest.mjs run tests/unit --reporter=default --reporter=json --outputFile=.kff/checks/unit-results.json",
+          "exit_code": 0,
+          "test_count": 16
+        },
+        {
+          "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
+          "exit_code": 0,
+          "test_count": 28
+        },
+        {
+          "command": "node node_modules/@playwright/test/cli.js test --project=web",
+          "exit_code": 0,
+          "test_count": 7
+        }
+      ],
       "live_effects": "none",
       "pilot_permit_ref": null,
       "rollback_plan": "停止本项目 Web/Worker/Agent，回退本任务代码提交；已提交动作保留未知并对账，已应用迁移不反向改写",
       "known_blockers": [],
-      "evidence_refs": [],
+      "evidence_refs": [
+        "docs/evidence/g1-local-checkpoint.json"
+      ],
       "reviewer": "Codex 实现；用户与独立审查尚未验收",
       "next_task": null,
       "continue_within_authorized_scope": true
@@ -2179,12 +2235,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 28
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 5
+          "test_count": 7
         }
       ],
       "live_effects": "none",
@@ -2336,7 +2392,7 @@
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 5
+          "test_count": 7
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
@@ -6674,5 +6730,5 @@
       "continue_within_authorized_scope": true
     }
   ],
-  "updated_at": "2026-09-11T18:07:08.420Z"
+  "updated_at": "2026-09-11T18:29:10.303Z"
 }

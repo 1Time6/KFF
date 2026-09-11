@@ -38,6 +38,9 @@ describe('execution invariants', () => {
     expect(bundle.files[0].content).toEqual({ identity_count: 1, result_count: 0 });
     expect(bundle.level).toBe('D1');
     expect(buildDiagnostic({ step: 'failed' }, 'ERROR', scope, 'action').level).toBe('D0');
+    const metadata = buildDiagnostic({ step: 'identity', duration_ms: 25, executor_version: 'kff-agent-0.1.0_node-24.14.0' }, undefined, scope, 'action', { adapter_version: 'fixture-page-v1', attempt_id: 'attempt', outcome: 'VERIFIED_SUCCEEDED' });
+    expect(metadata.schema_version).toBe('kff.diagnostic.v2'); expect(metadata.duration_ms).toBe(25); expect(metadata.outcome).toBe('VERIFIED_SUCCEEDED');
+    expect(metadata.browser_version).toBeNull();
   });
   it('stores a salted password hash and rejects a wrong password', () => {
     const hash = hashPassword('a-local-test-password');

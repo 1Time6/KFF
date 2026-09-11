@@ -8,6 +8,7 @@ export async function seed() {
   requireCondition(['127.0.0.1', 'localhost'].includes(new URL(process.env.DATABASE_URL ?? config.database_url).hostname), 'FORBIDDEN_SCOPE', '合成数据仅允许写入本地开发数据库');
   await transaction(async client => {
     await client.query("INSERT INTO kff.organizations(id,name) VALUES($1,'KFF 本地开发') ON CONFLICT DO NOTHING", [localIds.organization]);
+    await client.query("INSERT INTO kff.organization_memberships(organization_id,user_id,role) VALUES($1,$2,'owner') ON CONFLICT DO NOTHING", [localIds.organization, localIds.user]);
     await client.query("INSERT INTO kff.brands(id,organization_id,name) VALUES($1,$2,'开发工作区') ON CONFLICT DO NOTHING", [localIds.brand, localIds.organization]);
     await client.query("INSERT INTO kff.local_users(id,email,password_hash) VALUES($1,'operator@kff.local',$2) ON CONFLICT DO NOTHING", [localIds.user, hashPassword(config.operator_password)]);
     await client.query("INSERT INTO kff.memberships(user_id,organization_id,brand_id,role) VALUES($1,$2,$3,'admin') ON CONFLICT DO NOTHING", [localIds.user, localIds.organization, localIds.brand]);

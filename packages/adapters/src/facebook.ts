@@ -13,6 +13,7 @@ export class FacebookPageAdapter {
   validateInput(snapshot: TaskSnapshot) {
     requireCondition(!snapshot.is_synthetic && snapshot.capability_key.startsWith('facebook.page.') && /^[0-9]{1,128}$/.test(snapshot.external_account_id), 'INVALID_INPUT', 'Facebook 主页输入无效');
     requireCondition(snapshot.body.length <= 5000, 'INVALID_INPUT', '文本超出当前模板范围');
+    requireCondition(!snapshot.platform_api_version || snapshot.platform_api_version === this.options.version, 'VERSION_CONFLICT', 'Graph API 版本与任务不符');
   }
   private async graph(path: string, method: 'GET' | 'POST', fields: Record<string, string>): Promise<unknown> {
     const url = validateTargetUrl('https://graph.facebook.com/' + this.options.version + '/' + path, ['graph.facebook.com']);

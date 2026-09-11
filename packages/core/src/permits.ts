@@ -35,6 +35,7 @@ export async function createPermit(scope: Scope, input: z.infer<typeof permitInp
     requireCondition(['IMPLEMENTED_TEST_ONLY', 'VERIFIED_REAL'].includes(capability.evidence_state) && capability.mode === 'CONTROLLED_PILOT' && capability.revision === task.snapshot.capability_revision, 'CAPABILITY_UNASSESSED', '此版本尚未登记本地实现及前置条件证据', 409);
     requireCondition(capability.implementation_digest && capability.implementation_digest === task.snapshot.implementation_digest, 'VERSION_CONFLICT', '实现证据已变化，请重新创建并审核任务', 409);
     requireCondition(task.snapshot.credential_ref, 'AUTH_EXPIRED', '账号尚未绑定凭据引用', 409);
+    requireCondition(task.snapshot.platform_api_version, 'CAPABILITY_UNASSESSED', '需先配置明确的 Graph API 版本并重新创建审核任务', 409);
     requireCondition(Date.parse(value.expires_at) > Date.now(), 'PILOT_PERMIT_REQUIRED', '试验窗口已过期', 409);
     requireCondition(value.expected_evidence === (isWrite(task.snapshot) ? 'published_post_identity_author_content' : 'page_identity'), 'INVALID_INPUT', '预期证据与动作不匹配');
     if (isWrite(task.snapshot)) {

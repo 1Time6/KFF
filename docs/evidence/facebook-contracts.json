@@ -1,18 +1,18 @@
 {
   "kind": "CODE_CONTRACT_ONLY",
   "adapter_version": "facebook-graph-v1",
-  "implementation_digest": "560864ec98b126db31025f4500904a81ebc617fbd9d4d2a96b5332e5cdd3dd75",
+  "implementation_digest": "c82ca472022cfc4c943f15a015c1d4ebe23c262d9226d34e64dc6f706f6c0cc3",
   "source_hashes": {
-    "packages/adapters/src/facebook.ts": "b60c2a085541cdbc779529fa9c8d60b1cde1354aba748d27b85dc9d6e51f4c0b",
-    "packages/contracts/src/index.ts": "5da4474d53e905282f6447a7fb92498edb697c0627bf883da209476932fd8d23",
-    "packages/core/src/index.ts": "7416b1450cc25363d58dae865a3638e021e3b18218bbf1a06748bb72a2eaf798"
+    "packages/adapters/src/facebook.ts": "b3dd6e0ff3d2027bb4c6d8778e0100a3121be84d2d8812ddcdd7237068f4c8c0",
+    "packages/contracts/src/index.ts": "0f7551a9e1f733fa6db747d7be70bfb10f1dcf27ce9846f81654882ba06eb485",
+    "packages/core/src/index.ts": "2406cc00ff5907b2d13c05efe7e9c6a00a24ddab1b54a01b2d692cf8c6d4d3fd"
   },
   "command": "pnpm test:contracts",
   "test_count": 15,
   "facebook_test_count": 11,
   "exit_code": 0,
-  "started_at": "2026-09-11T18:00:23.518Z",
-  "ended_at": "2026-09-11T18:00:25.310Z",
+  "started_at": "2026-09-11T18:23:15.608Z",
+  "ended_at": "2026-09-11T18:23:17.238Z",
   "real_calls": 0,
   "real_verification": "PENDING"
 }

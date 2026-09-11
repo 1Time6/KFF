@@ -13,6 +13,7 @@ export async function executeFixture(command: AgentCommand, root: string, hooks:
   let submitted = false;
   let step = 'prepare';
   let scene = { identity_count: 0, submit_controls: 0, result_count: 0 };
+  const diagnostic = (atStep: string) => ({ step: atStep, scene, browser_version: context.browser()?.version() });
   try {
     await context.route('**/*', route => { try { validateTargetUrl(route.request().url(), [], fixtureOrigin); return route.continue(); } catch { return route.abort('blockedbyclient'); } });
     const page = context.pages()[0] ?? await context.newPage(); page.setDefaultTimeout(10000);
@@ -24,7 +25,7 @@ export async function executeFixture(command: AgentCommand, root: string, hooks:
     const identity = (await page.getByTestId('account-identity').innerText()).trim();
     requireCondition(identity === command.snapshot.external_account_id, 'ACCOUNT_MISMATCH', '当前账号与任务指定账号不一致');
     hooks.assertControlled();
-    if (!isWrite(command.snapshot)) return { outcome: 'VERIFIED_SUCCEEDED', receipt: { remote_id: identity, actual_account_id: identity, evidence_kind: 'synthetic_dom', observed_at: new Date().toISOString() }, diagnostic: { step: 'read-verified', scene } };
+    if (!isWrite(command.snapshot)) return { outcome: 'VERIFIED_SUCCEEDED', receipt: { remote_id: identity, actual_account_id: identity, evidence_kind: 'synthetic_dom', observed_at: new Date().toISOString() }, diagnostic: diagnostic('read-verified') };
     requireCondition(scene.submit_controls === 1, 'NEEDS_HUMAN', '发布入口不唯一，已停止自动操作');
     await page.getByRole('textbox', { name: '发布内容' }).fill(command.snapshot.body); step = 'prepared';
     if (command.snapshot.fixture_scenario === 'slow') await page.waitForTimeout(8000);
@@ -38,9 +39,9 @@ export async function executeFixture(command: AgentCommand, root: string, hooks:
     requireCondition(scene.result_count === 1, 'SUBMISSION_UNCERTAIN', '结果不唯一，待核实');
     const body = await post.textContent() ?? ''; const remoteId = await post.getAttribute('data-remote-id'); const actualAccount = await post.getAttribute('data-account-id');
     requireCondition(remoteId && actualAccount === identity && digest(body) === command.snapshot.content_hash, 'SUBMISSION_UNCERTAIN', '结果证据与任务不一致');
-    return { outcome: 'VERIFIED_SUCCEEDED', receipt: { remote_id: remoteId, actual_account_id: identity, content_hash: digest(body), evidence_kind: 'synthetic_dom', observed_at: new Date().toISOString() }, diagnostic: { step: 'write-verified', scene } };
+    return { outcome: 'VERIFIED_SUCCEEDED', receipt: { remote_id: remoteId, actual_account_id: identity, content_hash: digest(body), evidence_kind: 'synthetic_dom', observed_at: new Date().toISOString() }, diagnostic: diagnostic('write-verified') };
   } catch (error) {
     const code = error instanceof AppError ? error.code : 'EXECUTOR_ERROR';
-    return { outcome: submitted ? 'UNKNOWN_OUTCOME' : code === 'STOP_REQUESTED' ? 'CANCELED' : code === 'NEEDS_HUMAN' ? 'NEEDS_HUMAN' : 'BLOCKED', error_code: code, diagnostic: { step, scene } };
+    return { outcome: submitted ? 'UNKNOWN_OUTCOME' : code === 'STOP_REQUESTED' ? 'CANCELED' : code === 'NEEDS_HUMAN' ? 'NEEDS_HUMAN' : 'BLOCKED', error_code: code, diagnostic: diagnostic(step) };
   } finally { await context.close(); hooks.onContext(null); }
 }

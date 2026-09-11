@@ -3,15 +3,17 @@ import { beforeAll, beforeEach, afterAll, describe, expect, it } from 'vitest';
 import { migrate } from '../../scripts/migrate';
 import { seed, localIds } from '../../scripts/seed';
 import { query, scoped, closePool } from '../../packages/database/src/index';
-import { createTask, approveTask, enqueueTask, stopRun, createEnvironment, createAccount, workspace, runDetail } from '../../packages/core/src/service';
-import { dispatchOne, claimCommand, beginSubmission, acceptReport, agentHeartbeat, recoverExpired, type AgentIdentity } from '../../packages/core/src/execution';
+import { createTask, approveTask, enqueueTask, stopRun, createEnvironment, createAccount, workspace, runDetail, setBrandPause } from '../../packages/core/src/service';
+import { dispatchOne, claimCommand, beginSubmission, acceptReport, agentHeartbeat, recoverExpired, authenticateAgent, type AgentIdentity } from '../../packages/core/src/execution';
 import type { ActionReport, Scope } from '../../packages/contracts/src/index';
 import { exportDiagnostic, reconcileSynthetic, releaseQuarantine, recordQuiescence } from '../../packages/core/src/reconciliation';
 import { createPermit, findPermit } from '../../packages/core/src/permits';
 import { adapterImplementationDigest } from '../../packages/core/src/artifacts';
+import { setOrganizationPause, setAccountPause, createAgent, controlAgent } from '../../packages/core/src/controls';
 
 const scope: Scope = { organization_id: localIds.organization, brand_id: localIds.brand, user_id: localIds.user, role: 'admin' };
 const agent: AgentIdentity = { id: localIds.agent, organization_id: localIds.organization, brand_id: localIds.brand, status: 'ONLINE' };
+const previousGraphVersion = process.env.KFF_FACEBOOK_GRAPH_VERSION;
 function input(write = false) { return { title: 'Isolated integration task', account_id: localIds.account, environment_id: localIds.environment, capability_id: write ? localIds.publish : localIds.read, body: write ? 'An explicit synthetic content version' : '', mode: 'TEST_ONLY' as const, fixture_scenario: 'normal' as const, idempotency_key: randomUUID() }; }
 async function queued(write = false) {
   const task = await createTask(scope, input(write));
@@ -20,6 +22,7 @@ async function queued(write = false) {
 }
 async function claimed(write = false) { const result = await queued(write); expect(await dispatchOne()).toBe(true); const command = await claimCommand(agent); expect(command).not.toBeNull(); return { ...result, command: command! }; }
 beforeAll(async () => {
+  process.env.KFF_FACEBOOK_GRAPH_VERSION = 'v99.0';
   if (!process.env.KFF_TEST_DATABASE?.startsWith('kff_test_')) throw new Error('Refusing non-isolated database');
   await migrate(); await seed();
 });
@@ -31,8 +34,10 @@ beforeEach(async () => {
   await query("UPDATE kff.agents SET status='ONLINE',heartbeat_at=now() WHERE id=$1", [agent.id]);
   await query("UPDATE kff.environments SET state='IDLE'");
   await query('UPDATE kff.brands SET outbound_paused=false');
+  await query('UPDATE kff.organizations SET outbound_paused=false');
+  await query('UPDATE kff.accounts SET outbound_paused=false');
 });
-afterAll(closePool);
+afterAll(async () => { if (previousGraphVersion === undefined) delete process.env.KFF_FACEBOOK_GRAPH_VERSION; else process.env.KFF_FACEBOOK_GRAPH_VERSION = previousGraphVersion; await closePool(); });
 
 describe('Postgres execution and failure boundaries', () => {
   it('atomically deduplicates concurrent create requests and content versions', async () => {
@@ -111,6 +116,53 @@ describe('Postgres execution and failure boundaries', () => {
     await expect(beginSubmission(agent, command.id)).rejects.toMatchObject({ code: 'STOP_REQUESTED' });
     expect((await query('SELECT submitted_at FROM kff.action_attempts WHERE id=$1', [command.attempt_id]))[0].submitted_at).toBeNull();
   });
+  const pause = {
+    account: () => setAccountPause(scope, localIds.account, true, 'Test account pause'),
+    brand: () => setBrandPause(scope, true),
+    organization: () => setOrganizationPause(scope, true, 'Test organization pause'),
+    agent: () => controlAgent(scope, agent.id, { action: 'DRAIN', reason: 'Test Agent drain' }),
+  };
+  it.each(Object.keys(pause) as (keyof typeof pause)[])('rejects new submissions after %s pause', async target => {
+    const { command } = await claimed(true); await pause[target]();
+    await expect(beginSubmission(agent, command.id)).rejects.toMatchObject({ code: 'STOP_REQUESTED' });
+    expect((await agentHeartbeat(agent, command.id)).continue).toBe(false);
+    expect((await query('SELECT submitted_at FROM kff.action_attempts WHERE id=$1', [command.attempt_id]))[0].submitted_at).toBeNull();
+  });
+  it.each(Object.keys(pause) as (keyof typeof pause)[])('orders concurrent submission and %s pause without hiding an in-flight action', async target => {
+    const { command } = await claimed(true);
+    const [submit, stop] = await Promise.allSettled([beginSubmission(agent, command.id), pause[target]()]);
+    expect(stop.status).toBe('fulfilled');
+    const status = (await query('SELECT state FROM kff.actions WHERE id=$1', [command.action_id]))[0].state;
+    if (submit.status === 'fulfilled') { expect(status).toBe('SUBMITTING'); if (stop.status === 'fulfilled') expect(stop.value.in_flight).toBe(1); }
+    else { expect(submit.reason).toMatchObject({ code: 'STOP_REQUESTED' }); expect(status).toBe('PREPARING'); if (stop.status === 'fulfilled') expect(stop.value.in_flight).toBe(0); }
+  });
+  it('does not give organization controls to a brand administrator without organization membership', async () => {
+    await expect(setOrganizationPause({ ...scope, user_id: randomUUID() }, true, 'Unauthorized organization stop')).rejects.toMatchObject({ code: 'FORBIDDEN_SCOPE' });
+    expect((await query('SELECT outbound_paused FROM kff.organizations WHERE id=$1', [scope.organization_id]))[0].outbound_paused).toBe(false);
+  });
+  it('cancels an unclaimed command with explicit proof it never reached an executor', async () => {
+    const { run } = await queued(true); expect(await dispatchOne()).toBe(true);
+    await setAccountPause(scope, localIds.account, true, 'Stop before claim'); expect(await claimCommand(agent)).toBeNull(); expect(await recoverExpired()).toBe(1);
+    expect(await claimCommand(agent)).toBeNull();
+    expect((await query('SELECT state FROM kff.actions WHERE run_id=$1', [run.id]))[0].state).toBe('CANCELED');
+    expect((await query('SELECT count(*)::int AS count FROM kff.resource_leases WHERE holder_attempt_id IS NOT NULL OR quarantined'))[0].count).toBe(0);
+    expect((await query('SELECT quiesced_at FROM kff.agent_commands'))[0].quiesced_at).not.toBeNull();
+  });
+  it('pairs with a hashed credential and makes revocation permanent', async () => {
+    const created = await createAgent(scope, { name: 'Isolated token lifecycle test' });
+    const token = created.configuration.token;
+    expect(token).toMatch(/^[a-f0-9]{64}$/);
+    expect((await query('SELECT token_hash FROM kff.agents WHERE id=$1', [created.agent.id]))[0].token_hash).not.toBe(token);
+    expect((await workspace(scope)).agents.find(value => value.id === created.agent.id)).not.toHaveProperty('token_hash');
+    const request = () => new Request('http://127.0.0.1/api/agent/claims', { headers: { Authorization: 'Bearer ' + token } });
+    const paired = await authenticateAgent(request()); expect(paired.id).toBe(created.agent.id);
+    await controlAgent(scope, paired.id, { action: 'DRAIN', reason: 'Test drain' }); await agentHeartbeat(paired);
+    expect(await claimCommand(paired)).toBeNull();
+    await controlAgent(scope, paired.id, { action: 'RESUME', reason: 'Test resume' }); await agentHeartbeat(paired);
+    await controlAgent(scope, paired.id, { action: 'REVOKE', reason: 'Test revocation' });
+    await expect(authenticateAgent(request())).rejects.toMatchObject({ code: 'UNAUTHORIZED' });
+    await expect(controlAgent(scope, paired.id, { action: 'RESUME', reason: 'Must remain revoked' })).rejects.toMatchObject({ code: 'VERSION_CONFLICT' });
+  });
   it.each([false, true])('does not steal expired leases or replay an expired action (submitted=%s)', async submitted => {
     const { command } = await claimed(submitted); if (submitted) await beginSubmission(agent, command.id);
     await query("UPDATE kff.resource_leases SET expires_at=now()-interval '1 second' WHERE holder_attempt_id=$1", [command.attempt_id]);
@@ -142,6 +194,8 @@ describe('Postgres execution and failure boundaries', () => {
     await expect(exportDiagnostic({ ...scope, role: 'viewer' }, bundle.id)).rejects.toMatchObject({ code: 'FORBIDDEN_SCOPE' });
     expect((await exportDiagnostic(scope, bundle.id)).level).toBe('D1');
     expect((await query("SELECT count(*)::int AS count FROM kff.audit_events WHERE event_type='diagnostic.exported'"))[0].count).toBe(1);
+    await query("UPDATE kff.diagnostic_bundles SET manifest=(manifest-ARRAY['protocol_version','adapter_version','attempt_id','outcome','duration_ms','executor_version','browser_version']) || '{\"schema_version\":\"kff.diagnostic.v1\"}'::jsonb WHERE id=$1", [bundle.id]);
+    expect((await exportDiagnostic(scope, bundle.id)).schema_version).toBe('kff.diagnostic.v1');
     await query("UPDATE kff.diagnostic_bundles SET manifest=manifest || '{\"cookie\":\"SENSITIVE_SENTINEL\"}'::jsonb WHERE id=$1", [bundle.id]);
     await expect(exportDiagnostic(scope, bundle.id)).rejects.toMatchObject({ code: 'DIAGNOSTIC_REDACTION_FAILED' });
   });
