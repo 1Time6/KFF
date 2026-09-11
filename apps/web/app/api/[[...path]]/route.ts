@@ -14,6 +14,8 @@ import { adjudicationInput } from '@kff/contracts';
 import { adjudicateAction } from '@kff/core/adjudication';
 import { templateVersionInput, templatePolicyInput, templatePreviewInput } from '@kff/contracts';
 import { templateWorkspace, createTemplateVersion, setTemplatePolicy, previewTemplate } from '@kff/core/templates';
+import { collectionInput, collectionResumeInput } from '@kff/contracts';
+import { collectionWorkspace, createCollection, collectionDetail, collectionObservationHistory, controlCollection } from '@kff/core/collections';
 import { requestScope, checkOrigin, login, logout } from '../../../lib/auth';
 
 export const runtime = 'nodejs';
@@ -51,6 +53,14 @@ async function handle(request: Request, context: Context) {
     const scope = await requestScope(request);
     if (write) checkOrigin(request);
     if (path === 'workspace' && !write) return json(await workspace(scope));
+    if (path === 'collections' && !write) return json(await collectionWorkspace(scope));
+    if (path === 'collections' && write) { const result = await createCollection(scope, collectionInput.parse(await body(request))); return json({ ...result, status_url: '/api/collections/' + result.id }, 202); }
+    if (parts[0] === 'collections' && parts.length >= 2) {
+      const id = uuid.parse(parts[1]);
+      if (parts.length === 2 && !write) { const search = new URL(request.url).searchParams; return json(await collectionDetail(scope, id, search.get('after') ?? '0', Number(search.get('limit') ?? 25))); }
+      if (parts.length === 3 && write && ['stop-requests','resume'].includes(parts[2])) return json(await controlCollection(scope, id, parts[2] === 'resume' ? 'RESUME' : 'STOP', collectionResumeInput.parse(await body(request))));
+      if (parts.length === 4 && parts[2] === 'results' && !write) return json(await collectionObservationHistory(scope, id, uuid.parse(parts[3])));
+    }
     if (path === 'templates' && !write) return json(await templateWorkspace(scope));
     if (path === 'templates' && write) return json(await createTemplateVersion(scope, templateVersionInput.parse(await body(request))), 201);
     if (parts.length === 3 && parts[0] === 'templates' && parts[2] === 'previews' && write) return json(await previewTemplate(scope, uuid.parse(parts[1]), templatePreviewInput.parse(await body(request))));

@@ -4,6 +4,7 @@ export * from './contact';
 export * from './cost';
 export * from './adjudication';
 export * from './template';
+export * from './collection';
 
 export const uuid = z.string().uuid();
 export const externalId = z.string().regex(/^[0-9]{1,128}$/, '平台 ID 必须使用数字字符串');

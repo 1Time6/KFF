@@ -81,8 +81,8 @@ test('reconciles an unknown publication and then releases the quarantined enviro
   await expect(detail.getByText('执行尝试 2', { exact: true })).toHaveCount(0);
   await page.screenshot({ path: 'output/playwright/e1-reconciled-detail.png', fullPage: true });
 });
-test('all seven workspace pages stay usable at desktop and narrow widths', async ({ page }) => {
-  for (const [section, title] of [['overview', '执行总览'], ['accounts', '账号中心'], ['environments', '环境中心'], ['tasks', '任务工作台'], ['runs', '运行记录'], ['capabilities', '能力与验证'], ['templates', '模板与版本']]) {
+test('all eight workspace pages stay usable at desktop and narrow widths', async ({ page }) => {
+  for (const [section, title] of [['overview', '执行总览'], ['accounts', '账号中心'], ['environments', '环境中心'], ['tasks', '任务工作台'], ['runs', '运行记录'], ['capabilities', '能力与验证'], ['templates', '模板与版本'], ['collections', '查询与结果']]) {
     await page.goto('/' + section); await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
     expect(await page.locator('body').innerText()).not.toContain('Internal Server Error');
   }
@@ -90,6 +90,46 @@ test('all seven workspace pages stay usable at desktop and narrow widths', async
   await expect(page.getByRole('button', { name: '创建任务', exact: true })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: 'output/playwright/workbench-mobile.png', fullPage: true });
+});
+
+test('collects a synthetic source with observation history and distinguishes partial and empty results', async ({ page }) => {
+  test.setTimeout(90000);
+  const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
+  await page.getByRole('link', { name: '查询与结果', exact: true }).click();
+  await page.getByText('创建新的查询', { exact: true }).click();
+  const suffix = randomUUID().slice(0, 8); const normal = '采集界面正常 ' + suffix;
+  async function create(title: string, scenario: string) {
+    await page.getByLabel('查询名称', { exact: true }).fill(title);
+    await page.getByLabel('采集验证场景', { exact: true }).selectOption(scenario);
+    await page.getByRole('button', { name: '保存并执行查询', exact: true }).click();
+    const panel = page.getByRole('region', { name: '采集查询详情' });
+    await expect(panel.getByRole('heading', { name: title, exact: true })).toBeVisible(); return panel;
+  }
+  const panel = await create(normal, 'normal');
+  await expect(panel.getByText('样本读取完成', { exact: true })).toBeVisible({ timeout: 30000 });
+  await expect(panel.getByText('已返回 5 条观察，去重后 4 个对象。来源总量未知。', { exact: true })).toBeVisible();
+  const results = panel.getByRole('table', { name: '采集结果' });
+  const longId = '000123456789012345678901234567890';
+  await results.getByRole('button', { name: longId, exact: true }).click();
+  const history = panel.getByRole('region', { name: '观察版本记录' });
+  await expect(history.getByText('同名合成记录', { exact: true })).toBeVisible();
+  await expect(history.getByText('第一条记录的新观察', { exact: true })).toBeVisible();
+  await expect(results.getByText('来源隐藏', { exact: true })).toHaveCount(2);
+  await expect(results.getByText('空字符串', { exact: true })).toBeVisible();
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.screenshot({ path: 'output/playwright/collection-observations.png', fullPage: true });
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.screenshot({ path: 'output/playwright/collection-mobile.png', fullPage: true });
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await create('采集界面部分 ' + suffix, 'cursor_expired');
+  await expect(panel.getByText('部分结果', { exact: true })).toBeVisible({ timeout: 30000 });
+  await expect(panel.getByText('来源游标已失效，需要重新核对查询', { exact: true })).toBeVisible();
+  await expect(panel.getByText('已返回 2 条观察，去重后 2 个对象。来源总量未知。', { exact: true })).toBeVisible();
+  await create('采集界面空结果 ' + suffix, 'empty');
+  await expect(panel.getByText('来源正常返回空结果。', { exact: true })).toBeVisible({ timeout: 30000 });
+  expect(errors).toEqual([]);
 });
 
 test('previews, pins, executes and deprecates a derived template while preserving the original result', async ({ page }) => {

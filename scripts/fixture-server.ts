@@ -7,6 +7,9 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { runtimeDir } from '@kff/database';
 import { digest } from '@kff/core';
 import { fixtureScenarioSchema, externalId } from '@kff/contracts';
+import { z } from 'zod';
+import { collectionSnapshotSchema } from '@kff/contracts';
+import { syntheticCollectionPage } from '../packages/adapters/src/collection-fixture';
 
 interface FixturePost { id: string; account_id: string; action_id: string; body: string; content_hash: string; created_at: string }
 export async function startFixtureServer(port = 4311) {
@@ -19,6 +22,18 @@ export async function startFixtureServer(port = 4311) {
     const url = new URL(request.url ?? '/', 'http://127.0.0.1:' + port);
     response.setHeader('Cache-Control', 'no-store'); response.setHeader('X-Content-Type-Options', 'nosniff');
     if (url.pathname === '/health') { response.setHeader('Content-Type', 'application/json'); response.end(JSON.stringify({ fixture: true })); return; }
+    if (url.pathname === '/collection-pages' && request.method === 'GET') {
+      response.setHeader('Content-Type', 'application/json');
+      try {
+        const encoded = url.searchParams.get('request') ?? ''; if (encoded.length > 16000) throw new Error('Invalid request');
+        const input = z.object({ query_id: z.string().uuid(), snapshot: collectionSnapshotSchema, cursor: z.string().max(2048).nullable(), limit: z.number().int().min(1).max(100) }).strict().parse(JSON.parse(encoded));
+        response.end(JSON.stringify(syntheticCollectionPage(input)));
+      } catch (error) { response.statusCode = 409; response.end(JSON.stringify({ code: error && typeof error === 'object' && 'code' in error && error.code === 'CURSOR_EXPIRED' ? 'CURSOR_EXPIRED' : 'REMOTE_ERROR' })); }
+      return;
+    }
+    if (/^\/collection-object\/[A-Za-z0-9_:-]{1,160}$/.test(url.pathname) && request.method === 'GET') {
+      response.setHeader('Content-Type', 'application/json'); response.end(JSON.stringify({ source: 'KFF repository-authored synthetic fixture', source_version: 'fixture-page-posts-v1', source_object_id: url.pathname.slice('/collection-object/'.length), platform_data: false })); return;
+    }
     if (url.pathname === '/posts' && request.method === 'POST') {
       try {
         let buffer = ''; for await (const chunk of request) { buffer += chunk.toString(); if (buffer.length > 16000) throw new Error('too large'); }

@@ -52,6 +52,10 @@ const scoped = {
   'TASK-037': ['原合成提交后续核验；管理员按快照与版本记录不可变人工裁定，证据不足保持待人工；原动作不重发、来源不冒充机器核验；真实只读对账命令仍待接入', ['packages/core/src/reconciliation.ts','packages/core/src/adjudication.ts','packages/contracts/src/adjudication.ts','apps/web/components/action-adjudication.tsx','tests/integration/adjudication.test.ts'], ['integration','web']],
   'TASK-041': ['单动作试验次数及最大成本原子预占与重放去重；未知保留费用，释放不退试验次数', ['packages/core/src/permits.ts','packages/core/src/costs.ts','tests/integration/execution.test.ts'], ['integration']],
   'TASK-044': ['最小 D1 语义计数、D0 降级、导出权限/审计/白名单；其他驱动和截图未纳入', ['packages/core/src/reconciliation.ts','packages/core/src/index.ts'], ['unit','integration','web']],
+  'TASK-047': ['查询/分页公共合同；当前来源仅本项目合成主页，固定目标、字段、用途、上限、显示时区和保留期；真实来源未接入', ['packages/contracts/src/collection.ts','packages/adapters/src/collection-fixture.ts','tests/contracts/collections.test.ts'], ['contracts','integration']],
+  'TASK-049': ['字符串 ID、空值/隐藏/未返回/零、账号与来源范围内身份去重、不可变观察版本；真实来源样本尚待验收', ['packages/contracts/src/collection.ts','packages/core/src/collections.ts','tests/integration/collections.test.ts'], ['contracts','integration','web']],
+  'TASK-050': ['同库查询队列、分页/观察/结果/游标一致提交、进程终止恢复、旧 token 拒绝、循环/过期明确停止；当前合成来源验证', ['packages/core/src/collections.ts','supabase/migrations/20260911203355_g2_collection_checkpoints.sql','tests/helpers/collection-process.ts','tests/integration/collections.test.ts'], ['integration','web']],
+  'TASK-052': ['查询配置、实际进度、结果分页、观察历史、部分/失败/空结果与保留期展示；导出、完整筛选与真实覆盖说明待后续', ['apps/web/components/collection-workbench.tsx','packages/core/src/collections.ts','tests/browser/web/workflow.spec.ts'], ['integration','web']],
   'TASK-054': ['联系依据、用途与显式窗口、退出/新同意、不可变选择及事务内复核；账号页管理入口；具体消息执行门槛尚待接入', ['packages/contracts/src/contact.ts','packages/core/src/contacts.ts','apps/web/components/contact-permissions.tsx','supabase/migrations/20260911185039_g1_contact_eligibility.sql'], ['integration','web']],
   'TASK-057': ['当前四种主页动作的不可变模板、输入/关联预演、允许集合、固定任务版本和弃用边界；原结果继续核验；任意流程编辑器及真实版本试验未验', ['packages/contracts/src/template.ts','packages/core/src/templates.ts','packages/adapters/src/templates.ts','apps/web/components/template-workbench.tsx','supabase/migrations/20260911200056_g2_template_versions.sql','tests/integration/templates.test.ts'], ['contracts','integration','fixtures','web']],
   'TASK-061': ['单槽动作费用预占、按币种的显式预算和精度、未知保留、人工结算/释放/差异调整及工作台；释放不退试验次数，继续执行复查预算；批次和多品牌公平调度未验', ['packages/contracts/src/cost.ts','packages/core/src/costs.ts','apps/web/components/cost-ledger.tsx','supabase/migrations/20260911190913_g2_cost_ledger.sql','tests/integration/costs.test.ts'], ['integration','web']],
@@ -70,6 +74,7 @@ for (const card of ledger.tasks) {
   if (card.task_id === 'TASK-054') { card.selected_contact_path = 'basis_component_only'; card.known_blockers = ['当前 E1 是主页发布；具体消息动作仍需将此依据检查接入共同平台能力、审核、预算、租约与组织停止门槛。采集来源扩展和真实消息验收未完成']; }
   if (card.task_id === 'TASK-061') { card.known_blockers = ['本次仅单槽费用基础；真实账单提供方、旧数据实样迁移验收、批次与多品牌公平调度在对应后续范围验收']; }
   if (card.task_id === 'TASK-057') { card.known_blockers = ['当前只支持已有四种固定主页动作与输入约束；任意流程编辑器、新动作及真实版本小流量试验待后续验收']; }
+  if (['TASK-047','TASK-049','TASK-050','TASK-052'].includes(card.task_id)) { card.known_blockers = ['当前仅本项目合成来源；真实 Facebook 数据来源合同与受控试验、Excel/CSV 导入导出、完整筛选及结果转任务待后续实现/验收']; }
   if (card.task_id === 'TASK-037') { card.known_blockers = ['人工裁定当前已验合成样本；真实 Graph 只读对账命令、等待策略与实际平台证据仍待实施/实测，不计真实通过']; }
 }
 ledger.updated_at = evidence.created_at; writeFileSync('docs/tasks/ledger.json', JSON.stringify(ledger,null,2) + '\n');

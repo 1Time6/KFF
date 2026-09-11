@@ -22,6 +22,8 @@ TASK-037 人工裁定新增 12 个隔离数据库样本及浏览器完整操作�
 
 TASK-057 模板版本补充 13 个隔离数据库样本、3 个模板合同样本及浏览器操作：派生草稿 → 输入/关联预演 → 允许版本 → 固定版本审核并完成合成发布 → 弃用 → 阻止尚未执行的旧版本任务，同时保留已成功运行的历史详情。版本定义不可改，重复请求去重，默认新版本不改变原任务，Agent 拒绝无模板或被改动的快照，停用与最终提交竞争保持一致，弃用后原未知结果仍可核验。截图为 `output/playwright/template-deprecated.png` 与 `output/playwright/template-mobile.png`。工作台七个页面已纳入浏览器检查，真实模板版本试验未进行。
 
+TASK-047/049/050 与 TASK-052 的查询详情子范围新增 4 项合同、19 项隔离数据库与 1 项浏览器流程。五次合成观察正确保存为四个对象，长 ID 与前导零不丢失；空值、隐藏、未返回、空字符串与真实零分别保存。分页提交前实际终止进程时整页回滚，提交后终止时从下一确认页继续；旧 token 拒绝回写。游标循环/失效、读取失败、数量/页数上限与正常空结果分别显示。跨查询关联、跨账号身份、到期观察清理与有效观察保留通过测试。新增第八个工作区 `/collections`，截图为 `output/playwright/collection-observations.png` 和 `output/playwright/collection-mobile.png`。真实来源、Excel/CSV 和目标转任务仍未纳入此子范围。
+
 曾发现并修复：Windows PostgreSQL 包版本不可用；终端进程回执异常；表单标签把下拉选项并入可访问名称；测试启动器在服务重载时重复占用端口；生产构建目录进入 lint；动态路径导致打包器追踪整个项目。最终结果以当前摘要中的通过记录为准，早期失败没有计入通过。
 
 保存的截图：`output/playwright/e1-verified-detail.png`、`output/playwright/e1-reconciled-detail.png`、`output/playwright/workbench-mobile.png`。都是本项目合成操作，未包含真实客户或平台登录资料。
