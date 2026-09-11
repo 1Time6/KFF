@@ -10,6 +10,8 @@ import { attachLocalEvidence } from '@kff/core/capabilities';
 import { setOrganizationPause, setAccountPause, createAgent, controlAgent } from '@kff/core/controls';
 import { createContactTarget, grantContactPermission, exitContact, revokeContactPermission, reviewContactBasis, listContactRecords } from '@kff/core/contacts';
 import { costWorkspace, configureBudget, reconcileCost } from '@kff/core/costs';
+import { adjudicationInput } from '@kff/contracts';
+import { adjudicateAction } from '@kff/core/adjudication';
 import { requestScope, checkOrigin, login, logout } from '../../../lib/auth';
 
 export const runtime = 'nodejs';
@@ -77,6 +79,7 @@ async function handle(request: Request, context: Context) {
       if (!write && parts.length === 2) return json(await runDetail(scope, id));
       if (write && parts[2] === 'stop-requests' && parts.length === 3) return json(await stopRun(scope, id, stopInput.parse(await body(request)).reason));
       if (write && parts[2] === 'reconciliation' && parts.length === 3) return json(await reconcileSynthetic(scope, id));
+      if (write && parts[2] === 'adjudications' && parts.length === 3) return json(await adjudicateAction(scope, id, adjudicationInput.parse(await body(request))));
       if (write && parts[2] === 'quarantine-release' && parts.length === 3) return json(await releaseQuarantine(scope, id));
     }
     if (path === 'brand/pause' && write) { const input = z.object({ paused: z.boolean() }).strict().parse(await body(request)); return json(await setBrandPause(scope, input.paused)); }

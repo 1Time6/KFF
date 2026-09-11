@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import type { PoolClient } from 'pg';
 import { z } from 'zod';
-import { accountInput, environmentInput, taskInput, approvalInput, taskSnapshotSchema, type Account, type Capability, type Environment, type Scope, type Task, type Run } from '@kff/contracts';
+import { accountInput, environmentInput, taskInput, approvalInput, taskSnapshotSchema, type Account, type Capability, type Environment, type Scope, type Task, type Run, type AdjudicationRecord } from '@kff/contracts';
 import { scoped } from '@kff/database';
 import { requireCondition, digest, canExecute, isWrite } from './index';
 import { findPermit, permitMatches, type Permit } from './permits';
@@ -31,7 +31,7 @@ export async function workspace(scope: Scope) {
       if (decision.allowed && permit) { const budget = budgets.find(value => value.currency === permit.currency); if (!budget || BigInt(budget.available_minor) < BigInt(permit.per_action_max_minor)) decision = { allowed: false, reason_code: budget ? 'BUDGET_EXCEEDED' : 'BUDGET_UNCONFIGURED' }; }
       return [task.id, decision];
     }));
-    const totals = (await client.query("SELECT count(*)::int AS total,count(*) FILTER(WHERE state='VERIFIED_SUCCEEDED')::int AS verified,count(*) FILTER(WHERE state='UNKNOWN_OUTCOME')::int AS unknown,count(*) FILTER(WHERE state IN ('QUEUED','PREPARING','SUBMITTING','SUBMITTED'))::int AS active,count(*) FILTER(WHERE state IN ('VERIFIED_FAILED','BLOCKED','NEEDS_HUMAN'))::int AS failed,count(*) FILTER(WHERE state='CANCELED')::int AS canceled FROM kff.actions")).rows[0];
+    const totals = (await client.query("SELECT count(*)::int AS total,count(*) FILTER(WHERE state='VERIFIED_SUCCEEDED')::int AS verified,count(*) FILTER(WHERE state IN ('UNKNOWN_OUTCOME','NEEDS_HUMAN'))::int AS unknown,count(*) FILTER(WHERE state IN ('QUEUED','PREPARING','SUBMITTING','SUBMITTED'))::int AS active,count(*) FILTER(WHERE state IN ('VERIFIED_FAILED','BLOCKED'))::int AS failed,count(*) FILTER(WHERE state='CANCELED')::int AS canceled FROM kff.actions")).rows[0];
     return { scope, organization, brand, accounts, environments, capabilities, tasks, runs, agents, permits, eligibility, totals, live_enabled: process.env.KFF_ENABLE_LIVE === 'true', fetched_at: new Date().toISOString() };
   });
 }
@@ -133,13 +133,14 @@ export async function stopRun(scope: Scope, runId: string, reason: string) {
 }
 export async function runDetail(scope: Scope, runId: string) {
   return scoped(scope, async client => {
-    const run = (await client.query<Run>('SELECT r.*,t.title,a.id AS action_id,a.state AS action_state,a.error_code,a.receipt FROM kff.runs r JOIN kff.tasks t ON t.id=r.task_id JOIN kff.actions a ON a.run_id=r.id WHERE r.id=$1', [runId])).rows[0];
+    const run = (await client.query<Run>('SELECT r.*,t.title,a.id AS action_id,a.state AS action_state,a.adjudication_version,a.error_code,a.receipt FROM kff.runs r JOIN kff.tasks t ON t.id=r.task_id JOIN kff.actions a ON a.run_id=r.id WHERE r.id=$1', [runId])).rows[0];
     requireCondition(run, 'NOT_FOUND', '运行不存在', 404);
     const task = (await client.query<Task>('SELECT * FROM kff.tasks WHERE id=$1', [run.task_id])).rows[0];
     const attempts = (await client.query('SELECT id,attempt_number,state,submitted_at,completed_at,created_at FROM kff.action_attempts WHERE action_id=$1 ORDER BY attempt_number', [run.action_id])).rows;
     const diagnostics = (await client.query("SELECT id,jsonb_build_object('level',manifest->>'level') AS manifest,expires_at,created_at FROM kff.diagnostic_bundles WHERE action_id=$1 AND expires_at>now() ORDER BY created_at", [run.action_id])).rows;
     const events = (await client.query('SELECT event_type,details,created_at FROM kff.audit_events WHERE object_id=ANY($1::uuid[]) ORDER BY created_at', [[runId, run.task_id, run.action_id]])).rows;
-    return { run, task, attempts, diagnostics, events };
+    const adjudications = (await client.query<AdjudicationRecord>('SELECT id,action_id,reviewer_id,snapshot_hash,expected_version,result_version,previous_state,decision,result_state,evidence,reason,created_at FROM kff.action_adjudications WHERE action_id=$1 ORDER BY result_version', [run.action_id])).rows;
+    return { run, task, attempts, diagnostics, events, adjudications };
   });
 }
 export async function setBrandPause(scope: Scope, paused: boolean) {

@@ -31,12 +31,15 @@ const scoped = {
   'TASK-015': ['Next.js、原生 Postgres、Worker、Agent、构建和实际测试脚本', ['package.json','scripts/dev.ts','scripts/migrate.ts','apps/web/next.config.ts'], ['build','production']],
   'TASK-016': ['当前主页动作的 ID、协议、快照及拒绝未知字段合同', ['packages/contracts/src/index.ts'], ['contracts','unit']],
   'TASK-017': ['本机登录、角色、服务端品牌上下文与 RLS；Supabase 真实联调仍待执行', ['apps/web/lib/auth.ts','packages/database/src/index.ts','supabase/migrations/20260911164326_g1_execution_core.sql'], ['integration','production']],
+  'TASK-018': ['首个主页动作的证据、版本、账号实例和运行模式求值；生产禁用未实测能力', ['packages/core/src/index.ts','packages/core/src/service.ts','packages/core/src/capabilities.ts'], ['unit','contracts','integration','web']],
+  'TASK-019': ['绑定单任务快照、主页、动作、内容、窗口和上限的试验许可；真实授权实样待验', ['packages/contracts/src/index.ts','packages/core/src/permits.ts'], ['integration','web']],
   'TASK-021': ['不可变单条文本版本；附件不属于此已验证子范围', ['packages/core/src/service.ts'], ['integration','fixtures']],
   'TASK-022': ['单账号、自有主页、动作、内容及实现摘要的批准快照', ['packages/core/src/service.ts','packages/contracts/src/index.ts'], ['integration','contracts']],
   'TASK-023': ['单条任务并发创建、同体复用和异体冲突', ['packages/core/src/service.ts'], ['integration']],
   'TASK-024': ['当前动作状态机与合成未知结果后续核验', ['packages/core/src/index.ts','packages/core/src/reconciliation.ts'], ['unit','integration','web']],
   'TASK-025': ['同库原子投递；真实调用进程与 Worker 在提交前后终止、重启后的业务意图不丢失不重复', ['packages/core/src/service.ts','packages/core/src/execution.ts','tests/integration/durability.test.ts'], ['integration']],
   'TASK-026': ['Postgres 账号/环境租约、token、并发派发、单 Agent 执行槽及过期隔离', ['packages/core/src/execution.ts','supabase/migrations/20260911175746_g1_agent_slot_guard.sql'], ['integration']],
+  'TASK-027': ['稳定动作与尝试、事务内提交意图、本地持久日志；进程恢复保留原意图且不自动重做', ['packages/core/src/execution.ts','apps/agent/src/main.ts','tests/browser/fixtures/agent-recovery.spec.ts'], ['integration','fixtures']],
   'TASK-028': ['组织、品牌、账号与任务停止；与提交锁排序协调、展示在途数量；未领取命令有未启动证明', ['packages/core/src/controls.ts','packages/core/src/execution.ts','apps/web/components/workbench.tsx'], ['integration','web']],
   'TASK-029': ['作用域配对文件、令牌仅首次下载、Agent 排空与不可逆撤销；远程宿主联调未验', ['packages/core/src/controls.ts','apps/web/components/executor-controls.tsx','apps/agent/src/config.ts'], ['integration','web']],
   'TASK-030': ['本机持久 journal、独立关闭证明；重启和确认连接丢失后使用同一事件，不重做旧命令', ['apps/agent/src/main.ts','apps/agent/src/guardian-protocol.ts'], ['fixtures','integration']],
@@ -46,6 +49,8 @@ const scoped = {
   'TASK-034': ['本项目合成页、故障场景与非白名单请求阻断', ['scripts/fixture-server.ts','tests/browser/fixtures/executor.spec.ts'], ['fixtures']],
   'TASK-035': ['合成页面的单一身份读取及身份错误拒绝；真实 Facebook 只读待验', ['packages/adapters/src/fixture.ts'], ['fixtures','contracts']],
   'TASK-036': ['账号、环境、任务、运行详情、能力及总览工作台的本地流程', ['apps/web/components/workbench.tsx','apps/web/components/pilot-permit-form.tsx'], ['web','production']],
+  'TASK-037': ['原合成提交后续核验；管理员按快照与版本记录不可变人工裁定，证据不足保持待人工；原动作不重发、来源不冒充机器核验；真实只读对账命令仍待接入', ['packages/core/src/reconciliation.ts','packages/core/src/adjudication.ts','packages/contracts/src/adjudication.ts','apps/web/components/action-adjudication.tsx','tests/integration/adjudication.test.ts'], ['integration','web']],
+  'TASK-041': ['单动作试验次数及最大成本原子预占与重放去重；未知保留费用，释放不退试验次数', ['packages/core/src/permits.ts','packages/core/src/costs.ts','tests/integration/execution.test.ts'], ['integration']],
   'TASK-044': ['最小 D1 语义计数、D0 降级、导出权限/审计/白名单；其他驱动和截图未纳入', ['packages/core/src/reconciliation.ts','packages/core/src/index.ts'], ['unit','integration','web']],
   'TASK-054': ['联系依据、用途与显式窗口、退出/新同意、不可变选择及事务内复核；账号页管理入口；具体消息执行门槛尚待接入', ['packages/contracts/src/contact.ts','packages/core/src/contacts.ts','apps/web/components/contact-permissions.tsx','supabase/migrations/20260911185039_g1_contact_eligibility.sql'], ['integration','web']],
   'TASK-061': ['单槽动作费用预占、按币种的显式预算和精度、未知保留、人工结算/释放/差异调整及工作台；释放不退试验次数，继续执行复查预算；批次和多品牌公平调度未验', ['packages/contracts/src/cost.ts','packages/core/src/costs.ts','apps/web/components/cost-ledger.tsx','supabase/migrations/20260911190913_g2_cost_ledger.sql','tests/integration/costs.test.ts'], ['integration','web']],
@@ -63,6 +68,7 @@ for (const card of ledger.tasks) {
   if (card.task_id === 'TASK-038') { card.status = 'IN_PROGRESS'; card.outputs = ['tests/browser/web/workflow.spec.ts','tests/browser/fixtures/agent-recovery.spec.ts','tests/browser/fixtures/executor.spec.ts','tests/integration/durability.test.ts','tests/integration/execution.test.ts']; card.evidence_refs = ['docs/evidence/g1-local-checkpoint.json']; card.known_blockers = ['所列本地故障已验；系统断网/掉电、不同宿主及完整外部接管矩阵仍需环境级验收']; }
   if (card.task_id === 'TASK-054') { card.selected_contact_path = 'basis_component_only'; card.known_blockers = ['当前 E1 是主页发布；具体消息动作仍需将此依据检查接入共同平台能力、审核、预算、租约与组织停止门槛。采集来源扩展和真实消息验收未完成']; }
   if (card.task_id === 'TASK-061') { card.known_blockers = ['本次仅单槽费用基础；真实账单提供方、旧数据实样迁移验收、批次与多品牌公平调度在对应后续范围验收']; }
+  if (card.task_id === 'TASK-037') { card.known_blockers = ['人工裁定当前已验合成样本；真实 Graph 只读对账命令、等待策略与实际平台证据仍待实施/实测，不计真实通过']; }
 }
 ledger.updated_at = evidence.created_at; writeFileSync('docs/tasks/ledger.json', JSON.stringify(ledger,null,2) + '\n');
 console.log(JSON.stringify({ total_tests: evidence.total_tests, checks: checks.length, full_delivery: false, source_tree_sha256: evidence.source_tree_sha256 }));

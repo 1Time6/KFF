@@ -1,6 +1,7 @@
 import { z } from 'zod';
 export * from './contact';
 export * from './cost';
+export * from './adjudication';
 
 export const uuid = z.string().uuid();
 export const externalId = z.string().regex(/^[0-9]{1,128}$/, '平台 ID 必须使用数字字符串');
@@ -102,7 +103,7 @@ export interface Environment { id: string; account_id: string; agent_id: string;
 export interface Capability { id: string; account_id: string; capability_key: string; revision: number; adapter_version: string; implementation_digest?: string | null; evidence_state: EvidenceState; mode: ExecutionMode; is_synthetic: boolean; description: string; last_verified_at: string | null }
 export type TaskSnapshot = z.infer<typeof taskSnapshotSchema>;
 export interface Task { id: string; title: string; account_id: string; environment_id: string; capability_id: string; status: string; snapshot: TaskSnapshot; snapshot_hash: string; created_at: string; updated_at: string }
-export interface Run { id: string; task_id: string; title?: string; status: string; stop_requested: boolean; created_at: string; updated_at: string; action_id?: string; action_state?: ActionState; error_code?: string | null; receipt?: Record<string, unknown> | null }
+export interface Run { id: string; task_id: string; title?: string; status: string; stop_requested: boolean; created_at: string; updated_at: string; action_id?: string; action_state?: ActionState; adjudication_version?: number; error_code?: string | null; receipt?: Record<string, unknown> | null }
 export interface LeaseToken { resource_type: 'account' | 'environment'; resource_id: string; token: string }
 export type AgentCommand = z.infer<typeof agentCommandSchema>;
 export type ActionReport = z.infer<typeof resultInput>;

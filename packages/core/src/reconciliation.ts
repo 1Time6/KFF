@@ -49,6 +49,7 @@ export async function reconcileSynthetic(scope: Scope, runId: string, readPosts?
   return scoped(scope, async client => {
     await client.query('SELECT id FROM kff.runs WHERE id=$1 FOR UPDATE', [runId]);
     const action = (await client.query('SELECT * FROM kff.actions WHERE id=$1 FOR UPDATE', [actionId])).rows[0];
+    requireCondition(action.adjudication_version === 0, 'MANUAL_DECISION_EXISTS', '已有人工裁定记录，自动核验不能覆盖该记录', 409);
     requireCondition(['UNKNOWN_OUTCOME', 'VERIFIED_SUCCEEDED'].includes(action.state), 'VERSION_CONFLICT', '运行状态已变化', 409);
     if (matches.length !== 1 || posts.length !== 1) {
       await audit(client, scope, 'action.reconciliation_inconclusive', actionId, { matches: matches.length, observed_count: posts.length });
