@@ -35,10 +35,13 @@ const scoped = {
   'TASK-022': ['单账号、自有主页、动作、内容及实现摘要的批准快照', ['packages/core/src/service.ts','packages/contracts/src/index.ts'], ['integration','contracts']],
   'TASK-023': ['单条任务并发创建、同体复用和异体冲突', ['packages/core/src/service.ts'], ['integration']],
   'TASK-024': ['当前动作状态机与合成未知结果后续核验', ['packages/core/src/index.ts','packages/core/src/reconciliation.ts'], ['unit','integration','web']],
+  'TASK-025': ['同库原子投递；真实调用进程与 Worker 在提交前后终止、重启后的业务意图不丢失不重复', ['packages/core/src/service.ts','packages/core/src/execution.ts','tests/integration/durability.test.ts'], ['integration']],
   'TASK-026': ['Postgres 账号/环境租约、token、并发派发、单 Agent 执行槽及过期隔离', ['packages/core/src/execution.ts','supabase/migrations/20260911175746_g1_agent_slot_guard.sql'], ['integration']],
   'TASK-028': ['组织、品牌、账号与任务停止；与提交锁排序协调、展示在途数量；未领取命令有未启动证明', ['packages/core/src/controls.ts','packages/core/src/execution.ts','apps/web/components/workbench.tsx'], ['integration','web']],
   'TASK-029': ['作用域配对文件、令牌仅首次下载、Agent 排空与不可逆撤销；远程宿主联调未验', ['packages/core/src/controls.ts','apps/web/components/executor-controls.tsx','apps/agent/src/config.ts'], ['integration','web']],
+  'TASK-030': ['本机持久 journal、独立关闭证明；重启和确认连接丢失后使用同一事件，不重做旧命令', ['apps/agent/src/main.ts','apps/agent/src/guardian-protocol.ts'], ['fixtures','integration']],
   'TASK-031': ['ENV-L1 独立 Chromium profile 的任务内启动与关闭、存储隔离', ['packages/adapters/src/fixture.ts'], ['fixtures']],
+  'TASK-032': ['Windows 单槽 guardian、父进程终止/卡住后关闭、缺证明继续隔离；其他宿主与外部人工接管未验', ['apps/agent/src/guardian.ts','apps/agent/src/guardian-child.ts','tests/browser/fixtures/agent-recovery.spec.ts'], ['fixtures','integration','web']],
   'TASK-033': ['D0 v2 协议、适配器与执行器版本、尝试、状态、步骤、错误、耗时白名单；兼容旧导出', ['packages/core/src/index.ts','packages/core/src/reconciliation.ts','apps/agent/src/main.ts'], ['unit','integration','web']],
   'TASK-034': ['本项目合成页、故障场景与非白名单请求阻断', ['scripts/fixture-server.ts','tests/browser/fixtures/executor.spec.ts'], ['fixtures']],
   'TASK-035': ['合成页面的单一身份读取及身份错误拒绝；真实 Facebook 只读待验', ['packages/adapters/src/fixture.ts'], ['fixtures','contracts']],
@@ -55,7 +58,7 @@ for (const card of ledger.tasks) {
   }
   if (['TASK-003','TASK-004','TASK-005'].includes(card.task_id)) { card.status = 'BLOCKED'; card.known_blockers = ['原 PDF/DOC/视频/旧追踪表未提供；不影响已授权的独立代码实现']; }
   if (['TASK-039','TASK-042','TASK-043'].includes(card.task_id)) { card.status = 'TODO'; card.known_blockers = ['用户已要求真实测试后置；未配置已授权主页、实际 API 版本和真实试验凭据，未取得真实结果']; }
-  if (card.task_id === 'TASK-038') { card.status = 'IN_PROGRESS'; card.outputs = ['tests/browser/web/workflow.spec.ts','tests/browser/fixtures/executor.spec.ts','tests/integration/execution.test.ts']; card.evidence_refs = ['docs/evidence/g1-local-checkpoint.json']; card.known_blockers = ['已验证列出的本地故障；进程在提交边界崩溃、实际断网、恢复后的重放与完整恢复矩阵仍需补齐']; }
+  if (card.task_id === 'TASK-038') { card.status = 'IN_PROGRESS'; card.outputs = ['tests/browser/web/workflow.spec.ts','tests/browser/fixtures/agent-recovery.spec.ts','tests/browser/fixtures/executor.spec.ts','tests/integration/durability.test.ts','tests/integration/execution.test.ts']; card.evidence_refs = ['docs/evidence/g1-local-checkpoint.json']; card.known_blockers = ['所列本地故障已验；系统断网/掉电、不同宿主及完整外部接管矩阵仍需环境级验收']; }
   if (card.task_id === 'TASK-054') { card.status = 'TODO'; card.known_blockers = ['当前动作是自有主页文本发布，未实施联系动作；消息资格公共组件尚待实现']; }
 }
 ledger.updated_at = evidence.created_at; writeFileSync('docs/tasks/ledger.json', JSON.stringify(ledger,null,2) + '\n');

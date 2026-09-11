@@ -1,14 +1,13 @@
-import { randomUUID } from 'node:crypto';
+import { randomUUID, randomBytes } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync, renameSync, existsSync, openSync, closeSync, unlinkSync } from 'node:fs';
 import path from 'node:path';
 import { performance } from 'node:perf_hooks';
 import { setTimeout as delay } from 'node:timers/promises';
-import type { BrowserContext } from '@playwright/test';
 import { agentConfig, runtimeDir } from './config';
 import { AppError, digest, requireCondition } from '@kff/core';
-import { adapterImplementationDigest } from '../../../packages/core/src/artifacts';
-import { executeFixture, FacebookPageAdapter } from '@kff/adapters';
 import { agentCommandSchema, type AgentCommand, type ActionReport, type ActionState } from '@kff/contracts';
+import { runGuardian } from './guardian';
+import { readClosure, closureProof } from './guardian-protocol';
 
 const origin = agentConfig.controller_origin;
 const token = agentConfig.token;
@@ -23,44 +22,51 @@ if (existsSync(lockFile)) {
 const lockHandle = openSync(lockFile, 'wx'); writeFileSync(lockHandle, String(process.pid));
 process.on('exit', () => { closeSync(lockHandle); if (existsSync(lockFile) && readFileSync(lockFile, 'utf8') === String(process.pid)) unlinkSync(lockFile); });
 
-interface JournalEntry { command_id: string; action_id: string; phase: string; report?: ActionReport; acknowledged?: boolean; quarantined?: boolean; quiesced?: boolean }
+interface JournalEntry { command_id: string; action_id: string; phase: string; guardian_nonce?: string; guardian_pid?: number; report?: ActionReport; acknowledged?: boolean; quarantined?: boolean; quiesced?: boolean }
 const journalFile = path.join(journalDir, 'journal.json');
 const journal: Record<string, JournalEntry> = existsSync(journalFile) ? JSON.parse(readFileSync(journalFile, 'utf8')) : {};
-function saveJournal() { writeFileSync(journalFile + '.tmp', JSON.stringify(journal), { mode: 0o600 }); renameSync(journalFile + '.tmp', journalFile); }
+function saveJournal() { writeFileSync(journalFile + '.tmp', JSON.stringify(journal), { mode: 0o600, flush: true }); renameSync(journalFile + '.tmp', journalFile); }
 async function api<T>(endpoint: string, data: unknown = {}): Promise<T> {
   const response = await fetch(origin + '/api/agent/' + endpoint, { method: 'POST', headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(data), signal: AbortSignal.timeout(7000), redirect: 'error' });
   const body = await response.json();
   if (!response.ok) throw new AppError(body.error?.code ?? 'AGENT_API_ERROR', '控制端暂时无法接受操作', response.status);
   return body as T;
 }
-let stopping = false; let context: BrowserContext | null = null;
-const stop = () => { stopping = true; void context?.close(); };
+let stopping = false; let executionControl: AbortController | null = null;
+const stop = () => { stopping = true; executionControl?.abort(); };
 process.on('SIGINT', stop); process.on('SIGTERM', stop);
 
 async function flushJournal() {
   for (const entry of Object.values(journal).filter(value => !value.quiesced)) {
+    const closure = readClosure(runtimeDir, entry);
+    // A dead PID or a restarted parent is never treated as evidence that its browser closed.
+    if (!closure) return false;
     try {
       if (entry.acknowledged || entry.quarantined) {
-        await api('commands/' + entry.command_id + '/quiescence'); entry.quiesced = true; saveJournal(); continue;
+        await api('commands/' + entry.command_id + '/quiescence', closureProof(closure)); entry.quiesced = true; saveJournal(); continue;
       }
       if (!entry.report) {
         const status = await api<{ state: string; action_state: ActionState }>('commands/' + entry.command_id + '/status');
         if (!['READY', 'CLAIMED'].includes(status.state)) { entry.quarantined = true; saveJournal(); continue; }
-        entry.report = { event_id: randomUUID(), command_id: entry.command_id, outcome: ['SUBMITTING', 'SUBMITTED'].includes(status.action_state) ? 'UNKNOWN_OUTCOME' : 'NEEDS_HUMAN', error_code: 'AGENT_RESTART', diagnostic: { step: 'restart-recovery' } };
+        const result = { ...closure.result };
+        if (['SUBMITTING', 'SUBMITTED'].includes(status.action_state) && result.outcome !== 'VERIFIED_SUCCEEDED') result.outcome = 'UNKNOWN_OUTCOME';
+        entry.report = { ...result, event_id: randomUUID(), command_id: entry.command_id };
         saveJournal();
       }
       await api('action-reports', entry.report); entry.acknowledged = true; saveJournal();
-      await api('commands/' + entry.command_id + '/quiescence'); entry.quiesced = true; saveJournal();
+      await api('commands/' + entry.command_id + '/quiescence', closureProof(closure)); entry.quiesced = true; saveJournal();
     } catch (error) {
       if (error instanceof AppError && ['LEASE_STALE', 'VERSION_CONFLICT'].includes(error.code)) { entry.quarantined = true; saveJournal(); }
       else throw error;
     }
   }
+  return Object.values(journal).every(entry => entry.quiesced);
 }
 async function runCommand(command: AgentCommand) {
-  const startedAt = performance.now();
   requireCondition(!journal[command.id], 'SUBMISSION_UNCERTAIN', '已接收过此命令，不能再次执行');
-  journal[command.id] = { command_id: command.id, action_id: command.action_id, phase: 'claimed' }; saveJournal();
+  const nonce = randomBytes(32).toString('hex');
+  journal[command.id] = { command_id: command.id, action_id: command.action_id, phase: 'claimed', guardian_nonce: nonce }; saveJournal();
+  const control = new AbortController(); executionControl = control;
   let lastControl = performance.now(); let controlled = true; let controlCode = 'LEASE_STALE'; let heartbeatBusy = false;
   const assertControlled = () => { requireCondition(!stopping && controlled && performance.now() - lastControl < 20000, stopping ? 'STOP_REQUESTED' : controlCode, '执行控制权已停止'); };
   const timer = setInterval(async () => {
@@ -68,40 +74,20 @@ async function runCommand(command: AgentCommand) {
     try {
       const reply = await api<{ continue: boolean }>('heartbeats', { command_id: command.id, protocol_version: 'kff.agent.v1' });
       lastControl = performance.now();
-      if (!reply.continue) { controlled = false; controlCode = 'STOP_REQUESTED'; await context?.close(); }
+      if (!reply.continue) { controlled = false; controlCode = 'STOP_REQUESTED'; control.abort(); }
     } catch (error) {
-      if ((error instanceof AppError && [401, 403].includes(error.status)) || performance.now() - lastControl >= 15000) { controlled = false; controlCode = 'STOP_REQUESTED'; await context?.close(); }
+      if ((error instanceof AppError && [401, 403].includes(error.status)) || performance.now() - lastControl >= 15000) { controlled = false; controlCode = 'LEASE_STALE'; control.abort(); }
     }
     finally { heartbeatBusy = false; }
   }, 4000);
-  let result: Omit<ActionReport, 'event_id' | 'command_id'>;
   const beforeSubmit = async () => {
     assertControlled(); journal[command.id].phase = 'intent_requested'; saveJournal();
     await api('commands/' + command.id + '/submit');
     journal[command.id].phase = 'submitting'; saveJournal(); assertControlled();
   };
   try {
-    if (command.snapshot.is_synthetic) result = await executeFixture(command, path.join(runtimeDir, 'profiles'), { beforeSubmit, assertControlled, onContext: value => { context = value; } });
-    else {
-      requireCondition(process.env.KFF_ENABLE_LIVE === 'true', 'LIVE_DISABLED', '真实执行未启用');
-      requireCondition(command.snapshot.implementation_digest === adapterImplementationDigest(path.dirname(runtimeDir), 'facebook'), 'VERSION_CONFLICT', '本机适配器与已审核实现不匹配');
-      requireCondition(command.snapshot.credential_ref, 'AUTH_EXPIRED', '任务缺少已审核的凭据引用');
-      const credential = process.env[command.snapshot.credential_ref];
-      requireCondition(credential && process.env.KFF_FACEBOOK_GRAPH_VERSION, 'AUTH_EXPIRED', 'Facebook 凭据和版本尚未配置');
-      requireCondition(command.snapshot.platform_api_version && command.snapshot.platform_api_version === process.env.KFF_FACEBOOK_GRAPH_VERSION, 'VERSION_CONFLICT', '本机 Graph API 版本与已审核版本不符');
-      const adapter = new FacebookPageAdapter({ version: command.snapshot.platform_api_version, pageToken: credential });
-      const receipt = await adapter.execute(command.snapshot, beforeSubmit);
-      result = { outcome: 'VERIFIED_SUCCEEDED', receipt, diagnostic: { step: 'graph-verified' } };
-    }
-  } catch (error) { result = { outcome: 'BLOCKED', error_code: error instanceof AppError ? error.code : 'EXECUTOR_ERROR', diagnostic: { step: 'executor-failed' } }; }
-  finally { clearInterval(timer); await context?.close(); context = null; }
-  try {
-    const status = await api<{ action_state: ActionState }>('commands/' + command.id + '/status');
-    if (['SUBMITTING', 'SUBMITTED'].includes(status.action_state) && result.outcome !== 'VERIFIED_SUCCEEDED') result.outcome = 'UNKNOWN_OUTCOME';
-    if (status.action_state === 'PREPARING' && ((controlCode === 'STOP_REQUESTED' && !controlled) || result.error_code === 'STOP_REQUESTED')) { result.outcome = 'CANCELED'; result.error_code = 'STOP_REQUESTED'; }
-    result.diagnostic.duration_ms = Math.round(performance.now() - startedAt); result.diagnostic.executor_version = 'kff-agent-0.1.0_node-' + process.versions.node;
-    journal[command.id].report = { ...result, event_id: randomUUID(), command_id: command.id }; journal[command.id].phase = 'reported'; saveJournal();
-  } catch { /* Persisted intent will be reconciled after the connection recovers. */ }
+    await runGuardian(command, runtimeDir, nonce, { beforeSubmit, signal: control.signal, onSpawn: pid => { journal[command.id].guardian_pid = pid; saveJournal(); }, onContextOpened: () => { journal[command.id].phase = 'context_open'; saveJournal(); } });
+  } finally { clearInterval(timer); executionControl = null; }
   await flushJournal();
 }
 
@@ -109,7 +95,7 @@ console.log('KFF Agent started with persistent journal and one execution slot');
 while (!stopping) {
   try {
     await api('heartbeats', { protocol_version: 'kff.agent.v1' });
-    await flushJournal();
+    requireCondition(await flushJournal(), 'GUARDIAN_UNCONFIRMED', '旧执行上下文尚未取得关闭证明，暂停接单');
     const { command: raw } = await api<{ command: unknown }>('claims');
     if (raw) {
       const command = agentCommandSchema.parse(raw);

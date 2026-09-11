@@ -8,7 +8,7 @@ export const actionStateSchema = z.enum(['QUEUED', 'PREPARING', 'SUBMITTING', 'S
 export type ActionState = z.infer<typeof actionStateSchema>;
 export type ExecutionMode = z.infer<typeof modeSchema>;
 export type EvidenceState = z.infer<typeof evidenceStateSchema>;
-export const fixtureScenarioSchema = z.enum(['normal', 'login_expired', 'wrong_account', 'duplicate_control', 'lost_after_submit', 'slow']);
+export const fixtureScenarioSchema = z.enum(['normal', 'login_expired', 'wrong_account', 'duplicate_control', 'lost_after_submit', 'slow', 'delayed_receipt']);
 export const accountInput = z.object({
   display_name: z.string().trim().min(1).max(80),
   external_id: externalId,
@@ -55,6 +55,10 @@ export const resultInput = z.object({
 }).strict();
 export const loginInput = z.object({ email: z.string().email().max(254), password: z.string().min(1).max(200) }).strict();
 export const hashSchema = z.string().regex(/^[a-f0-9]{64}$/);
+export const quiescenceInput = z.object({
+  protocol_version: z.literal('kff.guardian-closure.v1'), command_id: uuid, action_id: uuid,
+  closed_at: z.string().datetime(), proof_sha256: hashSchema,
+}).strict();
 export const permitInput = z.object({
   task_id: uuid,
   max_actions: z.number().int().min(1).max(10),

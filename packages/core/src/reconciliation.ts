@@ -1,14 +1,20 @@
 import { z } from 'zod';
 import { scoped, transaction } from '@kff/database';
-import { actionStateSchema, type Scope, type TaskSnapshot } from '@kff/contracts';
+import { actionStateSchema, quiescenceInput, type Scope, type TaskSnapshot } from '@kff/contracts';
 import { digest, requireCondition } from './index';
 import { audit, requireAdmin, runDetail } from './service';
 import type { AgentIdentity } from './execution';
 
-export async function recordQuiescence(agent: AgentIdentity, commandId: string) {
+export async function recordQuiescence(agent: AgentIdentity, commandId: string, input: z.infer<typeof quiescenceInput>) {
+  const proof = quiescenceInput.parse(input);
   return transaction(async client => {
-    const row = (await client.query("UPDATE kff.agent_commands SET quiesced_at=COALESCE(quiesced_at,now()) WHERE id=$1 AND agent_id=$2 AND state IN ('DONE','EXPIRED') RETURNING id", [commandId, agent.id])).rows[0];
-    requireCondition(row, 'VERSION_CONFLICT', '执行上下文只能在命令终止后确认关闭', 409); return { quiesced: true };
+    const row = (await client.query('SELECT * FROM kff.agent_commands WHERE id=$1 AND agent_id=$2 FOR UPDATE', [commandId, agent.id])).rows[0];
+    requireCondition(row && ['DONE','EXPIRED'].includes(row.state), 'VERSION_CONFLICT', '执行上下文只能在命令终止后确认关闭', 409);
+    requireCondition(row.organization_id === agent.organization_id && row.brand_id === agent.brand_id && proof.command_id === commandId && proof.action_id === row.action_id, 'FORBIDDEN_SCOPE', '关闭证明与命令不符', 403);
+    const previous = (await client.query("SELECT details FROM kff.audit_events WHERE event_type='guardian.quiesced' AND object_id=$1", [commandId])).rows[0];
+    if (previous) requireCondition(digest(previous.details.proof) === digest(proof), 'IDEMPOTENCY_CONFLICT', '关闭证明与已记录内容不一致', 409);
+    else await client.query("INSERT INTO kff.audit_events(organization_id,brand_id,actor_id,event_type,object_id,details) VALUES($1,$2,$3,'guardian.quiesced',$4,$5)", [agent.organization_id, agent.brand_id, agent.id, commandId, { actor_kind: 'agent', proof }]);
+    await client.query('UPDATE kff.agent_commands SET quiesced_at=COALESCE(quiesced_at,now()) WHERE id=$1', [commandId]); return { quiesced: true };
   });
 }
 export async function exportDiagnostic(scope: Scope, bundleId: string) {

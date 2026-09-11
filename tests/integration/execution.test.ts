@@ -182,7 +182,12 @@ describe('Postgres execution and failure boundaries', () => {
     expect((await reconcileSynthetic(scope, run.id, async () => [post, { ...post, id: 'synthetic_' + randomUUID() }])).reconciled).toBe(false);
     expect((await reconcileSynthetic(scope, run.id, async () => [post])).reconciled).toBe(true);
     await expect(releaseQuarantine(scope, run.id)).rejects.toMatchObject({ code: 'GUARDIAN_UNCONFIRMED' });
-    await recordQuiescence(agent, command.id); expect(await releaseQuarantine(scope, run.id)).toEqual({ released: true });
+    const proof = { protocol_version: 'kff.guardian-closure.v1' as const, command_id: command.id, action_id: command.action_id, closed_at: new Date().toISOString(), proof_sha256: 'a'.repeat(64) };
+    await expect(recordQuiescence(agent, command.id, { ...proof, action_id: randomUUID() })).rejects.toMatchObject({ code: 'FORBIDDEN_SCOPE' });
+    await recordQuiescence(agent, command.id, proof); await recordQuiescence(agent, command.id, proof);
+    await expect(recordQuiescence(agent, command.id, { ...proof, proof_sha256: 'b'.repeat(64) })).rejects.toMatchObject({ code: 'IDEMPOTENCY_CONFLICT' });
+    expect((await query("SELECT count(*)::int AS count FROM kff.audit_events WHERE event_type='guardian.quiesced'"))[0].count).toBe(1);
+    expect(await releaseQuarantine(scope, run.id)).toEqual({ released: true });
     expect((await query('SELECT count(*)::int AS count FROM kff.actions'))[0].count).toBe(1);
     expect((await query('SELECT count(*)::int AS count FROM kff.resource_leases WHERE quarantined'))[0].count).toBe(0);
   });

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { FacebookPageAdapter } from '../../packages/adapters/src/facebook';
 import { fixtureCommand } from '../helpers/commands';
+import { AppError } from '../../packages/core/src/index';
 
 const snapshot = fixtureCommand({ capability_key: 'facebook.page.publish.api', adapter_version: 'facebook-graph-v1', mode: 'CONTROLLED_PILOT', is_synthetic: false, credential_ref: 'FACEBOOK_CONTRACT_TEST_TOKEN' }).snapshot;
 const pageId = snapshot.external_account_id;
@@ -58,5 +59,11 @@ describe('Facebook Graph adapter contract only; no platform calls', () => {
     const { adapter, calls } = transport([{ id: pageId, name: 'Contract page' }]);
     const receipt = await adapter.execute({ ...snapshot, capability_key: 'facebook.page.read.api' }, async () => { throw new Error('Unexpected write'); });
     expect(receipt.remote_id).toBe(pageId); expect(calls.length).toBe(1);
+  });
+  it('rejects the POST if guardian control is lost immediately after the final gate', async () => {
+    let controlled = true; const calls: string[] = [];
+    const adapter = new FacebookPageAdapter({ version: 'v99.0', pageToken: 'synthetic-credential', assertControlled: () => { if (!controlled) throw new AppError('STOP_REQUESTED', 'Test control loss'); }, fetch: async (_url, init) => { calls.push(init!.method!); return Response.json({ id: pageId, name: 'Synthetic page' }); } });
+    await expect(adapter.execute(snapshot, async () => { controlled = false; })).rejects.toMatchObject({ code: 'STOP_REQUESTED' });
+    expect(calls).toEqual(['GET']);
   });
 });

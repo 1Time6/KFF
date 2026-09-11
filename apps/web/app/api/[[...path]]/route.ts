@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { randomUUID } from 'node:crypto';
-import { loginInput, uuid, taskInput, accountInput, environmentInput, approvalInput, heartbeatInput, resultInput, stopInput, permitInput, pauseInput, agentInput, agentControlInput } from '@kff/contracts';
+import { loginInput, uuid, taskInput, accountInput, environmentInput, approvalInput, heartbeatInput, resultInput, stopInput, permitInput, pauseInput, agentInput, agentControlInput, quiescenceInput } from '@kff/contracts';
 import { AppError, redactError, requireCondition } from '@kff/core';
 import { workspace, createAccount, createEnvironment, createTask, approveTask, enqueueTask, stopRun, runDetail, setBrandPause } from '@kff/core/service';
 import { authenticateAgent, agentHeartbeat, claimCommand, beginSubmission, acceptReport, commandStatus } from '@kff/core/execution';
@@ -39,7 +39,7 @@ async function handle(request: Request, context: Context) {
       if (path === 'agent/action-reports') return json(await acceptReport(agent, resultInput.parse(await body(request))));
       if (parts.length === 4 && parts[1] === 'commands' && parts[3] === 'submit') return json(await beginSubmission(agent, uuid.parse(parts[2])));
       if (parts.length === 4 && parts[1] === 'commands' && parts[3] === 'status') return json(await commandStatus(agent, uuid.parse(parts[2])));
-      if (parts.length === 4 && parts[1] === 'commands' && parts[3] === 'quiescence') return json(await recordQuiescence(agent, uuid.parse(parts[2])));
+      if (parts.length === 4 && parts[1] === 'commands' && parts[3] === 'quiescence') return json(await recordQuiescence(agent, uuid.parse(parts[2]), quiescenceInput.parse(await body(request))));
       throw new AppError('NOT_FOUND', '接口不存在', 404);
     }
     const scope = await requestScope(request);

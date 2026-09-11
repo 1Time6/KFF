@@ -1,4 +1,4 @@
-import { spawn } from 'node:child_process';
+import { spawn, execFileSync } from 'node:child_process';
 import { mkdirSync, openSync, closeSync, writeFileSync, readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
@@ -19,12 +19,13 @@ if (!Object.hasOwn(commands, name)) throw new Error('Unknown check');
 const directory = path.resolve('.kff/checks'); mkdirSync(directory, { recursive: true });
 const log = openSync(path.join(directory, name + '.log'), 'w');
 const startedAt = new Date().toISOString();
-const sourceFiles = ['packages/adapters/src/facebook.ts','packages/adapters/src/fixture.ts','packages/contracts/src/index.ts','packages/core/src/index.ts','packages/core/src/service.ts','packages/core/src/execution.ts','packages/core/src/permits.ts','packages/core/src/reconciliation.ts','apps/agent/src/main.ts','apps/web/components/workbench.tsx','tests/contracts/facebook.test.ts'];
+const sourceFiles = [...new Set(execFileSync('git', ['-c','core.quotepath=false','ls-files','--cached','--others','--exclude-standard'], { encoding: 'utf8' }).split(/\r?\n/))].filter(file => !file.endsWith('next-env.d.ts') && ((/^(apps|packages|scripts|tests|supabase)\//.test(file) && /\.(ts|tsx|mjs|sql|css|json|toml)$/.test(file)) || ['package.json','pnpm-lock.yaml','pnpm-workspace.yaml','tsconfig.json','eslint.config.mjs','vitest.config.ts','playwright.config.ts'].includes(file))).sort();
 const sourceHashes = Object.fromEntries(sourceFiles.map(file => [file, createHash('sha256').update(readFileSync(file)).digest('hex')]));
 const child = spawn(process.execPath, commands[name], { cwd: process.cwd(), stdio: ['ignore', log, log], windowsHide: true, env: { ...process.env, KFF_ROOT: process.cwd(), KFF_CHECK_NAME: name, NEXT_TELEMETRY_DISABLED: '1' } });
 child.on('exit', (code, signal) => {
   closeSync(log);
-  const result = { name, started_at: startedAt, ended_at: new Date().toISOString(), exit_code: code, signal, process_id: child.pid, command: ['node', ...commands[name]], source_hashes: sourceHashes };
+  const changed = Object.entries(sourceHashes).filter(([file, hash]) => createHash('sha256').update(readFileSync(file)).digest('hex') !== hash).map(([file]) => file);
+  const result = { name, started_at: startedAt, ended_at: new Date().toISOString(), exit_code: changed.length ? 1 : code, child_exit_code: code, changed_during_check: changed, signal, process_id: child.pid, command: ['node', ...commands[name]], source_hashes: sourceHashes };
   writeFileSync(path.join(directory, name + '.json'), JSON.stringify(result, null, 2));
-  console.log(JSON.stringify(result)); process.exitCode = code ?? 1;
+  console.log(JSON.stringify({ name, exit_code: result.exit_code, changed_during_check: changed, covered_source_files: sourceFiles.length })); process.exitCode = result.exit_code ?? 1;
 });

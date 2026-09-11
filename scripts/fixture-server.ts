@@ -3,6 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { mkdir, readFile, writeFile, rename } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { setTimeout as delay } from 'node:timers/promises';
 import { runtimeDir } from '@kff/database';
 import { digest } from '@kff/core';
 import { fixtureScenarioSchema, externalId } from '@kff/contracts';
@@ -27,7 +28,9 @@ export async function startFixtureServer(port = 4311) {
         const post: FixturePost = { id: 'synthetic_' + randomUUID(), account_id: account, action_id: input.action_id, body: input.body, content_hash: digest(input.body), created_at: new Date().toISOString() };
         posts.push(post);
         writes = writes.then(async () => { await writeFile(file + '.tmp', JSON.stringify(posts)); await rename(file + '.tmp', file); });
-        await writes; response.setHeader('Content-Type', 'application/json'); response.end(JSON.stringify(post));
+        await writes;
+        if (url.searchParams.get('scenario') === 'delayed_receipt') await delay(8000);
+        response.setHeader('Content-Type', 'application/json'); response.end(JSON.stringify(post));
       } catch { response.statusCode = 400; response.end('Invalid synthetic input'); }
       return;
     }
@@ -38,7 +41,7 @@ export async function startFixtureServer(port = 4311) {
     if (!parsed.success || !accountParsed.success) { response.statusCode = 400; response.end(); return; }
     const scenario = parsed.data; const account = scenario === 'wrong_account' ? '999999999999999999' : accountParsed.data;
     response.setHeader('Content-Type', 'text/html; charset=utf-8');
-    response.end('<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>KFF 合成验证页</title></head><body><h1>KFF 合成验证页</h1><p>此页面属于本地软件测试，不是 Facebook。</p>' + (scenario === 'login_expired' ? '<button>登录</button>' : '<div data-testid="account-identity">' + account + '</div><label>发布内容<textarea aria-label="发布内容"></textarea></label><button data-testid="publish">发布</button>' + (scenario === 'duplicate_control' ? '<button data-testid="publish">发布</button>' : '') + '<div id="results"></div>') + '<script>const account=' + JSON.stringify(account) + ';const action=new URL(location.href).searchParams.get("action");document.querySelectorAll("[data-testid=publish]").forEach(button=>button.addEventListener("click",async()=>{const body=document.querySelector("textarea").value;const response=await fetch("/posts",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({account_id:account,action_id:action,body})});const post=await response.json();const item=document.createElement("article");item.dataset.testid="published-post";item.dataset.remoteId=post.id;item.dataset.accountId=post.account_id;item.dataset.contentHash=post.content_hash;item.textContent=post.body;document.querySelector("#results").append(item);}));</script></body></html>');
+    response.end('<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>KFF 合成验证页</title></head><body><h1>KFF 合成验证页</h1><p>此页面属于本地软件测试，不是 Facebook。</p>' + (scenario === 'login_expired' ? '<button>登录</button>' : '<div data-testid="account-identity">' + account + '</div><label>发布内容<textarea aria-label="发布内容"></textarea></label><button data-testid="publish">发布</button>' + (scenario === 'duplicate_control' ? '<button data-testid="publish">发布</button>' : '') + '<div id="results"></div>') + '<script>const account=' + JSON.stringify(account) + ';const action=new URL(location.href).searchParams.get("action");document.querySelectorAll("[data-testid=publish]").forEach(button=>button.addEventListener("click",async()=>{const body=document.querySelector("textarea").value;const response=await fetch("/posts"+location.search,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({account_id:account,action_id:action,body})});const post=await response.json();const item=document.createElement("article");item.dataset.testid="published-post";item.dataset.remoteId=post.id;item.dataset.accountId=post.account_id;item.dataset.contentHash=post.content_hash;item.textContent=post.body;document.querySelector("#results").append(item);}));</script></body></html>');
   });
   await new Promise<void>((resolve, reject) => { server.once('error', reject); server.listen(port, '127.0.0.1', resolve); });
   return { close: () => new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve())) };

@@ -5,7 +5,7 @@ import type { TaskSnapshot } from '@kff/contracts';
 const pageIdentity = z.object({ id: z.string(), name: z.string() });
 const postIdentity = z.object({ id: z.string(), message: z.string(), from: z.object({ id: z.string() }), permalink_url: z.string().url(), is_published: z.boolean() });
 export class FacebookPageAdapter {
-  constructor(private options: { version: string; pageToken: string; fetch?: typeof fetch }) {
+  constructor(private options: { version: string; pageToken: string; fetch?: typeof fetch; signal?: AbortSignal; assertControlled?: () => void }) {
     requireCondition(/^v[0-9]{1,3}\.[0-9]+$/.test(options.version), 'INVALID_INPUT', '需配置明确的 Graph API 版本');
     requireCondition(options.pageToken.length > 0, 'AUTH_EXPIRED', '未配置主页凭据');
   }
@@ -16,9 +16,11 @@ export class FacebookPageAdapter {
     requireCondition(!snapshot.platform_api_version || snapshot.platform_api_version === this.options.version, 'VERSION_CONFLICT', 'Graph API 版本与任务不符');
   }
   private async graph(path: string, method: 'GET' | 'POST', fields: Record<string, string>): Promise<unknown> {
+    this.options.assertControlled?.();
     const url = validateTargetUrl('https://graph.facebook.com/' + this.options.version + '/' + path, ['graph.facebook.com']);
     if (method === 'GET') for (const [key, value] of Object.entries(fields)) url.searchParams.set(key, value);
-    const response = await (this.options.fetch ?? fetch)(url, { method, headers: { Authorization: 'Bearer ' + this.options.pageToken, ...(method === 'POST' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {}) }, body: method === 'POST' ? new URLSearchParams(fields) : undefined, signal: AbortSignal.timeout(15000), redirect: 'error' });
+    const timeout = AbortSignal.timeout(15000); const signal = this.options.signal ? AbortSignal.any([timeout, this.options.signal]) : timeout;
+    const response = await (this.options.fetch ?? fetch)(url, { method, headers: { Authorization: 'Bearer ' + this.options.pageToken, ...(method === 'POST' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {}) }, body: method === 'POST' ? new URLSearchParams(fields) : undefined, signal, redirect: 'error' });
     const reader = response.body?.getReader(); requireCondition(reader, 'REMOTE_ERROR', '平台未返回可读取内容', 502);
     const parts: Uint8Array[] = []; let bytes = 0;
     while (true) { const { done, value } = await reader.read(); if (done) break; bytes += value.byteLength; if (bytes > 1024 * 1024) { await reader.cancel(); throw new AppError('REMOTE_ERROR', '平台响应超出限制', 502); } parts.push(value); }
