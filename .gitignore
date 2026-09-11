@@ -1,0 +1,14 @@
+node_modules/
+.next/
+.next-production/
+dist/
+coverage/
+test-results/
+playwright-report/
+.kff/
+.env
+.env.*
+!.env.example
+*.tsbuildinfo
+*.log
+supabase/.temp/

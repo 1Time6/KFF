@@ -1,0 +1,18 @@
+{
+  "kind": "CODE_CONTRACT_ONLY",
+  "adapter_version": "facebook-graph-v1",
+  "implementation_digest": "560864ec98b126db31025f4500904a81ebc617fbd9d4d2a96b5332e5cdd3dd75",
+  "source_hashes": {
+    "packages/adapters/src/facebook.ts": "b60c2a085541cdbc779529fa9c8d60b1cde1354aba748d27b85dc9d6e51f4c0b",
+    "packages/contracts/src/index.ts": "5da4474d53e905282f6447a7fb92498edb697c0627bf883da209476932fd8d23",
+    "packages/core/src/index.ts": "7416b1450cc25363d58dae865a3638e021e3b18218bbf1a06748bb72a2eaf798"
+  },
+  "command": "pnpm test:contracts",
+  "test_count": 15,
+  "facebook_test_count": 11,
+  "exit_code": 0,
+  "started_at": "2026-09-11T18:00:23.518Z",
+  "ended_at": "2026-09-11T18:00:25.310Z",
+  "real_calls": 0,
+  "real_verification": "PENDING"
+}

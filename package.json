@@ -1,0 +1,51 @@
+{
+  "name": "kff",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.19.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "tsx scripts/dev.ts",
+    "dev:web": "next dev apps/web --hostname 127.0.0.1 --port 3000",
+    "db:start": "tsx scripts/database.ts",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "worker": "tsx apps/worker/src/main.ts",
+    "agent": "tsx apps/agent/src/main.ts",
+    "build": "next build apps/web",
+    "start": "next start apps/web --hostname 127.0.0.1 --port 3000",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test:unit": "vitest run tests/unit",
+    "test:contracts": "vitest run tests/contracts",
+    "test:integration": "tsx scripts/integration.ts",
+    "test:fixtures": "playwright test --project=fixtures",
+    "test:ui": "playwright test --project=web",
+    "verify:planning": "tsx scripts/verify-planning.ts",
+    "evidence:register": "tsx scripts/register-evidence.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.116.0",
+    "lucide-react": "1.44.0",
+    "next": "16.3.4",
+    "pg": "8.23.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "zod": "4.6.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "22.20.2",
+    "@types/pg": "8.23.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "embedded-postgres": "17.7.0-beta.15",
+    "eslint": "10.10.0",
+    "tsx": "4.23.13",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.70.0",
+    "vitest": "5.0.0"
+  }
+}
