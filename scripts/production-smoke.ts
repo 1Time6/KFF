@@ -43,8 +43,13 @@ try {
   const fixedExport=await (await jsonPost('collections/'+confirmation.query_id+'/exports',{format:'csv',fields:['message'],target_snapshot_id:target.id})).text();
   requireCondition(fixedExport.includes(target.id)&&fixedExport.includes("'000123456789012345678901234567890"),'TEST_FAILED','生产构建未导出固定目标及快照标识');
   await jsonPost('target-snapshots/'+target.id+'/revoke',{request_id:randomUUID(),expected_version:1,reason:'Production synthetic snapshot verification completed'});
+  const schedulePreview=await (await jsonPost('schedule-previews',{request_id:randomUUID(),evaluate_at:'2024-11-03T07:00:00Z',rule:{timezone:'America/New_York',kind:'ONCE',start_date:'2024-11-03',end_date:'2024-11-03',time:'01:30',weekdays:[],repeated_time:'BOTH',missing_time:'SKIP',missed_policy:'CATCH_UP',catch_up_limit:2,spacing_seconds:60,late_tolerance_seconds:0,maximum_lateness_seconds:3600}})).json();
+  requireCondition(schedulePreview.definition.slots.length===2&&schedulePreview.definition.slots[0].scheduled_at==='2024-11-03T05:30:00.000Z','TEST_FAILED','生产构建时区规则预览不正确');
+  const schedule=await (await jsonPost('schedules',{request_id:randomUUID(),preview_id:schedulePreview.id,preview_hash:schedulePreview.definition_hash,title:'Production synthetic paused calendar'})).json();
+  requireCondition(schedule.state==='PAUSED','TEST_FAILED','生产构建没有将新计划保存为暂停');
+  await jsonPost('schedules/'+schedule.id+'/controls',{request_id:randomUUID(),expected_version:schedule.version,action:'STOP',reason:'Completed synthetic production calendar check'});
   await fetch(origin + '/api/auth/logout', { method: 'POST', headers: { Cookie: cookie, Origin: origin, 'Content-Type': 'application/json' }, body: '{}' });
-  console.log('Production smoke: health, auth, scoped workspace, forged brand, CSRF, task route, bounded CSV upload, mapping, confirmation, protected export, frozen target selection, revocation and logout passed; no external actions.');
+  console.log('Production smoke: health, auth, scoped workspace, forged brand, CSRF, task route, bounded CSV upload, mapping, confirmation, protected export, frozen target selection, revocation, timezone calendar, paused schedule, future stop and logout passed; no external actions.');
 } finally {
   child.kill('SIGTERM');
   if (child.exitCode === null) await new Promise<void>(resolve => { child.once('exit', () => resolve()); setTimeout(resolve, 5000); });

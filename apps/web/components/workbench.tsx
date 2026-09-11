@@ -12,6 +12,7 @@ import { CostLedger } from './cost-ledger';
 import { ActionAdjudication } from './action-adjudication';
 import { TemplateWorkbench } from './template-workbench';
 import { CollectionWorkbench } from './collection-workbench';
+import {ScheduleWorkbench} from './schedule-workbench';
 
 type Detail = Awaited<ReturnType<typeof runDetail>>;
 const navigation = [
@@ -20,6 +21,7 @@ const navigation = [
   { key: 'environments', label: '环境中心', icon: Monitor },
   { key: 'tasks', label: '任务工作台', icon: ListTodo },
   { key: 'collections', label: '查询与结果', icon: Search },
+  { key: 'schedules', label: '计划与时区', icon: ListTodo },
   { key: 'templates', label: '模板与版本', icon: FileCheck2 },
   { key: 'runs', label: '运行记录', icon: Activity },
   { key: 'capabilities', label: '能力与验证', icon: ShieldCheck },
@@ -30,6 +32,7 @@ const titles: Record<string, [string, string]> = {
   environments: ['环境中心', '独立会话、明确归属，查看每个环境的占用状态。'],
   tasks: ['任务工作台', '确认账号、动作和内容后，让任务进入执行队列。'],
   collections: ['查询与结果', '保存来源和观察版本，按上限采集并核对部分结果。'],
+  schedules: ['计划与时区', '核对当地规则、夏令时与错过策略，保存每个准备时点。'],
   templates: ['模板与版本', '固定动作与输入范围，保留每个版本的预演和使用策略。'],
   runs: ['运行记录', '从任务提交到结果核实，保留每次执行的过程。'],
   capabilities: ['能力与验证', '按账号和动作查看实现范围、证据与执行限制。'],
@@ -128,7 +131,7 @@ export default function Workbench({ section }: { section: string }) {
       {section === 'environments' && <ExecutorControls data={data} busy={busy} act={act} />}
       {section === 'accounts' && <section className="panel contact-entry"><div><h2>联系依据与退出</h2><p>按账号核对目标、用途和联系窗口。</p></div><Field label="联系依据所属账号"><select value={selectedAccount || data.accounts[0]?.id || ''} onChange={event => setSelectedAccount(event.target.value)}>{data.accounts.map(account => <option key={account.id} value={account.id}>{account.display_name}</option>)}</select></Field><button className="button subtle" disabled={!data.accounts.length} onClick={() => { setSelectedAccount(selectedAccount || data.accounts[0].id); setModal('contacts'); }}>管理联系依据</button></section>}
       {section === 'capabilities' && <CostLedger role={data.scope.role} />}
-      {section === 'templates' && <TemplateWorkbench data={data} />}{section === 'collections' && <CollectionWorkbench data={data} />}
+      {section === 'templates' && <TemplateWorkbench data={data} />}{section === 'collections' && <CollectionWorkbench data={data} />}{section==='schedules'&&<ScheduleWorkbench data={data}/>}
       <footer className="page-footer"><span>KFF · 让执行过程可追溯</span>{data.organization.can_manage && <button className="text-button" disabled={busy} onClick={() => void act(async () => { const result = await call<{ in_flight: number }>('organization/pause', { paused: !data.organization.outbound_paused, reason: '组织管理员调整停止开关' }); setNotice('组织开关已更新，在途动作 ' + result.in_flight + ' 项继续核实'); })}>{data.organization.outbound_paused ? '恢复组织调度' : '暂停整个组织'}</button>}<button className="text-button" disabled={busy || data.brand.outbound_paused} onClick={() => void act(() => call('brand/pause', { paused: true }), '已暂停品牌的新动作')}><Pause size={12} />暂停新动作</button></footer>
       </main>
     </div>

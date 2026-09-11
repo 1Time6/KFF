@@ -21,6 +21,8 @@ import { uploadImport, importWorkspace, importDetail, previewImport, confirmImpo
 import { exportCollection } from '@kff/core/collection-export';
 import { collectionFilterSchema,targetPreviewInput,targetSnapshotInput,targetRevokeInput } from '../../../../../packages/contracts/src/target-selection';
 import { previewTargets,saveTargetSnapshot,targetSnapshots,readTargetSnapshot,revokeTargetSnapshot } from '@kff/core/target-snapshots';
+import {schedulePreviewInput,scheduleSaveInput,scheduleRevisionInput,scheduleControlInput} from '../../../../../packages/contracts/src/schedule';
+import {previewSchedule,saveSchedule,scheduleList,scheduleDetail,controlSchedule} from '@kff/core/schedules';
 import { requestScope, checkOrigin, login, logout } from '../../../lib/auth';
 
 export const runtime = 'nodejs';
@@ -68,6 +70,13 @@ async function handle(request: Request, context: Context) {
     const scope = await requestScope(request);
     if (write) checkOrigin(request);
     if (path === 'workspace' && !write) return json(await workspace(scope));
+    if(path==='schedule-previews'&&write)return json(await previewSchedule(scope,schedulePreviewInput.parse(await body(request))));
+    if(path==='schedules')return json(write?await saveSchedule(scope,scheduleSaveInput.parse(await body(request))):await scheduleList(scope));
+    if(parts[0]==='schedules'&&parts.length>=2){const id=uuid.parse(parts[1]);
+      if(parts.length===2&&!write)return json(await scheduleDetail(scope,id));
+      if(parts.length===3&&parts[2]==='versions'&&write)return json(await saveSchedule(scope,scheduleRevisionInput.parse(await body(request)),id));
+      if(parts.length===3&&parts[2]==='controls'&&write)return json(await controlSchedule(scope,id,scheduleControlInput.parse(await body(request))));
+    }
     if(path==='target-previews'&&write)return json(await previewTargets(scope,targetPreviewInput.parse(await body(request,262144))),201);
     if(path==='target-snapshots'&&write)return json(await saveTargetSnapshot(scope,targetSnapshotInput.parse(await body(request))),201);
     if(parts[0]==='target-snapshots'&&parts.length===2&&!write)return json(await readTargetSnapshot(scope,uuid.parse(parts[1])));

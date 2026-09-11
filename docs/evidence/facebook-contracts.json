@@ -10,11 +10,11 @@
     "packages/core/src/index.ts": "2406cc00ff5907b2d13c05efe7e9c6a00a24ddab1b54a01b2d692cf8c6d4d3fd"
   },
   "command": "pnpm test:contracts",
-  "test_count": 28,
+  "test_count": 30,
   "facebook_test_count": 12,
   "exit_code": 0,
-  "started_at": "2026-09-11T22:37:48.595Z",
-  "ended_at": "2026-09-11T22:37:50.399Z",
+  "started_at": "2026-09-11T23:00:53.707Z",
+  "ended_at": "2026-09-11T23:00:55.680Z",
   "real_calls": 0,
   "real_verification": "PENDING"
 }

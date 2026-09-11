@@ -81,8 +81,8 @@ test('reconciles an unknown publication and then releases the quarantined enviro
   await expect(detail.getByText('执行尝试 2', { exact: true })).toHaveCount(0);
   await page.screenshot({ path: 'output/playwright/e1-reconciled-detail.png', fullPage: true });
 });
-test('all eight workspace pages stay usable at desktop and narrow widths', async ({ page }) => {
-  for (const [section, title] of [['overview', '执行总览'], ['accounts', '账号中心'], ['environments', '环境中心'], ['tasks', '任务工作台'], ['runs', '运行记录'], ['capabilities', '能力与验证'], ['templates', '模板与版本'], ['collections', '查询与结果']]) {
+test('all nine workspace pages stay usable at desktop and narrow widths', async ({ page }) => {
+  for (const [section, title] of [['overview', '执行总览'], ['accounts', '账号中心'], ['environments', '环境中心'], ['tasks', '任务工作台'], ['runs', '运行记录'], ['capabilities', '能力与验证'], ['templates', '模板与版本'], ['collections', '查询与结果'], ['schedules', '计划与时区']]) {
     await page.goto('/' + section); await expect(page.getByRole('heading', { name: title, exact: true })).toBeVisible();
     expect(await page.locator('body').innerText()).not.toContain('Internal Server Error');
   }
