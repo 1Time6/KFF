@@ -742,7 +742,7 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 32
+          "test_count": 34
         }
       ],
       "live_effects": "none",
@@ -814,7 +814,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
@@ -899,12 +899,12 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 32
+          "test_count": 34
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=fixtures",
@@ -992,17 +992,17 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 32
+          "test_count": 34
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         }
       ],
       "live_effects": "none",
@@ -1074,12 +1074,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         }
       ],
       "live_effects": "none",
@@ -1214,7 +1214,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=fixtures",
@@ -1292,12 +1292,12 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 32
+          "test_count": 34
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         }
       ],
       "live_effects": "none",
@@ -1373,12 +1373,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         }
       ],
       "live_effects": "none",
@@ -1451,7 +1451,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         }
       ],
       "live_effects": "none",
@@ -1528,12 +1528,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         }
       ],
       "live_effects": "none",
@@ -1607,7 +1607,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         }
       ],
       "live_effects": "none",
@@ -1679,7 +1679,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         }
       ],
       "live_effects": "none",
@@ -1753,7 +1753,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=fixtures",
@@ -1833,12 +1833,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         }
       ],
       "live_effects": "none",
@@ -1910,12 +1910,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         }
       ],
       "live_effects": "none",
@@ -1988,7 +1988,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=fixtures",
@@ -2140,7 +2140,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=fixtures",
@@ -2150,7 +2150,7 @@
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         }
       ],
       "live_effects": "none",
@@ -2227,12 +2227,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         }
       ],
       "live_effects": "none",
@@ -2384,12 +2384,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         }
       ],
       "live_effects": "none",
@@ -2462,7 +2462,7 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 32
+          "test_count": 34
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=fixtures",
@@ -2541,7 +2541,7 @@
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
@@ -2621,12 +2621,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         }
       ],
       "live_effects": "none",
@@ -2911,7 +2911,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         }
       ],
       "live_effects": "none",
@@ -3187,12 +3187,12 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 32
+          "test_count": 34
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         }
       ],
       "live_effects": "none",
@@ -3293,17 +3293,17 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 32
+          "test_count": 34
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         }
       ],
       "live_effects": "none",
@@ -3362,12 +3362,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         }
       ],
       "live_effects": "none",
@@ -3433,17 +3433,17 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 32
+          "test_count": 34
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
@@ -3512,12 +3512,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         }
       ],
       "live_effects": "none",
@@ -3580,17 +3580,17 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 32
+          "test_count": 34
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
@@ -3743,12 +3743,12 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 32
+          "test_count": 34
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=fixtures",
@@ -3758,7 +3758,7 @@
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         }
       ],
       "live_effects": "none",
@@ -3869,17 +3869,17 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 32
+          "test_count": 34
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
@@ -3988,12 +3988,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         }
       ],
       "live_effects": "none",
@@ -4733,17 +4733,17 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 32
+          "test_count": 34
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
@@ -4820,17 +4820,17 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 32
+          "test_count": 34
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
@@ -5227,12 +5227,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 157
+          "test_count": 166
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 17
+          "test_count": 18
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
@@ -5346,10 +5346,10 @@
       "title": "站点与订单主数据合同",
       "parent_id": "PLAN-F1-07",
       "gate": "G3",
-      "status": "TODO",
-      "scope": "确定真实已有接口和 ID；无存量才建最小新增范围",
+      "status": "DONE_SCOPED",
+      "scope": "按用户独立主数据决定建立 KFF 客户/会话/商品/订单 ID 与品牌合同；复合外键和只读历史保证唯一归属，其他站点不接入；实际支付与交付合同待后续",
       "authorized_objective": "按项目规划实施，Facebook 为首平台，真实测试后置",
-      "authorization_basis": "当前会话用户独立主数据决定；ADR-017",
+      "authorization_basis": "用户明确 KFF 完全独立拥有客户、订单、聊天、数据；ADR-017",
       "source_refs": [
         "项目规划.md#task-090"
       ],
@@ -5360,8 +5360,17 @@
       "conditional_dependencies": {},
       "selected_contact_path": "site_chat",
       "selected_content_source": null,
-      "repository_commit_before": "962114f836986ec21e99db54ac9913745710052e",
-      "allowed_files": [],
+      "repository_commit_before": "4fba862",
+      "allowed_files": [
+        "packages/contracts/src/order.ts",
+        "packages/core/src/orders.ts",
+        "supabase/migrations/*_g3_owned_order_snapshots.sql",
+        "apps/web",
+        "tests",
+        "scripts/production-smoke.ts",
+        "scripts/checkpoint.mjs",
+        "docs"
+      ],
       "forbidden_changes": [
         "原始规划与归档内容",
         "未获准的真实平台副作用",
@@ -5370,17 +5379,50 @@
       "inputs": [
         "当前主规划 v2.1"
       ],
-      "outputs": [],
+      "outputs": [
+        "docs/decisions/017-independent-business-data.md",
+        "packages/contracts/src/order.ts",
+        "packages/core/src/orders.ts",
+        "supabase/migrations/20260912003348_g3_owned_order_snapshots.sql",
+        "tests/integration/orders.test.ts"
+      ],
       "acceptance_ids": [
         "ACC-01",
         "ACC-55"
       ],
-      "actual_test_commands": [],
+      "actual_test_commands": [
+        {
+          "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
+          "exit_code": 0,
+          "test_count": 34
+        },
+        {
+          "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
+          "exit_code": 0,
+          "test_count": 166
+        },
+        {
+          "command": "node node_modules/@playwright/test/cli.js test --project=web",
+          "exit_code": 0,
+          "test_count": 18
+        },
+        {
+          "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
+          "exit_code": 0,
+          "test_count": null
+        }
+      ],
       "live_effects": "none",
       "pilot_permit_ref": null,
       "rollback_plan": "停止本项目 Web/Worker/Agent，回退本任务代码提交；已提交动作保留未知并对账，已应用迁移不反向改写",
-      "known_blockers": [],
-      "evidence_refs": [],
+      "known_blockers": [
+        "自有商品、报价和待核实订单基础已验；实际支付服务商尚未指定，可信支付核验/退款/交付及公共结账未完成，未发生真实收款"
+      ],
+      "evidence_refs": [
+        "docs/evidence/g1-local-checkpoint.json",
+        "docs/tasks/g3-owned-orders.md",
+        "docs/decisions/017-independent-business-data.md"
+      ],
       "reviewer": "Codex 实现；用户与独立审查尚未验收",
       "next_task": null,
       "continue_within_authorized_scope": true
@@ -5486,10 +5528,10 @@
       "title": "商品与订单快照",
       "parent_id": "PLAN-F1-07",
       "gate": "G3",
-      "status": "TODO",
-      "scope": "价格币种、交付范围、条款及订单状态",
+      "status": "DONE_SCOPED",
+      "scope": "显式币种/精度依据与整数金额、不可变商品版本、启用/停用、组合报价预览和确认；旧报价/客户版本/期限复核，订单固定价格、交付和条款、幂等及取消；订单不冒充支付核实，公共结账/实际支付另验",
       "authorized_objective": "按项目规划实施，Facebook 为首平台，真实测试后置",
-      "authorization_basis": "2026-09-12 当前会话用户指令",
+      "authorization_basis": "用户明确 KFF 完全独立拥有客户、订单、聊天、数据；ADR-017",
       "source_refs": [
         "项目规划.md#task-093"
       ],
@@ -5499,8 +5541,17 @@
       "conditional_dependencies": {},
       "selected_contact_path": null,
       "selected_content_source": null,
-      "repository_commit_before": "962114f836986ec21e99db54ac9913745710052e",
-      "allowed_files": [],
+      "repository_commit_before": "4fba862",
+      "allowed_files": [
+        "packages/contracts/src/order.ts",
+        "packages/core/src/orders.ts",
+        "supabase/migrations/*_g3_owned_order_snapshots.sql",
+        "apps/web",
+        "tests",
+        "scripts/production-smoke.ts",
+        "scripts/checkpoint.mjs",
+        "docs"
+      ],
       "forbidden_changes": [
         "原始规划与归档内容",
         "未获准的真实平台副作用",
@@ -5509,17 +5560,52 @@
       "inputs": [
         "当前主规划 v2.1"
       ],
-      "outputs": [],
+      "outputs": [
+        "packages/contracts/src/order.ts",
+        "packages/core/src/orders.ts",
+        "apps/web/components/order-workbench.tsx",
+        "supabase/migrations/20260912003348_g3_owned_order_snapshots.sql",
+        "tests/contracts/order.test.ts",
+        "tests/integration/orders.test.ts",
+        "tests/browser/web/orders.spec.ts"
+      ],
       "acceptance_ids": [
         "ACC-27",
         "ACC-66"
       ],
-      "actual_test_commands": [],
+      "actual_test_commands": [
+        {
+          "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
+          "exit_code": 0,
+          "test_count": 34
+        },
+        {
+          "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
+          "exit_code": 0,
+          "test_count": 166
+        },
+        {
+          "command": "node node_modules/@playwright/test/cli.js test --project=web",
+          "exit_code": 0,
+          "test_count": 18
+        },
+        {
+          "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
+          "exit_code": 0,
+          "test_count": null
+        }
+      ],
       "live_effects": "none",
       "pilot_permit_ref": null,
       "rollback_plan": "停止本项目 Web/Worker/Agent，回退本任务代码提交；已提交动作保留未知并对账，已应用迁移不反向改写",
-      "known_blockers": [],
-      "evidence_refs": [],
+      "known_blockers": [
+        "自有商品、报价和待核实订单基础已验；实际支付服务商尚未指定，可信支付核验/退款/交付及公共结账未完成，未发生真实收款"
+      ],
+      "evidence_refs": [
+        "docs/evidence/g1-local-checkpoint.json",
+        "docs/tasks/g3-owned-orders.md",
+        "docs/decisions/017-independent-business-data.md"
+      ],
       "reviewer": "Codex 实现；用户与独立审查尚未验收",
       "next_task": null,
       "continue_within_authorized_scope": true
@@ -5529,7 +5615,7 @@
       "title": "支付事件核验",
       "parent_id": "PLAN-F1-07",
       "gate": "G3",
-      "status": "TODO",
+      "status": "BLOCKED",
       "scope": "按实际支付渠道实现验签、金额币种、对象及重复核验",
       "authorized_objective": "按项目规划实施，Facebook 为首平台，真实测试后置",
       "authorization_basis": "2026-09-12 当前会话用户指令",
@@ -5553,7 +5639,9 @@
       "inputs": [
         "当前主规划 v2.1"
       ],
-      "outputs": [],
+      "outputs": [
+        "docs/next-step.md"
+      ],
       "acceptance_ids": [
         "ACC-27"
       ],
@@ -5561,11 +5649,16 @@
       "live_effects": "none",
       "pilot_permit_ref": null,
       "rollback_plan": "停止本项目 Web/Worker/Agent，回退本任务代码提交；已提交动作保留未知并对账，已应用迁移不反向改写",
-      "known_blockers": [],
-      "evidence_refs": [],
+      "known_blockers": [
+        "实际支付服务商尚未指定。规划要求按实际渠道编写验签和金额/对象核验；按用户任何拿不准先暂停的指令等待选择，不自行复用旧站点支付方式"
+      ],
+      "evidence_refs": [
+        "docs/next-step.md",
+        "docs/decisions/017-independent-business-data.md"
+      ],
       "reviewer": "Codex 实现；用户与独立审查尚未验收",
       "next_task": null,
-      "continue_within_authorized_scope": true
+      "continue_within_authorized_scope": false
     },
     {
       "task_id": "TASK-095",
@@ -7316,5 +7409,5 @@
       "continue_within_authorized_scope": true
     }
   ],
-  "updated_at": "2026-09-12T00:32:19.583Z"
+  "updated_at": "2026-09-12T00:55:35.117Z"
 }

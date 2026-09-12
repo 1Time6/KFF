@@ -27,6 +27,8 @@ import { requestScope, checkOrigin, login, logout } from '../../../lib/auth';
 import {visitorCookie,visitorToken} from '../../../lib/visitor-auth';
 import {channelInput,channelControlInput,inboundMessageInput,conversationPageInput,customerUpdateInput,customerNoteInput} from '../../../../../packages/contracts/src/inbox';
 import {createSiteChannel,controlSiteChannel,publicChatInfo,beginVisitorSession,endVisitorSession,visitorSessionStatus,receiveVisitorMessage,visitorHistory,inboxWorkspace,inboxConversation,customerWorkspace,customerDetail,updateCustomer,addCustomerNote} from '@kff/core/inbox';
+import {productVersionInput,productControlInput,orderPreviewInput,orderConfirmInput,orderCancelInput} from '../../../../../packages/contracts/src/order';
+import {saveProductVersion,controlProduct,commerceWorkspace,productHistory,previewOrder,confirmOrder,ownedOrderDetail,cancelOwnedOrder} from '@kff/core/orders';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -96,6 +98,17 @@ async function handle(request: Request, context: Context) {
     if (write) checkOrigin(request);
     if (path === 'workspace' && !write) return json(await workspace(scope));
     if(path==='inbox'&&!write)return json(await inboxWorkspace(scope));
+    if(path==='commerce'&&!write)return json(await commerceWorkspace(scope));
+    if(path==='products'&&write)return json(await saveProductVersion(scope,productVersionInput.parse(await body(request))),201);
+    if(parts[0]==='products'&&parts.length>=2){const id=uuid.parse(parts[1]);
+      if(parts.length===2&&!write)return json(await productHistory(scope,id));
+      if(parts.length===3&&parts[2]==='versions'&&write)return json(await saveProductVersion(scope,productVersionInput.parse(await body(request)),id),201);
+      if(parts.length===3&&parts[2]==='controls'&&write)return json(await controlProduct(scope,id,productControlInput.parse(await body(request))));
+    }
+    if(path==='order-previews'&&write)return json(await previewOrder(scope,orderPreviewInput.parse(await body(request))),201);
+    if(path==='orders'&&write)return json(await confirmOrder(scope,orderConfirmInput.parse(await body(request))),201);
+    if(parts[0]==='orders'&&parts.length===2&&!write)return json(await ownedOrderDetail(scope,uuid.parse(parts[1])));
+    if(parts[0]==='orders'&&parts.length===3&&parts[2]==='cancel'&&write)return json(await cancelOwnedOrder(scope,uuid.parse(parts[1]),orderCancelInput.parse(await body(request))));
     if(path==='site-channels'&&write)return json(await createSiteChannel(scope,channelInput.parse(await body(request))),201);
     if(parts[0]==='site-channels'&&parts.length===3&&parts[2]==='controls'&&write)return json(await controlSiteChannel(scope,uuid.parse(parts[1]),channelControlInput.parse(await body(request))));
     if(parts[0]==='conversations'&&parts.length===2&&!write){const search=new URL(request.url).searchParams;return json(await inboxConversation(scope,uuid.parse(parts[1]),conversationPageInput.parse({after:search.get('after')??'0',limit:search.get('limit')??50})));}

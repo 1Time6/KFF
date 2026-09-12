@@ -193,8 +193,9 @@ export async function customerDetail(scope:Scope,id:string) {
     const events=(await client.query('SELECT id,event_type,actor_id,details,created_at FROM kff.customer_events WHERE customer_id=$1 ORDER BY created_at DESC,id DESC LIMIT 200',[id])).rows;
     const identities=(await client.query<{id:string;account_id:string;channel:string;remote_id:string;contact_target_id:string}>('SELECT id,account_id,channel,remote_id,contact_target_id FROM kff.customer_identities WHERE customer_id=$1 ORDER BY created_at,id',[id])).rows;
     const conversations=(await client.query<InboxConversation>('SELECT '+conversationColumns+conversationJoins+' WHERE v.customer_id=$1 ORDER BY v.last_message_at DESC,v.id',[id])).rows;
+    const orders=(await client.query<{id:string;state:string;currency:string;total_minor:string}>('SELECT id,state,snapshot->>\'currency\' AS currency,snapshot->>\'total_minor\' AS total_minor FROM kff.orders WHERE customer_id=$1 ORDER BY created_at DESC,id LIMIT 100',[id])).rows;
     await audit(client,scope,'customer.detail_viewed',id);
-    return {customer,events,identities,conversations,acquisition_source:'UNKNOWN' as const,verified_payment:false as const};
+    return {customer,events,identities,conversations,orders,acquisition_source:'UNKNOWN' as const,verified_payment:false as const};
   });
 }
 async function previousCustomerRequest(client:PoolClient,id:string,requestId:string,hash:string) {

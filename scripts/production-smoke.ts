@@ -61,10 +61,16 @@ try {
   const stranger=await fetch(origin+'/api/public/chat/'+channel.id+'/messages');requireCondition(stranger.status===401,'TEST_FAILED','访客历史未鉴权');
   const customer=await (await fetch(origin+'/api/customers/'+conversation.customer_id,{headers:{Cookie:cookie}})).json();requireCondition(customer.customer.first_inquiry_event_id===receivedBody.message.inbound_event_id&&customer.verified_payment===false,'TEST_FAILED','生产构建主数据来源不一致');
   await jsonPost('customers/'+conversation.customer_id+'/notes',{request_id:randomUUID(),text:'Owned synthetic production verification completed'});
+  const product=await (await jsonPost('products',{request_id:randomUUID(),sku:'SMOKE-'+randomUUID().slice(0,8),name:'Owned synthetic service',currency:'USD',minor_unit_exponent:2,precision_source:'Synthetic currency fixture, two decimal places',unit_amount_minor:'1250',delivery_scope:'One synthetic report',terms:'Local verification only, no actual sale'})).json();
+  await jsonPost('products/'+product.product_id+'/controls',{request_id:randomUUID(),expected_version:1,state:'ACTIVE',reason:'Reviewed synthetic product version'});
+  const orderPreview=await (await jsonPost('order-previews',{request_id:randomUUID(),customer_id:conversation.customer_id,conversation_id:conversation.id,items:[{product_id:product.product_id,quantity:3}]})).json();
+  const orderInput={request_id:randomUUID(),preview_id:orderPreview.id,preview_hash:orderPreview.snapshot_hash,confirmed_total_minor:'3750',currency:'USD',confirmation:'CREATE_THIS_ORDER'};
+  const order=await (await jsonPost('orders',orderInput)).json(),orderReplay=await (await jsonPost('orders',orderInput)).json();requireCondition(order.id===orderReplay.id&&order.snapshot.total_minor==='3750'&&order.payment_state==='UNVERIFIED','TEST_FAILED','生产构建订单快照或重复确认错误');
+  await jsonPost('orders/'+order.id+'/cancel',{request_id:randomUUID(),expected_version:1,reason:'Completed synthetic order verification'});
   await jsonPost('site-channels/'+channel.id+'/controls',{request_id:randomUUID(),expected_version:channel.version,state:'PAUSED',reason:'Completed synthetic production inbound verification'});
   await fetch(origin+'/api/public/chat/'+channel.id+'/end',{method:'POST',headers:{Cookie:visitorCookie!,Origin:origin,'Content-Type':'application/json'},body:'{}'});
   await fetch(origin + '/api/auth/logout', { method: 'POST', headers: { Cookie: cookie, Origin: origin, 'Content-Type': 'application/json' }, body: '{}' });
-  console.log('Production smoke: existing auth/data/calendar checks and owned visitor page, isolated session, durable inquiry, duplicate receipt, customer source, note and channel pause passed; no external actions.');
+  console.log('Production smoke: existing auth/data/calendar checks, owned inquiry and customer, product activation, immutable order confirmation, duplicate receipt and order cancellation passed; no external actions.');
 } finally {
   child.kill('SIGTERM');
   if (child.exitCode === null) await new Promise<void>(resolve => { child.once('exit', () => resolve()); setTimeout(resolve, 5000); });
