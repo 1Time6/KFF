@@ -1,11 +1,13 @@
 import { z } from 'zod';
 import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import { performance } from 'node:perf_hooks';
 import type { BrowserContext } from '@playwright/test';
 import { agentCommandSchema, hashSchema, type ActionReport } from '@kff/contracts';
 import { AppError, requireCondition, digest } from '@kff/core';
 import { adapterImplementationDigest } from '../../../packages/core/src/artifacts';
 import { executeFixture, FacebookPageAdapter } from '@kff/adapters';
+import {FacebookMessengerAdapter,executeFixtureMessage} from '../../../packages/adapters/src/facebook-messenger';
 import { saveClosure } from './guardian-protocol';
 
 const startInput = z.object({ type: z.literal('start'), command: agentCommandSchema, runtime: z.string(), nonce: hashSchema }).strict();
@@ -47,19 +49,19 @@ process.on('message', async raw => {
     requireCondition(digest(command.snapshot) === command.snapshot_hash && digest(command.snapshot.body) === command.snapshot.content_hash, 'APPROVAL_STALE', '任务快照不匹配');
     requireCondition(Date.parse(command.expires_at) > Date.now(), 'LEASE_STALE', '命令已经过期');
     if (command.snapshot.is_synthetic) {
-      result = await executeFixture(command, path.join(runtime, 'profiles'), { beforeSubmit, assertControlled, onContext: value => { context = value; if (value && process.connected) process.send?.({ type: 'context-opened' }, () => {}); if (value && control.signal.aborted) void value.close().catch(() => {}); } });
+      result = command.snapshot.message?{outcome:'VERIFIED_SUCCEEDED',receipt:await executeFixtureMessage(command,{beforeSubmit,assertControlled,signal:control.signal}),diagnostic:{step:'message-accepted'}}:await executeFixture(command, path.join(runtime, 'profiles'), { beforeSubmit, assertControlled, onContext: value => { context = value; if (value && process.connected) process.send?.({ type: 'context-opened' }, () => {}); if (value && control.signal.aborted) void value.close().catch(() => {}); } });
     } else {
       requireCondition(process.env.KFF_ENABLE_LIVE === 'true', 'LIVE_DISABLED', '真实执行未启用');
-      requireCondition(command.snapshot.implementation_digest === adapterImplementationDigest(path.dirname(runtime), 'facebook'), 'VERSION_CONFLICT', '本机适配器与已审核实现不匹配');
+      requireCondition(command.snapshot.implementation_digest === adapterImplementationDigest(fileURLToPath(new URL('../../../',import.meta.url)), 'facebook'), 'VERSION_CONFLICT', '本机适配器与已审核实现不匹配');
       requireCondition(command.snapshot.credential_ref, 'AUTH_EXPIRED', '任务缺少已审核的凭据引用');
       const credential = process.env[command.snapshot.credential_ref];
       requireCondition(credential && process.env.KFF_FACEBOOK_GRAPH_VERSION, 'AUTH_EXPIRED', 'Facebook 凭据和版本尚未配置');
       requireCondition(command.snapshot.platform_api_version === process.env.KFF_FACEBOOK_GRAPH_VERSION, 'VERSION_CONFLICT', 'Graph API 版本与已审核版本不符');
-      const adapter = new FacebookPageAdapter({ version: command.snapshot.platform_api_version!, pageToken: credential, signal: control.signal, assertControlled });
-      const receipt = await adapter.execute(command.snapshot, beforeSubmit);
+      const options={ version: command.snapshot.platform_api_version!, pageToken: credential, signal: control.signal, assertControlled };
+      const receipt = command.snapshot.message?await new FacebookMessengerAdapter(options).execute(command.snapshot,beforeSubmit,command.action_id):await new FacebookPageAdapter(options).execute(command.snapshot,beforeSubmit);
       result = { outcome: 'VERIFIED_SUCCEEDED', receipt, diagnostic: { step: 'graph-verified' } };
     }
-  } catch (error) { result = { outcome: control.signal.aborted ? 'CANCELED' : 'BLOCKED', error_code: error instanceof AppError ? error.code : 'EXECUTOR_ERROR', diagnostic: { step: 'executor-failed' } }; }
+  } catch (error) { result = { outcome: intentGranted?'UNKNOWN_OUTCOME':control.signal.aborted ? 'CANCELED' : 'BLOCKED', error_code: error instanceof AppError ? error.code : 'EXECUTOR_ERROR', diagnostic: { step: 'executor-failed' } }; }
   if (control.signal.aborted && result.outcome !== 'VERIFIED_SUCCEEDED') { result.outcome = intentGranted ? 'UNKNOWN_OUTCOME' : 'CANCELED'; result.error_code = 'STOP_REQUESTED'; }
   // A failed or killed guardian never writes this proof. Its caller must retain isolation.
   try {

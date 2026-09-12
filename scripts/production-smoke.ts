@@ -91,6 +91,20 @@ try {
   const returned=await fetch(origin+'/payment-return?session_id=cs_forged');requireCondition(returned.ok&&(await returned.text()).includes('支付进度正在核对'),'TEST_FAILED','生产构建支付返回页面不可访问');await controlStripeConnection(paymentScope,connection.id,{request_id:randomUUID(),expected_version:1,outbound_enabled:false,reason:'Synthetic production Stripe check completed'});
   await jsonPost('site-channels/'+channel.id+'/controls',{request_id:randomUUID(),expected_version:channel.version,state:'PAUSED',reason:'Completed synthetic production inbound verification'});
   await fetch(origin+'/api/public/chat/'+channel.id+'/end',{method:'POST',headers:{Cookie:visitorCookie!,Origin:origin,'Content-Type':'application/json'},body:'{}'});
+  const leadPageId=BigInt('0x'+randomUUID().replaceAll('-','')).toString();
+  const leadAccount=await(await jsonPost('facebook/fixtures',{request_id:randomUUID(),name:'Production local Facebook reception',page_id:leadPageId,agent_id:localIds.agent})).json();
+  await jsonPost('facebook/connections',{request_id:randomUUID(),...leadAccount,expected_version:0,state:'ACTIVE',auto_reply:false,reply_window_hours:24,policy_ref:'kff.local.production.service-window.v1'});
+  await jsonPost('whatsapp',{request_id:randomUUID(),account_id:leadAccount.account_id,expected_version:0,name:'Production fixture sales',phone:'15550008888',state:'ACTIVE',template:'Local invitation: {whatsapp_url}',cooldown_hours:24});
+  const leadInput={event_id:'production_'+randomUUID(),page_id:leadPageId,sender_id:'987654321',body:'Please add WhatsApp',kind:'MESSAGE',display_name:'Production local lead',occurred_at:new Date().toISOString(),has_attachment:false,source:{kind:'MESSENGER',page_id:leadPageId,source_id:null,ref:'production-smoke',ad_id:null}};
+  const lead=await(await jsonPost('facebook/fixtures/'+leadAccount.account_id+'/events',leadInput)).json();
+  const leadReplay=await(await jsonPost('facebook/fixtures/'+leadAccount.account_id+'/events',leadInput)).json();requireCondition(lead.message_id===leadReplay.message_id,'TEST_FAILED','生产 Facebook 收件去重失败');
+  await jsonPost('conversations/'+lead.conversation_id+'/replies',{request_id:randomUUID(),expected_version:1,body:'',refer_whatsapp:true,fixture_scenario:'normal'});
+  let leadSent=false;for(let i=0;i<60;i++){const detail=await(await fetch(origin+'/api/conversations/'+lead.conversation_id+'/reception',{headers:{Cookie:cookie}})).json();if(detail.referrals?.[0]?.state==='REFERRED'){leadSent=detail.referrals[0].body.includes('wa.me/15550008888');break;}await delay(500);}
+  requireCondition(leadSent,'TEST_FAILED','生产 API 回复未通过本地 Worker/Agent 获得消息证据');
+  const metricDay=new Date().toISOString().slice(0,10),metric=await(await fetch(origin+'/api/lead-analytics?'+new URLSearchParams({from:metricDay,to:metricDay,account_id:leadAccount.account_id,synthetic:'true'}),{headers:{Cookie:cookie}})).json();
+  requireCondition(metric.metrics.some((row:{group_kind:string;referrals:number;inbound_messages:number})=>row.group_kind==='TOTAL'&&row.referrals===1&&row.inbound_messages===1),'TEST_FAILED','生产引流统计与原消息不匹配');
+  requireCondition((await fetch(origin+'/lead-analytics',{headers:{Cookie:cookie}})).ok,'TEST_FAILED','生产引流页面不可访问');
+  console.log('Production Facebook reception: inbound dedupe, bound local Agent invitation, exact WhatsApp destination and scoped analytics passed.');
   await fetch(origin + '/api/auth/logout', { method: 'POST', headers: { Cookie: cookie, Origin: origin, 'Content-Type': 'application/json' }, body: '{}' });
   console.log('Production smoke: auth/data/calendar/inquiry/order and Stripe checkout/refund, signed raw HTTP callbacks, duplicate receipts, pending amounts, immutable adjustments/reversals and test revenue isolation passed; no external actions.');
 } finally {

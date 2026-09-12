@@ -1,0 +1,7 @@
+import {mkdtempSync,mkdirSync,writeFileSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import path from 'node:path';
+import {randomUUID} from 'node:crypto';
+import {it,expect} from 'vitest';
+import {loadAgentConfiguration} from '../../apps/agent/src/configuration';
+it('isolates agent journals and tokens while preserving the original recovery path',()=>{const root=mkdtempSync(path.join(tmpdir(),'kff-agent-')),base=path.join(root,'.kff');mkdirSync(base);const first={agent_id:randomUUID(),organization_id:randomUUID(),brand_id:randomUUID(),token:'a'.repeat(64),controller_origin:'http://127.0.0.1:3000'},second={...first,agent_id:randomUUID(),token:'b'.repeat(64)};try{writeFileSync(path.join(base,'agent-config.json'),JSON.stringify(first));writeFileSync(path.join(root,'other.json'),JSON.stringify(second));writeFileSync(path.join(root,'copy.json'),JSON.stringify(first));const a=loadAgentConfiguration(root,{}),b=loadAgentConfiguration(root,{KFF_AGENT_CONFIG_FILE:'other.json',KFF_AGENT_TOKEN:first.token});expect(a.runtimeDir).toBe(base);expect(b.runtimeDir).toBe(path.join(base,'agent-instances',second.agent_id));expect(b.agentConfig.token).toBe(second.token);expect(loadAgentConfiguration(root,{KFF_AGENT_CONFIG_FILE:'copy.json'}).runtimeDir).toBe(a.runtimeDir);expect(()=>loadAgentConfiguration(root,{KFF_APP_ORIGIN:'http://evil.example'})).toThrow('INVALID_CONTROLLER_ORIGIN');}finally{rmSync(root,{recursive:true,force:true});}});

@@ -3,6 +3,7 @@ import { scoped, transaction } from '@kff/database';
 import { actionStateSchema, quiescenceInput, type Scope, type TaskSnapshot } from '@kff/contracts';
 import { digest, requireCondition } from './index';
 import { audit, requireAdmin, runDetail } from './service';
+import {projectMessageOutcome} from './lead-reception';
 import type { AgentIdentity } from './execution';
 
 export async function recordQuiescence(agent: AgentIdentity, commandId: string, input: z.infer<typeof quiescenceInput>) {
@@ -32,7 +33,7 @@ export async function exportDiagnostic(scope: Scope, bundleId: string) {
     return parsed.data;
   });
 }
-const fixturePosts = z.array(z.object({ id: z.string().regex(/^synthetic_[a-f0-9-]{36}$/), account_id: z.string(), action_id: z.string().uuid(), body: z.string().max(5000), content_hash: z.string(), created_at: z.string().datetime() }).strict()).max(100);
+const fixturePosts = z.array(z.object({ id: z.string().regex(/^synthetic_[a-f0-9-]{36}$/), account_id: z.string(),recipient_id:z.string().optional(), action_id: z.string().uuid(), body: z.string().max(5000), content_hash: z.string(), created_at: z.string().datetime() }).strict()).max(100);
 export async function reconcileSynthetic(scope: Scope, runId: string, readPosts?: (actionId: string) => Promise<unknown>) {
   requireAdmin(scope); const detail = await runDetail(scope, runId);
   requireCondition(detail.task.snapshot.is_synthetic, 'PILOT_PERMIT_REQUIRED', '真实结果需使用相应只读许可和远端对象核验', 409);
@@ -45,7 +46,7 @@ export async function reconcileSynthetic(scope: Scope, runId: string, readPosts?
   });
   const posts = fixturePosts.parse(await source(actionId));
   const snapshot = detail.task.snapshot;
-  const matches = posts.filter(post => post.action_id === actionId && post.account_id === snapshot.external_account_id && post.content_hash === snapshot.content_hash && digest(post.body) === snapshot.content_hash);
+  const matches = posts.filter(post => post.action_id === actionId && post.account_id === snapshot.external_account_id && (!snapshot.message||post.recipient_id===snapshot.message.contact.remote_id) && post.content_hash === snapshot.content_hash && digest(post.body) === snapshot.content_hash);
   return scoped(scope, async client => {
     await client.query('SELECT id FROM kff.runs WHERE id=$1 FOR UPDATE', [runId]);
     const action = (await client.query('SELECT * FROM kff.actions WHERE id=$1 FOR UPDATE', [actionId])).rows[0];
@@ -55,8 +56,9 @@ export async function reconcileSynthetic(scope: Scope, runId: string, readPosts?
       await audit(client, scope, 'action.reconciliation_inconclusive', actionId, { matches: matches.length, observed_count: posts.length });
       return { reconciled: false, reason_code: 'SUBMISSION_UNCERTAIN', message: '证据不足，保留原状态；没有创建新动作' };
     }
-    const receipt = { remote_id: matches[0].id, actual_account_id: snapshot.external_account_id, content_hash: snapshot.content_hash, evidence_kind: 'synthetic_dom', observed_at: new Date().toISOString() };
+    const receipt = { remote_id: matches[0].id, actual_account_id: snapshot.external_account_id, content_hash: snapshot.content_hash, evidence_kind: snapshot.message?'synthetic_message':'synthetic_dom',...(snapshot.message?{recipient_id:snapshot.message.contact.remote_id}:{}), observed_at: new Date().toISOString() };
     await client.query("UPDATE kff.actions SET state='VERIFIED_SUCCEEDED',receipt=$1,error_code=NULL WHERE id=$2", [receipt, actionId]);
+    await projectMessageOutcome(client,actionId,snapshot);
     await client.query("UPDATE kff.runs SET status='SUCCEEDED',updated_at=now() WHERE id=$1", [runId]);
     await client.query("UPDATE kff.tasks SET status='SUCCEEDED' WHERE id=$1", [detail.task.id]);
     await audit(client, scope, 'action.reconciled', actionId, { remote_id: matches[0].id, evidence_kind: 'synthetic_dom' });

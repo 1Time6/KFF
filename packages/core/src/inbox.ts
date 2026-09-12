@@ -11,9 +11,9 @@ import {audit,requireAdmin,requireWrite} from './service';
 type ChannelRow=SiteChannel & {organization_id:string;brand_id:string;created_by:string;request_hash:string;session_bucket_at:Date;session_bucket_count:number;message_bucket_at:Date;message_bucket_count:number};
 interface VisitorSession {id:string;visitor_id:string;expires_at:Date;revoked_at:Date|null;message_bucket_at:Date;message_bucket_count:number}
 const channelColumns='id,name,account_id,state,version,is_synthetic,session_hours,reply_window_hours,sessions_per_minute,messages_per_minute,created_at';
-const messageColumns='id,conversation_id,sequence,direction,body,received_at,client_sent_at,inbound_event_id';
-const conversationColumns='v.id,v.customer_id,v.channel_id,v.identity_id,v.last_sequence,v.last_message_at,v.reply_window_expires_at,c.display_name,c.stage,c.owner_user_id,h.name AS channel_name,h.is_synthetic,t.opted_out,i.contact_target_id';
-const conversationJoins=' FROM kff.conversations v JOIN kff.customers c ON c.id=v.customer_id JOIN kff.site_channels h ON h.id=v.channel_id JOIN kff.customer_identities i ON i.id=v.identity_id JOIN kff.contact_targets t ON t.id=i.contact_target_id';
+const messageColumns='id,conversation_id,sequence,direction,body,received_at,client_sent_at,inbound_event_id,message_kind,source,actor_kind,action_id';
+const conversationColumns='v.id,v.customer_id,v.account_id,v.channel_id,v.channel_kind,v.handling_mode,v.control_version,v.last_inbound_sequence,v.identity_id,v.last_sequence,v.last_message_at,v.reply_window_expires_at,c.display_name,c.stage,c.lead_status,c.tags,c.intent_level,c.valid_inquiry,c.owner_user_id,COALESCE(h.name,ac.display_name) AS channel_name,ac.is_synthetic,t.opted_out,i.contact_target_id';
+const conversationJoins=' FROM kff.conversations v JOIN kff.customers c ON c.id=v.customer_id LEFT JOIN kff.site_channels h ON h.id=v.channel_id JOIN kff.accounts ac ON ac.id=v.account_id JOIN kff.customer_identities i ON i.id=v.identity_id JOIN kff.contact_targets t ON t.id=i.contact_target_id';
 const receipt=(message:InboxMessage)=>({message,status:'STORED' as const,execution_authorized:false as const});
 async function now(client:PoolClient):Promise<Date> {return (await client.query('SELECT clock_timestamp() AS now')).rows[0].now;}
 
@@ -169,15 +169,15 @@ export async function inboxWorkspace(scope:Scope) {
   return scoped(scope,async client=>({
     channels:(await client.query<SiteChannel>('SELECT '+channelColumns+' FROM kff.site_channels ORDER BY created_at DESC,id LIMIT 100')).rows,
     conversations:(await client.query<InboxConversation>('SELECT '+conversationColumns+conversationJoins+' ORDER BY v.last_message_at DESC,v.id LIMIT 200')).rows,
-    counts:(await client.query('SELECT (SELECT count(*)::int FROM kff.customers) AS customers,(SELECT count(*)::int FROM kff.conversations) AS conversations,(SELECT count(*)::int FROM kff.messages) AS inbound_messages')).rows[0] as {customers:number;conversations:number;inbound_messages:number},
-    outbound_available:false as const,
+    counts:(await client.query("SELECT (SELECT count(*)::int FROM kff.customers) AS customers,(SELECT count(*)::int FROM kff.conversations) AS conversations,(SELECT count(*)::int FROM kff.messages WHERE direction='INBOUND' AND message_kind='MESSAGE') AS inbound_messages")).rows[0] as {customers:number;conversations:number;inbound_messages:number},
+    outbound_available:true as const,
   }));
 }
 export async function inboxConversation(scope:Scope,id:string,input:z.input<typeof conversationPageInput>={}) {
   return scoped(scope,async client=>{
     const conversation=(await client.query<InboxConversation>('SELECT '+conversationColumns+conversationJoins+' WHERE v.id=$1',[id])).rows[0];
     requireCondition(conversation,'NOT_FOUND','会话不存在',404);
-    return {conversation,...await readMessages(client,id,input),outbound_available:false as const};
+    return {conversation,...await readMessages(client,id,input),outbound_available:conversation.channel_kind==='FACEBOOK_MESSENGER'};
   });
 }
 export async function customerWorkspace(scope:Scope) {
@@ -196,7 +196,7 @@ export async function customerDetail(scope:Scope,id:string) {
     const orders=(await client.query<{id:string;state:string;payment_state:string;currency:string;total_minor:string}>('SELECT id,state,payment_state,snapshot->>\'currency\' AS currency,snapshot->>\'total_minor\' AS total_minor FROM kff.orders WHERE customer_id=$1 ORDER BY created_at DESC,id LIMIT 100',[id])).rows;
     const paymentSummary=(await client.query<{real:number;test:number}>("SELECT count(*) FILTER(WHERE p.mode='LIVE' AND NOT p.is_synthetic)::int AS real,count(*) FILTER(WHERE p.mode='TEST' OR p.is_synthetic)::int AS test FROM kff.verified_payments p JOIN kff.orders o ON o.id=p.order_id WHERE o.customer_id=$1",[id])).rows[0];
     await audit(client,scope,'customer.detail_viewed',id);
-    return {customer,events,identities,conversations,orders,acquisition_source:'UNKNOWN' as const,verified_payment:paymentSummary.real>0,payment_summary:paymentSummary};
+    return {customer,events,identities,conversations,orders,acquisition_source:customer.acquisition_source??'UNKNOWN',verified_payment:paymentSummary.real>0,payment_summary:paymentSummary};
   });
 }
 async function previousCustomerRequest(client:PoolClient,id:string,requestId:string,hash:string) {

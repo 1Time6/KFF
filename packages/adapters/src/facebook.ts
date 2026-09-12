@@ -6,7 +6,7 @@ import { assertTemplateSnapshot } from './templates';
 const pageIdentity = z.object({ id: z.string(), name: z.string() });
 const postIdentity = z.object({ id: z.string(), message: z.string(), from: z.object({ id: z.string() }), permalink_url: z.string().url(), is_published: z.boolean() });
 export class FacebookPageAdapter {
-  constructor(private options: { version: string; pageToken: string; fetch?: typeof fetch; signal?: AbortSignal; assertControlled?: () => void }) {
+  constructor(protected options: { version: string; pageToken: string; fetch?: typeof fetch; signal?: AbortSignal; assertControlled?: () => void }) {
     requireCondition(/^v[0-9]{1,3}\.[0-9]+$/.test(options.version), 'INVALID_INPUT', '需配置明确的 Graph API 版本');
     requireCondition(options.pageToken.length > 0, 'AUTH_EXPIRED', '未配置主页凭据');
   }
@@ -17,7 +17,7 @@ export class FacebookPageAdapter {
     requireCondition(snapshot.body.length <= 5000, 'INVALID_INPUT', '文本超出当前模板范围');
     requireCondition(!snapshot.platform_api_version || snapshot.platform_api_version === this.options.version, 'VERSION_CONFLICT', 'Graph API 版本与任务不符');
   }
-  private async graph(path: string, method: 'GET' | 'POST', fields: Record<string, string>): Promise<unknown> {
+  async graph(path: string, method: 'GET' | 'POST', fields: Record<string, string>): Promise<unknown> {
     this.options.assertControlled?.();
     const url = validateTargetUrl('https://graph.facebook.com/' + this.options.version + '/' + path, ['graph.facebook.com']);
     if (method === 'GET') for (const [key, value] of Object.entries(fields)) url.searchParams.set(key, value);

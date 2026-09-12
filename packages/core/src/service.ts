@@ -99,7 +99,9 @@ export async function approveTask(scope: Scope, taskId: string, input: z.infer<t
 }
 export async function enqueueTask(scope: Scope, taskId: string): Promise<Run> {
   requireWrite(scope);
-  return scoped(scope, async client => {
+  return scoped(scope, client => enqueueTaskInTransaction(client,scope,taskId));
+}
+export async function enqueueTaskInTransaction(client:PoolClient,scope:Scope,taskId:string):Promise<Run> {
     const task = (await client.query<Task>('SELECT * FROM kff.tasks WHERE id=$1 FOR UPDATE', [taskId])).rows[0];
     requireCondition(task, 'NOT_FOUND', '任务不存在', 404);
     const existing = (await client.query<Run>('SELECT * FROM kff.runs WHERE task_id=$1', [taskId])).rows[0];
@@ -120,7 +122,6 @@ export async function enqueueTask(scope: Scope, taskId: string): Promise<Run> {
     await client.query('INSERT INTO kff.jobs(organization_id,brand_id,action_id) VALUES($1,$2,$3)', [scope.organization_id, scope.brand_id, action.id]);
     await client.query("UPDATE kff.tasks SET status='QUEUED' WHERE id=$1", [taskId]);
     await audit(client, scope, 'run.queued', run.id, { action_id: action.id }); return run;
-  });
 }
 export async function stopRun(scope: Scope, runId: string, reason: string) {
   requireWrite(scope);

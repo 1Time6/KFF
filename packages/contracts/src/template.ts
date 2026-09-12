@@ -1,17 +1,17 @@
 import { z } from 'zod';
 
-export const templateCapabilityKey = z.enum(['kff.fixture.page.read.browser', 'kff.fixture.page.publish.browser', 'facebook.page.read.api', 'facebook.page.publish.api']);
+export const templateCapabilityKey = z.enum(['kff.fixture.page.read.browser', 'kff.fixture.page.publish.browser', 'facebook.page.read.api', 'facebook.page.publish.api','kff.fixture.messenger.reply.api','facebook.messenger.reply.api']);
 const steps = z.enum(['validate_input', 'verify_identity', 'prepare_content', 'submit_once', 'verify_original']);
 export const templateManifestSchema = z.object({
-  schema_version: z.literal('kff.template.v1'), engine: z.literal('fixed-page-v1'), capability_key: templateCapabilityKey,
-  adapter_version: z.enum(['fixture-page-v1', 'facebook-graph-v1']),
+  schema_version: z.literal('kff.template.v1'), engine: z.enum(['fixed-page-v1','fixed-message-v1']), capability_key: templateCapabilityKey,
+  adapter_version: z.enum(['fixture-page-v1', 'facebook-graph-v1','fixture-messenger-v1','facebook-messenger-v1']),
   input: z.object({ body_required: z.boolean(), max_body_length: z.number().int().min(1).max(5000) }).strict(),
   steps: z.array(steps).min(2).max(5), permission_gate: z.literal('common_execution_gate'),
-  success_evidence: z.enum(['page_identity', 'published_object_identity_author_content']), automatic_write_retry: z.literal(false),
+  success_evidence: z.enum(['page_identity', 'published_object_identity_author_content','message_acceptance']), automatic_write_retry: z.literal(false),
 }).strict().superRefine((value, context) => {
-  const write = value.capability_key.includes('.publish.'); const synthetic = value.capability_key.startsWith('kff.fixture.');
+  const message=value.capability_key.includes('.messenger.');const write = value.capability_key.includes('.publish.')||message; const synthetic = value.capability_key.startsWith('kff.fixture.');
   const expectedSteps = write ? ['validate_input', 'verify_identity', 'prepare_content', 'submit_once', 'verify_original'] : ['validate_input', 'verify_identity'];
-  if (value.adapter_version !== (synthetic ? 'fixture-page-v1' : 'facebook-graph-v1') || value.input.body_required !== write || value.success_evidence !== (write ? 'published_object_identity_author_content' : 'page_identity') || JSON.stringify(value.steps) !== JSON.stringify(expectedSteps)) context.addIssue({ code: 'custom', message: '模板定义与已安装的固定动作不匹配' });
+  if (value.engine!==(message?'fixed-message-v1':'fixed-page-v1')||value.adapter_version !== (message?(synthetic?'fixture-messenger-v1':'facebook-messenger-v1'):(synthetic ? 'fixture-page-v1' : 'facebook-graph-v1')) || value.input.body_required !== write || value.success_evidence !== (message?'message_acceptance':write ? 'published_object_identity_author_content' : 'page_identity') || JSON.stringify(value.steps) !== JSON.stringify(expectedSteps)) context.addIssue({ code: 'custom', message: '模板定义与已安装的固定动作不匹配' });
 });
 export type TemplateManifest = z.infer<typeof templateManifestSchema>;
 export const templateSnapshotSchema = z.object({ version_id: z.string().uuid(), version_number: z.number().int().positive(), manifest_hash: z.string().regex(/^[a-f0-9]{64}$/), manifest: templateManifestSchema }).strict();

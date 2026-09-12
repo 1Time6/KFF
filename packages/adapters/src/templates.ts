@@ -2,8 +2,8 @@ import { templateCapabilityKey, templateManifestSchema, templateSnapshotSchema, 
 import { digest, requireCondition } from '@kff/core';
 
 export function fixedPageManifest(key: string, maxBodyLength = 5000): TemplateManifest {
-  const capability = templateCapabilityKey.parse(key); const write = capability.includes('.publish.');
-  return templateManifestSchema.parse({ schema_version: 'kff.template.v1', engine: 'fixed-page-v1', capability_key: capability, adapter_version: capability.startsWith('kff.fixture.') ? 'fixture-page-v1' : 'facebook-graph-v1', input: { body_required: write, max_body_length: maxBodyLength }, steps: write ? ['validate_input', 'verify_identity', 'prepare_content', 'submit_once', 'verify_original'] : ['validate_input', 'verify_identity'], permission_gate: 'common_execution_gate', success_evidence: write ? 'published_object_identity_author_content' : 'page_identity', automatic_write_retry: false });
+  const capability = templateCapabilityKey.parse(key),message=key.includes('.messenger.'),synthetic=key.startsWith('kff.fixture.'); const write = capability.includes('.publish.')||message;
+  return templateManifestSchema.parse({ schema_version: 'kff.template.v1', engine: message?'fixed-message-v1':'fixed-page-v1', capability_key: capability, adapter_version: message?(synthetic?'fixture-messenger-v1':'facebook-messenger-v1'):synthetic ? 'fixture-page-v1' : 'facebook-graph-v1', input: { body_required: write, max_body_length: message?Math.min(maxBodyLength,2000):maxBodyLength }, steps: write ? ['validate_input', 'verify_identity', 'prepare_content', 'submit_once', 'verify_original'] : ['validate_input', 'verify_identity'], permission_gate: 'common_execution_gate', success_evidence: message?'message_acceptance':write ? 'published_object_identity_author_content' : 'page_identity', automatic_write_retry: false });
 }
 export function validateTemplateInput(manifest: TemplateManifest, body: string) {
   templateManifestSchema.parse(manifest);

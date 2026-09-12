@@ -7,7 +7,8 @@ export const adjudicationInput = z.object({
   evidence: z.object({
     source: z.enum(['platform_ui', 'platform_support', 'owned_fixture']),
     external_account_id: z.string().regex(/^[0-9]{1,128}$/), content_hash: z.string().regex(/^[a-f0-9]{64}$/),
-    remote_id: z.string().regex(/^[A-Za-z0-9_:-]{1,160}$/).nullable(),
+    recipient_id:z.string().regex(/^[0-9]{1,128}$/).optional(),
+    remote_id: z.string().regex(/^[A-Za-z0-9_:.=$+/-]{1,200}$/).nullable(),
     observed_at: z.string().datetime(), reference: z.string().trim().min(1).max(300),
     failure_basis: z.enum(['FINAL_PLATFORM_REJECTION', 'FINAL_PLATFORM_CANCELLATION']).nullable(),
     matched_original_submission: z.boolean(),

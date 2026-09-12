@@ -1,5 +1,7 @@
 # KFF 实施决定
 
+当前优先级以 [ADR-020：Facebook → WhatsApp](decisions/020-facebook-whatsapp-priority.md) 为准。下列早期决定保留历史和架构背景；支付相关优先级、退款后暂停已由当前目标覆盖。
+
 ## ADR-001：按用户新指令先实现，Facebook 首发
 
 2026-09-12 用户明确指定 Facebook，并要求先编写再考虑真实测试。此前 discovery.md 中的暂停记录保留为历史；附件缺失、测试账号和设备条件不再阻止可独立完成的工程实现。真实能力、平台许可和完整签收仍需单独证据。

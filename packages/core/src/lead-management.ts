@@ -1,0 +1,54 @@
+import {z} from 'zod';
+import {scoped} from '@kff/database';
+import type {Scope} from '@kff/contracts';
+import type {Customer} from '../../contracts/src/inbox';
+import {leadUpdateInput} from '../../contracts/src/lead';
+import {digest,requireCondition} from './index';
+import {audit,requireWrite} from './service';
+
+export async function updateLead(scope:Scope,id:string,input:z.infer<typeof leadUpdateInput>){
+  requireWrite(scope);const value=leadUpdateInput.parse(input),hash=digest({id,...value});
+  return scoped(scope,async client=>{
+    await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',['lead-update/'+scope.brand_id+'/'+value.request_id]);
+    const old=(await client.query("SELECT details FROM kff.customer_events WHERE request_id=$1",[value.request_id])).rows[0];
+    if(old){requireCondition(old.details.request_hash===hash,'IDEMPOTENCY_CONFLICT','同一请求已有不同客户或内容',409);return old.details.result as Customer;}
+    await client.query('SELECT id FROM kff.conversations WHERE customer_id=$1 ORDER BY id FOR UPDATE',[id]);
+    const customer=(await client.query<Customer>('SELECT * FROM kff.customers WHERE id=$1 FOR UPDATE',[id])).rows[0];
+    requireCondition(customer,'NOT_FOUND','客户不存在',404);requireCondition(customer.version===value.expected_version,'VERSION_CONFLICT','客户有新消息或判断已变化，请刷新',409);
+    const result=(await client.query<Customer>('UPDATE kff.customers SET lead_status=$1,tags=$2,intent_level=$3,valid_inquiry=$4,intent_reason=$5,version=version+1,updated_at=clock_timestamp() WHERE id=$6 RETURNING *',[value.lead_status,[...new Set(value.tags)],value.intent_level,value.valid_inquiry,value.reason,id])).rows[0];
+    const stopped=['IGNORED','BLOCKED','HANDOFF_COMPLETE'].includes(value.lead_status);
+    await client.query("UPDATE kff.conversations SET handling_mode=CASE WHEN $1 THEN 'PAUSED' ELSE handling_mode END,control_version=control_version+1 WHERE customer_id=$2",[stopped,id]);
+    const details={request_hash:hash,reason:value.reason,before:{lead_status:customer.lead_status,tags:customer.tags,intent_level:customer.intent_level,valid_inquiry:customer.valid_inquiry},result};
+    await client.query("INSERT INTO kff.customer_events(organization_id,brand_id,customer_id,event_type,actor_id,details,request_id,request_hash) VALUES($1,$2,$3,'LEAD_UPDATED',$4,$5,$6,$7)",[scope.organization_id,scope.brand_id,id,scope.user_id,details,value.request_id,hash]);
+    await audit(client,scope,'lead.updated',id,{request_id:value.request_id,reason:value.reason,lead_status:value.lead_status,valid_inquiry:value.valid_inquiry});return result;
+  });
+}
+export const leadAnalyticsInput=z.object({from:z.string().date(),to:z.string().date(),account_id:z.string().uuid().optional(),synthetic:z.enum(['true','false']).default('true')}).strict().refine(v=>Date.parse(v.to)>=Date.parse(v.from)&&Date.parse(v.to)-Date.parse(v.from)<=365*86400000,'日期区间不得超过 366 天');
+export interface LeadMetric {group_kind:'TOTAL'|'ACCOUNT'|'SOURCE'|'DAY';account_id:string|null;account_name:string|null;source:string|null;day:string|null;new_customers:number;valid_inquiries:number;high_intent:number;referred_valid_customers:number;inbound_messages:number;ai_replies:number;human_replies:number;handoffs:number;referrals:number;confirmed:number;conversion_rate:number|null}
+export async function leadAnalytics(scope:Scope,input:z.input<typeof leadAnalyticsInput>){
+  const value=leadAnalyticsInput.parse(input),params=[value.from,value.to,value.account_id??null,value.synthetic==='true'];
+  return scoped(scope,async client=>{
+    const metrics=(await client.query<Omit<LeadMetric,'conversion_rate'>>(`WITH leads AS (
+      SELECT DISTINCT c.id,c.created_at,c.valid_inquiry,c.intent_level,v.account_id,a.display_name AS account_name,COALESCE(c.acquisition_source->>'kind','UNKNOWN') AS source
+      FROM kff.customers c JOIN kff.conversations v ON v.customer_id=c.id JOIN kff.accounts a ON a.id=v.account_id
+      WHERE a.platform='facebook' AND a.is_synthetic=$4 AND ($3::uuid IS NULL OR a.id=$3)
+    ), cohort AS (
+      SELECT l.*,EXISTS(SELECT 1 FROM kff.whatsapp_referrals r WHERE r.customer_id=l.id AND r.account_id=l.account_id AND r.sent_at>=$1::date::timestamp AT TIME ZONE 'UTC' AND r.sent_at<($2::date+1)::timestamp AT TIME ZONE 'UTC') AS referred FROM leads l
+      WHERE l.created_at>=$1::date::timestamp AT TIME ZONE 'UTC' AND l.created_at<($2::date+1)::timestamp AT TIME ZONE 'UTC'
+    ), facts AS (
+      SELECT account_id,account_name,source,(created_at AT TIME ZONE 'UTC')::date::text AS day,1 AS new_customers,valid_inquiry::int AS valid_inquiries,(intent_level='HIGH')::int AS high_intent,(valid_inquiry AND referred)::int AS referred_valid_customers,0 AS inbound_messages,0 AS ai_replies,0 AS human_replies,0 AS handoffs,0 AS referrals,0 AS confirmed FROM cohort
+      UNION ALL SELECT l.account_id,l.account_name,l.source,(m.received_at AT TIME ZONE 'UTC')::date::text,0,0,0,0,(m.direction='INBOUND' AND m.message_kind='MESSAGE')::int,(m.direction='OUTBOUND' AND m.actor_kind='AI')::int,(m.direction='EXTERNAL_OUTBOUND' OR (m.direction='OUTBOUND' AND m.actor_kind='HUMAN'))::int,0,0,0 FROM leads l JOIN kff.conversations v ON v.customer_id=l.id AND v.account_id=l.account_id JOIN kff.messages m ON m.conversation_id=v.id WHERE m.received_at>=$1::date::timestamp AT TIME ZONE 'UTC' AND m.received_at<($2::date+1)::timestamp AT TIME ZONE 'UTC'
+      UNION ALL SELECT l.account_id,l.account_name,l.source,(r.sent_at AT TIME ZONE 'UTC')::date::text,0,0,0,0,0,0,0,0,1,(r.state='CONFIRMED')::int FROM leads l JOIN kff.whatsapp_referrals r ON r.customer_id=l.id AND r.account_id=l.account_id WHERE r.sent_at>=$1::date::timestamp AT TIME ZONE 'UTC' AND r.sent_at<($2::date+1)::timestamp AT TIME ZONE 'UTC'
+      UNION ALL SELECT l.account_id,l.account_name,l.source,(e.created_at AT TIME ZONE 'UTC')::date::text,0,0,0,0,0,0,0,1,0,0 FROM leads l JOIN kff.conversations v ON v.customer_id=l.id AND v.account_id=l.account_id JOIN kff.audit_events e ON e.object_id=v.id WHERE ((e.event_type='conversation.controlled' AND e.details->'result'->>'handling_mode'='HUMAN') OR (e.event_type IN ('conversation.manual_takeover','conversation.native_takeover') AND e.details->>'previous_mode'<>'HUMAN') OR e.event_type='reception.failed_handoff' OR (e.event_type='reception.decided' AND e.details->>'action'='HANDOFF')) AND e.created_at>=$1::date::timestamp AT TIME ZONE 'UTC' AND e.created_at<($2::date+1)::timestamp AT TIME ZONE 'UTC'
+    ) SELECT CASE WHEN GROUPING(account_id)=0 THEN 'ACCOUNT' WHEN GROUPING(source)=0 THEN 'SOURCE' WHEN GROUPING(day)=0 THEN 'DAY' ELSE 'TOTAL' END AS group_kind,account_id,account_name,source,day,
+      COALESCE(sum(new_customers),0)::int AS new_customers,COALESCE(sum(valid_inquiries),0)::int AS valid_inquiries,COALESCE(sum(high_intent),0)::int AS high_intent,COALESCE(sum(referred_valid_customers),0)::int AS referred_valid_customers,COALESCE(sum(inbound_messages),0)::int AS inbound_messages,COALESCE(sum(ai_replies),0)::int AS ai_replies,COALESCE(sum(human_replies),0)::int AS human_replies,COALESCE(sum(handoffs),0)::int AS handoffs,COALESCE(sum(referrals),0)::int AS referrals,COALESCE(sum(confirmed),0)::int AS confirmed FROM facts GROUP BY GROUPING SETS((),(account_id,account_name),(source),(day)) ORDER BY group_kind,day,account_name,source`,params)).rows.map(row=>({...row,conversion_rate:row.valid_inquiries?row.referred_valid_customers/row.valid_inquiries:null}));
+    const decisions=(await client.query<{model:string;action:string;count:number}>("SELECT j.result->>'model' AS model,j.result->'decision'->>'action' AS action,count(*)::int AS count FROM kff.jobs j JOIN kff.conversations v ON v.id=j.conversation_id JOIN kff.accounts a ON a.id=v.account_id WHERE j.kind='RECEPTION' AND j.result->>'status'='DECIDED' AND a.is_synthetic=$4 AND ($3::uuid IS NULL OR a.id=$3) AND j.created_at>=$1::date::timestamp AT TIME ZONE 'UTC' AND j.created_at<($2::date+1)::timestamp AT TIME ZONE 'UTC' GROUP BY 1,2 ORDER BY 1,2",params)).rows;
+    const templates=(await client.query<{destination_id:string;destination_version:number;actor_kind:string;source:string;sent:number;confirmed:number}>("SELECT r.destination_id,(r.destination_snapshot->>'destination_version')::int AS destination_version,r.actor_kind,COALESCE(r.source->>'kind','UNKNOWN') AS source,count(*)::int AS sent,count(*) FILTER(WHERE r.state='CONFIRMED')::int AS confirmed FROM kff.whatsapp_referrals r JOIN kff.accounts a ON a.id=r.account_id WHERE a.is_synthetic=$4 AND ($3::uuid IS NULL OR a.id=$3) AND r.sent_at>=$1::date::timestamp AT TIME ZONE 'UTC' AND r.sent_at<($2::date+1)::timestamp AT TIME ZONE 'UTC' GROUP BY 1,2,3,4 ORDER BY 2,3,4",params)).rows;
+    const outcomes=(await client.query<{actor_kind:string;replies:number;customers:number;valid_customers:number;subsequent_inquiries:number}>(`SELECT m.actor_kind,count(*)::int AS replies,count(DISTINCT v.customer_id)::int AS customers,count(DISTINCT v.customer_id) FILTER(WHERE c.valid_inquiry)::int AS valid_customers,count(DISTINCT v.customer_id) FILTER(WHERE EXISTS(SELECT 1 FROM kff.messages next WHERE next.conversation_id=v.id AND next.direction='INBOUND' AND next.message_kind='MESSAGE' AND next.sequence>m.sequence AND next.received_at<($2::date+1)::timestamp AT TIME ZONE 'UTC'))::int AS subsequent_inquiries FROM kff.messages m JOIN kff.conversations v ON v.id=m.conversation_id JOIN kff.customers c ON c.id=v.customer_id JOIN kff.accounts a ON a.id=v.account_id WHERE a.platform='facebook' AND a.is_synthetic=$4 AND ($3::uuid IS NULL OR a.id=$3) AND m.direction='OUTBOUND' AND m.received_at>=$1::date::timestamp AT TIME ZONE 'UTC' AND m.received_at<($2::date+1)::timestamp AT TIME ZONE 'UTC' GROUP BY m.actor_kind ORDER BY m.actor_kind`,params)).rows;
+    return {filter:value,metrics,decisions,templates,outcomes};
+  });
+}
+export async function leadAudit(scope:Scope,before?:string){
+  const timestamp=before?z.string().datetime().parse(before):null;
+  return scoped(scope,async client=>({events:(await client.query<{id:string;event_type:string;object_id:string;actor_id:string;created_at:string;details:Record<string,unknown>}>(`SELECT id,event_type,object_id,actor_id,created_at,jsonb_strip_nulls(jsonb_build_object('account_id',details->'account_id','reason',details->'reason','action',details->'action','intent',details->'intent','model',details->'model','actor_kind',details->'actor_kind','referral',details->'referral','lead_status',details->'lead_status','is_synthetic',details->'is_synthetic')) AS details FROM kff.audit_events WHERE event_type ~ '^(facebook[.]|reception[.]|conversation[.]|whatsapp[.]|lead[.]|contact[.]|customer[.]|account[.]|agent[.]|organization[.]|brand[.])' AND ($1::timestamptz IS NULL OR created_at<$1) ORDER BY created_at DESC,id DESC LIMIT 200`,[timestamp])).rows}));
+}

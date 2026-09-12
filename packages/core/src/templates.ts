@@ -8,7 +8,7 @@ import { fixedPageManifest, assertTemplateSnapshot, validateTemplateInput } from
 
 export async function ensureBundledTemplates(client: PoolClient, scope: Scope) {
   for (const key of templateCapabilityKey.options) {
-    const manifest = fixedPageManifest(key); const name = (key.startsWith('kff.fixture.') ? '本地合成主页 · ' : 'Facebook 主页 · ') + (key.includes('.publish.') ? '文本发布' : '身份读取');
+    const manifest = fixedPageManifest(key); const name = (key.startsWith('kff.fixture.') ? '本地合成 · ' : 'Facebook · ') + (key.includes('.reply.')?'私信接待':key.includes('.publish.') ? '文本发布' : '身份读取');
     await client.query("INSERT INTO kff.template_versions(organization_id,brand_id,capability_key,version_number,version_label,name,manifest,manifest_hash,state,origin,created_by) VALUES($1,$2,$3,1,'v1',$4,$5,$6,'ALLOWED','bundled',$7) ON CONFLICT(organization_id,brand_id,capability_key,version_number) DO NOTHING", [scope.organization_id, scope.brand_id, key, name, manifest, digest(manifest), scope.user_id]);
   }
 }

@@ -1,0 +1,934 @@
+{
+  "schema_version": "kff.lead-generation-checkpoint.v1",
+  "created_at": "2026-09-12T05:01:36.237Z",
+  "repository_commit_before": "4dc80ffdb1d65662e50585b6f9270618c7339b80",
+  "branch": "codex/facebook-foundation",
+  "scope": "Local P0/P1 Facebook-to-WhatsApp lead workflow; not full original-product or real-platform acceptance",
+  "status": "LOCAL_P0_P1_COMPLETE",
+  "source_hash_algorithm": "SHA-256 of exact checked working-tree bytes; generated next-env.d.ts excluded",
+  "source_tree_sha256": "68bd987c86befc457af85eed470cedc99229d32d465b3b093c94924ea4653ffd",
+  "source_file_count": 214,
+  "source_hashes": {
+    "apps/agent/src/config.ts": "9b84d8baa3fcc78278b6daa1353d6d460a92186ae3efb0241009241ee3e5154c",
+    "apps/agent/src/configuration.ts": "975dc0bf52fcc4fb93bf1760f808419c1048b196fe4d782fd477da5a0d1acd01",
+    "apps/agent/src/guardian-child.ts": "0015c9fdf00f36be5bf51f247b588d9ad3bd896e4d0e333c3f844596e04335cf",
+    "apps/agent/src/guardian-protocol.ts": "2f4cbf9997dc7325395499c69233f6a136c34f6c2bb1b5553aa16205c625d722",
+    "apps/agent/src/guardian.ts": "b57ae2ee6603cd9f0fc13a191548b8422edfef99ece6fb2a26d8507a354164a2",
+    "apps/agent/src/main.ts": "e3310522aec68b2f0ea209d58b02772662f1a8083d3b61d0b3ff559b244a97de",
+    "apps/web/app/[section]/page.tsx": "ad1c5463764b2cce8456f0105db67d58a7a2967e69449586659a4ed262718383",
+    "apps/web/app/api/[[...path]]/route.ts": "c4a2359806538fd8937a2161e8de015ef4260c52831522d2586cdec159dd13ea",
+    "apps/web/app/chat/[channelId]/page.tsx": "a2b364ab859fcc8a4fce75dd9a73c650488dc30964875959b6bf9befd9af9fc9",
+    "apps/web/app/error.tsx": "777afd57d4fe73f4ddb03303ff719925f89aabc03452e215e79ee78da710d34e",
+    "apps/web/app/globals.css": "8ea1f3edaa1220e027efe7554edb8b28b8e1fbf7b3067743158426335e1a377b",
+    "apps/web/app/imports.css": "581422dadf39b1e193372a247951b7f047d3aa0803598e0ed5ec108190eba56c",
+    "apps/web/app/inbox.css": "c4d8a1fb959554432a53de9efa7eb52b31e685282ce55b49a2072156e5d23517",
+    "apps/web/app/layout.tsx": "39f07a659df1e8bbe8b1fc818c5f337c33473662f81edf578dba19e9a9a908f1",
+    "apps/web/app/lead.css": "92bdcd2e57d171ed860cd637b89680127fac21580cc16e00ed8abcee2fcf59ac",
+    "apps/web/app/orders.css": "2b7dffe0b01e622a2365072d76bacb7d85d5111158d93f5a1e8ce5d1d48db669",
+    "apps/web/app/page.tsx": "23ab7d53b76ab1921c472820ffbb99dc54d48a166308ebba92b804564f403cee",
+    "apps/web/app/payment-return/page.tsx": "c4ab67c1e59326c8789b2ae7df2832ed7d6fd1709199683bfbfee573fcd86c72",
+    "apps/web/app/schedules.css": "9aef7218f6249f1863540939132f11695c2f0141e968e62f4309966dd69d7d99",
+    "apps/web/app/targets.css": "a5966b4d8f294c97d8cf8c88e0383a506bf7bf770f9fc0cdad06b5384f6799e8",
+    "apps/web/components/action-adjudication.tsx": "93dbd69208766d623f8dea4019815692662564136965328c67695ef04b5a4c54",
+    "apps/web/components/business-ui.ts": "7b874b32185f208e364b8e1f0e69defa04209685a9d8afb1cf3ab3aba23d9dd0",
+    "apps/web/components/collection-export.tsx": "1c1faba35d009e42d96705283b95d7f2990ef2abba4a3c6e22d33057ba7cd4d6",
+    "apps/web/components/collection-targets.tsx": "2633f58b2be4a34b7119047d1c372110af754082fe07f032c8b629cdb08ca65f",
+    "apps/web/components/collection-workbench.tsx": "9dd89e363ece39f416d673eb42e43c0723e0eac5f8b9886947033eb91c5c0650",
+    "apps/web/components/contact-permissions.tsx": "f17ad7a210105261a366f1f4dc427d1fad30fdaf3e7056780a7d8943b34651e5",
+    "apps/web/components/cost-ledger.tsx": "55ec93742e64b5e4407525cfe46f96c0c2580fb18d1cbfd6022a21692e7652ac",
+    "apps/web/components/customer-workbench.tsx": "076de5517eba4be47cc1a0d505ee20731da925476a6b2d038a4bfebf8223d32a",
+    "apps/web/components/executor-controls.tsx": "4f534d88eed534a3101c63fd895ef27a4b8ea9768e6aafa5f06f424588cb7716",
+    "apps/web/components/facebook-setup.tsx": "ed36070dece8b26c6a8bc2d020230732ea9cd750ccb27e025d324b1d9129b18d",
+    "apps/web/components/import-workbench.tsx": "4fec88559f455ebb0c4ffa50d142695413d7f182ce09a774735fc9cca02e70a7",
+    "apps/web/components/inbox-workbench.tsx": "34c8c88e64330917b8c0716bf4d65b079228bdfa055858395c68f595be541c47",
+    "apps/web/components/lead-analytics.tsx": "00c17501838fbf2ce54a3757084c2a74b406fdc36a859a26ad37765a7d18803e",
+    "apps/web/components/lead-customer.tsx": "81fb7182014ee96fe52c7a1d50142665944c36a83a091b2b6b2ae1cef1644c4b",
+    "apps/web/components/lead-ui.ts": "1c69ddfd37da10b8c774989bf18221fb581b231d4f815c3acb8a02bfc40f00c2",
+    "apps/web/components/order-workbench.tsx": "b01c33ae3d450e665af1d5c65fa92f36858f5b4e01558854e7e266e1c9b4548f",
+    "apps/web/components/pilot-permit-form.tsx": "c149d8b4f2b3d8a4c0af9cd6849c60a39130101c429e4a7d67fd67542deade8c",
+    "apps/web/components/reception-controls.tsx": "a094c92143d1b8c88b0793496580404ddc9bb436c755e78d8c6291a1b4801924",
+    "apps/web/components/schedule-workbench.tsx": "ef6e6b24677126658e3c7807d4e4c62cc2a43c7903c4c255b8de0f2c6df24d5a",
+    "apps/web/components/stripe-payment.tsx": "f4532151dc15b26a13952cb90536efe0550e723bc127ad6b397ef15d7e650ba9",
+    "apps/web/components/stripe-refunds.tsx": "b3a89ad4917e31d41cbfb59b9e516deb2e340044588e5eb95765013131d48ac8",
+    "apps/web/components/template-workbench.tsx": "42d5d929cc526c2da291174eb48da916c964d8b6fe44eab57d9c9aed1e1feaba",
+    "apps/web/components/use-request-key.ts": "45641ef0e7f792be2fcb957433eb3a6111c85b45abacac85fbcdd5d5c3e07108",
+    "apps/web/components/visitor-chat.tsx": "5409ba042bfb0151ce3c2e62d80a70dd4248cf38b9fa54896243efe72d87e336",
+    "apps/web/components/whatsapp-setup.tsx": "7dd5cdfc977d72eb25a584e2225eab95ab84625ed50ee88099943a760bbec946",
+    "apps/web/components/workbench.tsx": "35041795d114e4972037b997e37060fa3fea04a2864049825c764a4fb76b5849",
+    "apps/web/lib/auth.ts": "d261429ecceaca397abce380f253b389247fcb751c55db1ab475819c116becf6",
+    "apps/web/lib/visitor-auth.ts": "a53e1003306b7a4f148609f78f7c7fd60d2df014b415fb8dc2d31ffc0dfe7722",
+    "apps/web/next.config.ts": "00fa907a927026572925ee6e17124b5c02f912e323a5d0fe2b00ad5d92eae2f0",
+    "apps/web/tsconfig.json": "9e82dd45ce48e28f5d845fc985dfdb3ff424aef4e252818e47d9b7715ebad753",
+    "apps/worker/src/main.ts": "7aaac22656f781fb2e0e938585ed85c8a5ee00baa1311fd85a943a25d15ba054",
+    "eslint.config.mjs": "8e76594ffca4dec6514dd5edc3f39655b9a21bd0f861ecae13e9d62e56eb9643",
+    "package.json": "c0c8f5c7ca58dcb6db78bca4730ab1cbf661ef0f176c7e2cfd79f972f71d73ba",
+    "packages/adapters/src/collection-fixture.ts": "9a526fb436e7c692aa1c07e778980808e2c60c05ce1f6c34829372baebb1fb15",
+    "packages/adapters/src/facebook-events.ts": "d9d3e37a065ef1cb674632366abcdaa4846750da5ad80ff77b45af4bbd94a2c9",
+    "packages/adapters/src/facebook-messenger.ts": "b6a29de8827fd69b784369c2d48db6eed0570f797590ba98b8f67b57bf43c160",
+    "packages/adapters/src/facebook.ts": "e1bcdc6768ebab56d07f35b7fdae3ffc1a51383e8b0f8d197ded3e45d538a318",
+    "packages/adapters/src/fixture.ts": "248e1770a564e45196cb399b73572555f9a769ef2a3fb2177d9aa6be144fdf91",
+    "packages/adapters/src/index.ts": "9b44adaf7ffd4bea520abf1fab55c7e8a2759289f8978228e975f6b832b84404",
+    "packages/adapters/src/reception-model.ts": "34845ad47dfc9c04ff47e4e705a6f056a5665cf9d1eee98f77ebe02e05a143e9",
+    "packages/adapters/src/templates.ts": "1ee3f4269739363c854ee80847130df0730a5212f28779d192086db2630b807e",
+    "packages/contracts/src/adjudication.ts": "a8f031e9c2aa8af43e4f93d0ec34db254c399608633549ed15216eaf949f75d0",
+    "packages/contracts/src/collection.ts": "e9fc3ada1820970f399cd211f67f7867683ee8bc5829a690a7c13133329f2a35",
+    "packages/contracts/src/contact.ts": "9ccd4d84215f1e6776ca06065fc2ed8588b4927593ffa006af468c4a4ae5cc6a",
+    "packages/contracts/src/cost.ts": "b04eb335bb557cc3d4c6c325db9b060f127abfa46b1b922b1307558d15eacdcd",
+    "packages/contracts/src/imports.ts": "24ff749dd1a44fb51765b22bfac98bdee0d3f892dad92c29d917a88b25e897b3",
+    "packages/contracts/src/inbox.ts": "ffdea2f349ac85e20e5db112bec942fca86bb6960a0d89164bd06cc3447b1f02",
+    "packages/contracts/src/index.ts": "06d1ec5be7434aeff61f80c362c80e5331043f28f397a476a38bcd799d172e19",
+    "packages/contracts/src/lead.ts": "6bc761a2d2e50d4c793b77af791a3ab832d6eafaa58304789bb9e13e5a7ccc33",
+    "packages/contracts/src/order.ts": "d419146735cc5a9f301a8115790baaf3cde630f41306cfbf89735ca1a6bc965d",
+    "packages/contracts/src/payment.ts": "c0d084c49478d77a28fe002728fa1636b30e0782a558f1afaef9cad2653f72b9",
+    "packages/contracts/src/refund.ts": "b8250f2415ccac2db7e4638ac8cb9174c9b8cca54d41509f6595db41bff1278c",
+    "packages/contracts/src/schedule.ts": "c7e703bfd3c02069059198ca3f4e5a89a785815f4b52246e2fa14392580431e1",
+    "packages/contracts/src/target-selection.ts": "ff8eded32c5c7f78654dfbe6e3ce2c7ef4222acd68eddf475db06db909b6545f",
+    "packages/contracts/src/template.ts": "cdc065443697c3f5de44150e7854f7cf8af8fac114d6f3fbf13e1ae1cc91e73d",
+    "packages/core/src/adjudication.ts": "40153e4a77db8576d60f89334b551c0c3daca4a3397d909031eb1bf0620cb80a",
+    "packages/core/src/artifacts.ts": "772345037603fc5508da10891c831bacdb026cd2fa79e8e0c4db1a1b374cbe03",
+    "packages/core/src/capabilities.ts": "2f8e63cd152773f14272f73539360712b5cde845c2d65976db976f58e2f3292d",
+    "packages/core/src/collection-export.ts": "cb13eb7eb230efcecc9d38b3d4117fb37dfc2023c343e48b47e0e58d538de4a1",
+    "packages/core/src/collection-filter.ts": "a4eaa845e11115ddccb239d82e1971a809cc664e9545fd0d9f23db4ffc9e7216",
+    "packages/core/src/collections.ts": "4512993b6431f2b5e242fa437ac21b7e2733b827f7c3d3c633e21abdf7a81f74",
+    "packages/core/src/contacts.ts": "c07e3c43224eaffadddcaec9df4e0172f2ca00a669feefd27abd7e785ead4247",
+    "packages/core/src/controls.ts": "7d79f5edc295e6248c1b480520e2fb3914c6d1c2253784eec5e58ef6b3b6931a",
+    "packages/core/src/costs.ts": "9a16d121874ef755b6bdcf54269388b1ecab79d6aa2b49209d133476e290731e",
+    "packages/core/src/execution.ts": "93f420cb211e92704fb1c6a0afc7391698f5a6388209a61292a5e901a15fa7b5",
+    "packages/core/src/facebook-inbound.ts": "316c9c934e3a1b3bc13b133f556a57b07112031db2d76c4941a06a0a44f78886",
+    "packages/core/src/import-mapping.ts": "99e1c666d188c39763c0e526bcf52a0c795de428b190f750b74800fd8e77d8a1",
+    "packages/core/src/import-parser.ts": "ef585c5d8e6770ba6cddea918dc5137f3c49cda678456774c00ae3d791970329",
+    "packages/core/src/imports.ts": "8fc585136ef4babcd04ef0ece3f976c5122770c35093e09471229f0a8ca93051",
+    "packages/core/src/inbox.ts": "84e7895e32554d87cd8371a68c0cda87975d7a7297511efbd56d6e9246c3d276",
+    "packages/core/src/index.ts": "7f715c3be9e210360e6e3b36c72e91c216faa3f0a134ed3f886d3a7c2836b7db",
+    "packages/core/src/lead-management.ts": "fe9e38f7142cb17df869a31f1c02766a179703735523d154535127966b5279ac",
+    "packages/core/src/lead-reception.ts": "8d3ec788bd69a5f4c819baf78baae1a0e255a41777cf6f6bb62d9bbb848d0fd6",
+    "packages/core/src/orders.ts": "09505201013dac40995094188dcef40625e4a1ef92dda8f1bf30efb99ff3cabf",
+    "packages/core/src/payment-worker.ts": "d4b2da9945659f865d76aff01b9c53b1c3fa250ed686646434083d3b7ceff987",
+    "packages/core/src/payments.ts": "0cedd357d5c1faa1ad26507e5f63b55875c2b8260ba51030ca88c1cf28b02793",
+    "packages/core/src/permits.ts": "335ac3871bf7da6b9f86e5201f1bad97c2d97bccde30e71b499850a63f6331a8",
+    "packages/core/src/reception-queue.ts": "8801004f130a00be9c37f36ba0f354aa104e283485b732e937a42c081a505d86",
+    "packages/core/src/reception-worker.ts": "648a3591a3de7e0a3bd9de9e8f689ccd658758696be4779adcb3e3481ac8f890",
+    "packages/core/src/reconciliation.ts": "842601a8ee0c0c5b756fd9fed9d8c5216c0e4b672864a17aecdad12fea25f211",
+    "packages/core/src/refund-reconciliation.ts": "78484fee935b675f59c2ce13a4bb8214df787b96a3041381ab89d74198a39944",
+    "packages/core/src/refund-worker.ts": "cc18fe99498bd2c73fb8de5ea7602b110d3630c0f3ff5eef278343bd54510c03",
+    "packages/core/src/refunds.ts": "7238370f11045632a4d9df0de30b7ac33fe30506852d28498d16e8c76bb0e923",
+    "packages/core/src/schedule-rules.ts": "e70cb5625040c01345de6f92f4ea3e0fb2d7d36aad5d2bf9b9224ca113e00261",
+    "packages/core/src/schedules.ts": "b478a18ea57275642dd269c3a16b27e716fafeb5101e0dc685b100a8e079fd7f",
+    "packages/core/src/service.ts": "20c81bdf8975223aa25fbc166d5075dea25bd7754a3e823a5bfa0185d7b18d91",
+    "packages/core/src/stripe-financial-contract.ts": "e54f7a3189b92ce527b25fe94b65be7df81464d3f8cc8de22be9c68638b9f29f",
+    "packages/core/src/stripe-financial-gateway.ts": "e53e2d0cd05b5161706b4aba1a1ce20493dea43e0f2e398104262db4c64f4374",
+    "packages/core/src/stripe-gateway.ts": "ff85b3d58e002436e128790396ca0756d4b7202ddc1530daab4f2f7cbe81ae30",
+    "packages/core/src/target-snapshots.ts": "817b4f37e112406269d6de7178e622a24fb1e0bf8f2e72780299494f54ea7cc8",
+    "packages/core/src/templates.ts": "ba935d38829f72539163f6170aef762a0d96f40a34c7723544cb4aa3d6f92be3",
+    "packages/database/src/index.ts": "182d54741b9853aa53171f7d9701ad9e2ba97870fd186e8c6d8012d16c2cfe63",
+    "packages/database/src/runtime.ts": "48fbf5e49f28bad7dbe28294640f244f24146b79516e56f47db7ea8cd79b1a22",
+    "playwright.config.ts": "202bf7ba60a7d43805669dad63aa3f1ea8d0693297cc19f86aa22d02caa62b06",
+    "pnpm-lock.yaml": "2403c37526ba689077bfdb2c7a9cac0af0a3d007677f39c9a71b639207add503",
+    "pnpm-workspace.yaml": "69f0ef25c828a96072bb1960dd0578470e11a97491dc677079d3e58e05da69ac",
+    "scripts/checkpoint.mjs": "52917556e84f4ed82a7d6c9d125902511788a5ea6a95618c7a515cd9e33f7af4",
+    "scripts/database.ts": "2981a1d4486ec15e9218a0ef8880b2315a6a69da292d84bb0819a0e8bc1f401b",
+    "scripts/dev.ts": "39da9bb9c44d7bf43ba9e3d5ccd14be1c8eaca125da3f0818f8c118926a52645",
+    "scripts/fixture-server.ts": "5d06152e8748b677a214dd8187bc1db1fc887fd25ce8e25e8d279bc689bc7950",
+    "scripts/import-parser.mjs": "2fa9290c6839de2c3da4a2af0c8c2ee45584f72012b935f0a6b053fb7d19ccae",
+    "scripts/integration.ts": "8fc85cc094d68b98757533f68f310424f5f6594763850094f04f62068dea17d9",
+    "scripts/migrate.ts": "2059f5344b143a73b0567d5cc40b46f881b69b7a71435a15b7c0335189413467",
+    "scripts/production-smoke.ts": "caac1d8e4d3ca8dd2e907364c75662648d892c5e46de58ca93a777cc2cabc76d",
+    "scripts/register-evidence.ts": "46a1ceb1d7f6a969f018e526af45db66b4108f829a86bc9369b72d102cdcc5f7",
+    "scripts/run-check.mjs": "d737ff99bd7f20cb383a4cae7df41c39d781a178c118f3450cb233eeb7ae5dd9",
+    "scripts/seed.ts": "92177cf24887ccc3fe8e4bde5191476a2ee1416bfafd1fc41b86070cd1a812a3",
+    "scripts/verify-planning.ts": "f88fb88a24bcdcdd3549968acd72d70ac5af471804698d058fa0dc5bb46bcad7",
+    "supabase/migrations/20260911164326_g1_execution_core.sql": "31e4c9a6aec219e52fe94ef5a4f97b58ac3bbe714bd782952fb038e368e20fdf",
+    "supabase/migrations/20260911173241_g1_permits_reconciliation.sql": "65baeb55d96885097f66cb02e1103c301859a1d3705dee89ac9e8b8b2852cfa7",
+    "supabase/migrations/20260911175249_g1_capability_evidence.sql": "9848c682c137b1229b778ac76743f1489d3b6494b340902c7ea72ea504d6e137",
+    "supabase/migrations/20260911175746_g1_agent_slot_guard.sql": "8dfa4ad3152c2ea892d84bae4f317f600a2a44670f3d27102df9d451691abe8b",
+    "supabase/migrations/20260911181005_g1_stop_and_agent_management.sql": "75d4fcdc89804d6c81bcc742bbed6385480e22e2ffef4c245ae4535ebef1d852",
+    "supabase/migrations/20260911185039_g1_contact_eligibility.sql": "6c7c535b5ca366e309194c479b9eb55ae052a62b6b302c92a9fdf9ca01943e67",
+    "supabase/migrations/20260911190913_g2_cost_ledger.sql": "6cd7bc467e812fd34f06a5f464297b0a47d160a9c54653b83f68f294b39c9250",
+    "supabase/migrations/20260911194100_g1_action_adjudication.sql": "bddbe2459ab599bf153169732f7d7fc0288b10de3ee0086e25287fba331ceb8d",
+    "supabase/migrations/20260911200056_g2_template_versions.sql": "d9e9a3255befaf672d004ef6ed4f9c7acb1e3250ab231fba0a41ae7593832ba8",
+    "supabase/migrations/20260911203355_g2_collection_checkpoints.sql": "e50ecaec7ba71c9d42c6b768be4f8318fdc2d1130fbb83168ccaeedfcb612971",
+    "supabase/migrations/20260911213439_g2_import_export.sql": "5892855457aa149ae4bda86ce2fbc914b9ef57339002bc3eb82ec3e4624f6694",
+    "supabase/migrations/20260911221017_g2_target_snapshots.sql": "469d9cee9651ae58189b472b4bcce8376d4d6a41ba65dca46a0c62ac46b20094",
+    "supabase/migrations/20260911224129_g2_schedule_rules.sql": "80472fe3800f47f481a4a87336af2fc08816e8d3119a673ecef3649dc51cdc5c",
+    "supabase/migrations/20260911235946_g3_owned_inbound.sql": "7a42460c74c036c412c49f176c2ee2e45b2534be1b22f131f4c9b28044113d7e",
+    "supabase/migrations/20260912003348_g3_owned_order_snapshots.sql": "6f221bafa308142d98229c118786fb350eb013bc559297c95ffd501a741d58a9",
+    "supabase/migrations/20260912012250_g3_stripe_payments.sql": "1a5eb9581e56305b83e77248a3ccb880c699377e61133856aaa33b4e6c922f51",
+    "supabase/migrations/20260912022322_g3_stripe_refunds.sql": "c825921f1d2245bcbd8436f19cca514b9de0873f4fabc7b7479b37955846d836",
+    "supabase/migrations/20260912031707_facebook_lead_inbound.sql": "2ab43f08e524ab4491e40268fe902f6799fed9e92045838b6ae3302e7ba323a1",
+    "supabase/migrations/20260912032804_lead_reception_execution.sql": "0eda8ff7981d347dfa2f18995bc17bd9e76730dc1bbd05c183e4c161983b3419",
+    "supabase/migrations/20260912034626_lead_automation_rules.sql": "b0782dcc35933a6c81ed0e5d8f9223f14ac5d82febec8b0c74bab6125d9d4519",
+    "supabase/migrations/20260912040653_lead_metrics_and_ingress_limits.sql": "f9e66056af83f088bf4ae11cafdeeb640275cb496fff5359f45346b3ef493e85",
+    "tests/browser/fixtures/agent-recovery.spec.ts": "eb35d128d112886321e7be82b87ea6ff1745f7d6ee4f5ff48f77c30225856477",
+    "tests/browser/fixtures/executor.spec.ts": "bdb97326ec99e410366929755a5aa59851b7927e6c03551a1e20e0efd14bc3da",
+    "tests/browser/web/facebook-leads.spec.ts": "95f8519f27730ca7685178a34b70975eb1c9ded0829a33be6369bc6074821474",
+    "tests/browser/web/imports.spec.ts": "eed2d8690d90d252cc941ca24bbb9c96fe3e59f9a33d0eed8765ab2e9816940a",
+    "tests/browser/web/inbox.spec.ts": "37517a81e1e37c403f0450e7fc7f7e005c3665d0cac3819f7c6450e9581d167d",
+    "tests/browser/web/orders.spec.ts": "8b6285c3e4e38f4bdaf8546ade455c871d8cd1a2df60c567b0a4d4682da54b4f",
+    "tests/browser/web/payments.spec.ts": "76bf0082dbf2372f6adb65e88e74ea5423f91b8178ee427e94c6bf778c6d67d4",
+    "tests/browser/web/refunds.spec.ts": "7aaf266db2edf4701f86a6ffa8bbe45ce14ee16c2c26630824f4b20313ff1f32",
+    "tests/browser/web/schedules.spec.ts": "6b93bbe5232d557c866df21fbc7cff77b38211f9913ed8ef7bc194bbe34edb55",
+    "tests/browser/web/target-snapshots.spec.ts": "e89a8be61d3e9d041da3bbe7597599a6178c1398afa44597614dd3a18c0e6d06",
+    "tests/browser/web/workflow.spec.ts": "08e0bda252a052edcd69c63fbaee55faeaed7ce5084b39ea373929fe3431ab77",
+    "tests/contracts/collections.test.ts": "94774d54b5131c5f8e7d7b7ec7c9d5f5834d298ba992fc08b5aad3b6d0f9b8c9",
+    "tests/contracts/facebook-events.test.ts": "7ea147e91a844e458890c288e7bdc059f9e8daf3ca0bc42ce1ea27a754d5b2b3",
+    "tests/contracts/facebook-messenger.test.ts": "e6d8d940239f3bc916785dd6de007ff1fcbfdd47780bf547cf1aa0bb6163d7c5",
+    "tests/contracts/facebook.test.ts": "fd74764d354ec8d0d30072ae99d62e74b2e9c5d23fe0f1a8c30c01c75622b14b",
+    "tests/contracts/imports.test.ts": "4b035effdbdd2252c3acff347c9b7ac4fa2a5cdfca22026116920e382dd444e5",
+    "tests/contracts/inbox.test.ts": "6b65c4eeba2d4a8711b90eaa6d8436a6d40878781f40c497686c10e466d8c687",
+    "tests/contracts/input.test.ts": "b340a720f27675c0ed7754a781fa34bef665bf265c6a8d4699960734179f8f89",
+    "tests/contracts/order.test.ts": "423ccae28405e407c5c9d98e5b2aad2f364c12ccd7c09549dcff0fb91c4797c6",
+    "tests/contracts/payment.test.ts": "dc66d92f4fb592e4d06a8cfb9f1cc2e62bb659217602927b4aa9f5bf633e9fa1",
+    "tests/contracts/reception-model.test.ts": "069e3551c8b654c868025de7efad9802f3f5f34749dc8612ba88190685f52847",
+    "tests/contracts/refund.test.ts": "0d489314de5c759086f73177d7f153a095723cd09dcbc8919e45c110bfc8f9d6",
+    "tests/contracts/schedule.test.ts": "c1ae0c58fd4e50c093311d37c201091a6f941d49b0b13e8ea6e9d7ac2c0a6263",
+    "tests/contracts/target-selection.test.ts": "8cbf3aca2ef25fe08b84063c9ede18dfad450638bd5fbd9efd593048b1ea2b93",
+    "tests/contracts/templates.test.ts": "3559dc7a16405d9d7bb21fbb51b78e14cad7078303221224c19ebd5b633667b6",
+    "tests/fixtures/import-fixture.xlsx": "e1573fc385a574d0541d9834206438ba866ba005e08466465b98c314286432b7",
+    "tests/helpers/collection-process.ts": "0fb66a344be670b175d2064f7e769dec476553e9f6c355837dcd69e982640a1c",
+    "tests/helpers/commands.ts": "78e88bd5d5fd8493c7f7c6cb839c8119f16aad08ecae11e729e1ee1c4ecc5bd5",
+    "tests/helpers/cost-ui-fixture.ts": "e38ff65f7c36eba21885fd800d34497b5e7338f446d333304d0c6ab11794087a",
+    "tests/helpers/enqueue-process.ts": "a1f29325e6aaab74ffed83b9add4347dc9ba4da33842f5730d9e8692f69c0bfe",
+    "tests/helpers/facebook-inbound-process.ts": "189c9d7652fc2558a85ab4966242910e41a857d831b8c8e250c45ad0efce21a2",
+    "tests/helpers/guardian-owner.ts": "2e11779c4478e9bd1664d7420aca1e6c0b1e45f61c49af73e5fa5e22d4caadc1",
+    "tests/helpers/inbound-process.ts": "eb485fd43211d189451c9b7c6ee937434e6b1f013aaa75cae4961761dc332f93",
+    "tests/helpers/lead-fixture.ts": "9de717af21163768a8dae1062f078c10f66391df6d17b94600ca957739b15106",
+    "tests/helpers/lead-reply-process.ts": "853e59709703fefa95fc939cd71a534d3656741fbfde126ecdfc179d32cded9a",
+    "tests/helpers/payment-ui-fixture.ts": "39bc902802e89e73ff87d230bf18596659dfae260a298accac0213ca56bf1ec3",
+    "tests/helpers/reception-process.ts": "cd2d6612c6476c7e3cd1b60b76d4befdf77fec1ae5502015102c7aed14a43359",
+    "tests/helpers/refund-process.ts": "72819bdfa652108bac2d2fdce78be82bf08a627de186a383fa7324efa2d02610",
+    "tests/helpers/refund-ui-fixture.ts": "c0664d33fbab5cb8648dabf517cb30cba58c6d4b7a24e397a8246b4473f4c41b",
+    "tests/helpers/schedule-process.ts": "3d4c82712375cba08e6114e53f9cec3eebdb2f13a567f202b828c108c1a4f930",
+    "tests/helpers/stripe-financial-fixture.ts": "cfc586c5870b5d630d554e0e9e9034438dd2d5cd1cb85689c8ec847da9a59a6d",
+    "tests/helpers/stripe-fixture.ts": "82e7432f9e61480feaed5911d4ae29a02cc68b8fb492ab8a0250ccfbd7b30ff6",
+    "tests/integration/adjudication.test.ts": "f49e48bd40851828073877386270dd0fe10903ebf704c198e9519426be8fcfb3",
+    "tests/integration/collections.test.ts": "11135157382ee3a86532c88ead032a5f3f95b9a7694ff619658078b34c3c7b2f",
+    "tests/integration/contacts.test.ts": "8d936e8d2bf6bf5956fd0c568e1eca8081a1cfb40b956f7befaaa7dd1602c35a",
+    "tests/integration/costs.test.ts": "1c9b36748506c5b35c0a2222c87f7f275bfea0705ef1bd125a7b755db3e62549",
+    "tests/integration/durability.test.ts": "bfa5161456352a529c1b74d9a089b863b406f4b5527ac80a65959f7ef370e9d0",
+    "tests/integration/execution.test.ts": "fd06e12dd1dbd433e4fb4ec5b56aeee022fcf8b8e748bba71b99a426973ab5d3",
+    "tests/integration/facebook-inbound.test.ts": "c10e2ca386af6deccee9a74bb334698fbb2cb29e0e31d98de3399030063eca6e",
+    "tests/integration/imports.test.ts": "37ad4dd01eee903893b87b3024114c9c3cf170a4486d81c5cb23570380d8df25",
+    "tests/integration/inbox.test.ts": "555b2dc06e9e6a03f919c3c9d218d430a75fc7797f1a1abb8b1fa0f9a35e777a",
+    "tests/integration/lead-management.test.ts": "b844ca36fb5dea0a4ed070f54fa7b73f3d0dc7d025db5b7a55181042307f8df0",
+    "tests/integration/lead-reception.test.ts": "7ae581ed27efbdbbd327010dbd359aaaf7a5c5042822ec5b1be78b673d1446c6",
+    "tests/integration/orders.test.ts": "28e04a36e11cd82c323c48c48eda52bf6e7d9cde13baf83e00581ffa68735c3f",
+    "tests/integration/payments.test.ts": "569986fc1d7cb0db012a235d74cd7952a56b42f42c012310fd5204accc362e1b",
+    "tests/integration/reception-worker.test.ts": "372cf10c70abcaf81583f5eea63bcf9f56e93449d9f7ccf656fa0e447e2be3c1",
+    "tests/integration/refunds.test.ts": "6443f289fcde99165b5c5b9574c256d1790d90cb45fe5d4803c16326f361338c",
+    "tests/integration/schedules.test.ts": "a3e0235bb9473919711d62c3b34915e9c176f4c33394237f08c6c5f654fb1c31",
+    "tests/integration/target-snapshots.test.ts": "f424a76b1b1e432ee5734b662ae70a1c13fde4f0783ce09bd818d1a0e17e81a0",
+    "tests/integration/templates.test.ts": "9b4c24675fdcfcaf14476faef2ca5bcea73c0035ed86744a3c4697cbb9877bd1",
+    "tests/unit/agent-configuration.test.ts": "d2bb9bd969c9147abbea45c21365859c7f9f6d35cdf8021461037c9a4ece9481",
+    "tests/unit/core.test.ts": "93e76f8c92c1b9fd449c69fc7755ec20e0f1d9e5537357cee33496e866877892",
+    "tests/unit/schedule-rules.test.ts": "6f17dae324085a1550990cf612b473c311c3d64ae877453ff39bd99dfc83370b",
+    "tsconfig.json": "d53583077541d9b38e47b7fb8ffcc53a2c371a1681ca66a20954f5dc88afbed3",
+    "vitest.config.ts": "49f0e18312ace5cf0874a0ce51edea04fc09962d80c56971f8c5c52f8bf8e287"
+  },
+  "source_lf_hashes": {
+    "apps/agent/src/config.ts": "9b84d8baa3fcc78278b6daa1353d6d460a92186ae3efb0241009241ee3e5154c",
+    "apps/agent/src/configuration.ts": "975dc0bf52fcc4fb93bf1760f808419c1048b196fe4d782fd477da5a0d1acd01",
+    "apps/agent/src/guardian-child.ts": "0015c9fdf00f36be5bf51f247b588d9ad3bd896e4d0e333c3f844596e04335cf",
+    "apps/agent/src/guardian-protocol.ts": "2f4cbf9997dc7325395499c69233f6a136c34f6c2bb1b5553aa16205c625d722",
+    "apps/agent/src/guardian.ts": "b57ae2ee6603cd9f0fc13a191548b8422edfef99ece6fb2a26d8507a354164a2",
+    "apps/agent/src/main.ts": "e3310522aec68b2f0ea209d58b02772662f1a8083d3b61d0b3ff559b244a97de",
+    "apps/web/app/[section]/page.tsx": "ad1c5463764b2cce8456f0105db67d58a7a2967e69449586659a4ed262718383",
+    "apps/web/app/api/[[...path]]/route.ts": "c4a2359806538fd8937a2161e8de015ef4260c52831522d2586cdec159dd13ea",
+    "apps/web/app/chat/[channelId]/page.tsx": "a2b364ab859fcc8a4fce75dd9a73c650488dc30964875959b6bf9befd9af9fc9",
+    "apps/web/app/error.tsx": "777afd57d4fe73f4ddb03303ff719925f89aabc03452e215e79ee78da710d34e",
+    "apps/web/app/globals.css": "8ea1f3edaa1220e027efe7554edb8b28b8e1fbf7b3067743158426335e1a377b",
+    "apps/web/app/imports.css": "581422dadf39b1e193372a247951b7f047d3aa0803598e0ed5ec108190eba56c",
+    "apps/web/app/inbox.css": "c4d8a1fb959554432a53de9efa7eb52b31e685282ce55b49a2072156e5d23517",
+    "apps/web/app/layout.tsx": "45f7db4192abfab8dd97ecf3015a4263ae49957170b1ea7854cf3bbb70dc6269",
+    "apps/web/app/lead.css": "4830ae283bdbf3cd60b37056c5d95eb092393c85b0430ccf59ce1666fd891faa",
+    "apps/web/app/orders.css": "2b7dffe0b01e622a2365072d76bacb7d85d5111158d93f5a1e8ce5d1d48db669",
+    "apps/web/app/page.tsx": "23ab7d53b76ab1921c472820ffbb99dc54d48a166308ebba92b804564f403cee",
+    "apps/web/app/payment-return/page.tsx": "c4ab67c1e59326c8789b2ae7df2832ed7d6fd1709199683bfbfee573fcd86c72",
+    "apps/web/app/schedules.css": "9aef7218f6249f1863540939132f11695c2f0141e968e62f4309966dd69d7d99",
+    "apps/web/app/targets.css": "a5966b4d8f294c97d8cf8c88e0383a506bf7bf770f9fc0cdad06b5384f6799e8",
+    "apps/web/components/action-adjudication.tsx": "93dbd69208766d623f8dea4019815692662564136965328c67695ef04b5a4c54",
+    "apps/web/components/business-ui.ts": "7b874b32185f208e364b8e1f0e69defa04209685a9d8afb1cf3ab3aba23d9dd0",
+    "apps/web/components/collection-export.tsx": "1c1faba35d009e42d96705283b95d7f2990ef2abba4a3c6e22d33057ba7cd4d6",
+    "apps/web/components/collection-targets.tsx": "2633f58b2be4a34b7119047d1c372110af754082fe07f032c8b629cdb08ca65f",
+    "apps/web/components/collection-workbench.tsx": "9dd89e363ece39f416d673eb42e43c0723e0eac5f8b9886947033eb91c5c0650",
+    "apps/web/components/contact-permissions.tsx": "f17ad7a210105261a366f1f4dc427d1fad30fdaf3e7056780a7d8943b34651e5",
+    "apps/web/components/cost-ledger.tsx": "55ec93742e64b5e4407525cfe46f96c0c2580fb18d1cbfd6022a21692e7652ac",
+    "apps/web/components/customer-workbench.tsx": "076de5517eba4be47cc1a0d505ee20731da925476a6b2d038a4bfebf8223d32a",
+    "apps/web/components/executor-controls.tsx": "4f534d88eed534a3101c63fd895ef27a4b8ea9768e6aafa5f06f424588cb7716",
+    "apps/web/components/facebook-setup.tsx": "ed36070dece8b26c6a8bc2d020230732ea9cd750ccb27e025d324b1d9129b18d",
+    "apps/web/components/import-workbench.tsx": "4fec88559f455ebb0c4ffa50d142695413d7f182ce09a774735fc9cca02e70a7",
+    "apps/web/components/inbox-workbench.tsx": "34c8c88e64330917b8c0716bf4d65b079228bdfa055858395c68f595be541c47",
+    "apps/web/components/lead-analytics.tsx": "00c17501838fbf2ce54a3757084c2a74b406fdc36a859a26ad37765a7d18803e",
+    "apps/web/components/lead-customer.tsx": "81fb7182014ee96fe52c7a1d50142665944c36a83a091b2b6b2ae1cef1644c4b",
+    "apps/web/components/lead-ui.ts": "1c69ddfd37da10b8c774989bf18221fb581b231d4f815c3acb8a02bfc40f00c2",
+    "apps/web/components/order-workbench.tsx": "b01c33ae3d450e665af1d5c65fa92f36858f5b4e01558854e7e266e1c9b4548f",
+    "apps/web/components/pilot-permit-form.tsx": "c149d8b4f2b3d8a4c0af9cd6849c60a39130101c429e4a7d67fd67542deade8c",
+    "apps/web/components/reception-controls.tsx": "a094c92143d1b8c88b0793496580404ddc9bb436c755e78d8c6291a1b4801924",
+    "apps/web/components/schedule-workbench.tsx": "ef6e6b24677126658e3c7807d4e4c62cc2a43c7903c4c255b8de0f2c6df24d5a",
+    "apps/web/components/stripe-payment.tsx": "f4532151dc15b26a13952cb90536efe0550e723bc127ad6b397ef15d7e650ba9",
+    "apps/web/components/stripe-refunds.tsx": "b3a89ad4917e31d41cbfb59b9e516deb2e340044588e5eb95765013131d48ac8",
+    "apps/web/components/template-workbench.tsx": "42d5d929cc526c2da291174eb48da916c964d8b6fe44eab57d9c9aed1e1feaba",
+    "apps/web/components/use-request-key.ts": "45641ef0e7f792be2fcb957433eb3a6111c85b45abacac85fbcdd5d5c3e07108",
+    "apps/web/components/visitor-chat.tsx": "5409ba042bfb0151ce3c2e62d80a70dd4248cf38b9fa54896243efe72d87e336",
+    "apps/web/components/whatsapp-setup.tsx": "7dd5cdfc977d72eb25a584e2225eab95ab84625ed50ee88099943a760bbec946",
+    "apps/web/components/workbench.tsx": "7bff75c03cfaa2d58f04d7888a0f007d1042e807e626e8311dcdbd8088a275c5",
+    "apps/web/lib/auth.ts": "d261429ecceaca397abce380f253b389247fcb751c55db1ab475819c116becf6",
+    "apps/web/lib/visitor-auth.ts": "a53e1003306b7a4f148609f78f7c7fd60d2df014b415fb8dc2d31ffc0dfe7722",
+    "apps/web/next.config.ts": "00fa907a927026572925ee6e17124b5c02f912e323a5d0fe2b00ad5d92eae2f0",
+    "apps/web/tsconfig.json": "9e82dd45ce48e28f5d845fc985dfdb3ff424aef4e252818e47d9b7715ebad753",
+    "apps/worker/src/main.ts": "7aaac22656f781fb2e0e938585ed85c8a5ee00baa1311fd85a943a25d15ba054",
+    "eslint.config.mjs": "8e76594ffca4dec6514dd5edc3f39655b9a21bd0f861ecae13e9d62e56eb9643",
+    "package.json": "c0c8f5c7ca58dcb6db78bca4730ab1cbf661ef0f176c7e2cfd79f972f71d73ba",
+    "packages/adapters/src/collection-fixture.ts": "9a526fb436e7c692aa1c07e778980808e2c60c05ce1f6c34829372baebb1fb15",
+    "packages/adapters/src/facebook-events.ts": "d9d3e37a065ef1cb674632366abcdaa4846750da5ad80ff77b45af4bbd94a2c9",
+    "packages/adapters/src/facebook-messenger.ts": "b6a29de8827fd69b784369c2d48db6eed0570f797590ba98b8f67b57bf43c160",
+    "packages/adapters/src/facebook.ts": "e1bcdc6768ebab56d07f35b7fdae3ffc1a51383e8b0f8d197ded3e45d538a318",
+    "packages/adapters/src/fixture.ts": "248e1770a564e45196cb399b73572555f9a769ef2a3fb2177d9aa6be144fdf91",
+    "packages/adapters/src/index.ts": "9b44adaf7ffd4bea520abf1fab55c7e8a2759289f8978228e975f6b832b84404",
+    "packages/adapters/src/reception-model.ts": "34845ad47dfc9c04ff47e4e705a6f056a5665cf9d1eee98f77ebe02e05a143e9",
+    "packages/adapters/src/templates.ts": "1ee3f4269739363c854ee80847130df0730a5212f28779d192086db2630b807e",
+    "packages/contracts/src/adjudication.ts": "a8f031e9c2aa8af43e4f93d0ec34db254c399608633549ed15216eaf949f75d0",
+    "packages/contracts/src/collection.ts": "e9fc3ada1820970f399cd211f67f7867683ee8bc5829a690a7c13133329f2a35",
+    "packages/contracts/src/contact.ts": "9ccd4d84215f1e6776ca06065fc2ed8588b4927593ffa006af468c4a4ae5cc6a",
+    "packages/contracts/src/cost.ts": "b04eb335bb557cc3d4c6c325db9b060f127abfa46b1b922b1307558d15eacdcd",
+    "packages/contracts/src/imports.ts": "24ff749dd1a44fb51765b22bfac98bdee0d3f892dad92c29d917a88b25e897b3",
+    "packages/contracts/src/inbox.ts": "ffdea2f349ac85e20e5db112bec942fca86bb6960a0d89164bd06cc3447b1f02",
+    "packages/contracts/src/index.ts": "06d1ec5be7434aeff61f80c362c80e5331043f28f397a476a38bcd799d172e19",
+    "packages/contracts/src/lead.ts": "6bc761a2d2e50d4c793b77af791a3ab832d6eafaa58304789bb9e13e5a7ccc33",
+    "packages/contracts/src/order.ts": "d419146735cc5a9f301a8115790baaf3cde630f41306cfbf89735ca1a6bc965d",
+    "packages/contracts/src/payment.ts": "c0d084c49478d77a28fe002728fa1636b30e0782a558f1afaef9cad2653f72b9",
+    "packages/contracts/src/refund.ts": "b8250f2415ccac2db7e4638ac8cb9174c9b8cca54d41509f6595db41bff1278c",
+    "packages/contracts/src/schedule.ts": "c7e703bfd3c02069059198ca3f4e5a89a785815f4b52246e2fa14392580431e1",
+    "packages/contracts/src/target-selection.ts": "ff8eded32c5c7f78654dfbe6e3ce2c7ef4222acd68eddf475db06db909b6545f",
+    "packages/contracts/src/template.ts": "cdc065443697c3f5de44150e7854f7cf8af8fac114d6f3fbf13e1ae1cc91e73d",
+    "packages/core/src/adjudication.ts": "40153e4a77db8576d60f89334b551c0c3daca4a3397d909031eb1bf0620cb80a",
+    "packages/core/src/artifacts.ts": "772345037603fc5508da10891c831bacdb026cd2fa79e8e0c4db1a1b374cbe03",
+    "packages/core/src/capabilities.ts": "2f8e63cd152773f14272f73539360712b5cde845c2d65976db976f58e2f3292d",
+    "packages/core/src/collection-export.ts": "cb13eb7eb230efcecc9d38b3d4117fb37dfc2023c343e48b47e0e58d538de4a1",
+    "packages/core/src/collection-filter.ts": "a4eaa845e11115ddccb239d82e1971a809cc664e9545fd0d9f23db4ffc9e7216",
+    "packages/core/src/collections.ts": "4512993b6431f2b5e242fa437ac21b7e2733b827f7c3d3c633e21abdf7a81f74",
+    "packages/core/src/contacts.ts": "c07e3c43224eaffadddcaec9df4e0172f2ca00a669feefd27abd7e785ead4247",
+    "packages/core/src/controls.ts": "7d79f5edc295e6248c1b480520e2fb3914c6d1c2253784eec5e58ef6b3b6931a",
+    "packages/core/src/costs.ts": "9a16d121874ef755b6bdcf54269388b1ecab79d6aa2b49209d133476e290731e",
+    "packages/core/src/execution.ts": "93f420cb211e92704fb1c6a0afc7391698f5a6388209a61292a5e901a15fa7b5",
+    "packages/core/src/facebook-inbound.ts": "316c9c934e3a1b3bc13b133f556a57b07112031db2d76c4941a06a0a44f78886",
+    "packages/core/src/import-mapping.ts": "99e1c666d188c39763c0e526bcf52a0c795de428b190f750b74800fd8e77d8a1",
+    "packages/core/src/import-parser.ts": "ef585c5d8e6770ba6cddea918dc5137f3c49cda678456774c00ae3d791970329",
+    "packages/core/src/imports.ts": "8fc585136ef4babcd04ef0ece3f976c5122770c35093e09471229f0a8ca93051",
+    "packages/core/src/inbox.ts": "84e7895e32554d87cd8371a68c0cda87975d7a7297511efbd56d6e9246c3d276",
+    "packages/core/src/index.ts": "7f715c3be9e210360e6e3b36c72e91c216faa3f0a134ed3f886d3a7c2836b7db",
+    "packages/core/src/lead-management.ts": "fe9e38f7142cb17df869a31f1c02766a179703735523d154535127966b5279ac",
+    "packages/core/src/lead-reception.ts": "8d3ec788bd69a5f4c819baf78baae1a0e255a41777cf6f6bb62d9bbb848d0fd6",
+    "packages/core/src/orders.ts": "09505201013dac40995094188dcef40625e4a1ef92dda8f1bf30efb99ff3cabf",
+    "packages/core/src/payment-worker.ts": "d4b2da9945659f865d76aff01b9c53b1c3fa250ed686646434083d3b7ceff987",
+    "packages/core/src/payments.ts": "0cedd357d5c1faa1ad26507e5f63b55875c2b8260ba51030ca88c1cf28b02793",
+    "packages/core/src/permits.ts": "335ac3871bf7da6b9f86e5201f1bad97c2d97bccde30e71b499850a63f6331a8",
+    "packages/core/src/reception-queue.ts": "8801004f130a00be9c37f36ba0f354aa104e283485b732e937a42c081a505d86",
+    "packages/core/src/reception-worker.ts": "648a3591a3de7e0a3bd9de9e8f689ccd658758696be4779adcb3e3481ac8f890",
+    "packages/core/src/reconciliation.ts": "842601a8ee0c0c5b756fd9fed9d8c5216c0e4b672864a17aecdad12fea25f211",
+    "packages/core/src/refund-reconciliation.ts": "78484fee935b675f59c2ce13a4bb8214df787b96a3041381ab89d74198a39944",
+    "packages/core/src/refund-worker.ts": "cc18fe99498bd2c73fb8de5ea7602b110d3630c0f3ff5eef278343bd54510c03",
+    "packages/core/src/refunds.ts": "7238370f11045632a4d9df0de30b7ac33fe30506852d28498d16e8c76bb0e923",
+    "packages/core/src/schedule-rules.ts": "e70cb5625040c01345de6f92f4ea3e0fb2d7d36aad5d2bf9b9224ca113e00261",
+    "packages/core/src/schedules.ts": "b478a18ea57275642dd269c3a16b27e716fafeb5101e0dc685b100a8e079fd7f",
+    "packages/core/src/service.ts": "20c81bdf8975223aa25fbc166d5075dea25bd7754a3e823a5bfa0185d7b18d91",
+    "packages/core/src/stripe-financial-contract.ts": "e54f7a3189b92ce527b25fe94b65be7df81464d3f8cc8de22be9c68638b9f29f",
+    "packages/core/src/stripe-financial-gateway.ts": "e53e2d0cd05b5161706b4aba1a1ce20493dea43e0f2e398104262db4c64f4374",
+    "packages/core/src/stripe-gateway.ts": "ff85b3d58e002436e128790396ca0756d4b7202ddc1530daab4f2f7cbe81ae30",
+    "packages/core/src/target-snapshots.ts": "817b4f37e112406269d6de7178e622a24fb1e0bf8f2e72780299494f54ea7cc8",
+    "packages/core/src/templates.ts": "ba935d38829f72539163f6170aef762a0d96f40a34c7723544cb4aa3d6f92be3",
+    "packages/database/src/index.ts": "182d54741b9853aa53171f7d9701ad9e2ba97870fd186e8c6d8012d16c2cfe63",
+    "packages/database/src/runtime.ts": "48fbf5e49f28bad7dbe28294640f244f24146b79516e56f47db7ea8cd79b1a22",
+    "playwright.config.ts": "202bf7ba60a7d43805669dad63aa3f1ea8d0693297cc19f86aa22d02caa62b06",
+    "pnpm-lock.yaml": "2403c37526ba689077bfdb2c7a9cac0af0a3d007677f39c9a71b639207add503",
+    "pnpm-workspace.yaml": "69f0ef25c828a96072bb1960dd0578470e11a97491dc677079d3e58e05da69ac",
+    "scripts/checkpoint.mjs": "52917556e84f4ed82a7d6c9d125902511788a5ea6a95618c7a515cd9e33f7af4",
+    "scripts/database.ts": "2981a1d4486ec15e9218a0ef8880b2315a6a69da292d84bb0819a0e8bc1f401b",
+    "scripts/dev.ts": "39da9bb9c44d7bf43ba9e3d5ccd14be1c8eaca125da3f0818f8c118926a52645",
+    "scripts/fixture-server.ts": "5d06152e8748b677a214dd8187bc1db1fc887fd25ce8e25e8d279bc689bc7950",
+    "scripts/import-parser.mjs": "2fa9290c6839de2c3da4a2af0c8c2ee45584f72012b935f0a6b053fb7d19ccae",
+    "scripts/integration.ts": "8fc85cc094d68b98757533f68f310424f5f6594763850094f04f62068dea17d9",
+    "scripts/migrate.ts": "2059f5344b143a73b0567d5cc40b46f881b69b7a71435a15b7c0335189413467",
+    "scripts/production-smoke.ts": "caac1d8e4d3ca8dd2e907364c75662648d892c5e46de58ca93a777cc2cabc76d",
+    "scripts/register-evidence.ts": "46a1ceb1d7f6a969f018e526af45db66b4108f829a86bc9369b72d102cdcc5f7",
+    "scripts/run-check.mjs": "d737ff99bd7f20cb383a4cae7df41c39d781a178c118f3450cb233eeb7ae5dd9",
+    "scripts/seed.ts": "92177cf24887ccc3fe8e4bde5191476a2ee1416bfafd1fc41b86070cd1a812a3",
+    "scripts/verify-planning.ts": "f88fb88a24bcdcdd3549968acd72d70ac5af471804698d058fa0dc5bb46bcad7",
+    "supabase/migrations/20260911164326_g1_execution_core.sql": "31e4c9a6aec219e52fe94ef5a4f97b58ac3bbe714bd782952fb038e368e20fdf",
+    "supabase/migrations/20260911173241_g1_permits_reconciliation.sql": "65baeb55d96885097f66cb02e1103c301859a1d3705dee89ac9e8b8b2852cfa7",
+    "supabase/migrations/20260911175249_g1_capability_evidence.sql": "9848c682c137b1229b778ac76743f1489d3b6494b340902c7ea72ea504d6e137",
+    "supabase/migrations/20260911175746_g1_agent_slot_guard.sql": "8dfa4ad3152c2ea892d84bae4f317f600a2a44670f3d27102df9d451691abe8b",
+    "supabase/migrations/20260911181005_g1_stop_and_agent_management.sql": "75d4fcdc89804d6c81bcc742bbed6385480e22e2ffef4c245ae4535ebef1d852",
+    "supabase/migrations/20260911185039_g1_contact_eligibility.sql": "6c7c535b5ca366e309194c479b9eb55ae052a62b6b302c92a9fdf9ca01943e67",
+    "supabase/migrations/20260911190913_g2_cost_ledger.sql": "6cd7bc467e812fd34f06a5f464297b0a47d160a9c54653b83f68f294b39c9250",
+    "supabase/migrations/20260911194100_g1_action_adjudication.sql": "bddbe2459ab599bf153169732f7d7fc0288b10de3ee0086e25287fba331ceb8d",
+    "supabase/migrations/20260911200056_g2_template_versions.sql": "d9e9a3255befaf672d004ef6ed4f9c7acb1e3250ab231fba0a41ae7593832ba8",
+    "supabase/migrations/20260911203355_g2_collection_checkpoints.sql": "e50ecaec7ba71c9d42c6b768be4f8318fdc2d1130fbb83168ccaeedfcb612971",
+    "supabase/migrations/20260911213439_g2_import_export.sql": "5892855457aa149ae4bda86ce2fbc914b9ef57339002bc3eb82ec3e4624f6694",
+    "supabase/migrations/20260911221017_g2_target_snapshots.sql": "469d9cee9651ae58189b472b4bcce8376d4d6a41ba65dca46a0c62ac46b20094",
+    "supabase/migrations/20260911224129_g2_schedule_rules.sql": "80472fe3800f47f481a4a87336af2fc08816e8d3119a673ecef3649dc51cdc5c",
+    "supabase/migrations/20260911235946_g3_owned_inbound.sql": "7a42460c74c036c412c49f176c2ee2e45b2534be1b22f131f4c9b28044113d7e",
+    "supabase/migrations/20260912003348_g3_owned_order_snapshots.sql": "6f221bafa308142d98229c118786fb350eb013bc559297c95ffd501a741d58a9",
+    "supabase/migrations/20260912012250_g3_stripe_payments.sql": "1a5eb9581e56305b83e77248a3ccb880c699377e61133856aaa33b4e6c922f51",
+    "supabase/migrations/20260912022322_g3_stripe_refunds.sql": "c825921f1d2245bcbd8436f19cca514b9de0873f4fabc7b7479b37955846d836",
+    "supabase/migrations/20260912031707_facebook_lead_inbound.sql": "2ab43f08e524ab4491e40268fe902f6799fed9e92045838b6ae3302e7ba323a1",
+    "supabase/migrations/20260912032804_lead_reception_execution.sql": "0eda8ff7981d347dfa2f18995bc17bd9e76730dc1bbd05c183e4c161983b3419",
+    "supabase/migrations/20260912034626_lead_automation_rules.sql": "b0782dcc35933a6c81ed0e5d8f9223f14ac5d82febec8b0c74bab6125d9d4519",
+    "supabase/migrations/20260912040653_lead_metrics_and_ingress_limits.sql": "f9e66056af83f088bf4ae11cafdeeb640275cb496fff5359f45346b3ef493e85",
+    "tests/browser/fixtures/agent-recovery.spec.ts": "eb35d128d112886321e7be82b87ea6ff1745f7d6ee4f5ff48f77c30225856477",
+    "tests/browser/fixtures/executor.spec.ts": "bdb97326ec99e410366929755a5aa59851b7927e6c03551a1e20e0efd14bc3da",
+    "tests/browser/web/facebook-leads.spec.ts": "95f8519f27730ca7685178a34b70975eb1c9ded0829a33be6369bc6074821474",
+    "tests/browser/web/imports.spec.ts": "eed2d8690d90d252cc941ca24bbb9c96fe3e59f9a33d0eed8765ab2e9816940a",
+    "tests/browser/web/inbox.spec.ts": "37517a81e1e37c403f0450e7fc7f7e005c3665d0cac3819f7c6450e9581d167d",
+    "tests/browser/web/orders.spec.ts": "8b6285c3e4e38f4bdaf8546ade455c871d8cd1a2df60c567b0a4d4682da54b4f",
+    "tests/browser/web/payments.spec.ts": "76bf0082dbf2372f6adb65e88e74ea5423f91b8178ee427e94c6bf778c6d67d4",
+    "tests/browser/web/refunds.spec.ts": "7aaf266db2edf4701f86a6ffa8bbe45ce14ee16c2c26630824f4b20313ff1f32",
+    "tests/browser/web/schedules.spec.ts": "6b93bbe5232d557c866df21fbc7cff77b38211f9913ed8ef7bc194bbe34edb55",
+    "tests/browser/web/target-snapshots.spec.ts": "e89a8be61d3e9d041da3bbe7597599a6178c1398afa44597614dd3a18c0e6d06",
+    "tests/browser/web/workflow.spec.ts": "08e0bda252a052edcd69c63fbaee55faeaed7ce5084b39ea373929fe3431ab77",
+    "tests/contracts/collections.test.ts": "94774d54b5131c5f8e7d7b7ec7c9d5f5834d298ba992fc08b5aad3b6d0f9b8c9",
+    "tests/contracts/facebook-events.test.ts": "7ea147e91a844e458890c288e7bdc059f9e8daf3ca0bc42ce1ea27a754d5b2b3",
+    "tests/contracts/facebook-messenger.test.ts": "e6d8d940239f3bc916785dd6de007ff1fcbfdd47780bf547cf1aa0bb6163d7c5",
+    "tests/contracts/facebook.test.ts": "fd74764d354ec8d0d30072ae99d62e74b2e9c5d23fe0f1a8c30c01c75622b14b",
+    "tests/contracts/imports.test.ts": "4b035effdbdd2252c3acff347c9b7ac4fa2a5cdfca22026116920e382dd444e5",
+    "tests/contracts/inbox.test.ts": "6b65c4eeba2d4a8711b90eaa6d8436a6d40878781f40c497686c10e466d8c687",
+    "tests/contracts/input.test.ts": "b340a720f27675c0ed7754a781fa34bef665bf265c6a8d4699960734179f8f89",
+    "tests/contracts/order.test.ts": "423ccae28405e407c5c9d98e5b2aad2f364c12ccd7c09549dcff0fb91c4797c6",
+    "tests/contracts/payment.test.ts": "dc66d92f4fb592e4d06a8cfb9f1cc2e62bb659217602927b4aa9f5bf633e9fa1",
+    "tests/contracts/reception-model.test.ts": "069e3551c8b654c868025de7efad9802f3f5f34749dc8612ba88190685f52847",
+    "tests/contracts/refund.test.ts": "0d489314de5c759086f73177d7f153a095723cd09dcbc8919e45c110bfc8f9d6",
+    "tests/contracts/schedule.test.ts": "c1ae0c58fd4e50c093311d37c201091a6f941d49b0b13e8ea6e9d7ac2c0a6263",
+    "tests/contracts/target-selection.test.ts": "8cbf3aca2ef25fe08b84063c9ede18dfad450638bd5fbd9efd593048b1ea2b93",
+    "tests/contracts/templates.test.ts": "3559dc7a16405d9d7bb21fbb51b78e14cad7078303221224c19ebd5b633667b6",
+    "tests/fixtures/import-fixture.xlsx": "e1573fc385a574d0541d9834206438ba866ba005e08466465b98c314286432b7",
+    "tests/helpers/collection-process.ts": "0fb66a344be670b175d2064f7e769dec476553e9f6c355837dcd69e982640a1c",
+    "tests/helpers/commands.ts": "78e88bd5d5fd8493c7f7c6cb839c8119f16aad08ecae11e729e1ee1c4ecc5bd5",
+    "tests/helpers/cost-ui-fixture.ts": "e38ff65f7c36eba21885fd800d34497b5e7338f446d333304d0c6ab11794087a",
+    "tests/helpers/enqueue-process.ts": "a1f29325e6aaab74ffed83b9add4347dc9ba4da33842f5730d9e8692f69c0bfe",
+    "tests/helpers/facebook-inbound-process.ts": "189c9d7652fc2558a85ab4966242910e41a857d831b8c8e250c45ad0efce21a2",
+    "tests/helpers/guardian-owner.ts": "2e11779c4478e9bd1664d7420aca1e6c0b1e45f61c49af73e5fa5e22d4caadc1",
+    "tests/helpers/inbound-process.ts": "eb485fd43211d189451c9b7c6ee937434e6b1f013aaa75cae4961761dc332f93",
+    "tests/helpers/lead-fixture.ts": "9de717af21163768a8dae1062f078c10f66391df6d17b94600ca957739b15106",
+    "tests/helpers/lead-reply-process.ts": "853e59709703fefa95fc939cd71a534d3656741fbfde126ecdfc179d32cded9a",
+    "tests/helpers/payment-ui-fixture.ts": "39bc902802e89e73ff87d230bf18596659dfae260a298accac0213ca56bf1ec3",
+    "tests/helpers/reception-process.ts": "cd2d6612c6476c7e3cd1b60b76d4befdf77fec1ae5502015102c7aed14a43359",
+    "tests/helpers/refund-process.ts": "72819bdfa652108bac2d2fdce78be82bf08a627de186a383fa7324efa2d02610",
+    "tests/helpers/refund-ui-fixture.ts": "c0664d33fbab5cb8648dabf517cb30cba58c6d4b7a24e397a8246b4473f4c41b",
+    "tests/helpers/schedule-process.ts": "3d4c82712375cba08e6114e53f9cec3eebdb2f13a567f202b828c108c1a4f930",
+    "tests/helpers/stripe-financial-fixture.ts": "cfc586c5870b5d630d554e0e9e9034438dd2d5cd1cb85689c8ec847da9a59a6d",
+    "tests/helpers/stripe-fixture.ts": "82e7432f9e61480feaed5911d4ae29a02cc68b8fb492ab8a0250ccfbd7b30ff6",
+    "tests/integration/adjudication.test.ts": "f49e48bd40851828073877386270dd0fe10903ebf704c198e9519426be8fcfb3",
+    "tests/integration/collections.test.ts": "11135157382ee3a86532c88ead032a5f3f95b9a7694ff619658078b34c3c7b2f",
+    "tests/integration/contacts.test.ts": "8d936e8d2bf6bf5956fd0c568e1eca8081a1cfb40b956f7befaaa7dd1602c35a",
+    "tests/integration/costs.test.ts": "1c9b36748506c5b35c0a2222c87f7f275bfea0705ef1bd125a7b755db3e62549",
+    "tests/integration/durability.test.ts": "bfa5161456352a529c1b74d9a089b863b406f4b5527ac80a65959f7ef370e9d0",
+    "tests/integration/execution.test.ts": "fd06e12dd1dbd433e4fb4ec5b56aeee022fcf8b8e748bba71b99a426973ab5d3",
+    "tests/integration/facebook-inbound.test.ts": "c10e2ca386af6deccee9a74bb334698fbb2cb29e0e31d98de3399030063eca6e",
+    "tests/integration/imports.test.ts": "37ad4dd01eee903893b87b3024114c9c3cf170a4486d81c5cb23570380d8df25",
+    "tests/integration/inbox.test.ts": "555b2dc06e9e6a03f919c3c9d218d430a75fc7797f1a1abb8b1fa0f9a35e777a",
+    "tests/integration/lead-management.test.ts": "b844ca36fb5dea0a4ed070f54fa7b73f3d0dc7d025db5b7a55181042307f8df0",
+    "tests/integration/lead-reception.test.ts": "7ae581ed27efbdbbd327010dbd359aaaf7a5c5042822ec5b1be78b673d1446c6",
+    "tests/integration/orders.test.ts": "28e04a36e11cd82c323c48c48eda52bf6e7d9cde13baf83e00581ffa68735c3f",
+    "tests/integration/payments.test.ts": "569986fc1d7cb0db012a235d74cd7952a56b42f42c012310fd5204accc362e1b",
+    "tests/integration/reception-worker.test.ts": "372cf10c70abcaf81583f5eea63bcf9f56e93449d9f7ccf656fa0e447e2be3c1",
+    "tests/integration/refunds.test.ts": "6443f289fcde99165b5c5b9574c256d1790d90cb45fe5d4803c16326f361338c",
+    "tests/integration/schedules.test.ts": "a3e0235bb9473919711d62c3b34915e9c176f4c33394237f08c6c5f654fb1c31",
+    "tests/integration/target-snapshots.test.ts": "f424a76b1b1e432ee5734b662ae70a1c13fde4f0783ce09bd818d1a0e17e81a0",
+    "tests/integration/templates.test.ts": "9b4c24675fdcfcaf14476faef2ca5bcea73c0035ed86744a3c4697cbb9877bd1",
+    "tests/unit/agent-configuration.test.ts": "d2bb9bd969c9147abbea45c21365859c7f9f6d35cdf8021461037c9a4ece9481",
+    "tests/unit/core.test.ts": "93e76f8c92c1b9fd449c69fc7755ec20e0f1d9e5537357cee33496e866877892",
+    "tests/unit/schedule-rules.test.ts": "6f17dae324085a1550990cf612b473c311c3d64ae877453ff39bd99dfc83370b",
+    "tsconfig.json": "d53583077541d9b38e47b7fb8ffcc53a2c371a1681ca66a20954f5dc88afbed3",
+    "vitest.config.ts": "49f0e18312ace5cf0874a0ce51edea04fc09962d80c56971f8c5c52f8bf8e287"
+  },
+  "checks": [
+    {
+      "name": "typecheck",
+      "started_at": "2026-09-12T04:49:50.907Z",
+      "ended_at": "2026-09-12T04:49:55.058Z",
+      "exit_code": 0,
+      "child_exit_code": 0,
+      "changed_during_check": [],
+      "command": [
+        "node",
+        "node_modules/typescript/bin/tsc",
+        "--noEmit"
+      ],
+      "source_tree_sha256": "68bd987c86befc457af85eed470cedc99229d32d465b3b093c94924ea4653ffd"
+    },
+    {
+      "name": "lint",
+      "started_at": "2026-09-12T04:49:55.098Z",
+      "ended_at": "2026-09-12T04:49:57.169Z",
+      "exit_code": 0,
+      "child_exit_code": 0,
+      "changed_during_check": [],
+      "command": [
+        "node",
+        "node_modules/eslint/bin/eslint.js",
+        "."
+      ],
+      "source_tree_sha256": "68bd987c86befc457af85eed470cedc99229d32d465b3b093c94924ea4653ffd"
+    },
+    {
+      "name": "unit",
+      "started_at": "2026-09-12T04:49:57.207Z",
+      "ended_at": "2026-09-12T04:49:58.150Z",
+      "exit_code": 0,
+      "child_exit_code": 0,
+      "changed_during_check": [],
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests/unit",
+        "--reporter=default",
+        "--reporter=json",
+        "--outputFile=.kff/checks/unit-results.json"
+      ],
+      "source_tree_sha256": "68bd987c86befc457af85eed470cedc99229d32d465b3b093c94924ea4653ffd"
+    },
+    {
+      "name": "contracts",
+      "started_at": "2026-09-12T04:49:58.189Z",
+      "ended_at": "2026-09-12T04:50:01.392Z",
+      "exit_code": 0,
+      "child_exit_code": 0,
+      "changed_during_check": [],
+      "command": [
+        "node",
+        "node_modules/vitest/vitest.mjs",
+        "run",
+        "tests/contracts",
+        "--reporter=default",
+        "--reporter=json",
+        "--outputFile=.kff/checks/contracts-results.json"
+      ],
+      "source_tree_sha256": "68bd987c86befc457af85eed470cedc99229d32d465b3b093c94924ea4653ffd"
+    },
+    {
+      "name": "integration",
+      "started_at": "2026-09-12T04:50:01.431Z",
+      "ended_at": "2026-09-12T04:51:22.183Z",
+      "exit_code": 0,
+      "child_exit_code": 0,
+      "changed_during_check": [],
+      "command": [
+        "node",
+        "node_modules/tsx/dist/cli.mjs",
+        "scripts/integration.ts"
+      ],
+      "source_tree_sha256": "68bd987c86befc457af85eed470cedc99229d32d465b3b093c94924ea4653ffd"
+    },
+    {
+      "name": "fixtures",
+      "started_at": "2026-09-12T04:51:22.219Z",
+      "ended_at": "2026-09-12T04:52:06.957Z",
+      "exit_code": 0,
+      "child_exit_code": 0,
+      "changed_during_check": [],
+      "command": [
+        "node",
+        "node_modules/@playwright/test/cli.js",
+        "test",
+        "--project=fixtures"
+      ],
+      "source_tree_sha256": "68bd987c86befc457af85eed470cedc99229d32d465b3b093c94924ea4653ffd"
+    },
+    {
+      "name": "web",
+      "started_at": "2026-09-12T04:52:06.994Z",
+      "ended_at": "2026-09-12T04:54:16.992Z",
+      "exit_code": 0,
+      "child_exit_code": 0,
+      "changed_during_check": [],
+      "command": [
+        "node",
+        "node_modules/@playwright/test/cli.js",
+        "test",
+        "--project=web"
+      ],
+      "source_tree_sha256": "68bd987c86befc457af85eed470cedc99229d32d465b3b093c94924ea4653ffd"
+    },
+    {
+      "name": "build",
+      "started_at": "2026-09-12T04:54:17.030Z",
+      "ended_at": "2026-09-12T04:54:23.565Z",
+      "exit_code": 0,
+      "child_exit_code": 0,
+      "changed_during_check": [],
+      "command": [
+        "node",
+        "node_modules/next/dist/bin/next",
+        "build",
+        "apps/web"
+      ],
+      "source_tree_sha256": "68bd987c86befc457af85eed470cedc99229d32d465b3b093c94924ea4653ffd"
+    },
+    {
+      "name": "production",
+      "started_at": "2026-09-12T04:54:23.603Z",
+      "ended_at": "2026-09-12T04:54:33.269Z",
+      "exit_code": 0,
+      "child_exit_code": 0,
+      "changed_during_check": [],
+      "command": [
+        "node",
+        "node_modules/tsx/dist/cli.mjs",
+        "scripts/production-smoke.ts"
+      ],
+      "source_tree_sha256": "68bd987c86befc457af85eed470cedc99229d32d465b3b093c94924ea4653ffd"
+    }
+  ],
+  "tests": [
+    {
+      "name": "unit",
+      "total": 26,
+      "passed": 26,
+      "failed": 0,
+      "skipped": 0,
+      "files": 3,
+      "report_sha256": "9d6589fbfd8c3dfcb0d8a1ddb0fe1a8a7c640948ea7dc11be53d245518df1bc7"
+    },
+    {
+      "name": "contracts",
+      "total": 70,
+      "passed": 70,
+      "failed": 0,
+      "skipped": 0,
+      "files": 14,
+      "report_sha256": "0a297059df1a2a47c9bdc4f24f777e133b94097cb86144fb19c56908e49faae6"
+    },
+    {
+      "name": "integration",
+      "total": 262,
+      "passed": 262,
+      "failed": 0,
+      "skipped": 0,
+      "files": 18,
+      "report_sha256": "78a3a2c02d4ceffb7a77ec715f80f7a7cb1cd07733b871d643912631a011860a"
+    },
+    {
+      "name": "fixtures",
+      "total": 15,
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0,
+      "flaky": 0,
+      "report_sha256": "493b97df95c48a527ab27929dafd5cc170ff05e04973170e35d6a5697c17dc87"
+    },
+    {
+      "name": "web",
+      "total": 23,
+      "passed": 23,
+      "failed": 0,
+      "skipped": 0,
+      "flaky": 0,
+      "report_sha256": "79ad860e34c9d0c6ff4c7f0e631f20441761e017c555e49e72e8b09f6abb89a9"
+    }
+  ],
+  "totals": {
+    "checks": 9,
+    "tests": 396,
+    "passed": 396,
+    "failed": 0,
+    "skipped": 0,
+    "flaky": 0
+  },
+  "migrations": {
+    "count": 21,
+    "applied_hashes_match": true,
+    "files": [
+      {
+        "version": "20260911164326_g1_execution_core.sql",
+        "sha256": "31e4c9a6aec219e52fe94ef5a4f97b58ac3bbe714bd782952fb038e368e20fdf"
+      },
+      {
+        "version": "20260911173241_g1_permits_reconciliation.sql",
+        "sha256": "65baeb55d96885097f66cb02e1103c301859a1d3705dee89ac9e8b8b2852cfa7"
+      },
+      {
+        "version": "20260911175249_g1_capability_evidence.sql",
+        "sha256": "9848c682c137b1229b778ac76743f1489d3b6494b340902c7ea72ea504d6e137"
+      },
+      {
+        "version": "20260911175746_g1_agent_slot_guard.sql",
+        "sha256": "8dfa4ad3152c2ea892d84bae4f317f600a2a44670f3d27102df9d451691abe8b"
+      },
+      {
+        "version": "20260911181005_g1_stop_and_agent_management.sql",
+        "sha256": "75d4fcdc89804d6c81bcc742bbed6385480e22e2ffef4c245ae4535ebef1d852"
+      },
+      {
+        "version": "20260911185039_g1_contact_eligibility.sql",
+        "sha256": "6c7c535b5ca366e309194c479b9eb55ae052a62b6b302c92a9fdf9ca01943e67"
+      },
+      {
+        "version": "20260911190913_g2_cost_ledger.sql",
+        "sha256": "6cd7bc467e812fd34f06a5f464297b0a47d160a9c54653b83f68f294b39c9250"
+      },
+      {
+        "version": "20260911194100_g1_action_adjudication.sql",
+        "sha256": "bddbe2459ab599bf153169732f7d7fc0288b10de3ee0086e25287fba331ceb8d"
+      },
+      {
+        "version": "20260911200056_g2_template_versions.sql",
+        "sha256": "d9e9a3255befaf672d004ef6ed4f9c7acb1e3250ab231fba0a41ae7593832ba8"
+      },
+      {
+        "version": "20260911203355_g2_collection_checkpoints.sql",
+        "sha256": "e50ecaec7ba71c9d42c6b768be4f8318fdc2d1130fbb83168ccaeedfcb612971"
+      },
+      {
+        "version": "20260911213439_g2_import_export.sql",
+        "sha256": "5892855457aa149ae4bda86ce2fbc914b9ef57339002bc3eb82ec3e4624f6694"
+      },
+      {
+        "version": "20260911221017_g2_target_snapshots.sql",
+        "sha256": "469d9cee9651ae58189b472b4bcce8376d4d6a41ba65dca46a0c62ac46b20094"
+      },
+      {
+        "version": "20260911224129_g2_schedule_rules.sql",
+        "sha256": "80472fe3800f47f481a4a87336af2fc08816e8d3119a673ecef3649dc51cdc5c"
+      },
+      {
+        "version": "20260911235946_g3_owned_inbound.sql",
+        "sha256": "7a42460c74c036c412c49f176c2ee2e45b2534be1b22f131f4c9b28044113d7e"
+      },
+      {
+        "version": "20260912003348_g3_owned_order_snapshots.sql",
+        "sha256": "6f221bafa308142d98229c118786fb350eb013bc559297c95ffd501a741d58a9"
+      },
+      {
+        "version": "20260912012250_g3_stripe_payments.sql",
+        "sha256": "1a5eb9581e56305b83e77248a3ccb880c699377e61133856aaa33b4e6c922f51"
+      },
+      {
+        "version": "20260912022322_g3_stripe_refunds.sql",
+        "sha256": "c825921f1d2245bcbd8436f19cca514b9de0873f4fabc7b7479b37955846d836"
+      },
+      {
+        "version": "20260912031707_facebook_lead_inbound.sql",
+        "sha256": "2ab43f08e524ab4491e40268fe902f6799fed9e92045838b6ae3302e7ba323a1"
+      },
+      {
+        "version": "20260912032804_lead_reception_execution.sql",
+        "sha256": "0eda8ff7981d347dfa2f18995bc17bd9e76730dc1bbd05c183e4c161983b3419"
+      },
+      {
+        "version": "20260912034626_lead_automation_rules.sql",
+        "sha256": "b0782dcc35933a6c81ed0e5d8f9223f14ac5d82febec8b0c74bab6125d9d4519"
+      },
+      {
+        "version": "20260912040653_lead_metrics_and_ingress_limits.sql",
+        "sha256": "f9e66056af83f088bf4ae11cafdeeb640275cb496fff5359f45346b3ef493e85"
+      }
+    ]
+  },
+  "runtime": {
+    "captured_at": "2026-09-12T04:59:55.168Z",
+    "health": {
+      "status": "ok",
+      "protocol": "kff.api.v1"
+    },
+    "migrations": [
+      {
+        "version": "20260911164326_g1_execution_core.sql",
+        "sha256": "31e4c9a6aec219e52fe94ef5a4f97b58ac3bbe714bd782952fb038e368e20fdf"
+      },
+      {
+        "version": "20260911173241_g1_permits_reconciliation.sql",
+        "sha256": "65baeb55d96885097f66cb02e1103c301859a1d3705dee89ac9e8b8b2852cfa7"
+      },
+      {
+        "version": "20260911175249_g1_capability_evidence.sql",
+        "sha256": "9848c682c137b1229b778ac76743f1489d3b6494b340902c7ea72ea504d6e137"
+      },
+      {
+        "version": "20260911175746_g1_agent_slot_guard.sql",
+        "sha256": "8dfa4ad3152c2ea892d84bae4f317f600a2a44670f3d27102df9d451691abe8b"
+      },
+      {
+        "version": "20260911181005_g1_stop_and_agent_management.sql",
+        "sha256": "75d4fcdc89804d6c81bcc742bbed6385480e22e2ffef4c245ae4535ebef1d852"
+      },
+      {
+        "version": "20260911185039_g1_contact_eligibility.sql",
+        "sha256": "6c7c535b5ca366e309194c479b9eb55ae052a62b6b302c92a9fdf9ca01943e67"
+      },
+      {
+        "version": "20260911190913_g2_cost_ledger.sql",
+        "sha256": "6cd7bc467e812fd34f06a5f464297b0a47d160a9c54653b83f68f294b39c9250"
+      },
+      {
+        "version": "20260911194100_g1_action_adjudication.sql",
+        "sha256": "bddbe2459ab599bf153169732f7d7fc0288b10de3ee0086e25287fba331ceb8d"
+      },
+      {
+        "version": "20260911200056_g2_template_versions.sql",
+        "sha256": "d9e9a3255befaf672d004ef6ed4f9c7acb1e3250ab231fba0a41ae7593832ba8"
+      },
+      {
+        "version": "20260911203355_g2_collection_checkpoints.sql",
+        "sha256": "e50ecaec7ba71c9d42c6b768be4f8318fdc2d1130fbb83168ccaeedfcb612971"
+      },
+      {
+        "version": "20260911213439_g2_import_export.sql",
+        "sha256": "5892855457aa149ae4bda86ce2fbc914b9ef57339002bc3eb82ec3e4624f6694"
+      },
+      {
+        "version": "20260911221017_g2_target_snapshots.sql",
+        "sha256": "469d9cee9651ae58189b472b4bcce8376d4d6a41ba65dca46a0c62ac46b20094"
+      },
+      {
+        "version": "20260911224129_g2_schedule_rules.sql",
+        "sha256": "80472fe3800f47f481a4a87336af2fc08816e8d3119a673ecef3649dc51cdc5c"
+      },
+      {
+        "version": "20260911235946_g3_owned_inbound.sql",
+        "sha256": "7a42460c74c036c412c49f176c2ee2e45b2534be1b22f131f4c9b28044113d7e"
+      },
+      {
+        "version": "20260912003348_g3_owned_order_snapshots.sql",
+        "sha256": "6f221bafa308142d98229c118786fb350eb013bc559297c95ffd501a741d58a9"
+      },
+      {
+        "version": "20260912012250_g3_stripe_payments.sql",
+        "sha256": "1a5eb9581e56305b83e77248a3ccb880c699377e61133856aaa33b4e6c922f51"
+      },
+      {
+        "version": "20260912022322_g3_stripe_refunds.sql",
+        "sha256": "c825921f1d2245bcbd8436f19cca514b9de0873f4fabc7b7479b37955846d836"
+      },
+      {
+        "version": "20260912031707_facebook_lead_inbound.sql",
+        "sha256": "2ab43f08e524ab4491e40268fe902f6799fed9e92045838b6ae3302e7ba323a1"
+      },
+      {
+        "version": "20260912032804_lead_reception_execution.sql",
+        "sha256": "0eda8ff7981d347dfa2f18995bc17bd9e76730dc1bbd05c183e4c161983b3419"
+      },
+      {
+        "version": "20260912034626_lead_automation_rules.sql",
+        "sha256": "b0782dcc35933a6c81ed0e5d8f9223f14ac5d82febec8b0c74bab6125d9d4519"
+      },
+      {
+        "version": "20260912040653_lead_metrics_and_ingress_limits.sql",
+        "sha256": "f9e66056af83f088bf4ae11cafdeeb640275cb496fff5359f45346b3ef493e85"
+      }
+    ],
+    "agents": [
+      {
+        "status": "DRAINING",
+        "count": 4,
+        "online": 0
+      },
+      {
+        "status": "OFFLINE",
+        "count": 1,
+        "online": 0
+      },
+      {
+        "status": "ONLINE",
+        "count": 1,
+        "online": 1
+      },
+      {
+        "status": "REVOKED",
+        "count": 36,
+        "online": 0
+      }
+    ],
+    "jobs": [
+      {
+        "kind": "EXECUTION",
+        "state": "DONE",
+        "count": 150
+      },
+      {
+        "kind": "RECEPTION",
+        "state": "DONE",
+        "count": 5
+      }
+    ],
+    "actions": [
+      {
+        "state": "BLOCKED",
+        "count": 22
+      },
+      {
+        "state": "CANCELED",
+        "count": 38
+      },
+      {
+        "state": "VERIFIED_SUCCEEDED",
+        "count": 90
+      }
+    ]
+  },
+  "planning": {
+    "source_hashes_unchanged": true,
+    "task_count": 134,
+    "acceptance_count": 72,
+    "gates": {
+      "G0": 14,
+      "G1": 32,
+      "G2": 23,
+      "G3": 34,
+      "G4": 15,
+      "G5": 16
+    },
+    "product_acceptance": "NOT_IMPLIED"
+  },
+  "git_diff_check": "PASS with repository Windows line-ending normalization",
+  "frozen_commerce_files_unchanged": [
+    "apps/web/app/orders.css",
+    "apps/web/components/order-workbench.tsx",
+    "apps/web/components/stripe-payment.tsx",
+    "apps/web/components/stripe-refunds.tsx",
+    "packages/contracts/src/order.ts",
+    "packages/contracts/src/payment.ts",
+    "packages/contracts/src/refund.ts",
+    "packages/core/src/orders.ts",
+    "packages/core/src/payment-worker.ts",
+    "packages/core/src/payments.ts",
+    "packages/core/src/refund-reconciliation.ts",
+    "packages/core/src/refund-worker.ts",
+    "packages/core/src/refunds.ts",
+    "packages/core/src/stripe-financial-contract.ts",
+    "packages/core/src/stripe-financial-gateway.ts",
+    "packages/core/src/stripe-gateway.ts",
+    "supabase/migrations/20260912003348_g3_owned_order_snapshots.sql",
+    "supabase/migrations/20260912012250_g3_stripe_payments.sql",
+    "supabase/migrations/20260912022322_g3_stripe_refunds.sql"
+  ],
+  "screenshots": [
+    {
+      "file": "output/playwright/facebook-whatsapp-conversation.png",
+      "sha256": "7db781ca19323bd96a11fe47008a65506f3fedc1e65104a45ff007a9e8878252"
+    },
+    {
+      "file": "output/playwright/facebook-reception-mobile.png",
+      "sha256": "14529caf45b004b0d1264f4654c545a85f8cbcf74e1dc327fc902336a3a08592"
+    },
+    {
+      "file": "output/playwright/facebook-lead-analytics.png",
+      "sha256": "51f72975a7ae49203337bc8457280d8f33ae5a3ee4b3492df8089a8bb03d8a51"
+    }
+  ],
+  "verification_scope": [
+    "Local signed/normalized Facebook ingress, identity/source deduplication and per-account isolation",
+    "Web -> PostgreSQL -> Worker -> Agent guardian -> synthetic local HTTP -> message/referral/analytics persistence",
+    "Durable reception leases, process crashes, stale decisions, takeover, monotonic stops, unknown-result reconciliation and reply response-loss idempotency",
+    "Actual second Agent process with independent configuration/runtime, browser refresh persistence and 390px mobile layout",
+    "Production Next.js build and local production API smoke; original commerce regression retained without new business behavior"
+  ],
+  "external_acceptance": {
+    "facebook": "BLOCKED_REAL_PLATFORM",
+    "remote_model_quality": "NOT_INVOKED",
+    "whatsapp_api": "NOT_IMPLEMENTED_BY_DESIGN",
+    "actual_whatsapp_contact": "MANUAL_CONFIRMATION_ONLY",
+    "live_business_actions": "NONE",
+    "payments_orders_delivery": "FROZEN",
+    "p2": "DEFERRED"
+  }
+}

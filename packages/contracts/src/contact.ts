@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 const uuid = z.string().uuid();
-export const contactChannel = z.enum(['synthetic','facebook_messenger','site_chat']);
+export const contactChannel = z.enum(['synthetic','facebook_messenger','facebook_comment','facebook_interaction','site_chat']);
 export const contactPurpose = z.enum(['customer_service','marketing']);
 export const contactTargetInput = z.object({ account_id: uuid, channel: contactChannel, remote_id: z.string().regex(/^[A-Za-z0-9_:+.@-]{1,160}$/) }).strict();
 export const contactPolicy = z.object({

@@ -33,6 +33,15 @@ import {stripeConnectionInput,checkoutInput,paymentRecheckInput,stripeConnection
 import {registerStripeConnection,paymentWorkspace,queueStripeCheckout,receiveStripeWebhook,requestPaymentRecheck,controlStripeConnection} from '@kff/core/payments';
 import {refundInput,refundControlInput,financialRecheckInput,financialAdjustmentInput,reverseAdjustmentInput} from '../../../../../packages/contracts/src/refund';
 import {financialWorkspace,queueRefund,requestFinancialRecheck,cancelUnsubmittedRefund,recordFinancialAdjustment,reverseFinancialAdjustment} from '@kff/core/refunds';
+import {facebookEvent,facebookConnectionInput,facebookFixtureInput} from '../../../../../packages/contracts/src/lead';
+import {facebookChallenge} from '../../../../../packages/adapters/src/facebook-events';
+import {facebookWorkspace,configureFacebook,createFacebookFixture,injectFacebookFixture,receiveFacebookWebhook} from '@kff/core/facebook-inbound';
+import {whatsappDestinationInput,conversationControlInput,replyInput,referralResultInput} from '../../../../../packages/contracts/src/lead';
+import {whatsappWorkspace,configureWhatsapp,conversationControl,sendConversationReply,conversationReception,referralResult} from '@kff/core/lead-reception';
+import {receptionPolicyInput} from '../../../../../packages/contracts/src/lead';
+import {configureReceptionPolicy,retryReception} from '@kff/core/reception-worker';
+import {leadUpdateInput} from '../../../../../packages/contracts/src/lead';
+import {updateLead,leadAnalytics,leadAnalyticsInput,leadAudit} from '@kff/core/lead-management';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -63,6 +72,13 @@ async function handle(request: Request, context: Context) {
   try {
     const parts = (await context.params).path ?? []; const path = parts.join('/'); const write = request.method === 'POST';
     if (path === 'health' && !write) return json({ status: 'ok', protocol: 'kff.api.v1' });
+    if(path==='facebook/webhook'){
+      if(!write)return new Response(facebookChallenge(new URL(request.url).searchParams,process.env.KFF_FACEBOOK_VERIFY_TOKEN),{headers:{'Cache-Control':'no-store','Content-Type':'text/plain'}});
+      requireCondition(Number(request.headers.get('content-length')??0)<=524288,'INVALID_INPUT','Facebook 回调超过限制',413);
+      const reader=request.body?.getReader();requireCondition(reader,'INVALID_INPUT','回调为空');const chunks:Uint8Array[]=[];let length=0;
+      while(true){const {value,done}=await reader.read();if(done)break;length+=value.byteLength;if(length>524288){await reader.cancel();throw new AppError('INVALID_INPUT','Facebook 回调超过限制',413);}chunks.push(value);}
+      return json(await receiveFacebookWebhook(Buffer.concat(chunks),request.headers.get('x-hub-signature-256')));
+    }
     if (path === 'auth/login' && write) { const input = loginInput.parse(await body(request)); const cookie = await login(request, input.email, input.password); return json({ authenticated: true }, 200, { 'Set-Cookie': cookie }); }
     if (path === 'auth/logout' && write) return json({ authenticated: false }, 200, { 'Set-Cookie': await logout(request) });
     if(parts.length===3&&parts[0]==='stripe'&&parts[1]==='webhooks'&&write){
@@ -108,6 +124,20 @@ async function handle(request: Request, context: Context) {
     const scope = await requestScope(request);
     if (write) checkOrigin(request);
     if (path === 'workspace' && !write) return json(await workspace(scope));
+    if(path==='whatsapp')return write?json(await configureWhatsapp(scope,whatsappDestinationInput.parse(await body(request)))):json(await whatsappWorkspace(scope));
+    if(parts.length===3&&parts[0]==='conversations'){
+      const id=uuid.parse(parts[1]);
+      if(parts[2]==='controls'&&write)return json(await conversationControl(scope,id,conversationControlInput.parse(await body(request))));
+      if(parts[2]==='replies'&&write)return json(await sendConversationReply(scope,id,replyInput.parse(await body(request))),202);
+      if(parts[2]==='reception'&&!write)return json(await conversationReception(scope,id));
+      if(parts[2]==='retry-reception'&&write){const value=z.object({request_id:uuid,expected_version:z.number().int().positive()}).strict().parse(await body(request));return json(await retryReception(scope,id,value.request_id,value.expected_version),202);}
+    }
+    if(parts.length===3&&parts[0]==='whatsapp-referrals'&&parts[2]==='result'&&write)return json(await referralResult(scope,uuid.parse(parts[1]),referralResultInput.parse(await body(request))));
+    if(path==='facebook'&&!write)return json(await facebookWorkspace(scope));
+    if(path==='facebook/reception-policy'&&write)return json(await configureReceptionPolicy(scope,receptionPolicyInput.parse(await body(request))));
+    if(path==='facebook/connections'&&write)return json(await configureFacebook(scope,facebookConnectionInput.parse(await body(request))));
+    if(path==='facebook/fixtures'&&write)return json(await createFacebookFixture(scope,facebookFixtureInput.parse(await body(request))),201);
+    if(parts.length===4&&parts[0]==='facebook'&&parts[1]==='fixtures'&&parts[3]==='events'&&write)return json(await injectFacebookFixture(scope,uuid.parse(parts[2]),facebookEvent.parse(await body(request))),201);
     if(path==='payments'&&!write){const order=new URL(request.url).searchParams.get('order');return json(await paymentWorkspace(scope,order?uuid.parse(order):undefined));}
     if(parts.length===3&&parts[0]==='payments'){
       const id=uuid.parse(parts[1]);if(parts[2]==='financials'&&!write)return json(await financialWorkspace(scope,id));
@@ -136,6 +166,9 @@ async function handle(request: Request, context: Context) {
     if(path==='site-channels'&&write)return json(await createSiteChannel(scope,channelInput.parse(await body(request))),201);
     if(parts[0]==='site-channels'&&parts.length===3&&parts[2]==='controls'&&write)return json(await controlSiteChannel(scope,uuid.parse(parts[1]),channelControlInput.parse(await body(request))));
     if(parts[0]==='conversations'&&parts.length===2&&!write){const search=new URL(request.url).searchParams;return json(await inboxConversation(scope,uuid.parse(parts[1]),conversationPageInput.parse({after:search.get('after')??'0',limit:search.get('limit')??50})));}
+    if(path==='lead-analytics'&&!write)return json(await leadAnalytics(scope,leadAnalyticsInput.parse(Object.fromEntries(new URL(request.url).searchParams))));
+    if(path==='lead-audit'&&!write)return json(await leadAudit(scope,new URL(request.url).searchParams.get('before')??undefined));
+    if(parts.length===3&&parts[0]==='customers'&&parts[2]==='lead'&&write)return json(await updateLead(scope,uuid.parse(parts[1]),leadUpdateInput.parse(await body(request))));
     if(path==='customers'&&!write)return json(await customerWorkspace(scope));
     if(parts[0]==='customers'&&parts.length>=2){const id=uuid.parse(parts[1]);
       if(parts.length===2&&!write)return json(await customerDetail(scope,id));

@@ -41,7 +41,7 @@ export function canExecute(capability: Capability, mode: ExecutionMode, liveEnab
   if (mode === 'PRODUCTION') return { allowed: capability.mode === mode && capability.evidence_state === 'VERIFIED_REAL', reason_code: 'CAPABILITY_UNASSESSED' };
   return { allowed: validPilot && capability.mode === 'CONTROLLED_PILOT' && ['IMPLEMENTED_TEST_ONLY', 'VERIFIED_REAL'].includes(capability.evidence_state), reason_code: validPilot ? 'CAPABILITY_UNASSESSED' : 'PILOT_PERMIT_REQUIRED' };
 }
-export function isWrite(snapshot: TaskSnapshot): boolean { return snapshot.capability_key.includes('.publish.'); }
+export function isWrite(snapshot: TaskSnapshot): boolean { return snapshot.capability_key.includes('.publish.')||snapshot.capability_key.includes('.reply.'); }
 export function validateTargetUrl(value: string, allowedHosts: readonly string[], fixtureOrigin?: string): URL {
   let url: URL;
   try { url = new URL(value); } catch { throw new AppError('INVALID_INPUT', '无效的目标地址'); }

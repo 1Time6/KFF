@@ -7,6 +7,7 @@ import { findPermit, haltPilot } from './permits';
 import { adapterImplementationDigest } from './artifacts';
 import { markCostPending } from './costs';
 import { assertCurrentTemplate } from './templates';
+import {messageSubmissionGate,projectMessageOutcome} from './lead-reception';
 
 export interface AgentIdentity { id: string; organization_id: string; brand_id: string; status: string }
 interface CommandRow { id: string; organization_id: string; brand_id: string; action_id: string; attempt_id: string; agent_id: string; state: string; expires_at: Date; run_id: string; task_id: string; snapshot: TaskSnapshot; snapshot_hash: string; leases: LeaseToken[]; action_state: ActionState; stop_requested: boolean }
@@ -34,7 +35,7 @@ async function validateLeases(client: PoolClient, command: CommandRow): Promise<
     requireCondition(valid.rowCount === 1, 'LEASE_STALE', '执行控制权已过期，环境保持隔离', 409);
   }
 }
-async function dispatchAllowed(client: PoolClient, snapshot: TaskSnapshot, taskId: string, reserveForAction?: string): Promise<void> {
+async function dispatchAllowed(client: PoolClient, snapshot: TaskSnapshot, taskId: string, reserveForAction?: string,checkActionId=reserveForAction): Promise<void> {
   const account = (await client.query('SELECT a.*,o.outbound_paused AS organization_paused,b.outbound_paused AS brand_paused FROM kff.accounts a JOIN kff.brands b ON b.id=a.brand_id JOIN kff.organizations o ON o.id=a.organization_id WHERE a.id=$1 FOR SHARE OF o,b,a', [snapshot.account_id])).rows[0];
   const capability = (await client.query<Capability>('SELECT * FROM kff.capabilities WHERE id=$1', [snapshot.capability_id])).rows[0];
   requireCondition((account.state === 'ACTIVE' || (account.state === 'DRAFT' && !isWrite(snapshot) && snapshot.mode === 'CONTROLLED_PILOT')) && account.external_id === snapshot.external_account_id && (snapshot.account_version === undefined || account.version === snapshot.account_version) && (snapshot.credential_ref === undefined || account.credential_ref === snapshot.credential_ref), 'AUTH_EXPIRED', '账号已停用、凭据或身份已变化', 409);
@@ -46,6 +47,7 @@ async function dispatchAllowed(client: PoolClient, snapshot: TaskSnapshot, taskI
   if (snapshot.mode === 'CONTROLLED_PILOT') await findPermit(client, taskId, snapshot, reserveForAction);
   const permission = canExecute(capability, snapshot.mode, process.env.KFF_ENABLE_LIVE === 'true', snapshot.mode === 'CONTROLLED_PILOT');
   requireCondition(permission.allowed, permission.reason_code, '此动作当前不可执行', 409);
+  await messageSubmissionGate(client,snapshot,checkActionId);
 }
 
 export async function dispatchOne(): Promise<boolean> {
@@ -62,10 +64,12 @@ export async function dispatchOne(): Promise<boolean> {
     const occupied = await client.query("SELECT id FROM kff.agent_commands WHERE agent_id=$1 AND state IN ('READY','CLAIMED')", [snapshot.agent_id]);
     const environment = (await client.query("SELECT id FROM kff.environments WHERE id=$1 AND state='IDLE'", [snapshot.environment_id])).rows[0];
     if (!agent || !environment || occupied.rowCount) { await client.query("UPDATE kff.jobs SET available_at=now()+interval '2 seconds' WHERE id=$1", [job.id]); return false; }
-    try { await dispatchAllowed(client, snapshot, action.task_id); }
+    try { await dispatchAllowed(client, snapshot, action.task_id,undefined,action.id); }
     catch (error) {
       const code = error instanceof Error && 'code' in error ? String(error.code) : 'CAPABILITY_BLOCKED';
+      if(snapshot.message&&code==='RATE_LIMITED'){await client.query("UPDATE kff.jobs SET available_at=clock_timestamp()+interval '30 seconds' WHERE id=$1",[job.id]);return false;}
       await client.query("UPDATE kff.actions SET state='BLOCKED',error_code=$1 WHERE id=$2", [code, action.id]);
+      await projectMessageOutcome(client,action.id,snapshot);
       await client.query("UPDATE kff.runs SET status='FAILED',updated_at=now() WHERE id=$1", [action.run_id]);
       await client.query("UPDATE kff.tasks SET status='FAILED' WHERE id=$1", [action.task_id]);
       await client.query("UPDATE kff.jobs SET state='DONE' WHERE id=$1", [job.id]); return true;
@@ -155,7 +159,8 @@ export async function acceptReport(agent: AgentIdentity, input: ActionReport) {
     assertTransition(command.action_state, report.outcome);
     if (report.outcome === 'VERIFIED_SUCCEEDED') {
       requireCondition(report.receipt?.actual_account_id === command.snapshot.external_account_id, 'FORBIDDEN_SCOPE', '回执账号与任务不符', 403);
-      requireCondition(report.receipt.evidence_kind === (command.snapshot.is_synthetic ? 'synthetic_dom' : 'graph_object'), 'INVALID_INPUT', '证据类型与运行范围不匹配');
+      requireCondition(report.receipt.evidence_kind === (command.snapshot.message?(command.snapshot.is_synthetic?'synthetic_message':'graph_message'):command.snapshot.is_synthetic ? 'synthetic_dom' : 'graph_object'), 'INVALID_INPUT', '证据类型与运行范围不匹配');
+      if(command.snapshot.message)requireCondition(report.receipt.recipient_id===command.snapshot.message.contact.remote_id,'FORBIDDEN_SCOPE','回执收件人与任务不符',403);
       if (isWrite(command.snapshot)) {
         requireCondition(['SUBMITTING', 'SUBMITTED'].includes(command.action_state), 'SUBMISSION_UNCERTAIN', '缺少持久提交意图', 409);
         requireCondition(report.receipt.content_hash === command.snapshot.content_hash, 'INVALID_INPUT', '远端内容摘要不符');
@@ -163,6 +168,7 @@ export async function acceptReport(agent: AgentIdentity, input: ActionReport) {
     }
     await client.query('INSERT INTO kff.inbound_events(id,organization_id,brand_id,agent_id,command_id,payload_hash) VALUES($1,$2,$3,$4,$5,$6)', [report.event_id, agent.organization_id, agent.brand_id, agent.id, command.id, payloadHash]);
     await client.query('UPDATE kff.actions SET state=$1,error_code=$2,receipt=$3 WHERE id=$4', [report.outcome, report.error_code ?? null, report.receipt ?? null, command.action_id]);
+    await projectMessageOutcome(client,command.action_id,command.snapshot);
     if (report.outcome !== 'VERIFIED_SUCCEEDED') await haltPilot(client, command.action_id);
     await markCostPending(client, command.action_id, 'ACTION_' + report.outcome);
     if (report.outcome === 'VERIFIED_SUCCEEDED' && !command.snapshot.is_synthetic && !isWrite(command.snapshot)) await client.query("UPDATE kff.accounts SET state='ACTIVE' WHERE id=$1 AND version=$2 AND credential_ref=$3", [command.snapshot.account_id, command.snapshot.account_version, command.snapshot.credential_ref]);
@@ -192,6 +198,7 @@ export async function recoverExpired(): Promise<number> {
     const outcome = neverClaimed ? 'CANCELED' : ['SUBMITTING', 'SUBMITTED'].includes(command.action_state) ? 'UNKNOWN_OUTCOME' : 'NEEDS_HUMAN';
     assertTransition(command.action_state, outcome);
     await client.query('UPDATE kff.actions SET state=$1,error_code=$2 WHERE id=$3', [outcome, neverClaimed ? 'COMMAND_NOT_STARTED' : 'LEASE_EXPIRED', command.action_id]);
+    await projectMessageOutcome(client,command.action_id,command.snapshot);
     await haltPilot(client, command.action_id);
     await markCostPending(client, command.action_id, neverClaimed ? 'COMMAND_NEVER_CLAIMED' : 'EXECUTION_LEASE_EXPIRED');
     await client.query("UPDATE kff.action_attempts SET state=$1,completed_at=now() WHERE id=$2", [outcome, command.attempt_id]);

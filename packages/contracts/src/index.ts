@@ -1,6 +1,7 @@
 import { z } from 'zod';
 export * from './imports';
 import { templateSnapshotSchema } from './template';
+import {messageSnapshot} from './lead';
 export * from './contact';
 export * from './cost';
 export * from './adjudication';
@@ -47,10 +48,11 @@ export const resultInput = z.object({
   outcome: z.enum(['VERIFIED_SUCCEEDED', 'VERIFIED_FAILED', 'UNKNOWN_OUTCOME', 'CANCELED', 'BLOCKED', 'NEEDS_HUMAN']),
   error_code: z.string().regex(/^[A-Z0-9_]{1,80}$/).optional(),
   receipt: z.object({
-    remote_id: z.string().regex(/^[A-Za-z0-9_:-]{1,160}$/),
+    remote_id: z.string().regex(/^[A-Za-z0-9_:.=$+/-]{1,200}$/),
     actual_account_id: externalId,
     content_hash: z.string().regex(/^[a-f0-9]{64}$/).optional(),
-    evidence_kind: z.enum(['synthetic_dom', 'graph_object']),
+    evidence_kind: z.enum(['synthetic_dom', 'graph_object','synthetic_message','graph_message']),
+    recipient_id: externalId.optional(),
     observed_at: z.string().datetime(),
   }).strict().optional(),
   diagnostic: z.object({
@@ -87,14 +89,15 @@ export const taskSnapshotSchema = z.object({
   account_id: uuid, external_account_id: externalId, account_version: z.number().int().positive().optional(),
   credential_ref: z.string().regex(/^FACEBOOK_[A-Z0-9_]{1,80}$/).nullable().optional(),
   environment_id: uuid, profile_key: uuid, agent_id: uuid, capability_id: uuid,
-  capability_key: z.enum(['kff.fixture.page.read.browser', 'kff.fixture.page.publish.browser', 'facebook.page.read.api', 'facebook.page.publish.api']),
-  capability_revision: z.number().int().positive(), adapter_version: z.enum(['fixture-page-v1', 'facebook-graph-v1']),
+  capability_key: z.enum(['kff.fixture.page.read.browser', 'kff.fixture.page.publish.browser', 'facebook.page.read.api', 'facebook.page.publish.api','kff.fixture.messenger.reply.api','facebook.messenger.reply.api']),
+  capability_revision: z.number().int().positive(), adapter_version: z.enum(['fixture-page-v1', 'facebook-graph-v1','fixture-messenger-v1','facebook-messenger-v1']),
   implementation_digest: hashSchema.nullable().optional(),
   platform_api_version: z.string().regex(/^v[0-9]{1,3}\.[0-9]+$/).nullable().optional(),
   body: z.string().max(5000), content_hash: hashSchema, mode: modeSchema,
   template: templateSnapshotSchema.optional(),
+  message: messageSnapshot.optional(),
   fixture_scenario: fixtureScenarioSchema, is_synthetic: z.boolean(),
-}).strict();
+}).strict().refine(value=>value.capability_key.includes('.messenger.')===Boolean(value.message),'消息能力必须包含会话快照，其他能力不能携带消息');
 export const agentCommandSchema = z.object({
   protocol_version: z.literal('kff.agent.v1'),
   id: uuid, action_id: uuid, attempt_id: uuid, run_id: uuid, organization_id: uuid, brand_id: uuid, agent_id: uuid,

@@ -16,7 +16,7 @@ export function ActionAdjudication({ run, task, records, role, onSaved }: { run:
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const form = new FormData(event.currentTarget); setBusy(true); setError(''); setNotice('');
     try {
-      const value = { snapshot_hash: task.snapshot_hash, expected_version: version, expected_state: expectedState, decision, evidence: { source: String(form.get('source')), external_account_id: String(form.get('actual_account_id')), content_hash: task.snapshot.content_hash, remote_id: String(form.get('remote_id')).trim() || null, observed_at: new Date(String(form.get('observed_at'))).toISOString(), reference: String(form.get('reference')), failure_basis: decision === 'CONFIRMED_FAILURE' ? String(form.get('failure_basis')) : null, matched_original_submission: decision !== 'INCONCLUSIVE' && form.get('matched') === 'on' }, reason: String(form.get('reason')), confirmation: 'I_REVIEWED_THIS_ORIGINAL_ACTION' };
+      const value = { snapshot_hash: task.snapshot_hash, expected_version: version, expected_state: expectedState, decision, evidence: { source: String(form.get('source')), external_account_id: String(form.get('actual_account_id')), content_hash: task.snapshot.content_hash, ...(task.snapshot.message?{recipient_id:String(form.get('recipient_id'))}:{}), remote_id: String(form.get('remote_id')).trim() || null, observed_at: new Date(String(form.get('observed_at'))).toISOString(), reference: String(form.get('reference')), failure_basis: decision === 'CONFIRMED_FAILURE' ? String(form.get('failure_basis')) : null, matched_original_submission: decision !== 'INCONCLUSIVE' && form.get('matched') === 'on' }, reason: String(form.get('reason')), confirmation: 'I_REVIEWED_THIS_ORIGINAL_ACTION' };
       const response = await fetch('/api/runs/' + run.id + '/adjudications', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...value, request_id: requestId(value) }) });
       const result = await response.json(); if (!response.ok) throw new Error(result.error?.message ?? '裁定未保存');
       await onSaved(); setNotice('人工裁定已保存。原动作未重新执行。');
@@ -36,6 +36,7 @@ export function ActionAdjudication({ run, task, records, role, onSaved }: { run:
         <Field label="证据中实际账号的标识"><input name="actual_account_id" required pattern="[0-9]{1,128}" inputMode="numeric" /></Field>
         <p className="field-hint">指定账号：{task.snapshot.external_account_id}<br />内容版本：{task.snapshot.content_hash}</p>
         {task.snapshot.body && <div className="content-preview"><label>需要核对的原内容</label><p>{task.snapshot.body}</p></div>}
+        {task.snapshot.message&&<Field label="证据中实际收件人 ID"><input name="recipient_id" required pattern="[0-9]{1,128}" inputMode="numeric" /></Field>}
         <Field label="证据中的远端对象 ID"><input name="remote_id" required={decision === 'CONFIRMED_SUCCESS'} maxLength={160} /></Field>
         {decision === 'CONFIRMED_FAILURE' && <Field label="平台最终失败依据"><select name="failure_basis" required defaultValue=""><option value="" disabled>选择已核实的最终结论</option><option value="FINAL_PLATFORM_REJECTION">平台明确最终拒绝了原提交</option><option value="FINAL_PLATFORM_CANCELLATION">平台明确最终取消了原提交</option></select></Field>}
         <Field label="证据核查时间"><input name="observed_at" type="datetime-local" step={1} required defaultValue={localTime()} /></Field>

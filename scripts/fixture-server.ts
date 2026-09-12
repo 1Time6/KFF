@@ -11,7 +11,7 @@ import { z } from 'zod';
 import { collectionSnapshotSchema } from '@kff/contracts';
 import { syntheticCollectionPage } from '../packages/adapters/src/collection-fixture';
 
-interface FixturePost { id: string; account_id: string; action_id: string; body: string; content_hash: string; created_at: string }
+interface FixturePost { id: string; account_id: string; recipient_id?:string; action_id: string; body: string; content_hash: string; created_at: string }
 export async function startFixtureServer(port = 4311) {
   await mkdir(runtimeDir, { recursive: true });
   const file = path.join(runtimeDir, 'fixture-posts.json');
@@ -40,7 +40,7 @@ export async function startFixtureServer(port = 4311) {
         const input = JSON.parse(buffer) as Record<string, string>;
         const account = externalId.parse(input.account_id);
         if (!input.body || input.body.length > 5000 || !/^[a-f0-9-]{36}$/.test(input.action_id)) throw new Error('invalid input');
-        const post: FixturePost = { id: 'synthetic_' + randomUUID(), account_id: account, action_id: input.action_id, body: input.body, content_hash: digest(input.body), created_at: new Date().toISOString() };
+        const post: FixturePost = { id: 'synthetic_' + randomUUID(), account_id: account,...(input.recipient_id?{recipient_id:externalId.parse(input.recipient_id)}:{}), action_id: input.action_id, body: input.body, content_hash: digest(input.body), created_at: new Date().toISOString() };
         posts.push(post);
         writes = writes.then(async () => { await writeFile(file + '.tmp', JSON.stringify(posts)); await rename(file + '.tmp', file); });
         await writes;
