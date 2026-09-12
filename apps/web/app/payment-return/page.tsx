@@ -1,0 +1,1 @@
+export default function PaymentReturn(){return <main className="visitor-chat-page"><section className="business-box"><h1>支付进度正在核对</h1><p>我们会通过 Stripe 核实付款结果。完成收银台操作后，可以回到原咨询窗口联系工作人员。</p><p>此页面不显示客户或订单信息。请保留 Stripe 提供的支付记录。</p></section></main>;}

@@ -16,7 +16,7 @@
 | `POST /api/order-previews` | 为一个已有客户预览 1–50 项明确商品和数量，可关联该客户的会话 |
 | `POST /api/orders` | 确认预览摘要、精确总额与币种，创建一笔待核实订单 |
 | `GET /api/orders/:id` | 读取固定商品/价格/交付/条款快照及订单事件 |
-| `POST /api/orders/:id/cancel` | 按版本取消当前未接入支付的待核实订单，原因永久记录 |
+| `POST /api/orders/:id/cancel` | 按版本取消没有在途支付、尚未核实收款的订单，原因永久记录 |
 
 工作台在 `/orders`。客户档案可跳转创建订单及已有订单；订单详情可回到客户和有依据的来源会话。不同客户的会话不能借用。
 
@@ -36,8 +36,10 @@
 
 ## 状态与后续边界
 
-当前订单状态只有 `OPEN` / `CANCELED`，支付状态固定 `UNVERIFIED`。API 拒绝客户端提供“已支付”；数据库约束也拒绝手工晋升支付状态。订单详情的 `payments_connected=false`、`verified_revenue=false` 明确表示尚未实现真实支付核验。客户成交阶段、订单创建或页面显示均不产生已核实收入。
+订单状态为 `OPEN` / `CANCELED`。支付初始为 `UNVERIFIED`，只有服务器核实并原子保存 Stripe 付款凭据后才变为 `VERIFIED_TEST_PAID` 或 `VERIFIED_PAID`。API 拒绝客户端提供“已支付”；数据库要求存在与订单、金额、币种和模式匹配的不可变付款凭据。客户成交阶段、订单创建、成功页均不产生已核实收入。
 
-TASK-094 下一步需要用户明确实际支付服务商，才能按真实协议编写支付对象、验签/服务端查询、币种金额匹配与重复事件处理。支付、退款、交付、公共结账和完整归因尚未交付，不计完整 E2-MIN/G3 通过。
+用户已指定第一阶段使用 Stripe。订单详情返回实际连接状态 `payments_connected`、付款收入标识 `verified_revenue` 和取消许可 `can_cancel`；测试付款不会计入真实收入。有在途或结果未知的支付请求时禁止取消或创建第二笔支付，只有核实原会话已过期或明确失败后才允许再次操作。详情见 [Stripe 支付 API](stripe-payments.md)。
+
+当前只支持运营人员为已确认订单创建托管付款链接。实际 Stripe 测试账号联调、退款、交付、访客自主下单和完整归因尚未验收，不计完整 E2-MIN/G3 通过。
 
 页面验证中已检查 HTML `pattern` 的当前 `v` 模式，SKU 的字面连字符作了转义；依据见 [MDN：pattern 属性](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/pattern)。

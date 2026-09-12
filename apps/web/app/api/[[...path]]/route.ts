@@ -29,6 +29,8 @@ import {channelInput,channelControlInput,inboundMessageInput,conversationPageInp
 import {createSiteChannel,controlSiteChannel,publicChatInfo,beginVisitorSession,endVisitorSession,visitorSessionStatus,receiveVisitorMessage,visitorHistory,inboxWorkspace,inboxConversation,customerWorkspace,customerDetail,updateCustomer,addCustomerNote} from '@kff/core/inbox';
 import {productVersionInput,productControlInput,orderPreviewInput,orderConfirmInput,orderCancelInput} from '../../../../../packages/contracts/src/order';
 import {saveProductVersion,controlProduct,commerceWorkspace,productHistory,previewOrder,confirmOrder,ownedOrderDetail,cancelOwnedOrder} from '@kff/core/orders';
+import {stripeConnectionInput,checkoutInput,paymentRecheckInput,stripeConnectionControlInput} from '../../../../../packages/contracts/src/payment';
+import {registerStripeConnection,paymentWorkspace,queueStripeCheckout,receiveStripeWebhook,requestPaymentRecheck,controlStripeConnection} from '@kff/core/payments';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -61,6 +63,13 @@ async function handle(request: Request, context: Context) {
     if (path === 'health' && !write) return json({ status: 'ok', protocol: 'kff.api.v1' });
     if (path === 'auth/login' && write) { const input = loginInput.parse(await body(request)); const cookie = await login(request, input.email, input.password); return json({ authenticated: true }, 200, { 'Set-Cookie': cookie }); }
     if (path === 'auth/logout' && write) return json({ authenticated: false }, 200, { 'Set-Cookie': await logout(request) });
+    if(parts.length===3&&parts[0]==='stripe'&&parts[1]==='webhooks'&&write){
+      const id=uuid.parse(parts[2]);requireCondition(request.headers.get('content-type')?.includes('application/json'),'INVALID_INPUT','支付回调必须使用 JSON');
+      requireCondition(Number(request.headers.get('content-length')??0)<=524288,'INVALID_INPUT','支付回调内容超出限制',413);
+      const reader=request.body?.getReader();requireCondition(reader,'INVALID_INPUT','支付回调为空');const chunks:Uint8Array[]=[];let length=0;
+      while(true){const {value,done}=await reader.read();if(done)break;length+=value.byteLength;if(length>524288){await reader.cancel();throw new AppError('INVALID_INPUT','支付回调内容超出限制',413);}chunks.push(value);}
+      return json(await receiveStripeWebhook(id,Buffer.concat(chunks),request.headers.get('stripe-signature')));
+    }
     if(parts[0]==='public'&&parts[1]==='chat'&&parts.length>=3){
       const channelId=uuid.parse(parts[2]);
       if(write)checkOrigin(request);
@@ -97,6 +106,11 @@ async function handle(request: Request, context: Context) {
     const scope = await requestScope(request);
     if (write) checkOrigin(request);
     if (path === 'workspace' && !write) return json(await workspace(scope));
+    if(path==='payments'&&!write){const order=new URL(request.url).searchParams.get('order');return json(await paymentWorkspace(scope,order?uuid.parse(order):undefined));}
+    if(path==='stripe-connections'&&write)return json(await registerStripeConnection(scope,stripeConnectionInput.parse(await body(request))),201);
+    if(parts.length===3&&parts[0]==='stripe-connections'&&parts[2]==='controls'&&write)return json(await controlStripeConnection(scope,uuid.parse(parts[1]),stripeConnectionControlInput.parse(await body(request))));
+    if(parts.length===3&&parts[0]==='orders'&&parts[2]==='stripe-checkouts'&&write)return json(await queueStripeCheckout(scope,uuid.parse(parts[1]),checkoutInput.parse(await body(request))),202);
+    if(parts.length===3&&parts[0]==='payment-checkouts'&&parts[2]==='recheck'&&write)return json(await requestPaymentRecheck(scope,uuid.parse(parts[1]),paymentRecheckInput.parse(await body(request))),202);
     if(path==='inbox'&&!write)return json(await inboxWorkspace(scope));
     if(path==='commerce'&&!write)return json(await commerceWorkspace(scope));
     if(path==='products'&&write)return json(await saveProductVersion(scope,productVersionInput.parse(await body(request))),201);

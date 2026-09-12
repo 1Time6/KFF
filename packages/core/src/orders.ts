@@ -50,7 +50,7 @@ export async function commerceWorkspace(scope:Scope){
     orders:(await client.query<OwnedOrder>('SELECT '+orderColumns+' FROM kff.orders ORDER BY created_at DESC,id LIMIT 200')).rows,
     customers:(await client.query<{id:string;display_name:string|null}>('SELECT id,display_name FROM kff.customers ORDER BY updated_at DESC,id LIMIT 200')).rows,
     currencies:(await client.query<{currency:string;minor_unit_exponent:number;precision_source:string}>('SELECT currency,minor_unit_exponent,precision_source FROM kff.commerce_currencies ORDER BY currency')).rows,
-    payments_connected:false as const,
+    payments_connected:Boolean((await client.query('SELECT 1 FROM kff.stripe_connections LIMIT 1')).rowCount),
   }));
 }
 export async function productHistory(scope:Scope,id:string){
@@ -116,7 +116,9 @@ export async function ownedOrderDetail(scope:Scope,id:string){
     const order=(await client.query<OwnedOrder>('SELECT '+orderColumns+' FROM kff.orders WHERE id=$1',[id])).rows[0];requireCondition(order,'NOT_FOUND','订单不存在',404);
     requireCondition(digest(order.snapshot)===order.snapshot_hash,'SNAPSHOT_CHANGED','订单记录摘要不匹配',409);
     const events=(await client.query<{id:string;event_type:string;details:{reason?:string};created_at:string}>('SELECT id,event_type,details,created_at FROM kff.order_events WHERE order_id=$1 ORDER BY created_at,id',[id])).rows;
-    return {order,events,payments_connected:false as const,verified_revenue:false as const};
+    const paymentsConnected=Boolean((await client.query('SELECT 1 FROM kff.stripe_connections LIMIT 1')).rowCount);
+    const pending=Boolean((await client.query("SELECT 1 FROM kff.payment_checkouts WHERE order_id=$1 AND state NOT IN ('EXPIRED','FAILED')",[id])).rowCount);
+    return {order,events,payments_connected:paymentsConnected,verified_revenue:order.payment_state==='VERIFIED_PAID',can_cancel:order.state==='OPEN'&&order.payment_state==='UNVERIFIED'&&!pending};
   });
 }
 export async function cancelOwnedOrder(scope:Scope,id:string,input:z.infer<typeof orderCancelInput>){
@@ -127,6 +129,7 @@ export async function cancelOwnedOrder(scope:Scope,id:string,input:z.infer<typeo
     if(prior){requireCondition(prior.order_id===id&&prior.request_hash===hash,'IDEMPOTENCY_CONFLICT','取消请求已用于不同订单或内容',409);return prior.details.result as OwnedOrder;}
     const order=(await client.query<OwnedOrder>('SELECT '+orderColumns+' FROM kff.orders WHERE id=$1 FOR UPDATE',[id])).rows[0];requireCondition(order,'NOT_FOUND','订单不存在',404);
     requireCondition(order.version===value.expected_version&&order.state==='OPEN'&&order.payment_state==='UNVERIFIED','ORDER_STATE_CHANGED','订单状态已变化，请重新核对',409);
+    requireCondition(!(await client.query("SELECT 1 FROM kff.payment_checkouts WHERE order_id=$1 AND state NOT IN ('EXPIRED','FAILED')",[id])).rowCount,'PAYMENT_ALREADY_PENDING','订单已有支付请求，请先核对原支付结果',409);
     const result=(await client.query<OwnedOrder>("UPDATE kff.orders SET state='CANCELED',version=version+1 WHERE id=$1 RETURNING "+orderColumns,[id])).rows[0];
     await client.query("INSERT INTO kff.order_events(organization_id,brand_id,order_id,event_type,actor_id,details,request_id,request_hash) VALUES($1,$2,$3,'CANCELED',$4,$5,$6,$7)",[scope.organization_id,scope.brand_id,id,scope.user_id,{reason:value.reason,result},value.request_id,hash]);
     await audit(client,scope,'order.canceled',id,{reason:value.reason,request_id:value.request_id});return result;

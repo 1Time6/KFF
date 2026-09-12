@@ -193,9 +193,10 @@ export async function customerDetail(scope:Scope,id:string) {
     const events=(await client.query('SELECT id,event_type,actor_id,details,created_at FROM kff.customer_events WHERE customer_id=$1 ORDER BY created_at DESC,id DESC LIMIT 200',[id])).rows;
     const identities=(await client.query<{id:string;account_id:string;channel:string;remote_id:string;contact_target_id:string}>('SELECT id,account_id,channel,remote_id,contact_target_id FROM kff.customer_identities WHERE customer_id=$1 ORDER BY created_at,id',[id])).rows;
     const conversations=(await client.query<InboxConversation>('SELECT '+conversationColumns+conversationJoins+' WHERE v.customer_id=$1 ORDER BY v.last_message_at DESC,v.id',[id])).rows;
-    const orders=(await client.query<{id:string;state:string;currency:string;total_minor:string}>('SELECT id,state,snapshot->>\'currency\' AS currency,snapshot->>\'total_minor\' AS total_minor FROM kff.orders WHERE customer_id=$1 ORDER BY created_at DESC,id LIMIT 100',[id])).rows;
+    const orders=(await client.query<{id:string;state:string;payment_state:string;currency:string;total_minor:string}>('SELECT id,state,payment_state,snapshot->>\'currency\' AS currency,snapshot->>\'total_minor\' AS total_minor FROM kff.orders WHERE customer_id=$1 ORDER BY created_at DESC,id LIMIT 100',[id])).rows;
+    const paymentSummary=(await client.query<{real:number;test:number}>("SELECT count(*) FILTER(WHERE p.mode='LIVE' AND NOT p.is_synthetic)::int AS real,count(*) FILTER(WHERE p.mode='TEST' OR p.is_synthetic)::int AS test FROM kff.verified_payments p JOIN kff.orders o ON o.id=p.order_id WHERE o.customer_id=$1",[id])).rows[0];
     await audit(client,scope,'customer.detail_viewed',id);
-    return {customer,events,identities,conversations,orders,acquisition_source:'UNKNOWN' as const,verified_payment:false as const};
+    return {customer,events,identities,conversations,orders,acquisition_source:'UNKNOWN' as const,verified_payment:paymentSummary.real>0,payment_summary:paymentSummary};
   });
 }
 async function previousCustomerRequest(client:PoolClient,id:string,requestId:string,hash:string) {

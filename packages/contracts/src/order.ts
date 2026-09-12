@@ -17,5 +17,5 @@ export interface Product {id:string;sku:string;state:'DRAFT'|'ACTIVE'|'ARCHIVED'
 export interface ProductVersion {id:string;product_id:string;version_number:number;name:string;currency:string;minor_unit_exponent:number;precision_source:string;unit_amount_minor:string;delivery_scope:string;terms:string;created_at:string}
 export interface CatalogProduct extends Product {definition:ProductVersion}
 export interface OrderPreview {id:string;snapshot:OrderSnapshot;snapshot_hash:string;expires_at:string}
-export interface OwnedOrder {id:string;customer_id:string;conversation_id:string|null;state:'OPEN'|'CANCELED';payment_state:'UNVERIFIED';version:number;snapshot:OrderSnapshot;snapshot_hash:string;created_at:string}
+export interface OwnedOrder {id:string;customer_id:string;conversation_id:string|null;state:'OPEN'|'CANCELED';payment_state:'UNVERIFIED'|'VERIFIED_TEST_PAID'|'VERIFIED_PAID';version:number;snapshot:OrderSnapshot;snapshot_hash:string;created_at:string}
 export function displayMinor(value:string,exponent:number){if(!/^[0-9]+$/.test(value)||!Number.isInteger(exponent)||exponent<0||exponent>6)return '—';if(exponent===0)return value;const padded=value.padStart(exponent+1,'0');return padded.slice(0,-exponent)+'.'+padded.slice(-exponent);}

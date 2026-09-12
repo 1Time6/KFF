@@ -1,10 +1,16 @@
 import { spawn } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
-import { localConfig, projectRoot } from '@kff/database';
+import { localConfig, projectRoot, query, closePool } from '@kff/database';
 import { requireCondition } from '@kff/core';
 import { randomUUID } from 'node:crypto';
+import {localIds} from './seed';
+import {StripeFixture,syntheticStripeCredentials,signedStripeEvent} from '../tests/helpers/stripe-fixture';
+import {registerStripeConnection,controlStripeConnection} from '@kff/core/payments';
+import {processStripeCheckout,processStripeEvent} from '@kff/core/payment-worker';
 
 const origin = 'http://127.0.0.1:3001';
+const paymentFixture=new StripeFixture(),paymentRef='KFF_STRIPE_SMOKE_'+randomUUID().slice(0,8).toUpperCase(),paymentScope={organization_id:localIds.organization,brand_id:localIds.brand,user_id:localIds.user,role:'admin' as const};
+const paymentSecrets=syntheticStripeCredentials(paymentRef,{...paymentScope,stripe_account_id:paymentFixture.accountId});
 const child = spawn(process.execPath, ['node_modules/next/dist/bin/next','start','apps/web','--hostname','127.0.0.1','--port','3001'], { cwd: projectRoot, env: { ...process.env, KFF_ROOT: projectRoot, KFF_APP_ORIGIN: origin, KFF_ENABLE_LIVE: 'false', KFF_AUTH_MODE: 'local', NEXT_TELEMETRY_DISABLED: '1' }, windowsHide: true, stdio: ['ignore','pipe','pipe'] });
 let bindError = false;
 child.stdout.on('data', () => {});
@@ -67,11 +73,21 @@ try {
   const orderInput={request_id:randomUUID(),preview_id:orderPreview.id,preview_hash:orderPreview.snapshot_hash,confirmed_total_minor:'3750',currency:'USD',confirmation:'CREATE_THIS_ORDER'};
   const order=await (await jsonPost('orders',orderInput)).json(),orderReplay=await (await jsonPost('orders',orderInput)).json();requireCondition(order.id===orderReplay.id&&order.snapshot.total_minor==='3750'&&order.payment_state==='UNVERIFIED','TEST_FAILED','生产构建订单快照或重复确认错误');
   await jsonPost('orders/'+order.id+'/cancel',{request_id:randomUUID(),expected_version:1,reason:'Completed synthetic order verification'});
+  const connection=await registerStripeConnection(paymentScope,{request_id:randomUUID(),name:'Production synthetic Stripe verification',stripe_account_id:paymentFixture.accountId,mode:'TEST',credential_ref:paymentRef},paymentFixture.factory);
+  const paidPreview=await (await jsonPost('order-previews',{request_id:randomUUID(),customer_id:conversation.customer_id,conversation_id:conversation.id,items:[{product_id:product.product_id,quantity:1}]})).json();
+  const paymentOrder=await (await jsonPost('orders',{request_id:randomUUID(),preview_id:paidPreview.id,preview_hash:paidPreview.snapshot_hash,confirmed_total_minor:'1250',currency:'USD',confirmation:'CREATE_THIS_ORDER'})).json();
+  const checkout=await (await jsonPost('orders/'+paymentOrder.id+'/stripe-checkouts',{request_id:randomUUID(),connection_id:connection.id,expected_version:1,snapshot_hash:paymentOrder.snapshot_hash,confirmation:'CREATE_STRIPE_CHECKOUT'})).json();await processStripeCheckout(checkout.id,paymentFixture.factory);
+  const current=(await query('SELECT provider_session_id FROM kff.payment_checkouts WHERE id=$1',[checkout.id]))[0];requireCondition(current.provider_session_id,'TEST_FAILED','生产构建支付链接未创建');paymentFixture.pay(current.provider_session_id);
+  const event=signedStripeEvent(paymentFixture.sessions.get(current.provider_session_id)!,paymentSecrets.secret),callback=()=>fetch(origin+'/api/stripe/webhooks/'+connection.id,{method:'POST',headers:{'Content-Type':'application/json','Stripe-Signature':event.signature},body:new Uint8Array(event.raw)});
+  requireCondition((await callback()).ok&&(await callback()).ok,'TEST_FAILED','生产构建 Stripe 原始请求验签或重放确认失败');const stored=(await query('SELECT id FROM kff.stripe_events WHERE connection_id=$1 AND provider_event_id=$2',[connection.id,event.payload.id]))[0];await processStripeEvent(stored.id,paymentFixture.factory);
+  const paid=await (await fetch(origin+'/api/orders/'+paymentOrder.id,{headers:{Cookie:cookie}})).json();requireCondition(paid.order.payment_state==='VERIFIED_TEST_PAID'&&paid.verified_revenue===false&&paid.can_cancel===false,'TEST_FAILED','生产构建测试收款隔离或订单更新错误');
+  const returned=await fetch(origin+'/payment-return?session_id=cs_forged');requireCondition(returned.ok&&(await returned.text()).includes('支付进度正在核对'),'TEST_FAILED','生产构建支付返回页面不可访问');await controlStripeConnection(paymentScope,connection.id,{request_id:randomUUID(),expected_version:1,outbound_enabled:false,reason:'Synthetic production Stripe check completed'});
   await jsonPost('site-channels/'+channel.id+'/controls',{request_id:randomUUID(),expected_version:channel.version,state:'PAUSED',reason:'Completed synthetic production inbound verification'});
   await fetch(origin+'/api/public/chat/'+channel.id+'/end',{method:'POST',headers:{Cookie:visitorCookie!,Origin:origin,'Content-Type':'application/json'},body:'{}'});
   await fetch(origin + '/api/auth/logout', { method: 'POST', headers: { Cookie: cookie, Origin: origin, 'Content-Type': 'application/json' }, body: '{}' });
-  console.log('Production smoke: existing auth/data/calendar checks, owned inquiry and customer, product activation, immutable order confirmation, duplicate receipt and order cancellation passed; no external actions.');
+  console.log('Production smoke: existing auth/data/calendar/inquiry/order checks plus Stripe checkout, signed raw HTTP webhook, duplicate receipt and test revenue isolation passed; no external actions.');
 } finally {
   child.kill('SIGTERM');
   if (child.exitCode === null) await new Promise<void>(resolve => { child.once('exit', () => resolve()); setTimeout(resolve, 5000); });
+  for(const suffix of ['API_KEY','WEBHOOK_SECRETS','ORGANIZATION_ID','BRAND_ID','ACCOUNT_ID'])delete process.env[paymentRef+'_'+suffix];await closePool();
 }
