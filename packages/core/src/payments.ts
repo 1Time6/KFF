@@ -21,8 +21,8 @@ export async function paymentOutboundScope<T>(scope:Scope,fn:(client:PoolClient)
 });}
 export async function assertPaymentOutbound(client:PoolClient,connection:StripeConnection,actorId:string){
   const status=(await client.query('SELECT b.outbound_paused OR o.outbound_paused AS paused FROM kff.brands b JOIN kff.organizations o ON o.id=b.organization_id WHERE b.id=$1',[connection.brand_id])).rows[0];
-  requireCondition(status&&!status.paused&&connection.outbound_enabled,'STOP_REQUESTED','组织、品牌或支付连接已暂停创建新支付',409);
-  requireCondition(connection.mode==='TEST'||process.env.KFF_ENABLE_LIVE==='true','LIVE_DISABLED','真实 Stripe 收款尚未启用',409);
+  requireCondition(status&&!status.paused&&connection.outbound_enabled,'STOP_REQUESTED','组织、品牌或支付连接已暂停新的收退款申请',409);
+  requireCondition(connection.mode==='TEST'||process.env.KFF_ENABLE_LIVE==='true','LIVE_DISABLED','真实 Stripe 收退款尚未启用',409);
   requireCondition((await client.query("SELECT 1 FROM kff.memberships WHERE user_id=$1 AND role IN ('admin','operator')",[actorId])).rowCount,'FORBIDDEN_SCOPE','创建支付的人员已无此品牌操作权限',403);
 }
 export async function registerStripeConnection(scope:Scope,input:z.infer<typeof stripeConnectionInput>,factory:StripeGatewayFactory=stripeGateway){
@@ -74,7 +74,7 @@ export async function receiveStripeWebhook(connectionId:string,raw:Buffer,signat
     if(old){requireCondition(old.payload_hash===hash,'IDEMPOTENCY_CONFLICT','同一 Stripe 事件的内容发生变化',409);return {receipt:'STORED' as const,duplicate:true};}
     const id=randomUUID(),inbound=randomUUID();
     await client.query("INSERT INTO kff.inbound_events(id,organization_id,brand_id,source_kind,source_key,payload_hash) VALUES($1,$2,$3,'stripe',$4,$5)",[inbound,scope.organization_id,scope.brand_id,connectionId+'/'+payload.id,hash]);
-    await client.query('INSERT INTO kff.stripe_events(id,organization_id,brand_id,connection_id,inbound_event_id,provider_event_id,event_type,event_created_at,payload,payload_hash,state) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)',[id,scope.organization_id,scope.brand_id,connectionId,inbound,payload.id,payload.type,new Date(payload.created*1000),payload,hash,payload.session?'PENDING':'IGNORED']);
+    await client.query('INSERT INTO kff.stripe_events(id,organization_id,brand_id,connection_id,inbound_event_id,provider_event_id,event_type,event_created_at,payload,payload_hash,state) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)',[id,scope.organization_id,scope.brand_id,connectionId,inbound,payload.id,payload.type,new Date(payload.created*1000),payload,hash,payload.session||payload.financial?'PENDING':'IGNORED']);
     await audit(client,scope,'stripe.event_stored',id,{provider_event_id:payload.id,event_type:payload.type,mode:connection.mode});return {receipt:'STORED' as const,duplicate:false};
   });
 }

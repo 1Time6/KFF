@@ -8,6 +8,8 @@ import {AppError,requireCondition} from './index';
 import {audit} from './service';
 import {connectionScope,privateStripeConnection,assertPaymentOutbound,paymentOutboundScope} from './payments';
 import {stripeGateway,safeCheckoutUrl,type StripeGatewayFactory,type StripeGateway,type StripeSession,type StripeIntent,type VerifiedStripeEvent} from './stripe-gateway';
+import {processFinancialStripeEvent} from './refund-worker';
+import {stripeFinancialGateway,type StripeFinancialGatewayFactory} from './stripe-financial-gateway';
 
 interface EventJob {id:string;connection_id:string;payload:VerifiedStripeEvent;attempts:number;lease_token:string}
 function intentId(session:StripeSession){return typeof session.payment_intent==='string'?session.payment_intent:session.payment_intent?.id??null;}
@@ -59,7 +61,7 @@ async function applyObservation(connection:StripeConnection,checkoutId:string,se
   });
 }
 function failureCode(error:unknown){return error instanceof AppError?error.code:'STRIPE_UNAVAILABLE';}
-function isRetryable(code:string){return ['STRIPE_UNAVAILABLE','STRIPE_CREDENTIALS_UNCONFIGURED','STRIPE_AUTH_REQUIRED'].includes(code);}
+function isRetryable(code:string){return ['STRIPE_UNAVAILABLE','STRIPE_CREDENTIALS_UNCONFIGURED','STRIPE_AUTH_REQUIRED','FINANCIAL_BUSY','FINANCIAL_LEASE_LOST'].includes(code);}
 export async function processStripeCheckout(id?:string,factory:StripeGatewayFactory=stripeGateway){
   const rows=await query<{id:string;connection_id:string}>("SELECT p.id,p.connection_id FROM kff.payment_checkouts p JOIN kff.stripe_connections c ON c.id=p.connection_id WHERE p.state IN ('READY','CREATING','OPEN','PENDING') AND (p.lease_until IS NULL OR p.lease_until<clock_timestamp()) AND ($1::uuid IS NULL OR p.id=$1) AND ($1::uuid IS NOT NULL OR (p.next_check_at<=clock_timestamp() AND NOT c.is_synthetic)) ORDER BY p.next_check_at LIMIT 1",[id??null]);if(!rows[0])return false;
   const connection=await privateStripeConnection(rows[0].connection_id),scope=connectionScope(connection),token=randomUUID();
@@ -88,11 +90,12 @@ export async function processStripeCheckout(id?:string,factory:StripeGatewayFact
   }
   return true;
 }
-export async function processStripeEvent(id?:string,factory:StripeGatewayFactory=stripeGateway){
+export async function processStripeEvent(id?:string,factory:StripeGatewayFactory=stripeGateway,financialFactory:StripeFinancialGatewayFactory=stripeFinancialGateway){
   const rows=await query<{id:string;connection_id:string}>("SELECT e.id,e.connection_id FROM kff.stripe_events e JOIN kff.stripe_connections c ON c.id=e.connection_id WHERE e.state IN ('PENDING','PROCESSING') AND (e.lease_until IS NULL OR e.lease_until<clock_timestamp()) AND ($1::uuid IS NULL OR e.id=$1) AND ($1::uuid IS NOT NULL OR (e.next_attempt_at<=clock_timestamp() AND NOT c.is_synthetic)) ORDER BY e.next_attempt_at LIMIT 1",[id??null]);if(!rows[0])return false;
   const connection=await privateStripeConnection(rows[0].connection_id),scope=connectionScope(connection),token=randomUUID();
   const event=await scoped(scope,async client=>(await client.query<EventJob>("UPDATE kff.stripe_events SET state='PROCESSING',lease_token=$2,lease_until=clock_timestamp()+interval '90 seconds',attempts=attempts+1 WHERE id=$1 AND state IN ('PENDING','PROCESSING') AND (lease_until IS NULL OR lease_until<clock_timestamp()) RETURNING *",[rows[0].id,token])).rows[0]);if(!event)return false;
   try{
+    if(event.payload.financial){await processFinancialStripeEvent(connection,{id:event.id,lease_token:event.lease_token,financial:event.payload.financial},financialFactory);return true;}
     const session=event.payload.session,checkoutId=session?.metadata?.kff_checkout_id;requireCondition(session&&z.string().uuid().safeParse(checkoutId).success,'STRIPE_OBJECT_MISMATCH','回调没有有效的 KFF 支付关联',409);
     const checkout=await scoped(scope,async client=>(await client.query<PaymentCheckout>('SELECT * FROM kff.payment_checkouts WHERE id=$1 AND connection_id=$2',[checkoutId,connection.id])).rows[0]);requireCondition(checkout,'STRIPE_OBJECT_MISMATCH','回调未关联到此连接的 KFF 支付请求',409);
     validatePaymentSession(checkout,connection,session);const {gateway}=await gatewayFor(connection,factory),latest=await retrieve(gateway,session.id);

@@ -31,6 +31,8 @@ import {productVersionInput,productControlInput,orderPreviewInput,orderConfirmIn
 import {saveProductVersion,controlProduct,commerceWorkspace,productHistory,previewOrder,confirmOrder,ownedOrderDetail,cancelOwnedOrder} from '@kff/core/orders';
 import {stripeConnectionInput,checkoutInput,paymentRecheckInput,stripeConnectionControlInput} from '../../../../../packages/contracts/src/payment';
 import {registerStripeConnection,paymentWorkspace,queueStripeCheckout,receiveStripeWebhook,requestPaymentRecheck,controlStripeConnection} from '@kff/core/payments';
+import {refundInput,refundControlInput,financialRecheckInput,financialAdjustmentInput,reverseAdjustmentInput} from '../../../../../packages/contracts/src/refund';
+import {financialWorkspace,queueRefund,requestFinancialRecheck,cancelUnsubmittedRefund,recordFinancialAdjustment,reverseFinancialAdjustment} from '@kff/core/refunds';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -107,6 +109,14 @@ async function handle(request: Request, context: Context) {
     if (write) checkOrigin(request);
     if (path === 'workspace' && !write) return json(await workspace(scope));
     if(path==='payments'&&!write){const order=new URL(request.url).searchParams.get('order');return json(await paymentWorkspace(scope,order?uuid.parse(order):undefined));}
+    if(parts.length===3&&parts[0]==='payments'){
+      const id=uuid.parse(parts[1]);if(parts[2]==='financials'&&!write)return json(await financialWorkspace(scope,id));
+      if(parts[2]==='refunds'&&write)return json(await queueRefund(scope,id,refundInput.parse(await body(request))),202);
+      if(parts[2]==='financial-recheck'&&write)return json(await requestFinancialRecheck(scope,id,financialRecheckInput.parse(await body(request))),202);
+      if(parts[2]==='adjustments'&&write)return json(await recordFinancialAdjustment(scope,id,financialAdjustmentInput.parse(await body(request))),201);
+    }
+    if(parts.length===3&&parts[0]==='refunds'&&parts[2]==='cancel'&&write)return json(await cancelUnsubmittedRefund(scope,uuid.parse(parts[1]),refundControlInput.parse(await body(request))));
+    if(parts.length===3&&parts[0]==='adjustments'&&parts[2]==='reverse'&&write)return json(await reverseFinancialAdjustment(scope,uuid.parse(parts[1]),reverseAdjustmentInput.parse(await body(request))),201);
     if(path==='stripe-connections'&&write)return json(await registerStripeConnection(scope,stripeConnectionInput.parse(await body(request))),201);
     if(parts.length===3&&parts[0]==='stripe-connections'&&parts[2]==='controls'&&write)return json(await controlStripeConnection(scope,uuid.parse(parts[1]),stripeConnectionControlInput.parse(await body(request))));
     if(parts.length===3&&parts[0]==='orders'&&parts[2]==='stripe-checkouts'&&write)return json(await queueStripeCheckout(scope,uuid.parse(parts[1]),checkoutInput.parse(await body(request))),202);

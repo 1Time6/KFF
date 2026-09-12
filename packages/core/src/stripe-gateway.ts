@@ -7,6 +7,7 @@ import {runtimeDir} from '@kff/database';
 import type {StripeConnection} from '../../contracts/src/payment';
 import type {OrderSnapshot} from '../../contracts/src/order';
 import {AppError,requireCondition} from './index';
+import {stripeFinancialEventTypes,parseFinancialEvent} from './stripe-financial-contract';
 
 export const STRIPE_API_VERSION='2026-08-26.dahlia' as const;
 export const stripeEventTypes=['checkout.session.completed','checkout.session.async_payment_succeeded','checkout.session.async_payment_failed','checkout.session.expired'] as const;
@@ -78,7 +79,9 @@ export function verifyStripeWebhook(connection:StripeConnection,raw:Buffer,signa
   const supported=(stripeEventTypes as readonly string[]).includes(event.type);
   const parsed=supported?stripeSessionSchema.safeParse(event.data.object):null;requireCondition(!parsed||parsed.success,'STRIPE_EVENT_INVALID','Stripe 回调对象格式无效');
   const session=parsed?.success?{...parsed.data,url:undefined}:null;
-  return {id:event.id,type:event.type,created:event.created,livemode:event.livemode,api_version:event.api_version,session};
+  let financial:ReturnType<typeof parseFinancialEvent>=null;
+  if((stripeFinancialEventTypes as readonly string[]).includes(event.type)){try{financial=parseFinancialEvent(event.type,event.data.object);}catch{throw new AppError('STRIPE_EVENT_INVALID','Stripe 财务回调对象格式无效');}}
+  return {id:event.id,type:event.type,created:event.created,livemode:event.livemode,api_version:event.api_version,session,...(financial?{financial}:{})};
 }
 export type VerifiedStripeEvent=ReturnType<typeof verifyStripeWebhook>;
 export function safeCheckoutUrl(value:string|null|undefined){if(!value)return null;const url=new URL(value);requireCondition(url.protocol==='https:'&&url.hostname==='checkout.stripe.com'&&!url.port&&!url.username&&!url.password,'STRIPE_URL_INVALID','Stripe 返回了未配置的支付域名',409);return url.href;}
