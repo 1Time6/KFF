@@ -48,8 +48,23 @@ try {
   const schedule=await (await jsonPost('schedules',{request_id:randomUUID(),preview_id:schedulePreview.id,preview_hash:schedulePreview.definition_hash,title:'Production synthetic paused calendar'})).json();
   requireCondition(schedule.state==='PAUSED','TEST_FAILED','生产构建没有将新计划保存为暂停');
   await jsonPost('schedules/'+schedule.id+'/controls',{request_id:randomUUID(),expected_version:schedule.version,action:'STOP',reason:'Completed synthetic production calendar check'});
+  const channel=await (await jsonPost('site-channels',{request_id:randomUUID(),name:'Production owned synthetic inbox',is_synthetic:true,session_hours:1,reply_window_hours:1,sessions_per_minute:10,messages_per_minute:30})).json();
+  const chatPage=await fetch(origin+'/chat/'+channel.id);requireCondition(chatPage.ok,'TEST_FAILED','生产构建访客页面不可访问');
+  const visitorStart=await fetch(origin+'/api/public/chat/'+channel.id+'/sessions',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:'{}'});
+  const visitorCookie=visitorStart.headers.get('set-cookie')?.split(';')[0];requireCondition(visitorStart.ok&&visitorCookie,'TEST_FAILED','生产构建未签发独立访客会话');
+  const inbound={client_message_id:randomUUID(),body:'Production owned inquiry',display_name:'Synthetic visitor',client_sent_at:null};
+  const visitorPost=()=>fetch(origin+'/api/public/chat/'+channel.id+'/messages',{method:'POST',headers:{Cookie:visitorCookie!,Origin:origin,'Content-Type':'application/json'},body:JSON.stringify(inbound)});
+  const received=await visitorPost(),receivedBody=await received.json(),repeated=await visitorPost(),repeatedBody=await repeated.json();
+  requireCondition(received.ok&&repeated.ok&&receivedBody.status==='STORED'&&receivedBody.message.id===repeatedBody.message.id,'TEST_FAILED','生产构建消息去重或持久确认失败');
+  const inbox=await (await fetch(origin+'/api/inbox',{headers:{Cookie:cookie}})).json();const conversation=inbox.conversations.find((row:{id:string})=>row.id===receivedBody.message.conversation_id);
+  requireCondition(conversation&&conversation.last_sequence===1&&conversation.channel_id===channel.id,'TEST_FAILED','生产构建未建立对应客户会话');
+  const stranger=await fetch(origin+'/api/public/chat/'+channel.id+'/messages');requireCondition(stranger.status===401,'TEST_FAILED','访客历史未鉴权');
+  const customer=await (await fetch(origin+'/api/customers/'+conversation.customer_id,{headers:{Cookie:cookie}})).json();requireCondition(customer.customer.first_inquiry_event_id===receivedBody.message.inbound_event_id&&customer.verified_payment===false,'TEST_FAILED','生产构建主数据来源不一致');
+  await jsonPost('customers/'+conversation.customer_id+'/notes',{request_id:randomUUID(),text:'Owned synthetic production verification completed'});
+  await jsonPost('site-channels/'+channel.id+'/controls',{request_id:randomUUID(),expected_version:channel.version,state:'PAUSED',reason:'Completed synthetic production inbound verification'});
+  await fetch(origin+'/api/public/chat/'+channel.id+'/end',{method:'POST',headers:{Cookie:visitorCookie!,Origin:origin,'Content-Type':'application/json'},body:'{}'});
   await fetch(origin + '/api/auth/logout', { method: 'POST', headers: { Cookie: cookie, Origin: origin, 'Content-Type': 'application/json' }, body: '{}' });
-  console.log('Production smoke: health, auth, scoped workspace, forged brand, CSRF, task route, bounded CSV upload, mapping, confirmation, protected export, frozen target selection, revocation, timezone calendar, paused schedule, future stop and logout passed; no external actions.');
+  console.log('Production smoke: existing auth/data/calendar checks and owned visitor page, isolated session, durable inquiry, duplicate receipt, customer source, note and channel pause passed; no external actions.');
 } finally {
   child.kill('SIGTERM');
   if (child.exitCode === null) await new Promise<void>(resolve => { child.once('exit', () => resolve()); setTimeout(resolve, 5000); });

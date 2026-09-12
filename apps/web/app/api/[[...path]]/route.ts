@@ -24,6 +24,9 @@ import { previewTargets,saveTargetSnapshot,targetSnapshots,readTargetSnapshot,re
 import {schedulePreviewInput,scheduleSaveInput,scheduleRevisionInput,scheduleControlInput} from '../../../../../packages/contracts/src/schedule';
 import {previewSchedule,saveSchedule,scheduleList,scheduleDetail,controlSchedule} from '@kff/core/schedules';
 import { requestScope, checkOrigin, login, logout } from '../../../lib/auth';
+import {visitorCookie,visitorToken} from '../../../lib/visitor-auth';
+import {channelInput,channelControlInput,inboundMessageInput,conversationPageInput,customerUpdateInput,customerNoteInput} from '../../../../../packages/contracts/src/inbox';
+import {createSiteChannel,controlSiteChannel,publicChatInfo,beginVisitorSession,endVisitorSession,visitorSessionStatus,receiveVisitorMessage,visitorHistory,inboxWorkspace,inboxConversation,customerWorkspace,customerDetail,updateCustomer,addCustomerNote} from '@kff/core/inbox';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -56,6 +59,28 @@ async function handle(request: Request, context: Context) {
     if (path === 'health' && !write) return json({ status: 'ok', protocol: 'kff.api.v1' });
     if (path === 'auth/login' && write) { const input = loginInput.parse(await body(request)); const cookie = await login(request, input.email, input.password); return json({ authenticated: true }, 200, { 'Set-Cookie': cookie }); }
     if (path === 'auth/logout' && write) return json({ authenticated: false }, 200, { 'Set-Cookie': await logout(request) });
+    if(parts[0]==='public'&&parts[1]==='chat'&&parts.length>=3){
+      const channelId=uuid.parse(parts[2]);
+      if(write)checkOrigin(request);
+      if(parts.length===3&&!write)return json(await publicChatInfo(channelId));
+      const token=visitorToken(request,channelId);
+      if(parts.length===4&&parts[3]==='sessions'&&!write)return json(await visitorSessionStatus(channelId,token));
+      if(parts.length===4&&parts[3]==='sessions'&&write){
+        z.object({}).strict().parse(await body(request,1024));
+        const result=await beginVisitorSession(channelId,token);
+        return json({expires_at:result.expires_at,created:result.created},200,{'Set-Cookie':visitorCookie(channelId,result.token,result.expires_at)});
+      }
+      if(parts.length===4&&parts[3]==='end'&&write){
+        z.object({}).strict().parse(await body(request,1024));
+        return json(await endVisitorSession(channelId,token),200,{'Set-Cookie':visitorCookie(channelId,'',null)});
+      }
+      if(parts.length===4&&parts[3]==='messages'){
+        if(write)return json(await receiveVisitorMessage(channelId,token,inboundMessageInput.parse(await body(request,32768))),201);
+        const search=new URL(request.url).searchParams;
+        return json(await visitorHistory(channelId,token,conversationPageInput.parse({after:search.get('after')??'0',limit:search.get('limit')??50})));
+      }
+      throw new AppError('NOT_FOUND','接口不存在',404);
+    }
     if (parts[0] === 'agent') {
       requireCondition(write, 'NOT_FOUND', '接口不存在', 404);
       const agent = await authenticateAgent(request);
@@ -70,6 +95,16 @@ async function handle(request: Request, context: Context) {
     const scope = await requestScope(request);
     if (write) checkOrigin(request);
     if (path === 'workspace' && !write) return json(await workspace(scope));
+    if(path==='inbox'&&!write)return json(await inboxWorkspace(scope));
+    if(path==='site-channels'&&write)return json(await createSiteChannel(scope,channelInput.parse(await body(request))),201);
+    if(parts[0]==='site-channels'&&parts.length===3&&parts[2]==='controls'&&write)return json(await controlSiteChannel(scope,uuid.parse(parts[1]),channelControlInput.parse(await body(request))));
+    if(parts[0]==='conversations'&&parts.length===2&&!write){const search=new URL(request.url).searchParams;return json(await inboxConversation(scope,uuid.parse(parts[1]),conversationPageInput.parse({after:search.get('after')??'0',limit:search.get('limit')??50})));}
+    if(path==='customers'&&!write)return json(await customerWorkspace(scope));
+    if(parts[0]==='customers'&&parts.length>=2){const id=uuid.parse(parts[1]);
+      if(parts.length===2&&!write)return json(await customerDetail(scope,id));
+      if(parts.length===2&&write)return json(await updateCustomer(scope,id,customerUpdateInput.parse(await body(request))));
+      if(parts.length===3&&parts[2]==='notes'&&write)return json(await addCustomerNote(scope,id,customerNoteInput.parse(await body(request))));
+    }
     if(path==='schedule-previews'&&write)return json(await previewSchedule(scope,schedulePreviewInput.parse(await body(request))));
     if(path==='schedules')return json(write?await saveSchedule(scope,scheduleSaveInput.parse(await body(request))):await scheduleList(scope));
     if(parts[0]==='schedules'&&parts.length>=2){const id=uuid.parse(parts[1]);

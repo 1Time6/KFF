@@ -218,7 +218,7 @@
       "parent_id": "PLAN-F0-02",
       "gate": "G0",
       "status": "IN_PROGRESS",
-      "scope": "定向只读核对两个已登记站点候选的代码与接口；待用户确认 KFF 的实际复用范围，未连接或修改源系统",
+      "scope": "独立业务主数据决定已由用户明确并记录：KFF 拥有客户、订单、聊天与数据，不接入 EasternWisdom/Pearl。TASK-006 的其他现有模块盘点仍未完成",
       "authorized_objective": "按项目规划实施，Facebook 为首平台，真实测试后置",
       "authorization_basis": "2026-09-12 当前会话用户指令",
       "source_refs": [
@@ -241,8 +241,8 @@
         "当前主规划 v2.1"
       ],
       "outputs": [
-        "docs/discovery-existing-systems.md",
-        "docs/evidence/existing-systems-readonly.json"
+        "docs/decisions/017-independent-business-data.md",
+        "docs/discovery-existing-systems.md"
       ],
       "acceptance_ids": [],
       "actual_test_commands": [],
@@ -250,10 +250,10 @@
       "pilot_permit_ref": null,
       "rollback_plan": "停止本项目 Web/Worker/Agent，回退本任务代码提交；已提交动作保留未知并对账，已应用迁移不反向改写",
       "known_blockers": [
-        "发现 EasternWisdom 与 Pearl 两套独立站点代码，但 KFF 的接入对象、品牌与主数据归属未确定；按用户指令暂停询问",
-        "Video OS、WhatsApp 号池及其他存量系统仍待确认；源工程与线上部署未运行验收"
+        "Video OS、WhatsApp 号池、设备和其他原始附件仍缺直接资料；独立业务主数据范围已确定"
       ],
       "evidence_refs": [
+        "docs/decisions/017-independent-business-data.md",
         "docs/evidence/existing-systems-readonly.json"
       ],
       "reviewer": "Codex 实现；用户与独立审查尚未验收",
@@ -742,7 +742,7 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 30
+          "test_count": 32
         }
       ],
       "live_effects": "none",
@@ -814,7 +814,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
@@ -899,12 +899,12 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 30
+          "test_count": 32
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=fixtures",
@@ -992,17 +992,17 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 30
+          "test_count": 32
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 15
+          "test_count": 17
         }
       ],
       "live_effects": "none",
@@ -1074,12 +1074,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 15
+          "test_count": 17
         }
       ],
       "live_effects": "none",
@@ -1214,7 +1214,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=fixtures",
@@ -1292,12 +1292,12 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 30
+          "test_count": 32
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         }
       ],
       "live_effects": "none",
@@ -1373,12 +1373,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 15
+          "test_count": 17
         }
       ],
       "live_effects": "none",
@@ -1451,7 +1451,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         }
       ],
       "live_effects": "none",
@@ -1528,12 +1528,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 15
+          "test_count": 17
         }
       ],
       "live_effects": "none",
@@ -1607,7 +1607,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         }
       ],
       "live_effects": "none",
@@ -1679,7 +1679,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         }
       ],
       "live_effects": "none",
@@ -1753,7 +1753,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=fixtures",
@@ -1833,12 +1833,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 15
+          "test_count": 17
         }
       ],
       "live_effects": "none",
@@ -1910,12 +1910,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 15
+          "test_count": 17
         }
       ],
       "live_effects": "none",
@@ -1988,7 +1988,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=fixtures",
@@ -2140,7 +2140,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=fixtures",
@@ -2150,7 +2150,7 @@
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 15
+          "test_count": 17
         }
       ],
       "live_effects": "none",
@@ -2227,12 +2227,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 15
+          "test_count": 17
         }
       ],
       "live_effects": "none",
@@ -2384,12 +2384,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 15
+          "test_count": 17
         }
       ],
       "live_effects": "none",
@@ -2462,7 +2462,7 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 30
+          "test_count": 32
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=fixtures",
@@ -2541,7 +2541,7 @@
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 15
+          "test_count": 17
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
@@ -2621,12 +2621,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 15
+          "test_count": 17
         }
       ],
       "live_effects": "none",
@@ -2911,7 +2911,7 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         }
       ],
       "live_effects": "none",
@@ -3187,12 +3187,12 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 30
+          "test_count": 32
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         }
       ],
       "live_effects": "none",
@@ -3293,17 +3293,17 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 30
+          "test_count": 32
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 15
+          "test_count": 17
         }
       ],
       "live_effects": "none",
@@ -3362,12 +3362,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 15
+          "test_count": 17
         }
       ],
       "live_effects": "none",
@@ -3433,17 +3433,17 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 30
+          "test_count": 32
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 15
+          "test_count": 17
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
@@ -3512,12 +3512,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 15
+          "test_count": 17
         }
       ],
       "live_effects": "none",
@@ -3580,17 +3580,17 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 30
+          "test_count": 32
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 15
+          "test_count": 17
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
@@ -3743,12 +3743,12 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 30
+          "test_count": 32
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=fixtures",
@@ -3758,7 +3758,7 @@
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 15
+          "test_count": 17
         }
       ],
       "live_effects": "none",
@@ -3869,17 +3869,17 @@
         {
           "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
           "exit_code": 0,
-          "test_count": 30
+          "test_count": 32
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 15
+          "test_count": 17
         },
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
@@ -3988,12 +3988,12 @@
         {
           "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
           "exit_code": 0,
-          "test_count": 140
+          "test_count": 157
         },
         {
           "command": "node node_modules/@playwright/test/cli.js test --project=web",
           "exit_code": 0,
-          "test_count": 15
+          "test_count": 17
         }
       ],
       "live_effects": "none",
@@ -4680,10 +4680,10 @@
       "title": "一条真实收件入口",
       "parent_id": "PLAN-F1-06",
       "gate": "G3",
-      "status": "TODO",
-      "scope": "先选站内受控收件端点或获准平台入口，复用持久事件内核；按实际协议验签/鉴权、限额、落库再确认，站内访客 UI 在 TASK-092 接入",
-      "authorized_objective": "按项目规划实施，Facebook 为首平台，真实测试后置",
-      "authorization_basis": "2026-09-12 当前会话用户指令",
+      "status": "DONE_SCOPED",
+      "scope": "KFF 自有站内端点、同源与随机访客令牌鉴权、持久配额、共用事件表及落库后确认；重复/乱序/伪造/存储失败和进程中断已验；公网及外部平台入口未验",
+      "authorized_objective": "按项目规划实现 KFF 自有咨询入口、客户、聊天及订单主数据；Facebook 真实测试后置",
+      "authorization_basis": "当前会话用户明确 KFF 完全独立拥有客户、订单、聊天、数据；ADR-017",
       "source_refs": [
         "项目规划.md#task-078"
       ],
@@ -4693,29 +4693,75 @@
         "TASK-007"
       ],
       "conditional_dependencies": {},
-      "selected_contact_path": null,
+      "selected_contact_path": "site_chat",
       "selected_content_source": null,
-      "repository_commit_before": "962114f836986ec21e99db54ac9913745710052e",
-      "allowed_files": [],
+      "repository_commit_before": "1f1910b",
+      "allowed_files": [
+        "packages/contracts/src/inbox.ts",
+        "packages/core/src/inbox.ts",
+        "supabase/migrations/*_g3_owned_inbound.sql",
+        "apps/web/app",
+        "apps/web/components",
+        "apps/web/lib/visitor-auth.ts",
+        "tests",
+        "scripts/production-smoke.ts",
+        "docs"
+      ],
       "forbidden_changes": [
         "原始规划与归档内容",
         "未获准的真实平台副作用",
         "其他项目的主数据"
       ],
       "inputs": [
-        "当前主规划 v2.1"
+        "项目规划.md",
+        "docs/decisions/017-independent-business-data.md"
       ],
-      "outputs": [],
+      "outputs": [
+        "packages/contracts/src/inbox.ts",
+        "packages/core/src/inbox.ts",
+        "apps/web/lib/visitor-auth.ts",
+        "apps/web/app/api/[[...path]]/route.ts",
+        "supabase/migrations/20260911235946_g3_owned_inbound.sql",
+        "tests/integration/inbox.test.ts",
+        "tests/helpers/inbound-process.ts"
+      ],
       "acceptance_ids": [
         "ACC-10",
         "ACC-72"
       ],
-      "actual_test_commands": [],
+      "actual_test_commands": [
+        {
+          "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
+          "exit_code": 0,
+          "test_count": 32
+        },
+        {
+          "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
+          "exit_code": 0,
+          "test_count": 157
+        },
+        {
+          "command": "node node_modules/@playwright/test/cli.js test --project=web",
+          "exit_code": 0,
+          "test_count": 17
+        },
+        {
+          "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
+          "exit_code": 0,
+          "test_count": null
+        }
+      ],
       "live_effects": "none",
       "pilot_permit_ref": null,
       "rollback_plan": "停止本项目 Web/Worker/Agent，回退本任务代码提交；已提交动作保留未知并对账，已应用迁移不反向改写",
-      "known_blockers": [],
-      "evidence_refs": [],
+      "known_blockers": [
+        "当前仅 KFF 自有入站与客户基础；公网部署、外部平台收件、人工回复/接管、完整身份纠错与订单关联在对应任务继续实施或验证"
+      ],
+      "evidence_refs": [
+        "docs/evidence/g1-local-checkpoint.json",
+        "docs/decisions/017-independent-business-data.md",
+        "docs/tasks/g3-owned-inbound.md"
+      ],
       "reviewer": "Codex 实现；用户与独立审查尚未验收",
       "next_task": null,
       "continue_within_authorized_scope": true
@@ -4725,10 +4771,10 @@
       "title": "品牌会话与外部身份",
       "parent_id": "PLAN-F1-06",
       "gate": "G3",
-      "status": "TODO",
-      "scope": "连接器和外部对象映射、消息去重与服务窗口",
-      "authorized_objective": "按项目规划实施，Facebook 为首平台，真实测试后置",
-      "authorization_basis": "2026-09-12 当前会话用户指令",
+      "status": "DONE_SCOPED",
+      "scope": "品牌/自有渠道/服务端访客身份映射、消息去重与服务器顺序、显式客服窗口、退出后不自动恢复；同名/同外部 ID 跨渠道品牌保持分离；外部平台身份合同未验",
+      "authorized_objective": "按项目规划实现 KFF 自有咨询入口、客户、聊天及订单主数据；Facebook 真实测试后置",
+      "authorization_basis": "当前会话用户明确 KFF 完全独立拥有客户、订单、聊天、数据；ADR-017",
       "source_refs": [
         "项目规划.md#task-079"
       ],
@@ -4737,29 +4783,72 @@
         "TASK-020"
       ],
       "conditional_dependencies": {},
-      "selected_contact_path": null,
+      "selected_contact_path": "site_chat",
       "selected_content_source": null,
-      "repository_commit_before": "962114f836986ec21e99db54ac9913745710052e",
-      "allowed_files": [],
+      "repository_commit_before": "1f1910b",
+      "allowed_files": [
+        "packages/contracts/src/inbox.ts",
+        "packages/core/src/inbox.ts",
+        "supabase/migrations/*_g3_owned_inbound.sql",
+        "apps/web/app",
+        "apps/web/components",
+        "apps/web/lib/visitor-auth.ts",
+        "tests",
+        "scripts/production-smoke.ts",
+        "docs"
+      ],
       "forbidden_changes": [
         "原始规划与归档内容",
         "未获准的真实平台副作用",
         "其他项目的主数据"
       ],
       "inputs": [
-        "当前主规划 v2.1"
+        "项目规划.md",
+        "docs/decisions/017-independent-business-data.md"
       ],
-      "outputs": [],
+      "outputs": [
+        "packages/contracts/src/inbox.ts",
+        "packages/core/src/inbox.ts",
+        "supabase/migrations/20260911235946_g3_owned_inbound.sql",
+        "tests/integration/inbox.test.ts"
+      ],
       "acceptance_ids": [
         "ACC-01",
         "ACC-55"
       ],
-      "actual_test_commands": [],
+      "actual_test_commands": [
+        {
+          "command": "node node_modules/vitest/vitest.mjs run tests/contracts --reporter=default --reporter=json --outputFile=.kff/checks/contracts-results.json",
+          "exit_code": 0,
+          "test_count": 32
+        },
+        {
+          "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
+          "exit_code": 0,
+          "test_count": 157
+        },
+        {
+          "command": "node node_modules/@playwright/test/cli.js test --project=web",
+          "exit_code": 0,
+          "test_count": 17
+        },
+        {
+          "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
+          "exit_code": 0,
+          "test_count": null
+        }
+      ],
       "live_effects": "none",
       "pilot_permit_ref": null,
       "rollback_plan": "停止本项目 Web/Worker/Agent，回退本任务代码提交；已提交动作保留未知并对账，已应用迁移不反向改写",
-      "known_blockers": [],
-      "evidence_refs": [],
+      "known_blockers": [
+        "当前仅 KFF 自有入站与客户基础；公网部署、外部平台收件、人工回复/接管、完整身份纠错与订单关联在对应任务继续实施或验证"
+      ],
+      "evidence_refs": [
+        "docs/evidence/g1-local-checkpoint.json",
+        "docs/decisions/017-independent-business-data.md",
+        "docs/tasks/g3-owned-inbound.md"
+      ],
       "reviewer": "Codex 实现；用户与独立审查尚未验收",
       "next_task": null,
       "continue_within_authorized_scope": true
@@ -4859,10 +4948,10 @@
       "title": "收件箱最小工作台",
       "parent_id": "PLAN-F1-06",
       "gate": "G3",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "scope": "客户消息、窗口、负责人、发送状态与错误恢复",
       "authorized_objective": "按项目规划实施，Facebook 为首平台，真实测试后置",
-      "authorization_basis": "2026-09-12 当前会话用户指令",
+      "authorization_basis": "当前会话用户独立主数据决定；ADR-017",
       "source_refs": [
         "项目规划.md#task-082"
       ],
@@ -4871,7 +4960,7 @@
         "TASK-036"
       ],
       "conditional_dependencies": {},
-      "selected_contact_path": null,
+      "selected_contact_path": "site_chat",
       "selected_content_source": null,
       "repository_commit_before": "962114f836986ec21e99db54ac9913745710052e",
       "allowed_files": [],
@@ -4883,7 +4972,12 @@
       "inputs": [
         "当前主规划 v2.1"
       ],
-      "outputs": [],
+      "outputs": [
+        "apps/web/components/inbox-workbench.tsx",
+        "apps/web/components/visitor-chat.tsx",
+        "apps/web/app/chat/[channelId]/page.tsx",
+        "tests/browser/web/inbox.spec.ts"
+      ],
       "acceptance_ids": [
         "ACC-25",
         "ACC-65"
@@ -4892,8 +4986,13 @@
       "live_effects": "none",
       "pilot_permit_ref": null,
       "rollback_plan": "停止本项目 Web/Worker/Agent，回退本任务代码提交；已提交动作保留未知并对账，已应用迁移不反向改写",
-      "known_blockers": [],
-      "evidence_refs": [],
+      "known_blockers": [
+        "已交付自有收件/访客会话、历史与客户跳转；人工发送与会话控制权尚未接入，不计完整收件箱或聊天接待分支验收通过"
+      ],
+      "evidence_refs": [
+        "docs/evidence/g1-local-checkpoint.json",
+        "docs/api/inbox.md"
+      ],
       "reviewer": "Codex 实现；用户与独立审查尚未验收",
       "next_task": null,
       "continue_within_authorized_scope": true
@@ -5078,10 +5177,10 @@
       "title": "客户档案与跟进",
       "parent_id": "PLAN-F2-06",
       "gate": "G3",
-      "status": "TODO",
-      "scope": "从主动咨询建立客户、渠道身份、负责人、阶段与时间线，复用既有主数据；采集线索接入时再满足 TASK-055 的证据要求",
-      "authorized_objective": "按项目规划实施，Facebook 为首平台，真实测试后置",
-      "authorization_basis": "2026-09-12 当前会话用户指令",
+      "status": "DONE_SCOPED",
+      "scope": "按用户独立主数据决定从主动咨询原子建客户，渠道身份、品牌成员负责人、阶段/依据、不可变备注及时间线；人数与消息区分、未知获客来源和未核实支付显式保留；合并/订单完整时间线待后续",
+      "authorized_objective": "按项目规划实现 KFF 自有咨询入口、客户、聊天及订单主数据；Facebook 真实测试后置",
+      "authorization_basis": "当前会话用户明确 KFF 完全独立拥有客户、订单、聊天、数据；ADR-017",
       "source_refs": [
         "项目规划.md#task-087"
       ],
@@ -5090,29 +5189,68 @@
         "TASK-006"
       ],
       "conditional_dependencies": {},
-      "selected_contact_path": null,
+      "selected_contact_path": "site_chat",
       "selected_content_source": null,
-      "repository_commit_before": "962114f836986ec21e99db54ac9913745710052e",
-      "allowed_files": [],
+      "repository_commit_before": "1f1910b",
+      "allowed_files": [
+        "packages/contracts/src/inbox.ts",
+        "packages/core/src/inbox.ts",
+        "supabase/migrations/*_g3_owned_inbound.sql",
+        "apps/web/app",
+        "apps/web/components",
+        "apps/web/lib/visitor-auth.ts",
+        "tests",
+        "scripts/production-smoke.ts",
+        "docs"
+      ],
       "forbidden_changes": [
         "原始规划与归档内容",
         "未获准的真实平台副作用",
         "其他项目的主数据"
       ],
       "inputs": [
-        "当前主规划 v2.1"
+        "项目规划.md",
+        "docs/decisions/017-independent-business-data.md"
       ],
-      "outputs": [],
+      "outputs": [
+        "docs/decisions/017-independent-business-data.md",
+        "packages/core/src/inbox.ts",
+        "apps/web/components/customer-workbench.tsx",
+        "tests/integration/inbox.test.ts",
+        "tests/browser/web/inbox.spec.ts"
+      ],
       "acceptance_ids": [
         "ACC-20",
         "ACC-55"
       ],
-      "actual_test_commands": [],
+      "actual_test_commands": [
+        {
+          "command": "node node_modules/tsx/dist/cli.mjs scripts/integration.ts",
+          "exit_code": 0,
+          "test_count": 157
+        },
+        {
+          "command": "node node_modules/@playwright/test/cli.js test --project=web",
+          "exit_code": 0,
+          "test_count": 17
+        },
+        {
+          "command": "node node_modules/tsx/dist/cli.mjs scripts/production-smoke.ts",
+          "exit_code": 0,
+          "test_count": null
+        }
+      ],
       "live_effects": "none",
       "pilot_permit_ref": null,
       "rollback_plan": "停止本项目 Web/Worker/Agent，回退本任务代码提交；已提交动作保留未知并对账，已应用迁移不反向改写",
-      "known_blockers": [],
-      "evidence_refs": [],
+      "known_blockers": [
+        "当前仅 KFF 自有入站与客户基础；公网部署、外部平台收件、人工回复/接管、完整身份纠错与订单关联在对应任务继续实施或验证"
+      ],
+      "evidence_refs": [
+        "docs/evidence/g1-local-checkpoint.json",
+        "docs/decisions/017-independent-business-data.md",
+        "docs/tasks/g3-owned-inbound.md"
+      ],
       "reviewer": "Codex 实现；用户与独立审查尚未验收",
       "next_task": null,
       "continue_within_authorized_scope": true
@@ -5211,7 +5349,7 @@
       "status": "TODO",
       "scope": "确定真实已有接口和 ID；无存量才建最小新增范围",
       "authorized_objective": "按项目规划实施，Facebook 为首平台，真实测试后置",
-      "authorization_basis": "2026-09-12 当前会话用户指令",
+      "authorization_basis": "当前会话用户独立主数据决定；ADR-017",
       "source_refs": [
         "项目规划.md#task-090"
       ],
@@ -5220,7 +5358,7 @@
         "TASK-087"
       ],
       "conditional_dependencies": {},
-      "selected_contact_path": null,
+      "selected_contact_path": "site_chat",
       "selected_content_source": null,
       "repository_commit_before": "962114f836986ec21e99db54ac9913745710052e",
       "allowed_files": [],
@@ -5294,10 +5432,10 @@
       "title": "站内聊天接入",
       "parent_id": "PLAN-F1-07",
       "gate": "G3",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "scope": "访客会话、历史、授权、消息流和客服接管",
       "authorized_objective": "按项目规划实施，Facebook 为首平台，真实测试后置",
-      "authorization_basis": "2026-09-12 当前会话用户指令",
+      "authorization_basis": "当前会话用户独立主数据决定；ADR-017",
       "source_refs": [
         "项目规划.md#task-092"
       ],
@@ -5306,7 +5444,7 @@
         "TASK-082"
       ],
       "conditional_dependencies": {},
-      "selected_contact_path": null,
+      "selected_contact_path": "site_chat",
       "selected_content_source": null,
       "repository_commit_before": "962114f836986ec21e99db54ac9913745710052e",
       "allowed_files": [],
@@ -5318,7 +5456,12 @@
       "inputs": [
         "当前主规划 v2.1"
       ],
-      "outputs": [],
+      "outputs": [
+        "apps/web/components/inbox-workbench.tsx",
+        "apps/web/components/visitor-chat.tsx",
+        "apps/web/app/chat/[channelId]/page.tsx",
+        "tests/browser/web/inbox.spec.ts"
+      ],
       "acceptance_ids": [
         "ACC-01",
         "ACC-23"
@@ -5327,8 +5470,13 @@
       "live_effects": "none",
       "pilot_permit_ref": null,
       "rollback_plan": "停止本项目 Web/Worker/Agent，回退本任务代码提交；已提交动作保留未知并对账，已应用迁移不反向改写",
-      "known_blockers": [],
-      "evidence_refs": [],
+      "known_blockers": [
+        "已交付自有收件/访客会话、历史与客户跳转；人工发送与会话控制权尚未接入，不计完整收件箱或聊天接待分支验收通过"
+      ],
+      "evidence_refs": [
+        "docs/evidence/g1-local-checkpoint.json",
+        "docs/api/inbox.md"
+      ],
       "reviewer": "Codex 实现；用户与独立审查尚未验收",
       "next_task": null,
       "continue_within_authorized_scope": true
@@ -5731,7 +5879,7 @@
       "status": "TODO",
       "scope": "一个发布平台、一个主动咨询入口、人工接待、客户、订单核验、交付与经营记录；先用获准咨询及支付测试模式贯通",
       "authorized_objective": "按项目规划实施，Facebook 为首平台，真实测试后置",
-      "authorization_basis": "2026-09-12 当前会话用户指令",
+      "authorization_basis": "当前会话用户独立主数据决定；ADR-017",
       "source_refs": [
         "项目规划.md#task-102"
       ],
@@ -5744,7 +5892,7 @@
         "TASK-101"
       ],
       "conditional_dependencies": {},
-      "selected_contact_path": null,
+      "selected_contact_path": "site_chat",
       "selected_content_source": null,
       "repository_commit_before": "962114f836986ec21e99db54ac9913745710052e",
       "allowed_files": [],
@@ -7168,5 +7316,5 @@
       "continue_within_authorized_scope": true
     }
   ],
-  "updated_at": "2026-09-11T23:05:56.475Z"
+  "updated_at": "2026-09-12T00:32:19.583Z"
 }

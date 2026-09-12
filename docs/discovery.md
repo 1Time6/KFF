@@ -2,7 +2,7 @@
 
 > 后续状态（2026-09-12）：用户已明确 Facebook 为首平台，并要求先实现、真实测试后置。以下暂停保留为历史，可独立完成的工程工作已经继续；当前状态见 `docs/tasks/ledger.json` 和 `docs/evidence`。原始附件及其他项目资料缺口仍不等于已核实。
 
-> 新增存量盘点：本地功能推进至 225 项测试后，从已登记项目发现 EasternWisdom 与 Pearl 两个现有站点，并完成定向只读代码核对。由于 KFF 的实际复用范围尚不明确，已按用户要求再次暂停在主数据选择处，具体证据与待确认项见 `docs/discovery-existing-systems.md`。没有改动源项目或执行线上操作。
+> 新增存量盘点：本地功能推进至 225 项测试后，定向只读核对 EasternWisdom 与 Pearl 两个候选，曾暂停等待主数据选择。用户随后明确 KFF 完全独立拥有客户、订单、聊天与数据；该阻塞已解除，决定见 `docs/decisions/017-independent-business-data.md`。以下旧暂停记录保留为历史。没有改动源项目或执行线上操作。
 
 日期：2026-09-12（Asia/Shanghai）。工作区：`C:/Users/17731/Documents/ChatGPT/KFF`。
 
