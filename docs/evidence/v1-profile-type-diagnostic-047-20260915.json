@@ -1,0 +1,101 @@
+{
+  "started_at": "2026-09-14T17:06:03.431Z",
+  "platform_sends": 0,
+  "imports": 0,
+  "steps": [
+    "navigate",
+    "resolve",
+    "own-controls",
+    "heading",
+    "profile-type",
+    "final-guard"
+  ],
+  "identity": {
+    "method": "facebook-profile-dom-v1",
+    "authenticated": true,
+    "operating_identity_id": "61589894042400",
+    "account_type": "profile",
+    "display_name": "XiangHuan Master",
+    "observed_at": "2026-09-14T17:06:15.715Z",
+    "source_url": "https://www.facebook.com/profile.php?id=61589894042400"
+  },
+  "ui": {
+    "url": "https://www.facebook.com/profile.php?id=61589894042400",
+    "title": "(2) Facebook",
+    "passwords": 0,
+    "headings": [
+      {
+        "text": "通知",
+        "visible": false
+      },
+      {
+        "text": "XiangHuan Master ",
+        "visible": true
+      }
+    ],
+    "friends": [
+      {
+        "text": "",
+        "label": "好友",
+        "role": "link",
+        "href": "/friends/",
+        "visible": true,
+        "in_main": false,
+        "in_article": false
+      },
+      {
+        "text": "未读你有新的推荐好友：Patrick Conteh 。9小时",
+        "label": null,
+        "role": "link",
+        "href": "https://www.facebook.com/patrick.conteh.1?notif_id=1789372867010490&notif_t=pymk_email&ref=notif",
+        "visible": false,
+        "in_main": false,
+        "in_article": false
+      },
+      {
+        "text": "未读你有新的推荐好友：Lynch Bae 。6小时",
+        "label": null,
+        "role": "link",
+        "href": "https://www.facebook.com/profile.php?id=100068905667968&notif_id=1788940985024557&notif_t=japan_ci_friends_suggestion&ref=notif",
+        "visible": false,
+        "in_main": false,
+        "in_article": false
+      },
+      {
+        "text": "1 位好友",
+        "label": null,
+        "role": "link",
+        "href": "https://www.facebook.com/profile.php?id=61589894042400&sk=friends",
+        "visible": true,
+        "in_main": true,
+        "in_article": false
+      },
+      {
+        "text": "查看全部",
+        "label": null,
+        "role": "link",
+        "href": "https://www.facebook.com/friends/suggestions/",
+        "visible": true,
+        "in_main": true,
+        "in_article": false
+      },
+      {
+        "text": "好友",
+        "label": null,
+        "role": "tab",
+        "href": null,
+        "visible": true,
+        "in_main": true,
+        "in_article": false
+      }
+    ],
+    "actions": [
+      {
+        "text": "发布快拍编辑个人主页",
+        "visible": true
+      }
+    ]
+  },
+  "profile_after": "Inactive",
+  "finished_at": "2026-09-14T17:06:16.813Z"
+}

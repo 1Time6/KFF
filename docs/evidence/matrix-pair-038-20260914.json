@@ -1,0 +1,397 @@
+{
+  "at": "2026-09-14T12:14:46.163Z",
+  "version": "0.1.38",
+  "source_build_agent_match": true,
+  "tests": {
+    "browser": {
+      "startTime": "2026-09-14T12:08:18.809Z",
+      "duration": 48414.859,
+      "expected": 20,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "contracts": 178,
+    "typecheck": 0,
+    "build": 0
+  },
+  "pair": {
+    "started_at": "2026-09-14T12:12:59.141Z",
+    "plan": {
+      "public_scans": 1,
+      "inbox_scans": 1,
+      "public_max_records": 10,
+      "inbox_max_threads": 1,
+      "inbox_max_messages": 5,
+      "platform_sends": 0,
+      "continuous_monitoring": false
+    },
+    "public_request": "35bc4d38-1ad3-407e-955d-a6145aeea86e",
+    "inbox_request": "e85d42cf-2d3a-4ce5-b66c-0a39258c04a3",
+    "commands": [
+      {
+        "id": "81c0b59d-c076-4cc6-a685-69871f22761e",
+        "action_id": "222be3da-fb8d-4613-a507-32f972326ffa",
+        "created_at": "2026-09-14T12:13:03.210Z",
+        "claimed_at": "2026-09-14T12:13:04.065Z",
+        "quiesced_at": "2026-09-14T12:13:45.280Z",
+        "state": "VERIFIED_SUCCEEDED",
+        "error_code": null,
+        "receipt": {
+          "remote_id": "inbox:e693f9db-6faa-4b7f-9e98-cf1079297665:9",
+          "observed_at": "2026-09-14T12:13:36.729Z",
+          "content_hash": "3f025b5dbe5764bfc6bd19f16dfa5ba8061c025c8e40026dc280c1976cb4bb8d",
+          "evidence_kind": "browser_dom",
+          "actual_account_id": "61594402378582"
+        },
+        "task_id": "eb24fd38-da8d-4e1b-94a6-edd55985e237",
+        "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+        "profile_id": "k1gx1n1s",
+        "external_id": "61594402378582"
+      },
+      {
+        "id": "61434abc-50be-4b98-aa39-f2df31db97c1",
+        "action_id": "446c2e9a-31c7-4d2e-ba20-2acdf21579bf",
+        "created_at": "2026-09-14T12:13:46.510Z",
+        "claimed_at": "2026-09-14T12:13:47.598Z",
+        "quiesced_at": "2026-09-14T12:14:37.605Z",
+        "state": "VERIFIED_SUCCEEDED",
+        "error_code": null,
+        "receipt": {
+          "remote_id": "collection:e4c0e20a-bf15-4d0b-867e-e2c7f179c344:1",
+          "observed_at": "2026-09-14T12:14:27.718Z",
+          "content_hash": "33aaa6cee7755843a6e6d2ee4dab8ad36a6b73dd2e663f72c5686533e4739aa2",
+          "evidence_kind": "browser_dom",
+          "actual_account_id": "61589894042400"
+        },
+        "task_id": "06dfc624-66e7-41d6-8ecb-836f23243140",
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "profile_id": "k1gvdtft",
+        "external_id": "61589894042400"
+      }
+    ],
+    "before": {
+      "runtime_id": "7373dfb2-e08c-418e-b181-ba87bda9afca",
+      "public": {
+        "state": "PAUSED",
+        "version": 3
+      },
+      "inbox": {
+        "state": "PAUSED",
+        "version": 10,
+        "current_task_id": null,
+        "scan_requested": false
+      },
+      "messages": [
+        {
+          "id": "0437e2a9-a3ee-48e4-8f95-a4dd8df2713c",
+          "sequence": 1,
+          "body": "KFF-0914-B",
+          "direction": "INBOUND",
+          "source": {
+            "ref": null,
+            "kind": "MESSENGER",
+            "ad_id": null,
+            "page_id": "61594402378582",
+            "peer_id": "61589894042400",
+            "source_id": "61589894042400@msgr.7505218016684724428",
+            "thread_id": "2234491403949554",
+            "transport": "BROWSER",
+            "source_url": "https://www.facebook.com/messages/e2ee/t/2234491403949554/",
+            "thread_kind": "UNVERIFIED",
+            "displayed_time": "03:56"
+          }
+        },
+        {
+          "id": "a5a72fee-40d2-496b-b484-41d038778082",
+          "sequence": 2,
+          "body": "KFF-0914-B 我想了解咨询流程",
+          "direction": "INBOUND",
+          "source": {
+            "ref": null,
+            "kind": "MESSENGER",
+            "ad_id": null,
+            "page_id": "61594402378582",
+            "peer_id": "61589894042400",
+            "source_id": "61589894042400@msgr.7505218155968561851",
+            "thread_id": "2234491403949554",
+            "transport": "BROWSER",
+            "source_url": "https://www.facebook.com/messages/e2ee/t/2234491403949554/",
+            "thread_kind": "UNVERIFIED",
+            "displayed_time": "03:57"
+          }
+        }
+      ],
+      "leads": [
+        {
+          "id": "445ae4fc-0df1-40ef-81ad-136f06aabd92",
+          "state": "NEW",
+          "version": 1
+        },
+        {
+          "id": "67a18414-e51d-4e98-bdc9-cfbed548f69f",
+          "state": "NEW",
+          "version": 1
+        },
+        {
+          "id": "d593af5c-9826-444d-b3e6-61da1e45fb34",
+          "state": "NEW",
+          "version": 1
+        }
+      ]
+    },
+    "public_query": {
+      "id": "7e16fd13-df6d-4185-a052-ae2b8a4d2df0",
+      "run_id": "e4c0e20a-bf15-4d0b-867e-e2c7f179c344"
+    },
+    "inbox_version": 11,
+    "tasks": [
+      {
+        "id": "eb24fd38-da8d-4e1b-94a6-edd55985e237",
+        "status": "SUCCEEDED",
+        "state": "VERIFIED_SUCCEEDED",
+        "command_id": "81c0b59d-c076-4cc6-a685-69871f22761e",
+        "quiesced_at": "2026-09-14T12:13:45.280Z"
+      },
+      {
+        "id": "06dfc624-66e7-41d6-8ecb-836f23243140",
+        "status": "SUCCEEDED",
+        "state": "VERIFIED_SUCCEEDED",
+        "command_id": "61434abc-50be-4b98-aa39-f2df31db97c1",
+        "quiesced_at": "2026-09-14T12:14:37.605Z"
+      }
+    ],
+    "scan": {
+      "id": "e4c0e20a-bf15-4d0b-867e-e2c7f179c344",
+      "state": "PARTIAL",
+      "error_code": null,
+      "stop_reason": "MAX_PAGES",
+      "returned_count": 3,
+      "unique_count": 3,
+      "committed_pages": 1
+    },
+    "closures": [
+      {
+        "command_id": "81c0b59d-c076-4cc6-a685-69871f22761e",
+        "proof": {
+          "protocol_version": "kff.guardian-closure.v1",
+          "command_id": "81c0b59d-c076-4cc6-a685-69871f22761e",
+          "action_id": "222be3da-fb8d-4613-a507-32f972326ffa",
+          "closed_at": "2026-09-14T12:13:45.006Z",
+          "proof_sha256": "ac2eb9eccf4297859199137ea6c0a1f3845307da5bf724773724b4d3a05cc925"
+        },
+        "local_database_match": true
+      },
+      {
+        "command_id": "61434abc-50be-4b98-aa39-f2df31db97c1",
+        "proof": {
+          "protocol_version": "kff.guardian-closure.v1",
+          "command_id": "61434abc-50be-4b98-aa39-f2df31db97c1",
+          "action_id": "446c2e9a-31c7-4d2e-ba20-2acdf21579bf",
+          "closed_at": "2026-09-14T12:14:37.282Z",
+          "proof_sha256": "54758d80ec8169ebf06f20b38305850ebc8715bb1416f553e459a28d0f0e6b32"
+        },
+        "local_database_match": true
+      }
+    ],
+    "inbox_checkpoints": [
+      {
+        "task_id": "eb24fd38-da8d-4e1b-94a6-edd55985e237",
+        "stored": 0,
+        "duplicates": 2,
+        "page_sha256": "3f025b5dbe5764bfc6bd19f16dfa5ba8061c025c8e40026dc280c1976cb4bb8d",
+        "observed_at": "2026-09-14T12:13:36.729Z"
+      }
+    ],
+    "after": {
+      "messages": [
+        {
+          "id": "0437e2a9-a3ee-48e4-8f95-a4dd8df2713c",
+          "sequence": 1,
+          "body": "KFF-0914-B",
+          "direction": "INBOUND",
+          "source": {
+            "ref": null,
+            "kind": "MESSENGER",
+            "ad_id": null,
+            "page_id": "61594402378582",
+            "peer_id": "61589894042400",
+            "source_id": "61589894042400@msgr.7505218016684724428",
+            "thread_id": "2234491403949554",
+            "transport": "BROWSER",
+            "source_url": "https://www.facebook.com/messages/e2ee/t/2234491403949554/",
+            "thread_kind": "UNVERIFIED",
+            "displayed_time": "03:56"
+          }
+        },
+        {
+          "id": "a5a72fee-40d2-496b-b484-41d038778082",
+          "sequence": 2,
+          "body": "KFF-0914-B 我想了解咨询流程",
+          "direction": "INBOUND",
+          "source": {
+            "ref": null,
+            "kind": "MESSENGER",
+            "ad_id": null,
+            "page_id": "61594402378582",
+            "peer_id": "61589894042400",
+            "source_id": "61589894042400@msgr.7505218155968561851",
+            "thread_id": "2234491403949554",
+            "transport": "BROWSER",
+            "source_url": "https://www.facebook.com/messages/e2ee/t/2234491403949554/",
+            "thread_kind": "UNVERIFIED",
+            "displayed_time": "03:57"
+          }
+        }
+      ],
+      "leads": [
+        {
+          "id": "445ae4fc-0df1-40ef-81ad-136f06aabd92",
+          "state": "NEW",
+          "version": 1
+        },
+        {
+          "id": "67a18414-e51d-4e98-bdc9-cfbed548f69f",
+          "state": "NEW",
+          "version": 1
+        },
+        {
+          "id": "d593af5c-9826-444d-b3e6-61da1e45fb34",
+          "state": "NEW",
+          "version": 1
+        }
+      ],
+      "monitors": [
+        {
+          "id": "6776ac4f-1baa-4064-a9d6-ecd866c2a34b",
+          "state": "PAUSED"
+        },
+        {
+          "id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+          "state": "PAUSED"
+        }
+      ],
+      "profiles": [
+        {
+          "id": "k1gvdtft",
+          "status": "Inactive"
+        },
+        {
+          "id": "k1gx1n1s",
+          "status": "Inactive"
+        }
+      ]
+    },
+    "serialized": true,
+    "identities_match": true,
+    "messages_unchanged": true,
+    "accepted": true,
+    "finished_at": "2026-09-14T12:14:41.206Z"
+  },
+  "diagnostic": [
+    {
+      "action_id": "222be3da-fb8d-4613-a507-32f972326ffa",
+      "manifest": {
+        "step": "facebook-inbox-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "463b3e06875eb13ff26f25bb77e690958684f9a3fc59e65ead69fbb822866584",
+            "content": {
+              "result_count": 2,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "222be3da-fb8d-4613-a507-32f972326ffa",
+        "attempt_id": "1b71dc98-95c6-4f76-b435-1eea9239309d",
+        "created_at": "2026-09-14T12:13:45.258Z",
+        "error_code": null,
+        "duration_ms": 37104,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-inbox-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    },
+    {
+      "action_id": "446c2e9a-31c7-4d2e-ba20-2acdf21579bf",
+      "manifest": {
+        "step": "facebook-comments-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "5e2b5eb7a24afc3f7a22166cb8e27bddd39105c59061fa7c2ab7e0a8ca95098e",
+            "content": {
+              "result_count": 3,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "446c2e9a-31c7-4d2e-ba20-2acdf21579bf",
+        "attempt_id": "134c67ac-0e69-4e76-a683-e5ac520f744f",
+        "created_at": "2026-09-14T12:14:37.585Z",
+        "error_code": null,
+        "duration_ms": 47480,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-search-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    }
+  ],
+  "runtime": {
+    "id": "7373dfb2-e08c-418e-b181-ba87bda9afca",
+    "monitors": [
+      {
+        "kind": "acquisition",
+        "state": "PAUSED",
+        "count": 13
+      },
+      {
+        "kind": "inbox",
+        "state": "PAUSED",
+        "count": 5
+      }
+    ],
+    "open_commands": 0,
+    "live_sending_enabled": false
+  },
+  "preceding_failure": "docs/evidence/matrix-pair-037-stopped-20260914.json",
+  "takeover_evidence": "docs/evidence/profile10-reception-037-20260914.json",
+  "full_goal_complete": false,
+  "continuous_pair_accepted": false,
+  "whatsapp": "USER_NOT_READY; inherited destinations paused"
+}

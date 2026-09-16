@@ -1,0 +1,31 @@
+{
+  "at": "2026-09-14T11:28:07.145Z",
+  "user_reply": "暂未准备",
+  "source_of_old_number": "KFF-目标交接-20260913.md historical WhatsApp destination entry",
+  "verified_paused": [
+    {
+      "id": "a80a2f14-32b5-4081-858a-ce1a8fca8731",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "state": "PAUSED",
+      "version": 2
+    },
+    {
+      "id": "61cef25d-7e01-4800-9c05-e5d46e070927",
+      "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "state": "PAUSED",
+      "version": 2
+    }
+  ],
+  "original_referral": [
+    {
+      "id": "9ece8f0a-58f9-4cca-814a-7d48f08811ce",
+      "state": "REFERRED",
+      "version": 2,
+      "confirmed_at": null
+    }
+  ],
+  "historical_referral_unchanged": true,
+  "platform_sends": 0,
+  "backup": ".kff/whatsapp-unconfirmed-pause-20260914.json",
+  "next_step": "Await user-confirmed WhatsApp receiving number before using any referral destination."
+}

@@ -1,8 +1,12 @@
+import { acceptBrowserInboxReport, browserInboxTaskActive } from './browser-inbox';
+import { acceptBrowserCollectionReport, browserCollectionTaskActive } from './browser-collections';
 import { randomUUID } from 'node:crypto';
+import { assertEnvironmentSnapshot } from './environments';
 import type { PoolClient } from 'pg';
 import { query, transaction, projectRoot } from '@kff/database';
 import { resultInput, type AgentCommand, type TaskSnapshot, type Capability, type ActionState, type ActionReport, type LeaseToken } from '@kff/contracts';
-import { assertTransition, buildDiagnostic, canExecute, digest, isWrite, requireCondition } from './index';
+import { assertTransition, buildDiagnostic, canExecute, executionEnabled, digest, isWrite, requireCondition } from './index';
+import {outreachSubmissionGate} from './acquisition';
 import { findPermit, haltPilot } from './permits';
 import { adapterImplementationDigest } from './artifacts';
 import { markCostPending } from './costs';
@@ -36,6 +40,7 @@ async function validateLeases(client: PoolClient, command: CommandRow): Promise<
   }
 }
 async function dispatchAllowed(client: PoolClient, snapshot: TaskSnapshot, taskId: string, reserveForAction?: string,checkActionId=reserveForAction): Promise<void> {
+  await assertEnvironmentSnapshot(client, snapshot);
   const account = (await client.query('SELECT a.*,o.outbound_paused AS organization_paused,b.outbound_paused AS brand_paused FROM kff.accounts a JOIN kff.brands b ON b.id=a.brand_id JOIN kff.organizations o ON o.id=a.organization_id WHERE a.id=$1 FOR SHARE OF o,b,a', [snapshot.account_id])).rows[0];
   const capability = (await client.query<Capability>('SELECT * FROM kff.capabilities WHERE id=$1', [snapshot.capability_id])).rows[0];
   requireCondition((account.state === 'ACTIVE' || (account.state === 'DRAFT' && !isWrite(snapshot) && snapshot.mode === 'CONTROLLED_PILOT')) && account.external_id === snapshot.external_account_id && (snapshot.account_version === undefined || account.version === snapshot.account_version) && (snapshot.credential_ref === undefined || account.credential_ref === snapshot.credential_ref), 'AUTH_EXPIRED', '账号已停用、凭据或身份已变化', 409);
@@ -43,11 +48,14 @@ async function dispatchAllowed(client: PoolClient, snapshot: TaskSnapshot, taskI
     requireCondition(capability.revision === snapshot.capability_revision && capability.adapter_version === snapshot.adapter_version, 'VERSION_CONFLICT', '能力版本已变化', 409);
     await assertCurrentTemplate(client, taskId, snapshot);
   if (!snapshot.is_synthetic) requireCondition(snapshot.implementation_digest && snapshot.implementation_digest === capability.implementation_digest && snapshot.implementation_digest === adapterImplementationDigest(projectRoot, 'facebook'), 'VERSION_CONFLICT', '适配器实现已变化，旧试验许可不可复用', 409);
-  if (!snapshot.is_synthetic) requireCondition(snapshot.platform_api_version && snapshot.platform_api_version === process.env.KFF_FACEBOOK_GRAPH_VERSION, 'VERSION_CONFLICT', 'Graph API 配置版本与任务快照不符', 409);
+  if (!snapshot.is_synthetic && !['facebook.discovery.read.browser','facebook.inbox.read.browser','facebook.messenger.reply.browser','facebook.comment.reply.browser'].includes(snapshot.capability_key)) requireCondition(snapshot.platform_api_version && snapshot.platform_api_version === process.env.KFF_FACEBOOK_GRAPH_VERSION, 'VERSION_CONFLICT', 'Graph API 配置版本与任务快照不符', 409);
   if (snapshot.mode === 'CONTROLLED_PILOT') await findPermit(client, taskId, snapshot, reserveForAction);
-  const permission = canExecute(capability, snapshot.mode, process.env.KFF_ENABLE_LIVE === 'true', snapshot.mode === 'CONTROLLED_PILOT');
+  const permission = canExecute(capability, snapshot.mode, executionEnabled(capability.capability_key), snapshot.mode === 'CONTROLLED_PILOT');
   requireCondition(permission.allowed, permission.reason_code, '此动作当前不可执行', 409);
   await messageSubmissionGate(client,snapshot,checkActionId);
+  await outreachSubmissionGate(client,snapshot,checkActionId);
+  requireCondition(await browserInboxTaskActive(client, taskId, snapshot), 'STOP_REQUESTED', '收件已停止、到期或配置已变化', 409);
+  requireCondition(await browserCollectionTaskActive(client, taskId, snapshot), 'STOP_REQUESTED', '采集已停止、到期或配置已变化', 409);
 }
 
 export async function dispatchOne(): Promise<boolean> {
@@ -61,8 +69,9 @@ export async function dispatchOne(): Promise<boolean> {
     if (action.state !== 'QUEUED') { await client.query("UPDATE kff.jobs SET state='DONE' WHERE id=$1", [job.id]); return false; }
     const snapshot = action.snapshot as TaskSnapshot;
     const agent = (await client.query("SELECT id FROM kff.agents WHERE id=$1 AND status='ONLINE' AND heartbeat_at>now()-interval '20 seconds' FOR UPDATE", [snapshot.agent_id])).rows[0];
-    const occupied = await client.query("SELECT id FROM kff.agent_commands WHERE agent_id=$1 AND state IN ('READY','CLAIMED')", [snapshot.agent_id]);
-    const environment = (await client.query("SELECT id FROM kff.environments WHERE id=$1 AND state='IDLE'", [snapshot.environment_id])).rows[0];
+    // A terminal result does not prove the Guardian/browser has closed, even on another account.
+    const occupied = await client.query("SELECT id FROM kff.agent_commands WHERE agent_id=$1 AND (state IN ('READY','CLAIMED') OR quiesced_at IS NULL) UNION ALL SELECT id FROM kff.environment_commands WHERE agent_id=$1 AND state IN ('RUNNING','QUARANTINED')", [snapshot.agent_id]);
+    const environment = (await client.query("SELECT id FROM kff.environments WHERE id=$1 AND state='IDLE' FOR UPDATE", [snapshot.environment_id])).rows[0];
     if (!agent || !environment || occupied.rowCount) { await client.query("UPDATE kff.jobs SET available_at=now()+interval '2 seconds' WHERE id=$1", [job.id]); return false; }
     try { await dispatchAllowed(client, snapshot, action.task_id,undefined,action.id); }
     catch (error) {
@@ -78,7 +87,7 @@ export async function dispatchOne(): Promise<boolean> {
     for (const resource of resources) {
       await client.query('INSERT INTO kff.resource_leases(organization_id,brand_id,resource_type,resource_id) VALUES($1,$2,$3,$4) ON CONFLICT DO NOTHING', [job.organization_id, job.brand_id, resource.type, resource.id]);
       const lease = (await client.query('SELECT *,expires_at>clock_timestamp() AS active FROM kff.resource_leases WHERE organization_id=$1 AND resource_type=$2 AND resource_id=$3 FOR UPDATE', [job.organization_id, resource.type, resource.id])).rows[0];
-      if (lease.quarantined || lease.holder_attempt_id) {
+      if (lease.quarantined || lease.holder_attempt_id || lease.holder_control_id) {
         // Expired ownership is recovered separately; a new dispatcher never steals it.
         await client.query("UPDATE kff.jobs SET available_at=now()+interval '2 seconds' WHERE id=$1", [job.id]); return false;
       }
@@ -96,7 +105,7 @@ export async function dispatchOne(): Promise<boolean> {
     await client.query("UPDATE kff.actions SET state='PREPARING' WHERE id=$1", [action.id]);
     await client.query("UPDATE kff.runs SET status='RUNNING',updated_at=now() WHERE id=$1", [action.run_id]);
     await client.query("UPDATE kff.tasks SET status='RUNNING' WHERE id=$1", [action.task_id]);
-    await client.query("UPDATE kff.environments SET state='BUSY' WHERE id=$1", [snapshot.environment_id]);
+    await client.query("UPDATE kff.environments SET state='BUSY',browser_status=CASE WHEN $2 THEN 'STARTING' ELSE browser_status END WHERE id=$1", [snapshot.environment_id, Boolean(snapshot.browser_environment)]);
     await client.query("UPDATE kff.jobs SET state='DONE',attempts=attempts+1,leased_at=now() WHERE id=$1", [job.id]);
     return true;
   });
@@ -112,7 +121,8 @@ export async function agentHeartbeat(agent: AgentIdentity, commandId?: string) {
     await validateLeases(client, command);
     const paused = (await client.query('SELECT b.outbound_paused OR o.outbound_paused OR a.outbound_paused AS paused FROM kff.accounts a JOIN kff.brands b ON b.id=a.brand_id JOIN kff.organizations o ON o.id=a.organization_id WHERE a.id=$1', [command.snapshot.account_id])).rows[0].paused;
     const beforeSubmission = command.action_state === 'PREPARING';
-    const proceed = !(command.stop_requested || paused || current.status === 'DRAINING') || !beforeSubmission;
+    const collectionActive = await browserCollectionTaskActive(client, command.task_id, command.snapshot) && await browserInboxTaskActive(client, command.task_id, command.snapshot);
+    const proceed = (!(command.stop_requested || paused || current.status === 'DRAINING') || !beforeSubmission) && collectionActive;
     for (const lease of command.leases) await client.query("UPDATE kff.resource_leases SET expires_at=clock_timestamp()+interval '30 seconds' WHERE organization_id=$1 AND resource_type=$2 AND resource_id=$3 AND token=$4 AND holder_attempt_id=$5", [command.organization_id, lease.resource_type, lease.resource_id, lease.token, command.attempt_id]);
     return { continue: proceed, lease_ms: 30000 };
   });
@@ -121,10 +131,13 @@ export async function claimCommand(agent: AgentIdentity): Promise<AgentCommand |
   return transaction(async client => {
     const current = (await client.query("SELECT id FROM kff.agents WHERE id=$1 AND status='ONLINE' FOR UPDATE", [agent.id])).rows[0];
     if (!current) return null;
-    const busy = await client.query("SELECT id FROM kff.agent_commands WHERE agent_id=$1 AND state='CLAIMED'", [agent.id]);
+    // READY is the candidate itself; terminal commands still occupy the Agent until closure.
+    const busy = await client.query("SELECT id FROM kff.agent_commands WHERE agent_id=$1 AND (state='CLAIMED' OR (state<>'READY' AND quiesced_at IS NULL)) UNION ALL SELECT id FROM kff.environment_commands WHERE agent_id=$1 AND state IN ('RUNNING','QUARANTINED')", [agent.id]);
     if (busy.rowCount) return null;
     const command = (await client.query<CommandRow>(commandSelect + " WHERE c.agent_id=$1 AND c.state='READY' AND c.expires_at>clock_timestamp() AND NOT r.stop_requested AND NOT EXISTS(SELECT 1 FROM kff.accounts ac JOIN kff.brands b ON b.id=ac.brand_id JOIN kff.organizations o ON o.id=ac.organization_id WHERE ac.id=t.account_id AND (ac.outbound_paused OR b.outbound_paused OR o.outbound_paused)) ORDER BY c.created_at LIMIT 1 FOR UPDATE OF c SKIP LOCKED", [agent.id])).rows[0];
     if (!command) return null;
+    if (!(await browserInboxTaskActive(client, command.task_id, command.snapshot))) return null;
+    if (!(await browserCollectionTaskActive(client, command.task_id, command.snapshot))) return null;
     await client.query("UPDATE kff.agent_commands SET state='CLAIMED',claimed_at=now() WHERE id=$1", [command.id]);
     return { protocol_version: 'kff.agent.v1', id: command.id, action_id: command.action_id, attempt_id: command.attempt_id, run_id: command.run_id, organization_id: command.organization_id, brand_id: command.brand_id, agent_id: command.agent_id, snapshot: command.snapshot, snapshot_hash: command.snapshot_hash, leases: command.leases, expires_at: command.expires_at.toISOString() };
   });
@@ -149,6 +162,15 @@ export async function commandStatus(agent: AgentIdentity, commandId: string) {
   const row = (await query<{ state: string; action_state: ActionState }>("SELECT c.state,a.state AS action_state FROM kff.agent_commands c JOIN kff.actions a ON a.id=c.action_id WHERE c.id=$1 AND c.agent_id=$2", [commandId, agent.id]))[0];
   requireCondition(row, 'FORBIDDEN_SCOPE', '命令不属于当前 Agent', 403); return row;
 }
+export async function recordBrowserOpened(agent: AgentIdentity, commandId: string) {
+  return transaction(async client => {
+    const command = await lockedCommand(client, agent.id, commandId);
+    await validateLeases(client, command);
+    requireCondition(command.snapshot.browser_environment, 'INVALID_INPUT', '命令未绑定受管浏览器');
+    await client.query("UPDATE kff.environments SET browser_status='RUNNING' WHERE id=$1", [command.snapshot.environment_id]);
+    return { accepted: true };
+  });
+}
 export async function acceptReport(agent: AgentIdentity, input: ActionReport) {
   const report = resultInput.parse(input); const payloadHash = digest(report);
   return transaction(async client => {
@@ -159,19 +181,26 @@ export async function acceptReport(agent: AgentIdentity, input: ActionReport) {
     assertTransition(command.action_state, report.outcome);
     if (report.outcome === 'VERIFIED_SUCCEEDED') {
       requireCondition(report.receipt?.actual_account_id === command.snapshot.external_account_id, 'FORBIDDEN_SCOPE', '回执账号与任务不符', 403);
-      requireCondition(report.receipt.evidence_kind === (command.snapshot.message?(command.snapshot.is_synthetic?'synthetic_message':'graph_message'):command.snapshot.is_synthetic ? 'synthetic_dom' : 'graph_object'), 'INVALID_INPUT', '证据类型与运行范围不匹配');
-      if(command.snapshot.message)requireCondition(report.receipt.recipient_id===command.snapshot.message.contact.remote_id,'FORBIDDEN_SCOPE','回执收件人与任务不符',403);
+      requireCondition(report.receipt.evidence_kind === ((command.snapshot.message||command.snapshot.outreach)?(command.snapshot.is_synthetic?'synthetic_message':command.snapshot.outreach?.browser?'browser_comment':command.snapshot.message?.browser?'browser_message':'graph_message'):command.snapshot.is_synthetic ? 'synthetic_dom' : (command.snapshot.collection || command.snapshot.inbox) ? 'browser_dom' : 'graph_object'), 'INVALID_INPUT', '证据类型与运行范围不匹配');
+      if(command.snapshot.outreach?.browser){
+        const source=command.snapshot.outreach.browser;
+        requireCondition(/^[0-9]{1,80}$/.test(report.receipt.remote_id)&&report.receipt.remote_id!==source.comment_id&&report.receipt.parent_id===source.comment_id&&report.receipt.source_url===source.comment_url+'&reply_comment_id='+report.receipt.remote_id,'FORBIDDEN_SCOPE','公开回复回执必须对应原评论及唯一新回复',403);
+      }
+      if(command.snapshot.outreach)requireCondition(report.receipt.recipient_id===command.snapshot.outreach.author_id,'FORBIDDEN_SCOPE','互动目标回执不符',403);
+      if(command.snapshot.message)requireCondition(command.snapshot.message.browser?report.receipt.recipient_id===command.snapshot.message.browser.peer_id&&report.receipt.thread_id===command.snapshot.message.browser.thread_id:report.receipt.recipient_id===command.snapshot.message.contact.remote_id,'FORBIDDEN_SCOPE','回执收件人与任务不符',403);
       if (isWrite(command.snapshot)) {
         requireCondition(['SUBMITTING', 'SUBMITTED'].includes(command.action_state), 'SUBMISSION_UNCERTAIN', '缺少持久提交意图', 409);
         requireCondition(report.receipt.content_hash === command.snapshot.content_hash, 'INVALID_INPUT', '远端内容摘要不符');
       }
     }
+    await acceptBrowserCollectionReport(client, command.task_id, command.snapshot, report);
+    await acceptBrowserInboxReport(client, command.task_id, command.snapshot, report);
     await client.query('INSERT INTO kff.inbound_events(id,organization_id,brand_id,agent_id,command_id,payload_hash) VALUES($1,$2,$3,$4,$5,$6)', [report.event_id, agent.organization_id, agent.brand_id, agent.id, command.id, payloadHash]);
     await client.query('UPDATE kff.actions SET state=$1,error_code=$2,receipt=$3 WHERE id=$4', [report.outcome, report.error_code ?? null, report.receipt ?? null, command.action_id]);
     await projectMessageOutcome(client,command.action_id,command.snapshot);
     if (report.outcome !== 'VERIFIED_SUCCEEDED') await haltPilot(client, command.action_id);
     await markCostPending(client, command.action_id, 'ACTION_' + report.outcome);
-    if (report.outcome === 'VERIFIED_SUCCEEDED' && !command.snapshot.is_synthetic && !isWrite(command.snapshot)) await client.query("UPDATE kff.accounts SET state='ACTIVE' WHERE id=$1 AND version=$2 AND credential_ref=$3", [command.snapshot.account_id, command.snapshot.account_version, command.snapshot.credential_ref]);
+    if (report.outcome === 'VERIFIED_SUCCEEDED' && !command.snapshot.is_synthetic && !isWrite(command.snapshot)) await client.query("UPDATE kff.accounts SET state='ACTIVE' WHERE id=$1 AND version=$2 AND credential_ref IS NOT DISTINCT FROM $3 AND state='DRAFT'", [command.snapshot.account_id, command.snapshot.account_version, command.snapshot.credential_ref]);
     await client.query('UPDATE kff.action_attempts SET state=$1,completed_at=now() WHERE id=$2', [report.outcome, command.attempt_id]);
     await client.query("UPDATE kff.agent_commands SET state='DONE' WHERE id=$1", [command.id]);
     const quarantine = report.outcome === 'UNKNOWN_OUTCOME' || report.error_code === 'AGENT_RESTART';
@@ -204,7 +233,7 @@ export async function recoverExpired(): Promise<number> {
     await client.query("UPDATE kff.action_attempts SET state=$1,completed_at=now() WHERE id=$2", [outcome, command.attempt_id]);
     await client.query("UPDATE kff.agent_commands SET state='EXPIRED',quiesced_at=CASE WHEN $1 THEN now() ELSE quiesced_at END WHERE id=$2", [neverClaimed, command.id]);
     await client.query('UPDATE kff.resource_leases SET quarantined=NOT $1,holder_attempt_id=CASE WHEN $1 THEN NULL ELSE holder_attempt_id END,expires_at=now() WHERE holder_attempt_id=$2', [neverClaimed, command.attempt_id]);
-    await client.query('UPDATE kff.environments SET state=$1 WHERE id=$2', [neverClaimed ? 'IDLE' : 'QUARANTINED', command.snapshot.environment_id]);
+    await client.query("UPDATE kff.environments SET state=$1,browser_status=CASE WHEN $3 THEN CASE WHEN $4 THEN 'CLOSED' ELSE 'UNKNOWN' END ELSE browser_status END WHERE id=$2", [neverClaimed ? 'IDLE' : 'QUARANTINED', command.snapshot.environment_id, Boolean(command.snapshot.browser_environment), neverClaimed]);
     await client.query('UPDATE kff.runs SET status=$1,updated_at=now() WHERE id=$2', [neverClaimed ? 'CANCELED' : 'NEEDS_HUMAN', command.run_id]);
     await client.query('UPDATE kff.tasks SET status=$1 WHERE id=$2', [neverClaimed ? 'CANCELED' : 'NEEDS_HUMAN', command.task_id]);
     await client.query('INSERT INTO kff.audit_events(organization_id,brand_id,actor_id,event_type,object_id,details) VALUES($1,$2,$3,$4,$5,$6)', [command.organization_id, command.brand_id, command.agent_id, neverClaimed ? 'action.canceled_before_claim' : 'action.lease_expired', command.action_id, { outcome, quarantined: !neverClaimed, closure_evidence: neverClaimed ? 'controller_never_claimed' : null }]);

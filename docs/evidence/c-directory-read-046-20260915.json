@@ -1,0 +1,602 @@
+{
+  "started_at": "2026-09-14T16:31:50.341Z",
+  "platform_sends": 0,
+  "authorization": "继续原目标的受控 10 号自动已接受会话读取；用户已确认两条新增链接由其发送。保留最近 1 个会话，将每页上限由首次咨询的 5 条调整至持续接待的 25 条。无回复发送。",
+  "runtime_id": "ef0eea48-6666-483d-86e3-3a036410a103",
+  "previous_monitor": {
+    "id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+    "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+    "binding": {
+      "discovery": {
+        "strategy": "RECENT_ACCEPTED",
+        "max_threads": 1
+      },
+      "environment": {
+        "agent_id": "66666666-6666-4666-8666-666666666666",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "platform": "facebook",
+        "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+        "profile_key": "13abad2a-1040-4b94-83b1-aadc3168c54e",
+        "account_type": "profile",
+        "is_synthetic": false,
+        "configuration": {
+          "driver": "adspower",
+          "locale": "en-US",
+          "proxy_ref": null,
+          "timezone_id": "America/New_York",
+          "login_account_id": "61594402378582",
+          "provider_profile_id": "k1gx1n1s",
+          "operating_identity_id": "61594402378582"
+        },
+        "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "configuration_version": 2
+      },
+      "account_version": 1
+    },
+    "state": "PAUSED",
+    "version": 19,
+    "scan_requested": false,
+    "interval_seconds": 3600,
+    "page_size": 5,
+    "raw_retention_hours": 1,
+    "cursor": null,
+    "page_token": "14",
+    "cycle_id": "0dc2dcac-8f1a-43b0-a874-1c3e976938da",
+    "cycle_pages": 0,
+    "current_task_id": null,
+    "next_poll_at": "2026-09-14T16:29:20.985Z",
+    "last_polled_at": "2026-09-14T15:29:20.985Z",
+    "last_error_code": null,
+    "created_by": "33333333-3333-4333-8333-333333333333",
+    "created_at": "2026-09-14T10:07:54.739Z"
+  },
+  "before": [
+    {
+      "id": "0437e2a9-a3ee-48e4-8f95-a4dd8df2713c",
+      "conversation_id": "82307e44-911c-49db-ab82-878d8dfde1f5",
+      "sequence": 1,
+      "direction": "INBOUND",
+      "body": "KFF-0914-B",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "61589894042400",
+        "source_id": "61589894042400@msgr.7505218016684724428",
+        "thread_id": "2234491403949554",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/2234491403949554/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "03:56"
+      }
+    },
+    {
+      "id": "20ccbabb-0352-4585-afa1-d37e2aab80fb",
+      "conversation_id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+      "sequence": 4,
+      "direction": "OUTBOUND",
+      "body": "号码更正：上一条邀请中的号码有误。如需继续咨询，可以通过 WhatsApp 联系接待人员：https://wa.me/8618730936793",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "100050174601107",
+        "source_id": "100050174601107@msgr.7505283981980540236",
+        "thread_id": "1790718235683346",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/1790718235683346/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "08:19"
+      }
+    },
+    {
+      "id": "4d81426e-a4a1-4d38-b48d-01276fbf049b",
+      "conversation_id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+      "sequence": 2,
+      "direction": "OUTBOUND",
+      "body": "感谢您的咨询。我们的咨询流程是先确认您想探讨的一个问题，再通过官方预约表提交必要的出生信息。请问您目前想了解的是感情、事业还是人生方向方面的疑问？",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "100050174601107",
+        "source_id": "100050174601107@msgr.7505283981980540236",
+        "thread_id": "1790718235683346",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/1790718235683346/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "08:19"
+      }
+    },
+    {
+      "id": "5d1ae9d4-a656-493f-9d38-815ff33afb53",
+      "conversation_id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+      "sequence": 3,
+      "direction": "OUTBOUND",
+      "body": "如需继续咨询，可以通过 WhatsApp 联系接待人员：https://wa.me/8618730836793",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "100050174601107",
+        "source_id": "100050174601107@msgr.7505283981980540236",
+        "thread_id": "1790718235683346",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/1790718235683346/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "08:19"
+      }
+    },
+    {
+      "id": "a5a72fee-40d2-496b-b484-41d038778082",
+      "conversation_id": "82307e44-911c-49db-ab82-878d8dfde1f5",
+      "sequence": 2,
+      "direction": "INBOUND",
+      "body": "KFF-0914-B 我想了解咨询流程",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "61589894042400",
+        "source_id": "61589894042400@msgr.7505218155968561851",
+        "thread_id": "2234491403949554",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/2234491403949554/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "03:57"
+      }
+    },
+    {
+      "id": "dc66a31c-e4e2-4860-b6dd-db81561c6957",
+      "conversation_id": "82307e44-911c-49db-ab82-878d8dfde1f5",
+      "sequence": 3,
+      "direction": "OUTBOUND",
+      "body": "KFF-0914-B：已收到，这是一条接待流程测试回复。",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "61589894042400",
+        "source_id": "61589894042400@msgr.7505218155968561851",
+        "thread_id": "2234491403949554",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/2234491403949554/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "03:57"
+      }
+    },
+    {
+      "id": "f232db4d-9c02-46d1-b903-33254e01de93",
+      "conversation_id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+      "sequence": 1,
+      "direction": "INBOUND",
+      "body": "KFF-0914-C 我想了解咨询流程，需要提供哪些资料？",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "100050174601107",
+        "source_id": "100050174601107@msgr.7505283981980540236",
+        "thread_id": "1790718235683346",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/1790718235683346/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "08:19"
+      }
+    }
+  ],
+  "configure_request_id": "87b117c2-d6d4-4b1b-9bb8-8ba59ece1ff1",
+  "scan_request_id": "516a1f88-5017-4f47-98ef-b9fa8fca99c8",
+  "configured": {
+    "id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+    "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+    "binding": {
+      "discovery": {
+        "strategy": "RECENT_ACCEPTED",
+        "max_threads": 1
+      },
+      "environment": {
+        "agent_id": "66666666-6666-4666-8666-666666666666",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "platform": "facebook",
+        "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+        "profile_key": "13abad2a-1040-4b94-83b1-aadc3168c54e",
+        "account_type": "profile",
+        "is_synthetic": false,
+        "configuration": {
+          "driver": "adspower",
+          "locale": "en-US",
+          "proxy_ref": null,
+          "timezone_id": "America/New_York",
+          "login_account_id": "61594402378582",
+          "provider_profile_id": "k1gx1n1s",
+          "operating_identity_id": "61594402378582"
+        },
+        "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "configuration_version": 2
+      },
+      "account_version": 1
+    },
+    "state": "PAUSED",
+    "version": 20,
+    "scan_requested": false,
+    "interval_seconds": 3600,
+    "page_size": 25,
+    "raw_retention_hours": 1,
+    "cursor": null,
+    "page_token": "14",
+    "cycle_id": "c0ca6199-4005-4394-89fa-cc1195c82b90",
+    "cycle_pages": 0,
+    "current_task_id": null,
+    "next_poll_at": "2026-09-14T16:29:20.985Z",
+    "last_polled_at": "2026-09-14T15:29:20.985Z",
+    "last_error_code": null,
+    "created_by": "33333333-3333-4333-8333-333333333333",
+    "created_at": "2026-09-14T10:07:54.739Z"
+  },
+  "scan_version": 21,
+  "monitor": {
+    "id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+    "state": "PAUSED",
+    "version": 21,
+    "scan_requested": false,
+    "current_task_id": null,
+    "last_error_code": null
+  },
+  "actions": [
+    {
+      "action_id": "742d76ed-4b8f-4a14-956c-082fa2e9f95d",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "receipt": {
+        "remote_id": "inbox:e693f9db-6faa-4b7f-9e98-cf1079297665:15",
+        "observed_at": "2026-09-14T16:32:24.946Z",
+        "content_hash": "9a03af17ff98bef04f36d9bb50ed7054858dbab8fe7c390c1b754a5e5d9606e3",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61594402378582"
+      },
+      "task_id": "45000b49-3c54-4441-b83e-e496555bf6f5",
+      "command_id": "9ac2413a-87fe-46e8-b9f3-3440548db6ce",
+      "claimed_at": "2026-09-14T16:31:51.958Z",
+      "quiesced_at": "2026-09-14T16:32:32.965Z"
+    }
+  ],
+  "closure": {
+    "proof": {
+      "action_id": "742d76ed-4b8f-4a14-956c-082fa2e9f95d",
+      "closed_at": "2026-09-14T16:32:32.423Z",
+      "command_id": "9ac2413a-87fe-46e8-b9f3-3440548db6ce",
+      "proof_sha256": "88ad69ba80410055716cb002dee83476e844a133faee54586fb09a658df00112",
+      "protocol_version": "kff.guardian-closure.v1"
+    },
+    "local_database_match": true
+  },
+  "after": [
+    {
+      "id": "0437e2a9-a3ee-48e4-8f95-a4dd8df2713c",
+      "conversation_id": "82307e44-911c-49db-ab82-878d8dfde1f5",
+      "sequence": 1,
+      "direction": "INBOUND",
+      "body": "KFF-0914-B",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "61589894042400",
+        "source_id": "61589894042400@msgr.7505218016684724428",
+        "thread_id": "2234491403949554",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/2234491403949554/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "03:56"
+      }
+    },
+    {
+      "id": "20ccbabb-0352-4585-afa1-d37e2aab80fb",
+      "conversation_id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+      "sequence": 4,
+      "direction": "OUTBOUND",
+      "body": "号码更正：上一条邀请中的号码有误。如需继续咨询，可以通过 WhatsApp 联系接待人员：https://wa.me/8618730936793",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "100050174601107",
+        "source_id": "100050174601107@msgr.7505283981980540236",
+        "thread_id": "1790718235683346",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/1790718235683346/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "08:19"
+      }
+    },
+    {
+      "id": "45900c40-ebbd-4753-867b-80c0a505f7d2",
+      "conversation_id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+      "sequence": 5,
+      "direction": "INBOUND",
+      "body": "https://wa.me/8618730936793?text=Hi%2C%20I%20came%20from%20Facebook%20and%20would%20like%20a%20reading",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "100050174601107",
+        "source_id": "100050174601107@msgr.7505298115747309006",
+        "thread_id": "1790718235683346",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/1790718235683346/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "09:15"
+      }
+    },
+    {
+      "id": "4d81426e-a4a1-4d38-b48d-01276fbf049b",
+      "conversation_id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+      "sequence": 2,
+      "direction": "OUTBOUND",
+      "body": "感谢您的咨询。我们的咨询流程是先确认您想探讨的一个问题，再通过官方预约表提交必要的出生信息。请问您目前想了解的是感情、事业还是人生方向方面的疑问？",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "100050174601107",
+        "source_id": "100050174601107@msgr.7505283981980540236",
+        "thread_id": "1790718235683346",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/1790718235683346/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "08:19"
+      }
+    },
+    {
+      "id": "5d1ae9d4-a656-493f-9d38-815ff33afb53",
+      "conversation_id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+      "sequence": 3,
+      "direction": "OUTBOUND",
+      "body": "如需继续咨询，可以通过 WhatsApp 联系接待人员：https://wa.me/8618730836793",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "100050174601107",
+        "source_id": "100050174601107@msgr.7505283981980540236",
+        "thread_id": "1790718235683346",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/1790718235683346/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "08:19"
+      }
+    },
+    {
+      "id": "a5a72fee-40d2-496b-b484-41d038778082",
+      "conversation_id": "82307e44-911c-49db-ab82-878d8dfde1f5",
+      "sequence": 2,
+      "direction": "INBOUND",
+      "body": "KFF-0914-B 我想了解咨询流程",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "61589894042400",
+        "source_id": "61589894042400@msgr.7505218155968561851",
+        "thread_id": "2234491403949554",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/2234491403949554/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "03:57"
+      }
+    },
+    {
+      "id": "dc66a31c-e4e2-4860-b6dd-db81561c6957",
+      "conversation_id": "82307e44-911c-49db-ab82-878d8dfde1f5",
+      "sequence": 3,
+      "direction": "OUTBOUND",
+      "body": "KFF-0914-B：已收到，这是一条接待流程测试回复。",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "61589894042400",
+        "source_id": "61589894042400@msgr.7505218155968561851",
+        "thread_id": "2234491403949554",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/2234491403949554/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "03:57"
+      }
+    },
+    {
+      "id": "f232db4d-9c02-46d1-b903-33254e01de93",
+      "conversation_id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+      "sequence": 1,
+      "direction": "INBOUND",
+      "body": "KFF-0914-C 我想了解咨询流程，需要提供哪些资料？",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "100050174601107",
+        "source_id": "100050174601107@msgr.7505283981980540236",
+        "thread_id": "1790718235683346",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/1790718235683346/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "08:19"
+      }
+    },
+    {
+      "id": "fe067bbb-d472-43be-9ff8-205200af56bd",
+      "conversation_id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+      "sequence": 6,
+      "direction": "INBOUND",
+      "body": "https://wa.me/message/JD6UETU6CBGTF1",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "100050174601107",
+        "source_id": "100050174601107@msgr.7505299093355010386",
+        "thread_id": "1790718235683346",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/1790718235683346/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "09:19"
+      }
+    }
+  ],
+  "new_messages": [
+    {
+      "id": "45900c40-ebbd-4753-867b-80c0a505f7d2",
+      "conversation_id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+      "sequence": 5,
+      "direction": "INBOUND",
+      "body": "https://wa.me/8618730936793?text=Hi%2C%20I%20came%20from%20Facebook%20and%20would%20like%20a%20reading",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "100050174601107",
+        "source_id": "100050174601107@msgr.7505298115747309006",
+        "thread_id": "1790718235683346",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/1790718235683346/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "09:15"
+      }
+    },
+    {
+      "id": "fe067bbb-d472-43be-9ff8-205200af56bd",
+      "conversation_id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+      "sequence": 6,
+      "direction": "INBOUND",
+      "body": "https://wa.me/message/JD6UETU6CBGTF1",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "100050174601107",
+        "source_id": "100050174601107@msgr.7505299093355010386",
+        "thread_id": "1790718235683346",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/1790718235683346/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "09:19"
+      }
+    }
+  ],
+  "checkpoints": [
+    {
+      "task_id": "45000b49-3c54-4441-b83e-e496555bf6f5",
+      "monitor_id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+      "organization_id": "11111111-1111-4111-8111-111111111111",
+      "brand_id": "22222222-2222-4222-8222-222222222222",
+      "cycle_id": "c0ca6199-4005-4394-89fa-cc1195c82b90",
+      "page_token": "15",
+      "cursor": null,
+      "next_cursor": null,
+      "page_sha256": "9a03af17ff98bef04f36d9bb50ed7054858dbab8fe7c390c1b754a5e5d9606e3",
+      "stored": 5,
+      "duplicates": 1,
+      "observed_at": "2026-09-14T16:32:24.946Z",
+      "created_at": "2026-09-14T16:32:32.672Z"
+    }
+  ],
+  "audit": [
+    {
+      "event_type": "browser_inbox.page_committed",
+      "details": {
+        "stored": 5,
+        "task_id": "45000b49-3c54-4441-b83e-e496555bf6f5",
+        "has_more": false,
+        "discovery": {
+          "skipped": [],
+          "threads": [
+            {
+              "peer_id": "100050174601107",
+              "thread_id": "1790718235683346",
+              "display_name": "郑一哲"
+            }
+          ],
+          "strategy": "RECENT_ACCEPTED",
+          "empty_list": false,
+          "unparsed_rows": 0,
+          "window_limited": true,
+          "visible_threads": 2
+        },
+        "duplicates": 1
+      }
+    }
+  ],
+  "diagnostics": [
+    {
+      "manifest": {
+        "step": "facebook-inbox-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "80893c312b5a8dff5d3f04c11aebd26eb9f903e987782371c177de6a600c752d",
+            "content": {
+              "result_count": 6,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "742d76ed-4b8f-4a14-956c-082fa2e9f95d",
+        "attempt_id": "f3bc153d-f979-41d3-b4a3-7aa4a811bc8d",
+        "created_at": "2026-09-14T16:32:32.935Z",
+        "error_code": null,
+        "duration_ms": 37351,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-inbox-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    }
+  ],
+  "profile_after": "Inactive",
+  "accepted": true,
+  "old_messages_preserved": true,
+  "finished_at": "2026-09-14T16:32:33.551Z"
+}

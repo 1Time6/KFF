@@ -1,0 +1,35 @@
+{
+  "started_at": "2026-09-14T15:22:12.538Z",
+  "purpose": "One read-only C thread diagnostic after closed original Agent failure; no data import or platform send.",
+  "steps": [],
+  "frames": [],
+  "platform_sends": 0,
+  "identity": {
+    "method": "facebook-profile-dom-v1",
+    "authenticated": true,
+    "operating_identity_id": "61594402378582",
+    "account_type": "profile",
+    "display_name": "白青天",
+    "observed_at": "2026-09-14T15:22:24.033Z",
+    "source_url": "https://www.facebook.com/profile.php?id=61594402378582"
+  },
+  "directory": {
+    "rows": [
+      {
+        "thread_id": "2234491403949554",
+        "display_name": "XiangHuan Master",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/2234491403949554/"
+      }
+    ],
+    "invalid": 0,
+    "ready": true,
+    "empty": false
+  },
+  "error": {
+    "name": "Error",
+    "message": "Newest thread is not the controlled C author; do not read another contact",
+    "code": null
+  },
+  "profile_after": "Inactive",
+  "finished_at": "2026-09-14T15:22:29.834Z"
+}

@@ -1,0 +1,193 @@
+{
+  "schema_version": "kff.browser-inbox-polling-checkpoint.v1",
+  "recorded_at": "2026-09-12T17:22:52.667Z",
+  "goal_complete": false,
+  "real_platform_verified": false,
+  "selected_adspower_profile": "k1gvdtft",
+  "selected_ui_sequence": "1876794",
+  "implementation": {
+    "original_task_queue_and_agent": true,
+    "actual_synthetic_dom_reader": true,
+    "atomic_receipt_messages_checkpoint": true,
+    "closure_required_before_next_page": true,
+    "monitor_controls": [
+      "SCAN",
+      "START",
+      "PAUSE"
+    ],
+    "raw_page_retention": true,
+    "browser_reply_executor": false,
+    "whatsapp_browser_handoff_verified": false,
+    "real_account_binding_created": false,
+    "real_ads_power_profile_used_by_fixture": false
+  },
+  "tests": {
+    "related_integration": {
+      "passed": 62,
+      "failed": 0
+    },
+    "final_inbox_integration": {
+      "passed": 11,
+      "failed": 0
+    },
+    "contracts_and_journal": {
+      "passed": 122,
+      "failed": 0
+    },
+    "web": {
+      "startTime": "2026-09-12T17:17:39.522Z",
+      "duration": 31012.872,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0,
+      "actual_agent_process": true,
+      "actual_guardian_browser": true,
+      "actual_platform_dom": false,
+      "screenshot": "output/playwright/browser-inbox-polling.png"
+    },
+    "typecheck": {
+      "passed": true,
+      "ended_at": "2026-09-12T17:22:22.716Z",
+      "covered_source_files": 278
+    },
+    "lint": {
+      "passed": true,
+      "ended_at": "2026-09-12T17:22:12.657Z",
+      "covered_source_files": 278
+    },
+    "build": {
+      "passed": true,
+      "ended_at": "2026-09-12T17:21:51.002Z",
+      "covered_source_files": 278
+    }
+  },
+  "backup": {
+    "recorded_at": "2026-09-12T17:16:58.6201269Z",
+    "backup_path": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\backups\\before-inbox-polling-20260913-011404",
+    "file_count": 12675,
+    "bytes": 331642785,
+    "all_sha256_match": true,
+    "original_database_stopped": true,
+    "config_backup_matches": true
+  },
+  "runtime": {
+    "counts": {
+      "accounts": 84,
+      "prospects": 46,
+      "migrations": 27,
+      "synthetic_browser_events": 5,
+      "real_browser_events": 0
+    },
+    "rls": [
+      {
+        "relname": "browser_inbox_checkpoints",
+        "relrowsecurity": true,
+        "app_select": true,
+        "app_insert": true,
+        "app_update": false
+      },
+      {
+        "relname": "browser_inbox_monitors",
+        "relrowsecurity": true,
+        "app_select": true,
+        "app_insert": true,
+        "app_update": true
+      }
+    ],
+    "monitors": [
+      {
+        "id": "cdde409b-8272-4751-b22e-dc196f2acc64",
+        "account_id": "37da4950-507a-464a-95ab-79a1156c3774",
+        "environment_id": "d0ee5ee5-8d21-4732-9e08-6d8c22e83da9",
+        "state": "PAUSED",
+        "scan_requested": false,
+        "current_task_id": null,
+        "cursor": null,
+        "page_token": "2",
+        "last_polled_at": "2026-09-12T17:18:01.618Z",
+        "last_error_code": null
+      }
+    ],
+    "checkpoints": [
+      {
+        "task_id": "541ebad7-8094-42f3-b9a8-49b5c599acee",
+        "monitor_id": "cdde409b-8272-4751-b22e-dc196f2acc64",
+        "page_sha256": "eeb3607d4d3efdb4ba85dfe5f210090b8222789cd91c8a1895be9264ca45bd37",
+        "stored": 2,
+        "duplicates": 0,
+        "cursor": null,
+        "next_cursor": "offset:2"
+      },
+      {
+        "task_id": "89ea7411-e68b-4225-b9ad-22369f3bf4e0",
+        "monitor_id": "cdde409b-8272-4751-b22e-dc196f2acc64",
+        "page_sha256": "3730d6b5a2feae725b5a7e1fb9bf50c37a7768b7e94dffd3290c5407293e4335",
+        "stored": 2,
+        "duplicates": 0,
+        "cursor": "offset:2",
+        "next_cursor": null
+      }
+    ],
+    "closures": [
+      {
+        "command_id": "575fe299-cda2-4290-a35a-dbcfde51a0d8",
+        "task_id": "541ebad7-8094-42f3-b9a8-49b5c599acee",
+        "state": "DONE",
+        "quiesced_at": "2026-09-12T17:17:55.145Z",
+        "compact": true,
+        "proof_matches_database": true,
+        "page_matches_checkpoint": true,
+        "journal_acknowledged": true,
+        "journal_quiesced": true,
+        "raw_report_absent": true
+      },
+      {
+        "command_id": "139185ce-533f-4aa9-a0da-f2e619354b2f",
+        "task_id": "89ea7411-e68b-4225-b9ad-22369f3bf4e0",
+        "state": "DONE",
+        "quiesced_at": "2026-09-12T17:18:01.663Z",
+        "compact": true,
+        "proof_matches_database": true,
+        "page_matches_checkpoint": true,
+        "journal_acknowledged": true,
+        "journal_quiesced": true,
+        "raw_report_absent": true
+      }
+    ],
+    "raw_page_reports_in_agent_journal": 0
+  },
+  "limitations": [
+    "Only repository-authored loopback DOM; real Facebook DOM and browser replies remain unverified",
+    "Current profile previously showed login required; mapping was rechecked read-only this turn",
+    "A checked cold copy was made; this specific backup was not restored in this turn",
+    "Raw page retention concerns Agent journal and closure files, not business messages, browser cache or backups"
+  ],
+  "source_sha256": {
+    "packages/contracts/src/browser-inbox.ts": "41f89f5ce90fa2fc383decf211afabd4bbf11274c4965760b4f9926ebb0eb913",
+    "packages/contracts/src/index.ts": "ce5eb7036f85207f857cc306e2ce9d38e22fe7040e0db28b63a2bf4a4669f2fc",
+    "packages/contracts/src/template.ts": "362d675b379fbea1cd3910ac227236d7146a9fdbaa908cd99905a7f66e90db97",
+    "packages/core/src/browser-inbox.ts": "7a7da738e811c8972a37024a4df80fb3e16a958e61ef34c27dc0c8bdfd1f59d3",
+    "packages/core/src/templates.ts": "e1fb663cfb862277d363e040a65b79031d3c24290cf58091c37f6740b747ab2e",
+    "packages/core/src/service.ts": "114b6c765a1ee15791712609d86826061955de51bd5edd267ad709f73f34bce6",
+    "packages/core/src/execution.ts": "3ad7d80ee628e0b8d7340e9de6e5cd6123586f22d85fc2a701d552b34b20c055",
+    "packages/adapters/src/browser-inbox.ts": "853d0bfcc2b1a76464ca4f97f0a68791c3a93ac7fa74326198e212afc745b17b",
+    "packages/adapters/src/browser-inbox-fixture.ts": "2de7a3d506c300976c1acb0616c33dfa36b1e9bf0cf57434501fd77a93f35ea0",
+    "packages/adapters/src/templates.ts": "84a42ba48fd1a0f3c6a69da4a854adf40350bd7125ba16f52045f87f9f19d61a",
+    "apps/worker/src/main.ts": "8afee7a700296374c8a931892defe284b0809994bfcc10c6d4ea0f4f790c63dc",
+    "apps/agent/src/main.ts": "ba45032e47a9edef84cb3b161beb8f7efb2c8dccc1ce616c89661d1ec5be6243",
+    "apps/agent/src/guardian-child.ts": "e1f876f0d9bab11056d1729610ec063bf7a53f07196ea70d9e0aae988a66e877",
+    "apps/agent/src/action-journal.ts": "a161aac6161ed4e3359d10574cdb0d241e9c53ee95a2af271ab45798a320c6d8",
+    "apps/agent/src/guardian-protocol.ts": "fe98a9487502601ba969f3d7dafa55e78ad135e3beab82d39caf829aa8b2511f",
+    "apps/agent/src/guardian.ts": "e6f60bbc403ebf923c5d933a8aec9ab5f8a19104c51abeb6d39062595aac56fc",
+    "apps/web/components/browser-inbox-setup.tsx": "dc0f95980568cfd42b2c0877593f18a25ef868fbfdb1348376a4c946d75dd8a4",
+    "apps/web/components/workbench.tsx": "7248b6cec7715a323f1f98f74abe81bbecfc838b7b63d0ee18624ccc21d68f56",
+    "apps/web/components/inbox-workbench.tsx": "61096f05617195ad217e7f0d930add11cd27237039b165662488428e0d419cff",
+    "apps/web/app/api/[[...path]]/route.ts": "29b1bbd4d667bd2ee259da8efa18f6167db11dea790a652ee9945abfc31eaa27",
+    "scripts/fixture-server.ts": "bf746961d1b03d371e86144bf69751dd0b88b285b57e75c784fb36d9df9304b5",
+    "supabase/migrations/20260912164913_browser_inbox_polling.sql": "8004bcb8eaed618b41bb9913a40f9d2ca7d565253996efa273c5aa3f8e8cad69",
+    "tests/integration/browser-inbox-polling.test.ts": "e0db428ef5620e03b484e103e792042e4499f198fd4eb0c9184fd3577ca35b79",
+    "tests/unit/inbox-journal.test.ts": "c7294152d622413d02bc505d23d0f26e567723d1f6932c0c49b746f5a6831b0c",
+    "tests/browser/web/browser-inbox-polling.spec.ts": "cae8a8f2debed62a62daaab6af355c6950b88eb8dd0ca8b326970641d1a899bb"
+  }
+}

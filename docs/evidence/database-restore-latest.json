@@ -1,0 +1,1693 @@
+{
+  "recorded_at": "2026-09-13T11:19:46.579Z",
+  "scope": "Latest original cold backup restored to an independent directory and port with read-only record verification; live runtime preserved",
+  "verification_command": "pnpm db:verify-backup .kff/backups/before-owned-coldstart-20260913T104811500 --restore-only",
+  "report_path": ".kff/checks/backup-restore-1d34b978-cb38-413c-b87d-f032b1fd6703.json",
+  "report_sha256": "50978e92ab6d9b333628abd967aad884425f9b90c206d3bbc44088093365fa51",
+  "backup_file_count": 18191,
+  "backup_and_copy_sha256_verified": true,
+  "restored_directory": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\restore-checks\\1d34b978-cb38-413c-b87d-f032b1fd6703\\postgres",
+  "isolated_port": 50258,
+  "restored_server_closed": true,
+  "restored_log_sha256": "df0d568a33cf1d697f851491a69a57246c0ae623353263b49eadff6a4548dd63",
+  "restored_table_inventory": [
+    {
+      "table": "accounts",
+      "count": 87,
+      "sha256": "f8393b71e960ac540e434d93afe83117aa0cd698d1e8d5916fd53984eae68bae"
+    },
+    {
+      "table": "acquisition_action_links",
+      "count": 3,
+      "sha256": "e829611c5e83f3cf702caa49215c9ca2a2db009cae764369ec9f43cc03124b46"
+    },
+    {
+      "table": "acquisition_evaluations",
+      "count": 66,
+      "sha256": "39a6ff8fdfda1f06187243f461693679beb2e19edbcf286cdadf34d6cb64e08e"
+    },
+    {
+      "table": "acquisition_imports",
+      "count": 2,
+      "sha256": "9eea269128c3420987e29c67eceb970d664d7a50102259df4c2ff0dd6a3bb427"
+    },
+    {
+      "table": "acquisition_leads",
+      "count": 24,
+      "sha256": "478de64c10c97848caf66ddad88e60ca29c6ae8bfadc8ef142f1173805df0a5b"
+    },
+    {
+      "table": "acquisition_monitors",
+      "count": 7,
+      "sha256": "281e10f519c17e73c36b91b16278d43f41518f1f5cdcb380e632e25e68e2454e"
+    },
+    {
+      "table": "acquisition_prospects",
+      "count": 46,
+      "sha256": "f83c9d87a38b85cda1994ecdf711287a44b20e842486050ac051fbc198f74b59"
+    },
+    {
+      "table": "acquisition_scans",
+      "count": 13,
+      "sha256": "5c83678129846d98d0afb973bb3c75820a823e56c588e96de280980d50ab67d2"
+    },
+    {
+      "table": "acquisition_sources",
+      "count": 1,
+      "sha256": "a01a6ebf03454acc09785e47f8dcfa1c9c965ff597e3a1a3df4f3b57cd13808a"
+    },
+    {
+      "table": "acquisition_suppressions",
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "action_adjudications",
+      "count": 33,
+      "sha256": "e09f340b1ed1f206cd27493fe70433b5f5b0f3a89cfa6939e8f98332494e8e90"
+    },
+    {
+      "table": "action_attempts",
+      "count": 187,
+      "sha256": "7b17dea5af454c6b3d63a28b35cca332512f45c354e2caa18ae63282b8de53e9"
+    },
+    {
+      "table": "actions",
+      "count": 204,
+      "sha256": "b813ec483a196407d69083132826af128ee112c5c8f2c419d0187ff9b518c867"
+    },
+    {
+      "table": "adapter_artifacts",
+      "count": 27,
+      "sha256": "ed0c949a6ffb984812438d7ca58571bd10baef2c1c36e252eacb5ce970ac2587"
+    },
+    {
+      "table": "agent_commands",
+      "count": 187,
+      "sha256": "a9053865bebc70c2f7bbe79a51a57a9c7617c8b744a31cd50d0c90481f599474"
+    },
+    {
+      "table": "agents",
+      "count": 45,
+      "sha256": "0d25678ae10be66af377f3d847c064cf886ea985e1bb29a70564e1e4fd63e9ec"
+    },
+    {
+      "table": "approval_decisions",
+      "count": 219,
+      "sha256": "be8778d02de0a4cf47edb9df6d05fccdcc71246ea074ef41981236ae568f27f1"
+    },
+    {
+      "table": "audit_events",
+      "count": 3055,
+      "sha256": "c74eea193069fbc405ebe5e18e73dcd7fa39db23a75e42c73093f1eee4da8f6d"
+    },
+    {
+      "table": "brands",
+      "count": 1,
+      "sha256": "06919cf66bc1138a96c0d0043441c698ba24faf1ea388e20443f5d466a8a949e"
+    },
+    {
+      "table": "browser_inbox_checkpoints",
+      "count": 8,
+      "sha256": "edf9a813061689e38d4fbe71e9907faa651ccbb4d2a2539d2bc5cea2644f33d7"
+    },
+    {
+      "table": "browser_inbox_monitors",
+      "count": 3,
+      "sha256": "55a8de703c5d5f22784e9d6fca6c9c5042c2e7027f9aab098f33eb597f635fcc"
+    },
+    {
+      "table": "capabilities",
+      "count": 33,
+      "sha256": "6f7befe1dc5de12496b949f2007012a2e1b1463c868b956d2cb4aac8d44936f4"
+    },
+    {
+      "table": "capability_checks",
+      "count": 23,
+      "sha256": "b0637d472244751aa176bf69939ab112ac7500acfd3453b9b254cfba8a4333b6"
+    },
+    {
+      "table": "collection_events",
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "collection_objects",
+      "count": 508,
+      "sha256": "51dce51e8364caf65ef8e02d41423232760076a7363e48aa1bd5609f5978f9c8"
+    },
+    {
+      "table": "collection_observations",
+      "count": 650,
+      "sha256": "72e08a16bb88dbfd3265957c4281acd8830ec41d627f3966e1cf54be5345f8dc"
+    },
+    {
+      "table": "collection_pages",
+      "count": 125,
+      "sha256": "cc9f9f627d9d6c2b1463001da9b1ca9b7ae5d98922dcebd7ec7d615be891ba08"
+    },
+    {
+      "table": "collection_queries",
+      "count": 93,
+      "sha256": "3375c12df8efd7399a912fbaf98ea1450c839d2083724a8b85a74fa2b0fffd0a"
+    },
+    {
+      "table": "collection_results",
+      "count": 622,
+      "sha256": "a1d59e712554e4031ff91b43ffab900ef769445f008107a92aea9e034eb81ce1"
+    },
+    {
+      "table": "collection_runs",
+      "count": 93,
+      "sha256": "cd943af0eceac8b596933eb98044ab6dda0b1680a4ab7b35021c239d0ad502b3"
+    },
+    {
+      "table": "commerce_currencies",
+      "count": 1,
+      "sha256": "2fc2a076fcec0576df841ce6b001ae30db4bacf57e954d89512ebfe5e696bac6"
+    },
+    {
+      "table": "contact_permissions",
+      "count": 110,
+      "sha256": "0d67180d0188ceb5f547fdafd2041acde2669e3defb45ef1e518dc1ce1988b31"
+    },
+    {
+      "table": "contact_targets",
+      "count": 111,
+      "sha256": "905164d90eaa628a6ab47a776446e5c9e0269cffd9fb3dd80d526d32fcf8cd03"
+    },
+    {
+      "table": "content_versions",
+      "count": 219,
+      "sha256": "beecbe729836f015d7fe2938dc4bca44ccf0607fb384c4bd7078ad014732e2aa"
+    },
+    {
+      "table": "conversations",
+      "count": 93,
+      "sha256": "9d56dd19684313c0f6012f64d108b08befd9acac94d643f732d940cad2a563f2"
+    },
+    {
+      "table": "cost_budgets",
+      "count": 2,
+      "sha256": "66856ea564a6712a3c06da34ef28beb1c64e908638953bb1abf7a153cf09dcb2"
+    },
+    {
+      "table": "cost_entries",
+      "count": 119,
+      "sha256": "97fd45e0a19867cd1db81a6b2ef2459751a3483ae5227b222dffd8c7409aad2e"
+    },
+    {
+      "table": "cost_reservations",
+      "count": 42,
+      "sha256": "1c1b9a20a79a13fb0a9507e69130d9076fa08e0dc97f6c202e9301f7124b1db1"
+    },
+    {
+      "table": "customer_events",
+      "count": 137,
+      "sha256": "9ed1eb01d0ee038e2c1a2d25b55469155ab8dbe48a9e5449cecdd735a127951d"
+    },
+    {
+      "table": "customer_identities",
+      "count": 93,
+      "sha256": "95ac8b0a49ead24506682cf80978190ab214a26a5405142b20339ecccdf5647b"
+    },
+    {
+      "table": "customers",
+      "count": 93,
+      "sha256": "a302369db18eff987b37eeb22fb4b87ce3e5cf4a8e1a33de227b43cc00d1affd"
+    },
+    {
+      "table": "diagnostic_bundles",
+      "count": 184,
+      "sha256": "b4cde5bc435ac2ecb5a7b950ef55f7d3dbe5b1a7169f1bc30c2cd0b419038b7d"
+    },
+    {
+      "table": "dispute_balance_entries",
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "environment_commands",
+      "count": 7,
+      "sha256": "fc4c6b312990109716c2da97b7f44d96364b5868b3bbef5e3a1f6dc2fa9f2deb"
+    },
+    {
+      "table": "environments",
+      "count": 54,
+      "sha256": "86c7eac5d2f4307c9c44c4ea5998db91e5c004e61ef835124d7b47e981ce0684"
+    },
+    {
+      "table": "facebook_connections",
+      "count": 23,
+      "sha256": "f874936f61facfb4128daf41ec3e14f7956648b4dd21b1bc58649350b48c5f18"
+    },
+    {
+      "table": "financial_adjustments",
+      "count": 20,
+      "sha256": "da12ab1bc3da0929cf431b99756af8a0073bd9c7395654edc7b45ee251a0fc58"
+    },
+    {
+      "table": "financial_observations",
+      "count": 20,
+      "sha256": "4825b59f97751405c830672205714079a0a12e8cbf8a4912b4718ef44f3865ae"
+    },
+    {
+      "table": "import_confirmations",
+      "count": 38,
+      "sha256": "598a96a47a197018ec3c0f5457b42fb3d4c833f109f949fe271588507f7ae001"
+    },
+    {
+      "table": "import_files",
+      "count": 38,
+      "sha256": "514a3b6db0fae6edd4768f6f5cfe00afb14a7f230b73a982b040ec701f25628d"
+    },
+    {
+      "table": "import_previews",
+      "count": 38,
+      "sha256": "df4585a8b330bcaaa52991b3f8e844160cf14a5ea1e3607fdb79f4fd1c9951c1"
+    },
+    {
+      "table": "inbound_events",
+      "count": 294,
+      "sha256": "8237f67cc949a997f5178a5f4a49049d8df365b21b772e8bc689d2af362e9639"
+    },
+    {
+      "table": "jobs",
+      "count": 210,
+      "sha256": "b64d74851313893af03e733d5181942019d94d3e919e910711b9760d2e382103"
+    },
+    {
+      "table": "local_users",
+      "count": 1,
+      "sha256": "ba7a0b8a7432eba4a454015a3f58f91b2178481e33fd93c9204e61cb3e9d878a"
+    },
+    {
+      "table": "memberships",
+      "count": 1,
+      "sha256": "0a90ddaf964216d299aa917d2f63d3b6cb449949a62a05d595ac5a349b5f9f13"
+    },
+    {
+      "table": "messages",
+      "count": 123,
+      "sha256": "0397ecb7bdbc87a1c251167548b031306244990000839bf4dca85a11658515d8"
+    },
+    {
+      "table": "order_events",
+      "count": 50,
+      "sha256": "d186f7f1a63cde21c41db4e0db5b58c3b532648567874e7c321971d559636d11"
+    },
+    {
+      "table": "order_previews",
+      "count": 34,
+      "sha256": "feaa38deed23da6655473a1e2700b3bbcea46d9640681182f53b83837e3f465f"
+    },
+    {
+      "table": "orders",
+      "count": 34,
+      "sha256": "3886035464d95d51f770575df56bf4e421d2f1a0736f839a7e3f954523207308"
+    },
+    {
+      "table": "organization_memberships",
+      "count": 1,
+      "sha256": "e88d9297e75b8b8552031b76ff0309ca42cdca2c0678f15b4847ac433e2fa0be"
+    },
+    {
+      "table": "organizations",
+      "count": 1,
+      "sha256": "13d500cf031c7666a4b854b78dd91f1393f931e28b4831cae1cc186924bf3018"
+    },
+    {
+      "table": "payment_checkouts",
+      "count": 18,
+      "sha256": "e76024faa6520002c34a78edcea1979555e44f946131f39d4a3757725aaec0b3"
+    },
+    {
+      "table": "pilot_permits",
+      "count": 25,
+      "sha256": "5c735e3c2c13291bdabfa9b5a47d6031bac9a1c036de63150cc885a7cfbd95d4"
+    },
+    {
+      "table": "pilot_reservations",
+      "count": 25,
+      "sha256": "e7ccf4f1e0411276826596fa76ece4d8e2dd853dbb657907a2324f333744de2a"
+    },
+    {
+      "table": "product_versions",
+      "count": 39,
+      "sha256": "3545e1c9b8f824dbe3223bf0242b6b8f86a0e20adfde29eeace6adb821be8cd8"
+    },
+    {
+      "table": "products",
+      "count": 29,
+      "sha256": "479414c2d70b066d57d629efd55ec6c0ff2e962362793841d15b587ca50c04f2"
+    },
+    {
+      "table": "refund_ledgers",
+      "count": 18,
+      "sha256": "45152a61e89a3aa7bdad64b64f5c39a3320a62e9f7aa422d0248ea1aa7ac7acb"
+    },
+    {
+      "table": "refund_postings",
+      "count": 10,
+      "sha256": "43822bec37f44a3fb2134f92dc55e86665888054d038666f1295ac1a99b90868"
+    },
+    {
+      "table": "refund_requests",
+      "count": 16,
+      "sha256": "7a6979350eb6374145aa26b56ebb2b0f44dcff5d9ca222f6d0269c9156dac04a"
+    },
+    {
+      "table": "resource_leases",
+      "count": 62,
+      "sha256": "958ccea07089ba5096e205a6da7620ff682b4b13f397e93f55c9b3a8b1d38bfa"
+    },
+    {
+      "table": "runs",
+      "count": 204,
+      "sha256": "a52872866d66b33de5c6906922c09e2ad1da81515dfc4fabe05faee511e7de7a"
+    },
+    {
+      "table": "schedule_occurrences",
+      "count": 48,
+      "sha256": "c27fa0df8d752bd97be4f9f2a9e6d26583cdfed237b501c372755f5ed93e0e04"
+    },
+    {
+      "table": "schedule_previews",
+      "count": 32,
+      "sha256": "136edf1298d68acc177ddf5efe33c16697cab19aeeaea220b8c90459d923ea0c"
+    },
+    {
+      "table": "schedule_versions",
+      "count": 32,
+      "sha256": "8153e12599f9c4565ff09d4f44143d465ca13079cf93ebd95d975c2b043d1a0c"
+    },
+    {
+      "table": "schedules",
+      "count": 20,
+      "sha256": "4ebacc224278058281d51684c726e18d701f9ad54a233a3771d8d2c0b826a87a"
+    },
+    {
+      "table": "schema_migrations",
+      "count": 31,
+      "sha256": "5ae8d0e6a35c10e552fe8d1c5e84cd5c5b0380b885d16c3d134326e2625de9c9"
+    },
+    {
+      "table": "sessions",
+      "count": 391,
+      "sha256": "62588488a9063f6f40097b74cc7357f07304044c03ab1deb006ca4a6afbdb0a5"
+    },
+    {
+      "table": "site_channels",
+      "count": 54,
+      "sha256": "0e08889754d531e3ca4a8d27f517ff370c215bb58244ece083a75d682abd9b92"
+    },
+    {
+      "table": "stripe_connections",
+      "count": 18,
+      "sha256": "b8e734841b165ab2fcc801d3c6e86b74589ea14c3b1d9840da46a9ff2fe7a036"
+    },
+    {
+      "table": "stripe_disputes",
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "table": "stripe_events",
+      "count": 9,
+      "sha256": "b31255fb68737db74c3035fce2ddb2bd499c7cb7cbdd4aef5750c83b6269bf11"
+    },
+    {
+      "table": "stripe_refunds",
+      "count": 10,
+      "sha256": "04e127932d643567ce2609bb2e915979b6f3adbd22a35e2024f3b23400de852a"
+    },
+    {
+      "table": "target_previews",
+      "count": 57,
+      "sha256": "5c3989f1629183f01e3d2733c746042b68991b8f9646ddcad8aac005b65a034a"
+    },
+    {
+      "table": "target_snapshots",
+      "count": 46,
+      "sha256": "00c887750e676b9aa58fb83006b164b2fa57a709288138290c756aaf7734ec87"
+    },
+    {
+      "table": "tasks",
+      "count": 219,
+      "sha256": "fdf2584bf54a06351dae642f4b962a7507e197054f28b1ffb0e1943a6d66068f"
+    },
+    {
+      "table": "template_events",
+      "count": 45,
+      "sha256": "7af8b5e2c6a3282e67121c450f28b2259c90ee00e416f6bfaaf9371f2f1556c2"
+    },
+    {
+      "table": "template_previews",
+      "count": 15,
+      "sha256": "092ea57b931e9fda5a4b9a396d0b3cefbf68c004b27433c7f79fcb2c1ab0342e"
+    },
+    {
+      "table": "template_versions",
+      "count": 30,
+      "sha256": "aa40c546f5c686c285c298333f620cc7afca05018f487255097cdf3bcbaa46f1"
+    },
+    {
+      "table": "verified_payments",
+      "count": 18,
+      "sha256": "6111727eae563d76e55d2dc88defd896c26d3e40f8221c2fb8bad1935b25358c"
+    },
+    {
+      "table": "visitor_sessions",
+      "count": 66,
+      "sha256": "518d67aae712cb2d79186bfb12c7ed801fea0eedac05c618c839e416edbe591c"
+    },
+    {
+      "table": "whatsapp_destinations",
+      "count": 11,
+      "sha256": "e5902a24a35fff0635afdfb7bae92ea128857b3757c13cb3542426364e71102e"
+    },
+    {
+      "table": "whatsapp_referrals",
+      "count": 11,
+      "sha256": "5d501c5926ef7d5b0dafd98a7cf4f18c6c5e059885afec2e975398d3ad9ff7e1"
+    }
+  ],
+  "original_cold_snapshot_matches": true,
+  "restored_row_count": 10165,
+  "migration_history": [
+    {
+      "version": "20260911164326_g1_execution_core.sql",
+      "sha256": "31e4c9a6aec219e52fe94ef5a4f97b58ac3bbe714bd782952fb038e368e20fdf",
+      "applied_at": "2026-09-11T16:56:50.279Z"
+    },
+    {
+      "version": "20260911173241_g1_permits_reconciliation.sql",
+      "sha256": "65baeb55d96885097f66cb02e1103c301859a1d3705dee89ac9e8b8b2852cfa7",
+      "applied_at": "2026-09-11T17:37:24.615Z"
+    },
+    {
+      "version": "20260911175249_g1_capability_evidence.sql",
+      "sha256": "9848c682c137b1229b778ac76743f1489d3b6494b340902c7ea72ea504d6e137",
+      "applied_at": "2026-09-11T17:55:35.838Z"
+    },
+    {
+      "version": "20260911175746_g1_agent_slot_guard.sql",
+      "sha256": "8dfa4ad3152c2ea892d84bae4f317f600a2a44670f3d27102df9d451691abe8b",
+      "applied_at": "2026-09-11T17:59:16.669Z"
+    },
+    {
+      "version": "20260911181005_g1_stop_and_agent_management.sql",
+      "sha256": "75d4fcdc89804d6c81bcc742bbed6385480e22e2ffef4c245ae4535ebef1d852",
+      "applied_at": "2026-09-11T18:14:33.494Z"
+    },
+    {
+      "version": "20260911185039_g1_contact_eligibility.sql",
+      "sha256": "6c7c535b5ca366e309194c479b9eb55ae052a62b6b302c92a9fdf9ca01943e67",
+      "applied_at": "2026-09-11T19:01:23.349Z"
+    },
+    {
+      "version": "20260911190913_g2_cost_ledger.sql",
+      "sha256": "6cd7bc467e812fd34f06a5f464297b0a47d160a9c54653b83f68f294b39c9250",
+      "applied_at": "2026-09-11T19:20:02.046Z"
+    },
+    {
+      "version": "20260911194100_g1_action_adjudication.sql",
+      "sha256": "bddbe2459ab599bf153169732f7d7fc0288b10de3ee0086e25287fba331ceb8d",
+      "applied_at": "2026-09-11T19:44:49.549Z"
+    },
+    {
+      "version": "20260911200056_g2_template_versions.sql",
+      "sha256": "d9e9a3255befaf672d004ef6ed4f9c7acb1e3250ab231fba0a41ae7593832ba8",
+      "applied_at": "2026-09-11T20:07:11.106Z"
+    },
+    {
+      "version": "20260911203355_g2_collection_checkpoints.sql",
+      "sha256": "e50ecaec7ba71c9d42c6b768be4f8318fdc2d1130fbb83168ccaeedfcb612971",
+      "applied_at": "2026-09-11T21:19:17.752Z"
+    },
+    {
+      "version": "20260911213439_g2_import_export.sql",
+      "sha256": "5892855457aa149ae4bda86ce2fbc914b9ef57339002bc3eb82ec3e4624f6694",
+      "applied_at": "2026-09-11T21:49:30.147Z"
+    },
+    {
+      "version": "20260911221017_g2_target_snapshots.sql",
+      "sha256": "469d9cee9651ae58189b472b4bcce8376d4d6a41ba65dca46a0c62ac46b20094",
+      "applied_at": "2026-09-11T22:27:59.410Z"
+    },
+    {
+      "version": "20260911224129_g2_schedule_rules.sql",
+      "sha256": "80472fe3800f47f481a4a87336af2fc08816e8d3119a673ecef3649dc51cdc5c",
+      "applied_at": "2026-09-11T22:54:51.236Z"
+    },
+    {
+      "version": "20260911235946_g3_owned_inbound.sql",
+      "sha256": "7a42460c74c036c412c49f176c2ee2e45b2534be1b22f131f4c9b28044113d7e",
+      "applied_at": "2026-09-12T00:22:03.095Z"
+    },
+    {
+      "version": "20260912003348_g3_owned_order_snapshots.sql",
+      "sha256": "6f221bafa308142d98229c118786fb350eb013bc559297c95ffd501a741d58a9",
+      "applied_at": "2026-09-12T00:49:01.768Z"
+    },
+    {
+      "version": "20260912012250_g3_stripe_payments.sql",
+      "sha256": "1a5eb9581e56305b83e77248a3ccb880c699377e61133856aaa33b4e6c922f51",
+      "applied_at": "2026-09-12T01:49:59.881Z"
+    },
+    {
+      "version": "20260912022322_g3_stripe_refunds.sql",
+      "sha256": "c825921f1d2245bcbd8436f19cca514b9de0873f4fabc7b7479b37955846d836",
+      "applied_at": "2026-09-12T02:56:12.423Z"
+    },
+    {
+      "version": "20260912031707_facebook_lead_inbound.sql",
+      "sha256": "2ab43f08e524ab4491e40268fe902f6799fed9e92045838b6ae3302e7ba323a1",
+      "applied_at": "2026-09-12T03:28:02.660Z"
+    },
+    {
+      "version": "20260912032804_lead_reception_execution.sql",
+      "sha256": "0eda8ff7981d347dfa2f18995bc17bd9e76730dc1bbd05c183e4c161983b3419",
+      "applied_at": "2026-09-12T03:46:24.714Z"
+    },
+    {
+      "version": "20260912034626_lead_automation_rules.sql",
+      "sha256": "b0782dcc35933a6c81ed0e5d8f9223f14ac5d82febec8b0c74bab6125d9d4519",
+      "applied_at": "2026-09-12T04:25:26.622Z"
+    },
+    {
+      "version": "20260912040653_lead_metrics_and_ingress_limits.sql",
+      "sha256": "f9e66056af83f088bf4ae11cafdeeb640275cb496fff5359f45346b3ef493e85",
+      "applied_at": "2026-09-12T04:25:26.622Z"
+    },
+    {
+      "version": "20260912061549_acquisition_automation.sql",
+      "sha256": "30bb59db47f02f6438b190eec0b018308a1f8df777fee636d121f255fe7cb004",
+      "applied_at": "2026-09-12T06:42:15.843Z"
+    },
+    {
+      "version": "20260912121030_acquisition_external_sources.sql",
+      "sha256": "996f832948fe362f1e2ee44b48b941b6427eef6b66766c90df5ca32f282a1d47",
+      "applied_at": "2026-09-12T12:21:58.428Z"
+    },
+    {
+      "version": "20260912131442_browser_environment_runtime.sql",
+      "sha256": "97f662ac88d021d9e736e60da02f0f194762896f23cf48498be5075b71f62a8d",
+      "applied_at": "2026-09-12T13:40:26.655Z"
+    },
+    {
+      "version": "20260912151353_browser_collection_tasks.sql",
+      "sha256": "cb00e00594f83f8ff40e60df59ceabfa89e652e46b8d1c446164467ec43ee516",
+      "applied_at": "2026-09-12T15:47:58.914Z"
+    },
+    {
+      "version": "20260912162852_browser_inbox_identity.sql",
+      "sha256": "d6fba06d09a6f8c50ca4974dc0a505a82bb94bceae9d223fc7953a8256076bfc",
+      "applied_at": "2026-09-12T16:43:25.051Z"
+    },
+    {
+      "version": "20260912164913_browser_inbox_polling.sql",
+      "sha256": "8004bcb8eaed618b41bb9913a40f9d2ca7d565253996efa273c5aa3f8e8cad69",
+      "applied_at": "2026-09-12T17:16:59.788Z"
+    },
+    {
+      "version": "20260912172904_browser_message_transport.sql",
+      "sha256": "cf897abbdf6583236ad79b4e776266b44be1cd147afc692cf1157b858a709930",
+      "applied_at": "2026-09-12T18:00:09.118Z"
+    },
+    {
+      "version": "20260913012544_real_browser_collection_permits.sql",
+      "sha256": "28ca784da07ccf13a0ad8fdcf7a5fe802052cf980e2f57c669e837f3da172472",
+      "applied_at": "2026-09-13T01:47:51.001Z"
+    },
+    {
+      "version": "20260913042407_real_browser_inbox_permits.sql",
+      "sha256": "4c10a69f37147d183f200df96ce69e016a9958d9b9a69076c6ad366103595301",
+      "applied_at": "2026-09-13T04:42:08.256Z"
+    },
+    {
+      "version": "20260913052626_real_browser_message_permits.sql",
+      "sha256": "28c2f293687005d453cf2b5046a75299a980b00dd582488cbbe2c2fdf6819a2b",
+      "applied_at": "2026-09-13T06:12:49.284Z"
+    }
+  ],
+  "migration_checksums_match": true,
+  "pending_migrations": [],
+  "migrations_applied": 0,
+  "rls_flags_match_live": true,
+  "live_inventory": {
+    "before": {
+      "recorded_at": "2026-09-13T11:15:16.809Z",
+      "tables": [
+        {
+          "table": "accounts",
+          "count": 87,
+          "sha256": "f8393b71e960ac540e434d93afe83117aa0cd698d1e8d5916fd53984eae68bae"
+        },
+        {
+          "table": "acquisition_action_links",
+          "count": 3,
+          "sha256": "e829611c5e83f3cf702caa49215c9ca2a2db009cae764369ec9f43cc03124b46"
+        },
+        {
+          "table": "acquisition_evaluations",
+          "count": 66,
+          "sha256": "39a6ff8fdfda1f06187243f461693679beb2e19edbcf286cdadf34d6cb64e08e"
+        },
+        {
+          "table": "acquisition_imports",
+          "count": 2,
+          "sha256": "9eea269128c3420987e29c67eceb970d664d7a50102259df4c2ff0dd6a3bb427"
+        },
+        {
+          "table": "acquisition_leads",
+          "count": 24,
+          "sha256": "478de64c10c97848caf66ddad88e60ca29c6ae8bfadc8ef142f1173805df0a5b"
+        },
+        {
+          "table": "acquisition_monitors",
+          "count": 7,
+          "sha256": "281e10f519c17e73c36b91b16278d43f41518f1f5cdcb380e632e25e68e2454e"
+        },
+        {
+          "table": "acquisition_prospects",
+          "count": 46,
+          "sha256": "f83c9d87a38b85cda1994ecdf711287a44b20e842486050ac051fbc198f74b59"
+        },
+        {
+          "table": "acquisition_scans",
+          "count": 13,
+          "sha256": "5c83678129846d98d0afb973bb3c75820a823e56c588e96de280980d50ab67d2"
+        },
+        {
+          "table": "acquisition_sources",
+          "count": 1,
+          "sha256": "a01a6ebf03454acc09785e47f8dcfa1c9c965ff597e3a1a3df4f3b57cd13808a"
+        },
+        {
+          "table": "acquisition_suppressions",
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "table": "action_adjudications",
+          "count": 33,
+          "sha256": "e09f340b1ed1f206cd27493fe70433b5f5b0f3a89cfa6939e8f98332494e8e90"
+        },
+        {
+          "table": "action_attempts",
+          "count": 187,
+          "sha256": "7b17dea5af454c6b3d63a28b35cca332512f45c354e2caa18ae63282b8de53e9"
+        },
+        {
+          "table": "actions",
+          "count": 204,
+          "sha256": "b813ec483a196407d69083132826af128ee112c5c8f2c419d0187ff9b518c867"
+        },
+        {
+          "table": "adapter_artifacts",
+          "count": 27,
+          "sha256": "ed0c949a6ffb984812438d7ca58571bd10baef2c1c36e252eacb5ce970ac2587"
+        },
+        {
+          "table": "agent_commands",
+          "count": 187,
+          "sha256": "a9053865bebc70c2f7bbe79a51a57a9c7617c8b744a31cd50d0c90481f599474"
+        },
+        {
+          "table": "agents",
+          "count": 45,
+          "sha256": "0d25678ae10be66af377f3d847c064cf886ea985e1bb29a70564e1e4fd63e9ec"
+        },
+        {
+          "table": "approval_decisions",
+          "count": 219,
+          "sha256": "be8778d02de0a4cf47edb9df6d05fccdcc71246ea074ef41981236ae568f27f1"
+        },
+        {
+          "table": "audit_events",
+          "count": 3055,
+          "sha256": "c74eea193069fbc405ebe5e18e73dcd7fa39db23a75e42c73093f1eee4da8f6d"
+        },
+        {
+          "table": "brands",
+          "count": 1,
+          "sha256": "06919cf66bc1138a96c0d0043441c698ba24faf1ea388e20443f5d466a8a949e"
+        },
+        {
+          "table": "browser_inbox_checkpoints",
+          "count": 8,
+          "sha256": "edf9a813061689e38d4fbe71e9907faa651ccbb4d2a2539d2bc5cea2644f33d7"
+        },
+        {
+          "table": "browser_inbox_monitors",
+          "count": 3,
+          "sha256": "55a8de703c5d5f22784e9d6fca6c9c5042c2e7027f9aab098f33eb597f635fcc"
+        },
+        {
+          "table": "capabilities",
+          "count": 33,
+          "sha256": "6f7befe1dc5de12496b949f2007012a2e1b1463c868b956d2cb4aac8d44936f4"
+        },
+        {
+          "table": "capability_checks",
+          "count": 23,
+          "sha256": "b0637d472244751aa176bf69939ab112ac7500acfd3453b9b254cfba8a4333b6"
+        },
+        {
+          "table": "collection_events",
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "table": "collection_objects",
+          "count": 508,
+          "sha256": "51dce51e8364caf65ef8e02d41423232760076a7363e48aa1bd5609f5978f9c8"
+        },
+        {
+          "table": "collection_observations",
+          "count": 650,
+          "sha256": "72e08a16bb88dbfd3265957c4281acd8830ec41d627f3966e1cf54be5345f8dc"
+        },
+        {
+          "table": "collection_pages",
+          "count": 125,
+          "sha256": "cc9f9f627d9d6c2b1463001da9b1ca9b7ae5d98922dcebd7ec7d615be891ba08"
+        },
+        {
+          "table": "collection_queries",
+          "count": 93,
+          "sha256": "3375c12df8efd7399a912fbaf98ea1450c839d2083724a8b85a74fa2b0fffd0a"
+        },
+        {
+          "table": "collection_results",
+          "count": 622,
+          "sha256": "a1d59e712554e4031ff91b43ffab900ef769445f008107a92aea9e034eb81ce1"
+        },
+        {
+          "table": "collection_runs",
+          "count": 93,
+          "sha256": "cd943af0eceac8b596933eb98044ab6dda0b1680a4ab7b35021c239d0ad502b3"
+        },
+        {
+          "table": "commerce_currencies",
+          "count": 1,
+          "sha256": "2fc2a076fcec0576df841ce6b001ae30db4bacf57e954d89512ebfe5e696bac6"
+        },
+        {
+          "table": "contact_permissions",
+          "count": 110,
+          "sha256": "0d67180d0188ceb5f547fdafd2041acde2669e3defb45ef1e518dc1ce1988b31"
+        },
+        {
+          "table": "contact_targets",
+          "count": 111,
+          "sha256": "905164d90eaa628a6ab47a776446e5c9e0269cffd9fb3dd80d526d32fcf8cd03"
+        },
+        {
+          "table": "content_versions",
+          "count": 219,
+          "sha256": "beecbe729836f015d7fe2938dc4bca44ccf0607fb384c4bd7078ad014732e2aa"
+        },
+        {
+          "table": "conversations",
+          "count": 93,
+          "sha256": "9d56dd19684313c0f6012f64d108b08befd9acac94d643f732d940cad2a563f2"
+        },
+        {
+          "table": "cost_budgets",
+          "count": 2,
+          "sha256": "66856ea564a6712a3c06da34ef28beb1c64e908638953bb1abf7a153cf09dcb2"
+        },
+        {
+          "table": "cost_entries",
+          "count": 119,
+          "sha256": "97fd45e0a19867cd1db81a6b2ef2459751a3483ae5227b222dffd8c7409aad2e"
+        },
+        {
+          "table": "cost_reservations",
+          "count": 42,
+          "sha256": "1c1b9a20a79a13fb0a9507e69130d9076fa08e0dc97f6c202e9301f7124b1db1"
+        },
+        {
+          "table": "customer_events",
+          "count": 137,
+          "sha256": "9ed1eb01d0ee038e2c1a2d25b55469155ab8dbe48a9e5449cecdd735a127951d"
+        },
+        {
+          "table": "customer_identities",
+          "count": 93,
+          "sha256": "95ac8b0a49ead24506682cf80978190ab214a26a5405142b20339ecccdf5647b"
+        },
+        {
+          "table": "customers",
+          "count": 93,
+          "sha256": "a302369db18eff987b37eeb22fb4b87ce3e5cf4a8e1a33de227b43cc00d1affd"
+        },
+        {
+          "table": "diagnostic_bundles",
+          "count": 184,
+          "sha256": "b4cde5bc435ac2ecb5a7b950ef55f7d3dbe5b1a7169f1bc30c2cd0b419038b7d"
+        },
+        {
+          "table": "dispute_balance_entries",
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "table": "environment_commands",
+          "count": 7,
+          "sha256": "fc4c6b312990109716c2da97b7f44d96364b5868b3bbef5e3a1f6dc2fa9f2deb"
+        },
+        {
+          "table": "environments",
+          "count": 54,
+          "sha256": "86c7eac5d2f4307c9c44c4ea5998db91e5c004e61ef835124d7b47e981ce0684"
+        },
+        {
+          "table": "facebook_connections",
+          "count": 23,
+          "sha256": "f874936f61facfb4128daf41ec3e14f7956648b4dd21b1bc58649350b48c5f18"
+        },
+        {
+          "table": "financial_adjustments",
+          "count": 20,
+          "sha256": "da12ab1bc3da0929cf431b99756af8a0073bd9c7395654edc7b45ee251a0fc58"
+        },
+        {
+          "table": "financial_observations",
+          "count": 20,
+          "sha256": "4825b59f97751405c830672205714079a0a12e8cbf8a4912b4718ef44f3865ae"
+        },
+        {
+          "table": "import_confirmations",
+          "count": 38,
+          "sha256": "598a96a47a197018ec3c0f5457b42fb3d4c833f109f949fe271588507f7ae001"
+        },
+        {
+          "table": "import_files",
+          "count": 38,
+          "sha256": "514a3b6db0fae6edd4768f6f5cfe00afb14a7f230b73a982b040ec701f25628d"
+        },
+        {
+          "table": "import_previews",
+          "count": 38,
+          "sha256": "df4585a8b330bcaaa52991b3f8e844160cf14a5ea1e3607fdb79f4fd1c9951c1"
+        },
+        {
+          "table": "inbound_events",
+          "count": 294,
+          "sha256": "8237f67cc949a997f5178a5f4a49049d8df365b21b772e8bc689d2af362e9639"
+        },
+        {
+          "table": "jobs",
+          "count": 210,
+          "sha256": "b64d74851313893af03e733d5181942019d94d3e919e910711b9760d2e382103"
+        },
+        {
+          "table": "local_users",
+          "count": 1,
+          "sha256": "ba7a0b8a7432eba4a454015a3f58f91b2178481e33fd93c9204e61cb3e9d878a"
+        },
+        {
+          "table": "memberships",
+          "count": 1,
+          "sha256": "0a90ddaf964216d299aa917d2f63d3b6cb449949a62a05d595ac5a349b5f9f13"
+        },
+        {
+          "table": "messages",
+          "count": 123,
+          "sha256": "0397ecb7bdbc87a1c251167548b031306244990000839bf4dca85a11658515d8"
+        },
+        {
+          "table": "order_events",
+          "count": 50,
+          "sha256": "d186f7f1a63cde21c41db4e0db5b58c3b532648567874e7c321971d559636d11"
+        },
+        {
+          "table": "order_previews",
+          "count": 34,
+          "sha256": "feaa38deed23da6655473a1e2700b3bbcea46d9640681182f53b83837e3f465f"
+        },
+        {
+          "table": "orders",
+          "count": 34,
+          "sha256": "3886035464d95d51f770575df56bf4e421d2f1a0736f839a7e3f954523207308"
+        },
+        {
+          "table": "organization_memberships",
+          "count": 1,
+          "sha256": "e88d9297e75b8b8552031b76ff0309ca42cdca2c0678f15b4847ac433e2fa0be"
+        },
+        {
+          "table": "organizations",
+          "count": 1,
+          "sha256": "13d500cf031c7666a4b854b78dd91f1393f931e28b4831cae1cc186924bf3018"
+        },
+        {
+          "table": "payment_checkouts",
+          "count": 18,
+          "sha256": "e76024faa6520002c34a78edcea1979555e44f946131f39d4a3757725aaec0b3"
+        },
+        {
+          "table": "pilot_permits",
+          "count": 25,
+          "sha256": "5c735e3c2c13291bdabfa9b5a47d6031bac9a1c036de63150cc885a7cfbd95d4"
+        },
+        {
+          "table": "pilot_reservations",
+          "count": 25,
+          "sha256": "e7ccf4f1e0411276826596fa76ece4d8e2dd853dbb657907a2324f333744de2a"
+        },
+        {
+          "table": "product_versions",
+          "count": 39,
+          "sha256": "3545e1c9b8f824dbe3223bf0242b6b8f86a0e20adfde29eeace6adb821be8cd8"
+        },
+        {
+          "table": "products",
+          "count": 29,
+          "sha256": "479414c2d70b066d57d629efd55ec6c0ff2e962362793841d15b587ca50c04f2"
+        },
+        {
+          "table": "refund_ledgers",
+          "count": 18,
+          "sha256": "45152a61e89a3aa7bdad64b64f5c39a3320a62e9f7aa422d0248ea1aa7ac7acb"
+        },
+        {
+          "table": "refund_postings",
+          "count": 10,
+          "sha256": "43822bec37f44a3fb2134f92dc55e86665888054d038666f1295ac1a99b90868"
+        },
+        {
+          "table": "refund_requests",
+          "count": 16,
+          "sha256": "7a6979350eb6374145aa26b56ebb2b0f44dcff5d9ca222f6d0269c9156dac04a"
+        },
+        {
+          "table": "resource_leases",
+          "count": 62,
+          "sha256": "958ccea07089ba5096e205a6da7620ff682b4b13f397e93f55c9b3a8b1d38bfa"
+        },
+        {
+          "table": "runs",
+          "count": 204,
+          "sha256": "a52872866d66b33de5c6906922c09e2ad1da81515dfc4fabe05faee511e7de7a"
+        },
+        {
+          "table": "schedule_occurrences",
+          "count": 48,
+          "sha256": "c27fa0df8d752bd97be4f9f2a9e6d26583cdfed237b501c372755f5ed93e0e04"
+        },
+        {
+          "table": "schedule_previews",
+          "count": 32,
+          "sha256": "136edf1298d68acc177ddf5efe33c16697cab19aeeaea220b8c90459d923ea0c"
+        },
+        {
+          "table": "schedule_versions",
+          "count": 32,
+          "sha256": "8153e12599f9c4565ff09d4f44143d465ca13079cf93ebd95d975c2b043d1a0c"
+        },
+        {
+          "table": "schedules",
+          "count": 20,
+          "sha256": "4ebacc224278058281d51684c726e18d701f9ad54a233a3771d8d2c0b826a87a"
+        },
+        {
+          "table": "schema_migrations",
+          "count": 31,
+          "sha256": "5ae8d0e6a35c10e552fe8d1c5e84cd5c5b0380b885d16c3d134326e2625de9c9"
+        },
+        {
+          "table": "sessions",
+          "count": 391,
+          "sha256": "62588488a9063f6f40097b74cc7357f07304044c03ab1deb006ca4a6afbdb0a5"
+        },
+        {
+          "table": "site_channels",
+          "count": 54,
+          "sha256": "0e08889754d531e3ca4a8d27f517ff370c215bb58244ece083a75d682abd9b92"
+        },
+        {
+          "table": "stripe_connections",
+          "count": 18,
+          "sha256": "b8e734841b165ab2fcc801d3c6e86b74589ea14c3b1d9840da46a9ff2fe7a036"
+        },
+        {
+          "table": "stripe_disputes",
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "table": "stripe_events",
+          "count": 9,
+          "sha256": "b31255fb68737db74c3035fce2ddb2bd499c7cb7cbdd4aef5750c83b6269bf11"
+        },
+        {
+          "table": "stripe_refunds",
+          "count": 10,
+          "sha256": "04e127932d643567ce2609bb2e915979b6f3adbd22a35e2024f3b23400de852a"
+        },
+        {
+          "table": "target_previews",
+          "count": 57,
+          "sha256": "5c3989f1629183f01e3d2733c746042b68991b8f9646ddcad8aac005b65a034a"
+        },
+        {
+          "table": "target_snapshots",
+          "count": 46,
+          "sha256": "00c887750e676b9aa58fb83006b164b2fa57a709288138290c756aaf7734ec87"
+        },
+        {
+          "table": "tasks",
+          "count": 219,
+          "sha256": "fdf2584bf54a06351dae642f4b962a7507e197054f28b1ffb0e1943a6d66068f"
+        },
+        {
+          "table": "template_events",
+          "count": 45,
+          "sha256": "7af8b5e2c6a3282e67121c450f28b2259c90ee00e416f6bfaaf9371f2f1556c2"
+        },
+        {
+          "table": "template_previews",
+          "count": 15,
+          "sha256": "092ea57b931e9fda5a4b9a396d0b3cefbf68c004b27433c7f79fcb2c1ab0342e"
+        },
+        {
+          "table": "template_versions",
+          "count": 30,
+          "sha256": "aa40c546f5c686c285c298333f620cc7afca05018f487255097cdf3bcbaa46f1"
+        },
+        {
+          "table": "verified_payments",
+          "count": 18,
+          "sha256": "6111727eae563d76e55d2dc88defd896c26d3e40f8221c2fb8bad1935b25358c"
+        },
+        {
+          "table": "visitor_sessions",
+          "count": 66,
+          "sha256": "518d67aae712cb2d79186bfb12c7ed801fea0eedac05c618c839e416edbe591c"
+        },
+        {
+          "table": "whatsapp_destinations",
+          "count": 11,
+          "sha256": "e5902a24a35fff0635afdfb7bae92ea128857b3757c13cb3542426364e71102e"
+        },
+        {
+          "table": "whatsapp_referrals",
+          "count": 11,
+          "sha256": "5d501c5926ef7d5b0dafd98a7cf4f18c6c5e059885afec2e975398d3ad9ff7e1"
+        }
+      ],
+      "configs": {
+        ".kff/local-config.json": "25d32f43c8392581b9b36ddde03ab49bf5815f3565d7af23267a6128c8d72010",
+        ".kff/agent-config.json": "b1014168bc32a13309ba4cca7a363f695b23927507e879a8bbb8aa82da3dc706",
+        ".kff/selected-real-profile-binding.json": "cc8c543b3fba7e9417d1cbc7e1b23f02d89c4340154f3d8589c0f78b59308548",
+        ".kff/second-real-profile-binding.json": "14b43c74b13f750f64331502c8d018e4fe500deadb388f86396ad32031063431"
+      },
+      "database": {
+        "directory": "C:/Users/17731/Desktop/KFF/.kff/postgres",
+        "port": "55432",
+        "started_at": "2026-09-13T11:02:50.655Z"
+      },
+      "excluded_volatile_fields": [
+        "agents.heartbeat_at"
+      ]
+    },
+    "after": {
+      "recorded_at": "2026-09-13T11:19:28.601Z",
+      "tables": [
+        {
+          "table": "accounts",
+          "count": 87,
+          "sha256": "f8393b71e960ac540e434d93afe83117aa0cd698d1e8d5916fd53984eae68bae"
+        },
+        {
+          "table": "acquisition_action_links",
+          "count": 3,
+          "sha256": "e829611c5e83f3cf702caa49215c9ca2a2db009cae764369ec9f43cc03124b46"
+        },
+        {
+          "table": "acquisition_evaluations",
+          "count": 66,
+          "sha256": "39a6ff8fdfda1f06187243f461693679beb2e19edbcf286cdadf34d6cb64e08e"
+        },
+        {
+          "table": "acquisition_imports",
+          "count": 2,
+          "sha256": "9eea269128c3420987e29c67eceb970d664d7a50102259df4c2ff0dd6a3bb427"
+        },
+        {
+          "table": "acquisition_leads",
+          "count": 24,
+          "sha256": "478de64c10c97848caf66ddad88e60ca29c6ae8bfadc8ef142f1173805df0a5b"
+        },
+        {
+          "table": "acquisition_monitors",
+          "count": 7,
+          "sha256": "281e10f519c17e73c36b91b16278d43f41518f1f5cdcb380e632e25e68e2454e"
+        },
+        {
+          "table": "acquisition_prospects",
+          "count": 46,
+          "sha256": "f83c9d87a38b85cda1994ecdf711287a44b20e842486050ac051fbc198f74b59"
+        },
+        {
+          "table": "acquisition_scans",
+          "count": 13,
+          "sha256": "5c83678129846d98d0afb973bb3c75820a823e56c588e96de280980d50ab67d2"
+        },
+        {
+          "table": "acquisition_sources",
+          "count": 1,
+          "sha256": "a01a6ebf03454acc09785e47f8dcfa1c9c965ff597e3a1a3df4f3b57cd13808a"
+        },
+        {
+          "table": "acquisition_suppressions",
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "table": "action_adjudications",
+          "count": 33,
+          "sha256": "e09f340b1ed1f206cd27493fe70433b5f5b0f3a89cfa6939e8f98332494e8e90"
+        },
+        {
+          "table": "action_attempts",
+          "count": 187,
+          "sha256": "7b17dea5af454c6b3d63a28b35cca332512f45c354e2caa18ae63282b8de53e9"
+        },
+        {
+          "table": "actions",
+          "count": 204,
+          "sha256": "b813ec483a196407d69083132826af128ee112c5c8f2c419d0187ff9b518c867"
+        },
+        {
+          "table": "adapter_artifacts",
+          "count": 27,
+          "sha256": "ed0c949a6ffb984812438d7ca58571bd10baef2c1c36e252eacb5ce970ac2587"
+        },
+        {
+          "table": "agent_commands",
+          "count": 187,
+          "sha256": "a9053865bebc70c2f7bbe79a51a57a9c7617c8b744a31cd50d0c90481f599474"
+        },
+        {
+          "table": "agents",
+          "count": 45,
+          "sha256": "0d25678ae10be66af377f3d847c064cf886ea985e1bb29a70564e1e4fd63e9ec"
+        },
+        {
+          "table": "approval_decisions",
+          "count": 219,
+          "sha256": "be8778d02de0a4cf47edb9df6d05fccdcc71246ea074ef41981236ae568f27f1"
+        },
+        {
+          "table": "audit_events",
+          "count": 3055,
+          "sha256": "c74eea193069fbc405ebe5e18e73dcd7fa39db23a75e42c73093f1eee4da8f6d"
+        },
+        {
+          "table": "brands",
+          "count": 1,
+          "sha256": "06919cf66bc1138a96c0d0043441c698ba24faf1ea388e20443f5d466a8a949e"
+        },
+        {
+          "table": "browser_inbox_checkpoints",
+          "count": 8,
+          "sha256": "edf9a813061689e38d4fbe71e9907faa651ccbb4d2a2539d2bc5cea2644f33d7"
+        },
+        {
+          "table": "browser_inbox_monitors",
+          "count": 3,
+          "sha256": "55a8de703c5d5f22784e9d6fca6c9c5042c2e7027f9aab098f33eb597f635fcc"
+        },
+        {
+          "table": "capabilities",
+          "count": 33,
+          "sha256": "6f7befe1dc5de12496b949f2007012a2e1b1463c868b956d2cb4aac8d44936f4"
+        },
+        {
+          "table": "capability_checks",
+          "count": 23,
+          "sha256": "b0637d472244751aa176bf69939ab112ac7500acfd3453b9b254cfba8a4333b6"
+        },
+        {
+          "table": "collection_events",
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "table": "collection_objects",
+          "count": 508,
+          "sha256": "51dce51e8364caf65ef8e02d41423232760076a7363e48aa1bd5609f5978f9c8"
+        },
+        {
+          "table": "collection_observations",
+          "count": 650,
+          "sha256": "72e08a16bb88dbfd3265957c4281acd8830ec41d627f3966e1cf54be5345f8dc"
+        },
+        {
+          "table": "collection_pages",
+          "count": 125,
+          "sha256": "cc9f9f627d9d6c2b1463001da9b1ca9b7ae5d98922dcebd7ec7d615be891ba08"
+        },
+        {
+          "table": "collection_queries",
+          "count": 93,
+          "sha256": "3375c12df8efd7399a912fbaf98ea1450c839d2083724a8b85a74fa2b0fffd0a"
+        },
+        {
+          "table": "collection_results",
+          "count": 622,
+          "sha256": "a1d59e712554e4031ff91b43ffab900ef769445f008107a92aea9e034eb81ce1"
+        },
+        {
+          "table": "collection_runs",
+          "count": 93,
+          "sha256": "cd943af0eceac8b596933eb98044ab6dda0b1680a4ab7b35021c239d0ad502b3"
+        },
+        {
+          "table": "commerce_currencies",
+          "count": 1,
+          "sha256": "2fc2a076fcec0576df841ce6b001ae30db4bacf57e954d89512ebfe5e696bac6"
+        },
+        {
+          "table": "contact_permissions",
+          "count": 110,
+          "sha256": "0d67180d0188ceb5f547fdafd2041acde2669e3defb45ef1e518dc1ce1988b31"
+        },
+        {
+          "table": "contact_targets",
+          "count": 111,
+          "sha256": "905164d90eaa628a6ab47a776446e5c9e0269cffd9fb3dd80d526d32fcf8cd03"
+        },
+        {
+          "table": "content_versions",
+          "count": 219,
+          "sha256": "beecbe729836f015d7fe2938dc4bca44ccf0607fb384c4bd7078ad014732e2aa"
+        },
+        {
+          "table": "conversations",
+          "count": 93,
+          "sha256": "9d56dd19684313c0f6012f64d108b08befd9acac94d643f732d940cad2a563f2"
+        },
+        {
+          "table": "cost_budgets",
+          "count": 2,
+          "sha256": "66856ea564a6712a3c06da34ef28beb1c64e908638953bb1abf7a153cf09dcb2"
+        },
+        {
+          "table": "cost_entries",
+          "count": 119,
+          "sha256": "97fd45e0a19867cd1db81a6b2ef2459751a3483ae5227b222dffd8c7409aad2e"
+        },
+        {
+          "table": "cost_reservations",
+          "count": 42,
+          "sha256": "1c1b9a20a79a13fb0a9507e69130d9076fa08e0dc97f6c202e9301f7124b1db1"
+        },
+        {
+          "table": "customer_events",
+          "count": 137,
+          "sha256": "9ed1eb01d0ee038e2c1a2d25b55469155ab8dbe48a9e5449cecdd735a127951d"
+        },
+        {
+          "table": "customer_identities",
+          "count": 93,
+          "sha256": "95ac8b0a49ead24506682cf80978190ab214a26a5405142b20339ecccdf5647b"
+        },
+        {
+          "table": "customers",
+          "count": 93,
+          "sha256": "a302369db18eff987b37eeb22fb4b87ce3e5cf4a8e1a33de227b43cc00d1affd"
+        },
+        {
+          "table": "diagnostic_bundles",
+          "count": 184,
+          "sha256": "b4cde5bc435ac2ecb5a7b950ef55f7d3dbe5b1a7169f1bc30c2cd0b419038b7d"
+        },
+        {
+          "table": "dispute_balance_entries",
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "table": "environment_commands",
+          "count": 7,
+          "sha256": "fc4c6b312990109716c2da97b7f44d96364b5868b3bbef5e3a1f6dc2fa9f2deb"
+        },
+        {
+          "table": "environments",
+          "count": 54,
+          "sha256": "86c7eac5d2f4307c9c44c4ea5998db91e5c004e61ef835124d7b47e981ce0684"
+        },
+        {
+          "table": "facebook_connections",
+          "count": 23,
+          "sha256": "f874936f61facfb4128daf41ec3e14f7956648b4dd21b1bc58649350b48c5f18"
+        },
+        {
+          "table": "financial_adjustments",
+          "count": 20,
+          "sha256": "da12ab1bc3da0929cf431b99756af8a0073bd9c7395654edc7b45ee251a0fc58"
+        },
+        {
+          "table": "financial_observations",
+          "count": 20,
+          "sha256": "4825b59f97751405c830672205714079a0a12e8cbf8a4912b4718ef44f3865ae"
+        },
+        {
+          "table": "import_confirmations",
+          "count": 38,
+          "sha256": "598a96a47a197018ec3c0f5457b42fb3d4c833f109f949fe271588507f7ae001"
+        },
+        {
+          "table": "import_files",
+          "count": 38,
+          "sha256": "514a3b6db0fae6edd4768f6f5cfe00afb14a7f230b73a982b040ec701f25628d"
+        },
+        {
+          "table": "import_previews",
+          "count": 38,
+          "sha256": "df4585a8b330bcaaa52991b3f8e844160cf14a5ea1e3607fdb79f4fd1c9951c1"
+        },
+        {
+          "table": "inbound_events",
+          "count": 294,
+          "sha256": "8237f67cc949a997f5178a5f4a49049d8df365b21b772e8bc689d2af362e9639"
+        },
+        {
+          "table": "jobs",
+          "count": 210,
+          "sha256": "b64d74851313893af03e733d5181942019d94d3e919e910711b9760d2e382103"
+        },
+        {
+          "table": "local_users",
+          "count": 1,
+          "sha256": "ba7a0b8a7432eba4a454015a3f58f91b2178481e33fd93c9204e61cb3e9d878a"
+        },
+        {
+          "table": "memberships",
+          "count": 1,
+          "sha256": "0a90ddaf964216d299aa917d2f63d3b6cb449949a62a05d595ac5a349b5f9f13"
+        },
+        {
+          "table": "messages",
+          "count": 123,
+          "sha256": "0397ecb7bdbc87a1c251167548b031306244990000839bf4dca85a11658515d8"
+        },
+        {
+          "table": "order_events",
+          "count": 50,
+          "sha256": "d186f7f1a63cde21c41db4e0db5b58c3b532648567874e7c321971d559636d11"
+        },
+        {
+          "table": "order_previews",
+          "count": 34,
+          "sha256": "feaa38deed23da6655473a1e2700b3bbcea46d9640681182f53b83837e3f465f"
+        },
+        {
+          "table": "orders",
+          "count": 34,
+          "sha256": "3886035464d95d51f770575df56bf4e421d2f1a0736f839a7e3f954523207308"
+        },
+        {
+          "table": "organization_memberships",
+          "count": 1,
+          "sha256": "e88d9297e75b8b8552031b76ff0309ca42cdca2c0678f15b4847ac433e2fa0be"
+        },
+        {
+          "table": "organizations",
+          "count": 1,
+          "sha256": "13d500cf031c7666a4b854b78dd91f1393f931e28b4831cae1cc186924bf3018"
+        },
+        {
+          "table": "payment_checkouts",
+          "count": 18,
+          "sha256": "e76024faa6520002c34a78edcea1979555e44f946131f39d4a3757725aaec0b3"
+        },
+        {
+          "table": "pilot_permits",
+          "count": 25,
+          "sha256": "5c735e3c2c13291bdabfa9b5a47d6031bac9a1c036de63150cc885a7cfbd95d4"
+        },
+        {
+          "table": "pilot_reservations",
+          "count": 25,
+          "sha256": "e7ccf4f1e0411276826596fa76ece4d8e2dd853dbb657907a2324f333744de2a"
+        },
+        {
+          "table": "product_versions",
+          "count": 39,
+          "sha256": "3545e1c9b8f824dbe3223bf0242b6b8f86a0e20adfde29eeace6adb821be8cd8"
+        },
+        {
+          "table": "products",
+          "count": 29,
+          "sha256": "479414c2d70b066d57d629efd55ec6c0ff2e962362793841d15b587ca50c04f2"
+        },
+        {
+          "table": "refund_ledgers",
+          "count": 18,
+          "sha256": "45152a61e89a3aa7bdad64b64f5c39a3320a62e9f7aa422d0248ea1aa7ac7acb"
+        },
+        {
+          "table": "refund_postings",
+          "count": 10,
+          "sha256": "43822bec37f44a3fb2134f92dc55e86665888054d038666f1295ac1a99b90868"
+        },
+        {
+          "table": "refund_requests",
+          "count": 16,
+          "sha256": "7a6979350eb6374145aa26b56ebb2b0f44dcff5d9ca222f6d0269c9156dac04a"
+        },
+        {
+          "table": "resource_leases",
+          "count": 62,
+          "sha256": "958ccea07089ba5096e205a6da7620ff682b4b13f397e93f55c9b3a8b1d38bfa"
+        },
+        {
+          "table": "runs",
+          "count": 204,
+          "sha256": "a52872866d66b33de5c6906922c09e2ad1da81515dfc4fabe05faee511e7de7a"
+        },
+        {
+          "table": "schedule_occurrences",
+          "count": 48,
+          "sha256": "c27fa0df8d752bd97be4f9f2a9e6d26583cdfed237b501c372755f5ed93e0e04"
+        },
+        {
+          "table": "schedule_previews",
+          "count": 32,
+          "sha256": "136edf1298d68acc177ddf5efe33c16697cab19aeeaea220b8c90459d923ea0c"
+        },
+        {
+          "table": "schedule_versions",
+          "count": 32,
+          "sha256": "8153e12599f9c4565ff09d4f44143d465ca13079cf93ebd95d975c2b043d1a0c"
+        },
+        {
+          "table": "schedules",
+          "count": 20,
+          "sha256": "4ebacc224278058281d51684c726e18d701f9ad54a233a3771d8d2c0b826a87a"
+        },
+        {
+          "table": "schema_migrations",
+          "count": 31,
+          "sha256": "5ae8d0e6a35c10e552fe8d1c5e84cd5c5b0380b885d16c3d134326e2625de9c9"
+        },
+        {
+          "table": "sessions",
+          "count": 391,
+          "sha256": "62588488a9063f6f40097b74cc7357f07304044c03ab1deb006ca4a6afbdb0a5"
+        },
+        {
+          "table": "site_channels",
+          "count": 54,
+          "sha256": "0e08889754d531e3ca4a8d27f517ff370c215bb58244ece083a75d682abd9b92"
+        },
+        {
+          "table": "stripe_connections",
+          "count": 18,
+          "sha256": "b8e734841b165ab2fcc801d3c6e86b74589ea14c3b1d9840da46a9ff2fe7a036"
+        },
+        {
+          "table": "stripe_disputes",
+          "count": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "table": "stripe_events",
+          "count": 9,
+          "sha256": "b31255fb68737db74c3035fce2ddb2bd499c7cb7cbdd4aef5750c83b6269bf11"
+        },
+        {
+          "table": "stripe_refunds",
+          "count": 10,
+          "sha256": "04e127932d643567ce2609bb2e915979b6f3adbd22a35e2024f3b23400de852a"
+        },
+        {
+          "table": "target_previews",
+          "count": 57,
+          "sha256": "5c3989f1629183f01e3d2733c746042b68991b8f9646ddcad8aac005b65a034a"
+        },
+        {
+          "table": "target_snapshots",
+          "count": 46,
+          "sha256": "00c887750e676b9aa58fb83006b164b2fa57a709288138290c756aaf7734ec87"
+        },
+        {
+          "table": "tasks",
+          "count": 219,
+          "sha256": "fdf2584bf54a06351dae642f4b962a7507e197054f28b1ffb0e1943a6d66068f"
+        },
+        {
+          "table": "template_events",
+          "count": 45,
+          "sha256": "7af8b5e2c6a3282e67121c450f28b2259c90ee00e416f6bfaaf9371f2f1556c2"
+        },
+        {
+          "table": "template_previews",
+          "count": 15,
+          "sha256": "092ea57b931e9fda5a4b9a396d0b3cefbf68c004b27433c7f79fcb2c1ab0342e"
+        },
+        {
+          "table": "template_versions",
+          "count": 30,
+          "sha256": "aa40c546f5c686c285c298333f620cc7afca05018f487255097cdf3bcbaa46f1"
+        },
+        {
+          "table": "verified_payments",
+          "count": 18,
+          "sha256": "6111727eae563d76e55d2dc88defd896c26d3e40f8221c2fb8bad1935b25358c"
+        },
+        {
+          "table": "visitor_sessions",
+          "count": 66,
+          "sha256": "518d67aae712cb2d79186bfb12c7ed801fea0eedac05c618c839e416edbe591c"
+        },
+        {
+          "table": "whatsapp_destinations",
+          "count": 11,
+          "sha256": "e5902a24a35fff0635afdfb7bae92ea128857b3757c13cb3542426364e71102e"
+        },
+        {
+          "table": "whatsapp_referrals",
+          "count": 11,
+          "sha256": "5d501c5926ef7d5b0dafd98a7cf4f18c6c5e059885afec2e975398d3ad9ff7e1"
+        }
+      ],
+      "configs": {
+        ".kff/local-config.json": "25d32f43c8392581b9b36ddde03ab49bf5815f3565d7af23267a6128c8d72010",
+        ".kff/agent-config.json": "b1014168bc32a13309ba4cca7a363f695b23927507e879a8bbb8aa82da3dc706",
+        ".kff/selected-real-profile-binding.json": "cc8c543b3fba7e9417d1cbc7e1b23f02d89c4340154f3d8589c0f78b59308548",
+        ".kff/second-real-profile-binding.json": "14b43c74b13f750f64331502c8d018e4fe500deadb388f86396ad32031063431"
+      },
+      "database": {
+        "directory": "C:/Users/17731/Desktop/KFF/.kff/postgres",
+        "port": "55432",
+        "started_at": "2026-09-13T11:17:53.625Z"
+      },
+      "excluded_volatile_fields": [
+        "agents.heartbeat_at"
+      ],
+      "all_original_tables_unchanged": true,
+      "all_original_configs_unchanged": true
+    }
+  },
+  "live_runtime": {
+    "runtime_id": "b1505fb3-3df4-4d38-a585-b0c7fe0f0317",
+    "pid": 31320,
+    "phase": "RUNNING",
+    "updated_at": "2026-09-13T11:19:45.241Z",
+    "app_origin": "http://127.0.0.1:3000",
+    "release_id": "kff-agent-0.1.6-win32-x64-f1823fe4ee7b",
+    "database_owned": true,
+    "components": {
+      "database": {
+        "pid": 9464,
+        "state": "CONNECTED"
+      },
+      "web": {
+        "pid": 32084,
+        "state": "RUNNING"
+      },
+      "worker": {
+        "pid": 22400,
+        "state": "RUNNING"
+      },
+      "agent": {
+        "pid": 18688,
+        "state": "RUNNING"
+      }
+    }
+  },
+  "health": {
+    "status": "ok",
+    "protocol": "kff.api.v1",
+    "runtime_id": "b1505fb3-3df4-4d38-a585-b0c7fe0f0317"
+  },
+  "data": {
+    "accounts": 87,
+    "environments": 54,
+    "migrations": 31,
+    "unclosed_commands": 0,
+    "unfinished_environments": 0,
+    "agent_fresh": true
+  },
+  "agent_artifacts": {
+    "checked_at": "2026-09-13T11:19:28.938Z",
+    "preserved_original_files": 176,
+    "changed_files": [],
+    "new_files": []
+  },
+  "checks": {
+    "build": {
+      "exit_code": 0,
+      "ended_at": "2026-09-13T11:17:28.055Z"
+    },
+    "typecheck": {
+      "exit_code": 0,
+      "ended_at": "2026-09-13T11:14:47.648Z"
+    }
+  },
+  "rejection_checks": {
+    "checked_at": "2026-09-13T11:16:41.229Z",
+    "synthetic": true,
+    "fixture": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\backups\\restore-rejection-90187e52-70ae-4270-aa02-c81280409e2d",
+    "checks": [
+      {
+        "name": "invalid_checksum",
+        "exit_code": 1,
+        "expected_error": "BACKUP_CHECKSUM_MISMATCH",
+        "rejected_before_copy_or_start": true
+      },
+      {
+        "name": "running_backup_marker",
+        "exit_code": 1,
+        "expected_error": "STOPPED_POSTGRES_17_BACKUP_REQUIRED",
+        "rejected_before_copy_or_start": true
+      },
+      {
+        "name": "unknown_option",
+        "exit_code": 1,
+        "expected_error": "Usage on Windows x64",
+        "rejected_before_copy_or_start": true
+      }
+    ]
+  },
+  "source_sha256": {
+    "scripts/verify-backup.ts": "8532ea8542392293fb48447b21d1f3b70ab236c7431a177c623d4a57f569674e"
+  },
+  "ui": "output/playwright/database-restore.png",
+  "second_profile_status": "Active",
+  "platform_sends": 0,
+  "limitations": [
+    "Restoration into an isolated copy on the existing Windows computer; no live replacement or clean-machine installation",
+    "Does not establish an untested migration or application rollback path",
+    "Agent heartbeat timestamp excluded from table comparison",
+    "Second real profile original Agent check still awaits release of its user-owned window"
+  ]
+}

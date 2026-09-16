@@ -1,0 +1,25 @@
+{
+  "at": "2026-09-14T10:08:26.717Z",
+  "run_id": "f79064d5-b95c-477b-aa57-2bddfd692863",
+  "rows": [
+    {
+      "source_object_id": "facebook:post:pfbid022sdGHy9i14MrJE7t8CKuRH2gfgCGPdUaT7PEGEuQWPySBLefiKhkkewbM5nkafE3l",
+      "score": 50,
+      "reason": "关键词匹配 1 项。规则评分，不代表购买概率。",
+      "monitor_id": "d30bcd50-5365-42a3-87f2-17cdcb9be43f"
+    },
+    {
+      "source_object_id": "facebook:post:pfbid02ZyLfFziM7RSEqE6ZkiujsrspKox649JQ7ibQHKdiy7uEuwvLXVhQvbfZRoYmRbKhl",
+      "score": 50,
+      "reason": "关键词匹配 1 项。规则评分，不代表购买概率。",
+      "monitor_id": "d30bcd50-5365-42a3-87f2-17cdcb9be43f"
+    },
+    {
+      "source_object_id": "facebook:reel:2163157911082094",
+      "score": 50,
+      "reason": "关键词匹配 1 项。规则评分，不代表购买概率。",
+      "monitor_id": "d30bcd50-5365-42a3-87f2-17cdcb9be43f"
+    }
+  ],
+  "complete": true
+}

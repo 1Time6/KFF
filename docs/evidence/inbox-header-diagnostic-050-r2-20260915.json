@@ -1,0 +1,446 @@
+{
+  "checked_at": "2026-09-15T05:06:54.820Z",
+  "version": "0.1.50",
+  "diagnostic": {
+    "started_at": "2026-09-15T05:01:33.107Z",
+    "authorization": {
+      "approval": "USER_APPROVED",
+      "entrypoint": ".kff/diagnose-inbox-header-050-r2.ts",
+      "entrypoint_sha256": "3789da6e961fe3b3b548c4e4aa2ce72fda95f868767bec581a4c53f48536b8ef",
+      "prepared_at": "2026-09-15T05:00:04.56549Z",
+      "account_number": 8,
+      "profile_id": "k1gvdtft",
+      "maximum_business_seconds": 240,
+      "maximum_exclusive_minutes": 5,
+      "original_thread_id": "2079341482680484",
+      "scope": "Open current directory and only the original failed thread; inspect title and profile link for up to 15 seconds; no message parsing or import",
+      "runtime": "Normally stop original Web/Worker/Agent first and restore afterward only once browser closure is confirmed; keep all monitors paused",
+      "inbox_message_reads": 0,
+      "platform_sends": 0,
+      "manager_restart": false,
+      "proxy_changes": false,
+      "other_accounts_opened": false,
+      "stop_on_first_failure": true,
+      "helper_sha256": "64f7965a794cb4ff460be4e22d6d83b3f0f4da456e5dce5643c7482dd55d4f90",
+      "user_reply": "允许修正版标题诊断",
+      "approved_at": "2026-09-15T05:01:19.4268483Z"
+    },
+    "purpose": "Inspect only the original failed header using the current directory name; do not assume a peer ID from history",
+    "original_task_id": "07f16150-a93c-4090-b87d-348e3b59c830",
+    "profile_id": "k1gvdtft",
+    "thread_id": "2079341482680484",
+    "platform_sends": 0,
+    "messages_parsed": 0,
+    "imported_records": 0,
+    "steps": [
+      {
+        "at": "2026-09-15T05:01:43.655Z",
+        "value": "navigate"
+      },
+      {
+        "at": "2026-09-15T05:01:50.673Z",
+        "value": "resolve"
+      },
+      {
+        "at": "2026-09-15T05:01:50.697Z",
+        "value": "own-controls"
+      },
+      {
+        "at": "2026-09-15T05:01:51.078Z",
+        "value": "heading"
+      },
+      {
+        "at": "2026-09-15T05:01:52.171Z",
+        "value": "profile-type"
+      },
+      {
+        "at": "2026-09-15T05:01:52.572Z",
+        "value": "final-guard"
+      },
+      {
+        "at": "2026-09-15T05:01:52.628Z",
+        "value": "open-current-directory"
+      },
+      {
+        "at": "2026-09-15T05:01:58.911Z",
+        "value": "open-only-original-failed-thread"
+      },
+      {
+        "at": "2026-09-15T05:02:18.160Z",
+        "value": "navigate"
+      },
+      {
+        "at": "2026-09-15T05:02:21.214Z",
+        "value": "resolve"
+      },
+      {
+        "at": "2026-09-15T05:02:21.296Z",
+        "value": "own-controls"
+      },
+      {
+        "at": "2026-09-15T05:02:21.444Z",
+        "value": "heading"
+      },
+      {
+        "at": "2026-09-15T05:02:21.675Z",
+        "value": "profile-type"
+      },
+      {
+        "at": "2026-09-15T05:02:23.484Z",
+        "value": "final-guard"
+      }
+    ],
+    "header_frames": [
+      {
+        "at": "2026-09-15T05:02:02.564Z",
+        "pass": 0,
+        "header": null,
+        "surface": {
+          "url": "https://www.facebook.com/messages/e2ee/t/2079341482680484/",
+          "main_count": 1,
+          "headings": [
+            {
+              "text": "与Facebook 用户的对话",
+              "parent_tag": "DIV",
+              "parent_role": null
+            },
+            {
+              "text": "Facebook 用户",
+              "parent_tag": "DIV",
+              "parent_role": null
+            },
+            {
+              "text": "消息",
+              "parent_tag": "DIV",
+              "parent_role": null
+            }
+          ],
+          "heading_links": []
+        }
+      },
+      {
+        "at": "2026-09-15T05:02:03.111Z",
+        "pass": 1,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:03.621Z",
+        "pass": 2,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:04.132Z",
+        "pass": 3,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:04.650Z",
+        "pass": 4,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:05.168Z",
+        "pass": 5,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:05.682Z",
+        "pass": 6,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:06.200Z",
+        "pass": 7,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:06.706Z",
+        "pass": 8,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:07.375Z",
+        "pass": 9,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:07.886Z",
+        "pass": 10,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:08.394Z",
+        "pass": 11,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:08.911Z",
+        "pass": 12,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:09.418Z",
+        "pass": 13,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:09.935Z",
+        "pass": 14,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:10.446Z",
+        "pass": 15,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:10.965Z",
+        "pass": 16,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:11.485Z",
+        "pass": 17,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:11.998Z",
+        "pass": 18,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:12.537Z",
+        "pass": 19,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:13.043Z",
+        "pass": 20,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:13.551Z",
+        "pass": 21,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:14.065Z",
+        "pass": 22,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:14.582Z",
+        "pass": 23,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:15.095Z",
+        "pass": 24,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:15.606Z",
+        "pass": 25,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:16.114Z",
+        "pass": 26,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:16.623Z",
+        "pass": 27,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:17.140Z",
+        "pass": 28,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:17.645Z",
+        "pass": 29,
+        "header": null
+      },
+      {
+        "at": "2026-09-15T05:02:18.154Z",
+        "pass": 30,
+        "header": null,
+        "surface": {
+          "url": "https://www.facebook.com/messages/e2ee/t/2079341482680484/",
+          "main_count": 1,
+          "headings": [
+            {
+              "text": "与郑成功的对话",
+              "parent_tag": "DIV",
+              "parent_role": null
+            },
+            {
+              "text": "郑成功",
+              "parent_tag": "DIV",
+              "parent_role": null,
+              "closest_anchor_href": "/61594334430750/"
+            },
+            {
+              "text": "消息",
+              "parent_tag": "DIV",
+              "parent_role": null
+            }
+          ],
+          "heading_links": [
+            {
+              "href": "/61594334430750/",
+              "text": "郑成功"
+            }
+          ]
+        }
+      }
+    ],
+    "profile_before": "Inactive",
+    "identity_before": {
+      "method": "facebook-profile-dom-v1",
+      "authenticated": true,
+      "operating_identity_id": "61589894042400",
+      "account_type": "profile",
+      "display_name": "XiangHuan Master",
+      "observed_at": "2026-09-15T05:01:52.626Z",
+      "source_url": "https://www.facebook.com/profile.php?id=61589894042400"
+    },
+    "directory": {
+      "ready": true,
+      "visible_threads": 3,
+      "invalid": 0,
+      "empty": false
+    },
+    "current_directory_target": {
+      "thread_id": "2079341482680484",
+      "display_name": "Facebook 用户",
+      "source_url": "https://www.facebook.com/messages/e2ee/t/2079341482680484/"
+    },
+    "header_verified": false,
+    "identity_after": {
+      "method": "facebook-profile-dom-v1",
+      "authenticated": true,
+      "operating_identity_id": "61589894042400",
+      "account_type": "profile",
+      "display_name": "XiangHuan Master",
+      "observed_at": "2026-09-15T05:02:23.503Z",
+      "source_url": "https://www.facebook.com/profile.php?id=61589894042400"
+    },
+    "business_stopped_at": "2026-09-15T05:02:23.504Z",
+    "managed_close_confirmed": true,
+    "profile_after": "Inactive",
+    "owner_lock_retained": false,
+    "finished_at": "2026-09-15T05:02:25.712Z"
+  },
+  "local_diagnostic_fix": {
+    "scope": "Diagnostic collector only; product parser unchanged",
+    "probe": {
+      "synthetic": true,
+      "platform_calls": 0,
+      "original_serialization_failure_reproduced": true,
+      "cases": [
+        {
+          "name": "numeric_link",
+          "passed": true
+        },
+        {
+          "name": "unlinked_title",
+          "passed": true
+        },
+        {
+          "name": "duplicate_title_links",
+          "passed": true
+        },
+        {
+          "name": "message_area_excluded",
+          "passed": true
+        },
+        {
+          "name": "hidden_excluded",
+          "passed": true
+        }
+      ]
+    },
+    "log": ".kff/probe-header-surface-050.log",
+    "corrected_entrypoint": ".kff/diagnose-inbox-header-050-r2.ts",
+    "real_rerun_performed": true
+  },
+  "original_runtime_restored": {
+    "runtime_id": "365120e6-06ff-4b23-a560-fa6c947fa3c5",
+    "pid": 22236,
+    "phase": "RUNNING",
+    "updated_at": "2026-09-15T05:06:53.540Z",
+    "app_origin": "http://127.0.0.1:3000",
+    "release_id": "kff-agent-0.1.50-win32-x64-1f0f07b42ef5",
+    "database_owned": false,
+    "components": {
+      "database": {
+        "pid": null,
+        "state": "CONNECTED"
+      },
+      "web": {
+        "pid": 17672,
+        "state": "RUNNING"
+      },
+      "worker": {
+        "pid": 28260,
+        "state": "RUNNING"
+      },
+      "agent": {
+        "pid": 22248,
+        "state": "RUNNING"
+      }
+    }
+  },
+  "health": {
+    "status": "ok",
+    "protocol": "kff.api.v1",
+    "runtime_id": "365120e6-06ff-4b23-a560-fa6c947fa3c5"
+  },
+  "state": {
+    "business_rows_preserved": true,
+    "tables": {
+      "acquisition_leads": {
+        "count": 53,
+        "sha256": "1c61c772b9ff7c2550995243de12b85c6b0a57448e45ab8e2be01fe69bc86f3b"
+      },
+      "messages": {
+        "count": 140,
+        "sha256": "2640e219d9380b32f868eb4bc87659db851bb9e5eaefd985117a69c3e55ca29c"
+      },
+      "whatsapp_referrals": {
+        "count": 16,
+        "sha256": "a414fb7d35f54cce6aedd25a4ac3a2451826de86730b2e75a2f06ee68a3db5f5"
+      },
+      "customers": {
+        "count": 98,
+        "sha256": "e496d36a67c5c34c88e39e8ffbc322b2348255f261b91af2d14eb75573938019"
+      },
+      "accounts": {
+        "count": 88,
+        "sha256": "fa305e29027e42fd1866b5137fc2e7b95ca43aa94f6353a26d29a4c60a4e645f"
+      },
+      "acquisition_scans": {
+        "count": 77,
+        "sha256": "174573671d30f4f9d68f0b3d47cc2441d6793f54b5f7d262ee02b03fcebd9ba8"
+      },
+      "acquisition_evaluations": {
+        "count": 163,
+        "sha256": "aa1f020894624be5f9247ab0f92e66e076716ab1aae07c8d0b192c9f0053d80f"
+      }
+    },
+    "monitors": [
+      {
+        "state": "PAUSED",
+        "count": 35
+      }
+    ],
+    "open_commands": 0
+  },
+  "result": "INITIAL_DIRECTORY_PLACEHOLDER_STALE_DURING_HEADER_HYDRATION",
+  "header_structure_verified": true,
+  "platform_account_deactivation_or_ban_proven": false,
+  "full_goal_complete": false
+}

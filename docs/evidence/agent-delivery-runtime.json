@@ -1,0 +1,135 @@
+{
+  "schema_version": "kff.agent-delivery-checkpoint.v1",
+  "recorded_at": "2026-09-12T18:36:27.477Z",
+  "goal_complete": false,
+  "real_platform_verified": false,
+  "selected_profile": {
+    "ui_sequence": "1876794",
+    "profile_id": "k1gvdtft",
+    "latest_login_observation": {
+      "observed_at": "2026-09-12T18:05:18.364Z",
+      "profile_id": "k1gvdtft",
+      "facebook_state": "LOGIN_REQUIRED",
+      "visible_signals": [
+        "Log into Facebook",
+        "Email or mobile number",
+        "Password",
+        "Log In"
+      ],
+      "real_identity_verified": false,
+      "platform_write_actions": 0,
+      "closure_confirmed_at": "2026-09-12T18:05:27.333Z",
+      "after_status": "Inactive"
+    }
+  },
+  "artifact": {
+    "archive": "dist/kff-agent-0.1.0-win32-x64-ce717520adc4.zip",
+    "archive_sha256": "51b23dfac105a3deb9a90ac43d02db5c4de919a44de16d062abf48057b52d3d6",
+    "archive_bytes": 46266963,
+    "release_id": "kff-agent-0.1.0-win32-x64-ce717520adc4",
+    "node_version": "24.14.1",
+    "file_count": 1333,
+    "dependency_count": 23,
+    "manifest_sha256": "dfa6937d8b103f94c0ad35f7d6af5360e72402ee7d60e12bb2a23549681217b1"
+  },
+  "tests": {
+    "passed": 1,
+    "failed": 0,
+    "package_hash_damage_rejected": true,
+    "data_directory_inside_release_rejected": true,
+    "inherited_token_origin_pairing_overrides_ignored": true,
+    "typecheck": {
+      "exit_code": 0,
+      "ended_at": "2026-09-12T18:33:45.977Z",
+      "source_files": 286
+    },
+    "lint": {
+      "exit_code": 0,
+      "ended_at": "2026-09-12T18:33:33.703Z",
+      "source_files": 286
+    }
+  },
+  "process": {
+    "checked_at": "2026-09-12T18:34:27.410Z",
+    "synthetic": true,
+    "real_platform_verified": false,
+    "independent_agent_processes": 2,
+    "first_agent_restarted": true,
+    "lost_ack_report_replayed_unchanged": true,
+    "first_action_submission_attempts": 1,
+    "first_action_remote_messages": 1,
+    "second_account_continued_while_first_quarantined": true,
+    "exact_account_destinations_verified": true,
+    "pairing_file_unchanged": true,
+    "release": {
+      "first": "C:\\Users\\17731\\AppData\\Local\\Temp\\kff-agent-delivery-t7eh8c\\first\\kff-agent-0.1.0-win32-x64-ce717520adc4",
+      "second": "C:\\Users\\17731\\AppData\\Local\\Temp\\kff-agent-delivery-t7eh8c\\second\\kff-agent-0.1.0-win32-x64-ce717520adc4",
+      "id": "kff-agent-0.1.0-win32-x64-ce717520adc4",
+      "archive_sha256": "51b23dfac105a3deb9a90ac43d02db5c4de919a44de16d062abf48057b52d3d6",
+      "source_implementation_matches": true
+    },
+    "runtime_root": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\browser-matrix-process-TdFTGw",
+    "proofs": [
+      {
+        "agent_id": "d66d9d0b-7384-4deb-bab8-7cb726f2555d",
+        "command_id": "73e8629d-461b-4bc7-8725-124ab3ebef7f",
+        "action_id": "16494d22-a5d3-4604-9e48-a59c9ee8c9c6",
+        "proof_matches_database": true
+      },
+      {
+        "agent_id": "d66d9d0b-7384-4deb-bab8-7cb726f2555d",
+        "command_id": "762d70af-5229-4332-a0c4-ab2da2ec9e1c",
+        "action_id": "72b3a424-95dd-4fd8-ac8a-31ac8b546be8",
+        "proof_matches_database": true
+      },
+      {
+        "agent_id": "740dfcb9-467d-4753-b22e-815d71fd278d",
+        "command_id": "664e685e-96ca-4f15-a66f-44783a7a84b8",
+        "action_id": "faefb555-b08f-4db2-a93c-f6c73d138794",
+        "proof_matches_database": true
+      },
+      {
+        "agent_id": "740dfcb9-467d-4753-b22e-815d71fd278d",
+        "command_id": "bc0201a0-5e27-4921-8982-ecda3717e16d",
+        "action_id": "5a03c6db-3d1b-4e55-80fa-cc24f839c728",
+        "proof_matches_database": true
+      },
+      {
+        "agent_id": "740dfcb9-467d-4753-b22e-815d71fd278d",
+        "command_id": "97101d73-f278-44af-a514-8372e88ae7fa",
+        "action_id": "fb3aa482-b6be-4422-9408-2274ee0e15b3",
+        "proof_matches_database": true
+      },
+      {
+        "agent_id": "740dfcb9-467d-4753-b22e-815d71fd278d",
+        "command_id": "e39cbcee-bab9-4c61-af21-62faa160d552",
+        "action_id": "0cc7923c-9325-4bdd-baac-f8bce5343a21",
+        "proof_matches_database": true
+      }
+    ]
+  },
+  "main_runtime": {
+    "accounts": 85,
+    "prospects": 46,
+    "migrations": 28,
+    "unclosed_commands": 0,
+    "unfinished_jobs": 0,
+    "selected_profile_bindings": 0
+  },
+  "limitations": [
+    "Windows x64 portable Agent only; controller, Worker, database and AdsPower remain separate",
+    "Both processes used authored local browser fixtures through the existing Core HTTP test bridge",
+    "Recovery moved the same release to another program directory; cross-version schema and log migrations are not verified",
+    "A clean second Windows host and offline native Chromium installation were not tested; the matching local browser cache was used",
+    "The package contains integrity checks and a ZIP hash, not a publisher signature",
+    "Real Facebook login, browser templates, real sends and WhatsApp arrival remain unverified"
+  ],
+  "source_sha256": {
+    "scripts/package-agent.mjs": "191d1305fed58d76b84f8e97c11442c6b2f8e4b31a3f1aee31a2645eae0627d9",
+    "scripts/agent-launch.mjs": "850e5722abe1b6f15f69fec943cb67fa9a12bbe20925db58037a815d15b5c036",
+    "tests/integration/browser-matrix-process.test.ts": "5ab8bb3211b361111ac346eb476f95f0e127f346623f00b4c22a615b7cd53409",
+    "docs/api/agent-delivery.md": "f63ce43c825e2ea175063722d9daef8a02a88d433c84d2f3aaaa2dc72b883621",
+    "package.json": "8bb24b87f21e8f800a07b9402ff97cc53c3195b51f18481e10deac862bf75898",
+    "eslint.config.mjs": "e5264f02314640c46938ee20f9f9bd2bc0ea50b797550e7aa49abcf81f92ff24"
+  }
+}

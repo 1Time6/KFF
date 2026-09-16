@@ -1,0 +1,168 @@
+{
+  "recorded_at": "2026-09-13T13:51:56.207Z",
+  "scope": "Narrow promotional wording screening, deployed core logic, isolated database validation and one failed real read",
+  "rules": {
+    "promotion_score": 0,
+    "preserve_raw_observations": true,
+    "quoted_promotions_ignored_for_seller_call": true,
+    "manual_review_reason_preserved": true,
+    "limits": "Explicit self-sales wording and seller contact calls only; not a universal customer-intent classifier"
+  },
+  "source_hashes": {
+    "packages/core/src/acquisition.ts": "624c37d6c05935fa70811a19ed8ea41c4b3e32f1b3ffd3ff6b3c304cb397fb4d",
+    "tests/contracts/acquisition.test.ts": "4607e5e9185dc3ce84d26dac97b7ac3bbd201e44f10183a6615c41b71d5eb272",
+    "tests/integration/acquisition.test.ts": "8f082db27435936e777515758ed876f4aa5f87d14ec9aa7a72bec8767f2c33af"
+  },
+  "checks": {
+    "contracts": {
+      "ended_at": "2026-09-13T12:17:24.966Z",
+      "exit_code": 0,
+      "source_files_checked": [
+        "packages/core/src/acquisition.ts",
+        "tests/contracts/acquisition.test.ts"
+      ]
+    },
+    "typecheck": {
+      "ended_at": "2026-09-13T12:19:29.711Z",
+      "exit_code": 0,
+      "source_files_checked": [
+        "packages/core/src/acquisition.ts",
+        "tests/contracts/acquisition.test.ts",
+        "tests/integration/acquisition.test.ts"
+      ]
+    },
+    "build": {
+      "ended_at": "2026-09-13T12:22:41.583Z",
+      "exit_code": 0,
+      "source_files_checked": [
+        "packages/core/src/acquisition.ts",
+        "tests/contracts/acquisition.test.ts",
+        "tests/integration/acquisition.test.ts"
+      ]
+    }
+  },
+  "contract_tests_passed": 140,
+  "isolated_database_tests": {
+    "passed": 12,
+    "failed": 0,
+    "log": ".kff/promotion-screening-integration-final.log",
+    "source_sha256": "8f082db27435936e777515758ed876f4aa5f87d14ec9aa7a72bec8767f2c33af",
+    "scope": "Isolated synthetic observations; promotional data retained, no lead/outreach task; real inquiry shape generates one idempotent synthetic task; previous manual review preserved"
+  },
+  "historical_replay": {
+    "checked_at": "2026-09-13T12:20:11.573Z",
+    "scope": "historical_public_text_replay_only",
+    "observation_id": "00f66caa-cbf4-4edf-943a-d8693c3fd9ed",
+    "old_score": 75,
+    "result": {
+      "matched": [
+        "八字"
+      ],
+      "score": 0,
+      "reason": "命中商家自推语句；保留原始观察，不进入新客户候选。规则判断，可人工核对。"
+    }
+  },
+  "original_evaluation_preserved": {
+    "observation_id": "00f66caa-cbf4-4edf-943a-d8693c3fd9ed",
+    "score": 75,
+    "reason": "关键词匹配 1 项；含明确咨询词。规则评分，不代表购买概率。"
+  },
+  "real_attempt": {
+    "query_id": "87fe4139-17bf-466a-adda-4969a6da305b",
+    "run": {
+      "id": "f5cd0546-0a6d-406c-ac2f-985939d096ed",
+      "state": "FAILED",
+      "returned_count": 0,
+      "unique_count": 0,
+      "committed_pages": 0,
+      "error_code": "EXECUTOR_ERROR",
+      "stop_reason": "EXECUTOR_ERROR",
+      "finished_at": "2026-09-13T13:39:14.816Z"
+    },
+    "observations": 0,
+    "command": {
+      "id": "9787c9ae-484d-4e75-8f0c-e976edc85005",
+      "action_id": "7acc97d3-94cf-4cea-b8e7-d652fb2a0fcd",
+      "state": "BLOCKED",
+      "error_code": "EXECUTOR_ERROR",
+      "db_quiesced_at": "2026-09-13T13:39:14.901Z",
+      "local_closed_at": "2026-09-13T13:39:14.680Z",
+      "closure_matches": true
+    }
+  },
+  "independent_followup": {
+    "observed_at": "2026-09-13T13:47:25.552Z",
+    "recent_checked": true,
+    "visible_articles": 5,
+    "source_ids": [
+      "https://www.facebook.com/reel/908104808776275/"
+    ],
+    "previous_source_in_visible_window": false,
+    "scope": "Read-only page after failed Agent attempt; not an ingestion receipt",
+    "browser_closed": true
+  },
+  "runtime": {
+    "runtime_id": "6a55aedc-c9e2-45a6-9bea-d7f212701964",
+    "pid": 23740,
+    "phase": "RUNNING",
+    "updated_at": "2026-09-13T13:51:55.348Z",
+    "app_origin": "http://127.0.0.1:3000",
+    "release_id": "kff-agent-0.1.7-win32-x64-fd5401aa9462",
+    "database_owned": true,
+    "components": {
+      "database": {
+        "pid": 19872,
+        "state": "CONNECTED"
+      },
+      "web": {
+        "pid": 16512,
+        "state": "RUNNING"
+      },
+      "worker": {
+        "pid": 31208,
+        "state": "RUNNING"
+      },
+      "agent": {
+        "pid": 19500,
+        "state": "RUNNING"
+      }
+    }
+  },
+  "health": {
+    "status": "ok",
+    "protocol": "kff.api.v1",
+    "runtime_id": "6a55aedc-c9e2-45a6-9bea-d7f212701964"
+  },
+  "providers": {
+    "first": "Inactive",
+    "second": "Inactive"
+  },
+  "counts": {
+    "accounts": 87,
+    "prospects": 46,
+    "migrations": 31,
+    "unclosed": 0,
+    "active_monitors": 0
+  },
+  "preservation": {
+    "original_leads": 13,
+    "original_messages": 4,
+    "whatsapp_handoff_unchanged": true,
+    "original_immutable_agent_files": 177,
+    "restart_all_original_files": {
+      "checked_at": "2026-09-13T13:33:37.458Z",
+      "preserved_original_files": 179,
+      "changed_files": [],
+      "new_files": []
+    },
+    "before_snapshot_sha256": "84d88219ebd9ec706f806c0c0505628a6c0a43fe44698132ff97606151724e21"
+  },
+  "new_qualified_customers": 0,
+  "platform_sends": 0,
+  "limitations": [
+    "No new real observation evaluated by the updated Worker in this attempt",
+    "Original command reported EXECUTOR_ERROR without a detailed cause; later working navigation does not identify the original cause",
+    "Current search ordering changed; no synthetic result inserted to fill the real read gap",
+    "Controlled new-comment arrival and sustained multi-account collection still pending"
+  ]
+}

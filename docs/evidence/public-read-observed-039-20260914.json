@@ -1,0 +1,271 @@
+{
+  "at": "2026-09-14T12:58:48.374Z",
+  "version": "0.1.39",
+  "observed": {
+    "started_at": "2026-09-14T12:43:49.321Z",
+    "platform_sends": 0,
+    "original_public_scans": 1,
+    "observer_navigations": 0,
+    "observer_clicks": 0,
+    "request_id": "a164f3a1-a5fd-41f0-8c3c-ea198527dd77",
+    "frames": [
+      {
+        "at": "2026-09-14T12:44:00.383Z",
+        "page": 1,
+        "path": "/profile.php",
+        "visibility": "visible",
+        "focused": true,
+        "main_count": 1,
+        "comment_entry_count": 0,
+        "visible_comment_entries": 0,
+        "in_view_comment_entries": 0,
+        "sidebar_count": 0,
+        "dialog_count": 0,
+        "password_visible": false,
+        "headings": [
+          "XiangHuan Master",
+          "可能认识",
+          "个人资料",
+          "照片"
+        ]
+      },
+      {
+        "at": "2026-09-14T12:44:02.450Z",
+        "page": 1,
+        "path": "/profile.php",
+        "visibility": "visible",
+        "focused": true,
+        "main_count": 1,
+        "comment_entry_count": 0,
+        "visible_comment_entries": 0,
+        "in_view_comment_entries": 0,
+        "sidebar_count": 0,
+        "dialog_count": 0,
+        "password_visible": false,
+        "headings": [
+          "XiangHuan Master",
+          "可能认识",
+          "个人资料",
+          "照片"
+        ]
+      },
+      {
+        "at": "2026-09-14T12:44:04.558Z",
+        "page": 1,
+        "path": "/reel/2163157911082094/",
+        "visibility": "visible",
+        "focused": true,
+        "main_count": 0,
+        "comment_entry_count": 0,
+        "visible_comment_entries": 0,
+        "in_view_comment_entries": 0,
+        "sidebar_count": 0,
+        "dialog_count": 0,
+        "password_visible": false,
+        "headings": []
+      },
+      {
+        "at": "2026-09-14T12:44:06.607Z",
+        "page": 1,
+        "path": "/reel/2163157911082094",
+        "visibility": "visible",
+        "focused": true,
+        "main_count": 1,
+        "comment_entry_count": 2,
+        "visible_comment_entries": 2,
+        "in_view_comment_entries": 2,
+        "sidebar_count": 1,
+        "dialog_count": 0,
+        "password_visible": false,
+        "headings": []
+      },
+      {
+        "at": "2026-09-14T12:44:08.662Z",
+        "page": 1,
+        "path": "/reel/2163157911082094",
+        "visibility": "visible",
+        "focused": true,
+        "main_count": 1,
+        "comment_entry_count": 2,
+        "visible_comment_entries": 2,
+        "in_view_comment_entries": 2,
+        "sidebar_count": 1,
+        "dialog_count": 0,
+        "password_visible": false,
+        "headings": []
+      },
+      {
+        "at": "2026-09-14T12:44:10.674Z",
+        "page": 1,
+        "path": "/reel/2163157911082094",
+        "visibility": "visible",
+        "focused": true,
+        "main_count": 1,
+        "comment_entry_count": 2,
+        "visible_comment_entries": 2,
+        "in_view_comment_entries": 2,
+        "sidebar_count": 1,
+        "dialog_count": 0,
+        "password_visible": false,
+        "headings": []
+      },
+      {
+        "at": "2026-09-14T12:44:12.691Z",
+        "page": 1,
+        "path": "/reel/2163157911082094",
+        "visibility": "visible",
+        "focused": true,
+        "main_count": 1,
+        "comment_entry_count": 2,
+        "visible_comment_entries": 2,
+        "in_view_comment_entries": 2,
+        "sidebar_count": 1,
+        "dialog_count": 0,
+        "password_visible": false,
+        "headings": []
+      },
+      {
+        "at": "2026-09-14T12:44:18.002Z",
+        "page": 1,
+        "path": "/profile.php",
+        "visibility": "visible",
+        "focused": true,
+        "main_count": 1,
+        "comment_entry_count": 0,
+        "visible_comment_entries": 0,
+        "in_view_comment_entries": 0,
+        "sidebar_count": 0,
+        "dialog_count": 0,
+        "password_visible": false,
+        "headings": [
+          "XiangHuan Master",
+          "可能认识",
+          "个人资料",
+          "照片"
+        ]
+      }
+    ],
+    "before": {
+      "runtime_id": "65404ff8-42ca-4308-ac4f-0fd4fdf7baab",
+      "monitor_version": 5
+    },
+    "query": {
+      "id": "1e13450c-6734-41e4-9a72-ee7d9e8d915a",
+      "run_id": "36982a7a-0540-4d52-b163-ffe6e5a56362"
+    },
+    "run": {
+      "id": "36982a7a-0540-4d52-b163-ffe6e5a56362",
+      "state": "PARTIAL",
+      "error_code": null,
+      "stop_reason": "MAX_PAGES",
+      "returned_count": 3,
+      "unique_count": 3,
+      "committed_pages": 1
+    },
+    "commands": [
+      {
+        "id": "23889045-e091-4ce9-9955-00aaab52f637",
+        "action_id": "bf2cfb83-59cc-44ab-9426-11ffe0caf258",
+        "quiesced_at": "2026-09-14T12:44:22.347Z",
+        "claimed_at": "2026-09-14T12:43:51.482Z",
+        "state": "VERIFIED_SUCCEEDED",
+        "error_code": null,
+        "receipt": {
+          "remote_id": "collection:36982a7a-0540-4d52-b163-ffe6e5a56362:1",
+          "observed_at": "2026-09-14T12:44:14.041Z",
+          "content_hash": "a7afdd8d42090616dbdaee1412ed947f48e87adda1e1d84eef34bb75a68fb2b9",
+          "evidence_kind": "browser_dom",
+          "actual_account_id": "61589894042400"
+        },
+        "task_id": "968264db-26bc-421e-805d-1192eae84ef9",
+        "external_id": "61589894042400"
+      }
+    ],
+    "observer_connected": true,
+    "last_observation_error": "Error",
+    "closures": [
+      {
+        "command_id": "23889045-e091-4ce9-9955-00aaab52f637",
+        "proof": {
+          "protocol_version": "kff.guardian-closure.v1",
+          "command_id": "23889045-e091-4ce9-9955-00aaab52f637",
+          "action_id": "bf2cfb83-59cc-44ab-9426-11ffe0caf258",
+          "closed_at": "2026-09-14T12:44:22.021Z",
+          "proof_sha256": "a03d9f608dbaaad0875004a426fd27dd7c3c2c191df07ff08e8027f62b1ccd11"
+        },
+        "local_database_match": true
+      }
+    ],
+    "diagnostics": [
+      {
+        "action_id": "bf2cfb83-59cc-44ab-9426-11ffe0caf258",
+        "manifest": {
+          "step": "facebook-comments-visible",
+          "files": [
+            {
+              "name": "semantic-counts.json",
+              "sha256": "5e2b5eb7a24afc3f7a22166cb8e27bddd39105c59061fa7c2ab7e0a8ca95098e",
+              "content": {
+                "result_count": 3,
+                "identity_count": 1,
+                "submit_controls": 0
+              }
+            }
+          ],
+          "level": "D1",
+          "omitted": [
+            "raw_dom",
+            "screenshots",
+            "trace",
+            "cookies",
+            "message_body",
+            "network_bodies"
+          ],
+          "outcome": "VERIFIED_SUCCEEDED",
+          "brand_id": "22222222-2222-4222-8222-222222222222",
+          "action_id": "bf2cfb83-59cc-44ab-9426-11ffe0caf258",
+          "attempt_id": "7eb4c7a6-872c-463a-92ea-62ada9f61761",
+          "created_at": "2026-09-14T12:44:22.312Z",
+          "error_code": null,
+          "duration_ms": 28735,
+          "schema_version": "kff.diagnostic.v2",
+          "adapter_version": "facebook-search-browser-v1",
+          "browser_version": "150.0.7871.47",
+          "organization_id": "11111111-1111-4111-8111-111111111111",
+          "downgrade_reason": null,
+          "executor_version": "kff-agent-0.1.0_node-24.14.1",
+          "protocol_version": "kff.agent.v1",
+          "redaction_version": "allowlist-v1"
+        }
+      }
+    ],
+    "profile_after": "Inactive",
+    "finished_at": "2026-09-14T12:44:24.103Z",
+    "accepted": true
+  },
+  "blank_page_probe": {
+    "started_at": "2026-09-14T12:41:27.357Z",
+    "profile": "k1gvdtft",
+    "platform_navigations": 0,
+    "platform_sends": 0,
+    "comment_clicks": 0,
+    "profile_before": "Inactive",
+    "initial": {
+      "url": "about:blank",
+      "visibility": "visible",
+      "focused": true
+    },
+    "after_bring_to_front": {
+      "url": "about:blank",
+      "visibility": "visible",
+      "focused": true
+    },
+    "closed": true,
+    "profile_after": "Inactive",
+    "finished_at": "2026-09-14T12:41:31.218Z"
+  },
+  "foreground_cause_supported": false,
+  "previous_sidebar_timeout_repaired": false,
+  "full_goal_complete": false,
+  "coverage": "One successful observed original scan of existing Reel comments. Observer used no navigation or clicks; all sampled source-page states were visible and focused. This does not reproduce the prior timeout or establish sustained operation."
+}

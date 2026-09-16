@@ -1,0 +1,178 @@
+{
+  "created_at": "2026-09-14T15:06:10.108Z",
+  "body": "KFF-0914-C：收到。请私信我并带上 KFF-0914-C，我们继续了解您的咨询需求。",
+  "max_sends": 1,
+  "platform_sends": 1,
+  "authorization": "用户持续授权同类受控单条测试无需再问；用户本轮确认C作者郑一哲是本人控制账号。",
+  "replaces_task_id": "f05e4df4-fc2c-444a-b2e7-81ae6ae67ef4",
+  "source_freshness": "Stored verified read within one hour; original executor rechecks exact source again before submission.",
+  "before": {
+    "lead": {
+      "id": "bd7d506e-a852-4834-85f1-f963533a7eec",
+      "organization_id": "11111111-1111-4111-8111-111111111111",
+      "brand_id": "22222222-2222-4222-8222-222222222222",
+      "monitor_id": "833f62a5-0976-4d30-a1d2-cfe759062064",
+      "object_id": "34109353-e1dd-4fc3-9580-9dd57273b9a0",
+      "observation_id": "3b778625-73f9-40a6-aa7d-5d07975dd6a4",
+      "version": 2,
+      "state": "QUALIFIED",
+      "score": 50,
+      "matched_keywords": [
+        "KFF-0914-C"
+      ],
+      "reason": "用户确认郑一哲为本人控制账号；原采集核对C新评论正文、数字作者、固定Reel及时间，作为单条受控流程测试。",
+      "automation_error": null,
+      "next_action_at": "2026-09-14T14:40:28.777Z",
+      "first_seen_at": "2026-09-14T14:40:05.916Z",
+      "last_seen_at": "2026-09-14T14:40:05.916Z",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "KFF-0914-C 我想了解咨询流程"
+        },
+        "author_id": {
+          "kind": "VALUE",
+          "value": "100050174601107"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月14日周一06:39"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "source_object_id": "facebook:comment:1798186518043775",
+      "source_url": "https://www.facebook.com/reel/2163157911082094/?comment_id=1798186518043775",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6"
+    },
+    "runtime": {
+      "runtime_id": "4e5265b8-093d-4c66-b041-cc59b62d558f",
+      "pid": 31460,
+      "phase": "RUNNING",
+      "updated_at": "2026-09-14T15:06:08.383Z",
+      "app_origin": "http://127.0.0.1:3000",
+      "release_id": "kff-agent-0.1.43-win32-x64-a1c14d0baf9e",
+      "database_owned": false,
+      "components": {
+        "database": {
+          "pid": null,
+          "state": "CONNECTED"
+        },
+        "web": {
+          "pid": 31688,
+          "state": "RUNNING"
+        },
+        "worker": {
+          "pid": 29248,
+          "state": "RUNNING"
+        },
+        "agent": {
+          "pid": 24536,
+          "state": "RUNNING"
+        }
+      }
+    }
+  },
+  "review": {
+    "sender": {
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "facebook_id": "61594402378582",
+      "profile_id": "k1gx1n1s",
+      "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+      "name": "白青天"
+    },
+    "target": {
+      "author_id": "100050174601107",
+      "author_name": "郑一哲",
+      "comment_id": "1798186518043775",
+      "comment_url": "https://www.facebook.com/reel/2163157911082094/?comment_id=1798186518043775",
+      "lead_id": "bd7d506e-a852-4834-85f1-f963533a7eec"
+    },
+    "body": "KFF-0914-C：收到。请私信我并带上 KFF-0914-C，我们继续了解您的咨询需求。"
+  },
+  "expires_at": "2026-09-14T15:36:10.272Z",
+  "task_id": "163cfb04-45da-40bd-a8f7-60e2148e82e1",
+  "status": "PUBLIC_REPLY_VERIFIED",
+  "permit_id": "71f528c8-5fbd-4928-b9f7-622ce5386bc7",
+  "snapshot_hash": "5f57d62bd47c457cecae69017695b4110a4f4e857c36cadc2eb043731b3dc768",
+  "prepared_at": "2026-09-14T15:06:10.521Z",
+  "run_id": "da127d17-d06a-4330-9c04-1b7555cf2ef4",
+  "actions": [
+    {
+      "action_id": "b07939a4-7b01-4d2c-830e-075ebade093a",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "receipt": {
+        "parent_id": "1798186518043775",
+        "remote_id": "1134029302282428",
+        "source_url": "https://www.facebook.com/reel/2163157911082094/?comment_id=1798186518043775&reply_comment_id=1134029302282428",
+        "observed_at": "2026-09-14T15:09:02.679Z",
+        "content_hash": "2e9d58bc236363e6966f1c7f8f60676cbda3ea64c3fad9f27068ab6fb64a5c65",
+        "recipient_id": "100050174601107",
+        "evidence_kind": "browser_comment",
+        "actual_account_id": "61594402378582"
+      },
+      "command_id": "714fda8b-24d9-4268-b263-9dcc2394ec67",
+      "claimed_at": "2026-09-14T15:08:25.544Z",
+      "quiesced_at": "2026-09-14T15:09:03.971Z"
+    }
+  ],
+  "closure": {
+    "proof": {
+      "action_id": "b07939a4-7b01-4d2c-830e-075ebade093a",
+      "closed_at": "2026-09-14T15:09:03.745Z",
+      "command_id": "714fda8b-24d9-4268-b263-9dcc2394ec67",
+      "proof_sha256": "be70732f7e2e1dc319ba8beace9f694de4d1f30b746289df17d84dacb15a4616",
+      "protocol_version": "kff.guardian-closure.v1"
+    },
+    "local_database_match": true
+  },
+  "attempts": [
+    {
+      "id": "0e74156d-eb30-4978-873c-15d9a8d73444",
+      "attempt_number": 1,
+      "submitted_at": "2026-09-14T15:08:52.455Z",
+      "state": "VERIFIED_SUCCEEDED"
+    }
+  ],
+  "diagnostics": [
+    {
+      "action_id": "b07939a4-7b01-4d2c-830e-075ebade093a",
+      "manifest": {
+        "step": "facebook-comment-verified",
+        "files": [],
+        "level": "D0",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "b07939a4-7b01-4d2c-830e-075ebade093a",
+        "attempt_id": "0e74156d-eb30-4978-873c-15d9a8d73444",
+        "created_at": "2026-09-14T15:09:03.949Z",
+        "error_code": null,
+        "duration_ms": 36197,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-browser-comment-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": "本驱动未取得可安全导出的现场，保留 D0",
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    }
+  ],
+  "profile_after": "Inactive",
+  "accepted": true,
+  "finished_at": "2026-09-14T15:09:04.633Z"
+}

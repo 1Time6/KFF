@@ -1,0 +1,159 @@
+{
+  "started_at": "2026-09-14T13:47:40.623Z",
+  "platform_sends": 0,
+  "original_scans": 1,
+  "requested_marker": "KFF-0914-C 我想了解咨询流程",
+  "expected_author": "61589894042400",
+  "expected_reader": "61594402378582",
+  "before": {
+    "runtime_id": "486be535-0a95-4621-afb4-b07dedc331dd",
+    "existing_monitors": [],
+    "capability": {
+      "id": "041982d9-857f-4a67-b461-c57f30f03164",
+      "organization_id": "11111111-1111-4111-8111-111111111111",
+      "brand_id": "22222222-2222-4222-8222-222222222222",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "capability_key": "facebook.discovery.read.browser",
+      "revision": 1,
+      "adapter_version": "facebook-search-browser-v1",
+      "evidence_state": "IMPLEMENTED_TEST_ONLY",
+      "mode": "CONTROLLED_PILOT",
+      "is_synthetic": false,
+      "description": "读取固定关键词公开内容、指定帖子的可见评论或固定公共主页帖子；仅覆盖当前页面窗口，需先登记代码证据。",
+      "last_verified_at": null,
+      "created_at": "2026-09-14T08:45:23.428Z",
+      "implementation_digest": "000f84be9f4ea37f5397209269e7f3cdfd270c62160ddbfde702b365aea0643a"
+    }
+  },
+  "monitor": {
+    "id": "76988157-0c85-4f98-ada2-81ad42a39b90",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+    "request_id": "b0156631-0220-4d24-bd6c-2aeae2418b3d",
+    "request_hash": "76dfa0365633fa457f9cbb56979170706e6cef405625dbed6d9e424219c22811",
+    "title": "10号 · KFF-0914-C 新公开评论验证",
+    "config": {
+      "title": "10号 · KFF-0914-C 新公开评论验证",
+      "discovery": {
+        "target": "https://www.facebook.com/reel/2163157911082094/",
+        "browser": {
+          "template": "facebook-comments-dom-v1",
+          "comment_order": "NEWEST",
+          "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd"
+        },
+        "keywords": [
+          "KFF-0914-C"
+        ],
+        "platform": "facebook",
+        "provider": "LOCAL_BROWSER",
+        "strategy": "COMMENTS",
+        "exclusions": [],
+        "processing_basis": "用户确认已用自己控制的8号发布 KFF-0914-C 咨询测试评论；仅用10号从指定公开 Reel 读取一页，核对新评论作者及来源供原线索审核，不自动发消息。"
+      },
+      "max_pages": 1,
+      "page_size": 10,
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "request_id": "b0156631-0220-4d24-bd6c-2aeae2418b3d",
+      "max_records": 10,
+      "retention_days": 14,
+      "interval_minutes": 60
+    },
+    "state": "PAUSED",
+    "version": 1,
+    "interval_minutes": 60,
+    "next_due_at": "2026-09-14T13:47:40.845Z",
+    "scan_number": 0,
+    "automation": null,
+    "created_by": "33333333-3333-4333-8333-333333333333",
+    "created_at": "2026-09-14T13:47:40.845Z"
+  },
+  "query": {
+    "id": "3f6a46f0-83ba-4b8d-830b-7cd9eb671434",
+    "run_id": "fd7b40c4-8cb6-4dcf-b4e2-915a26f56260"
+  },
+  "run": {
+    "id": "fd7b40c4-8cb6-4dcf-b4e2-915a26f56260",
+    "state": "FAILED",
+    "error_code": "IDENTITY_NAVIGATION_FAILED",
+    "stop_reason": "IDENTITY_NAVIGATION_FAILED",
+    "returned_count": 0,
+    "unique_count": 0,
+    "committed_pages": 0
+  },
+  "actions": [
+    {
+      "task_id": "b13d11b5-7d6d-4f74-b81f-7883945f6e00",
+      "action_id": "99b7ecc2-70d1-4b88-8aa5-f55706be76ca",
+      "state": "BLOCKED",
+      "error_code": "IDENTITY_NAVIGATION_FAILED",
+      "receipt": null,
+      "command_id": "12c7a01a-8e95-40d4-a1a6-9bd9cc7c7bfc",
+      "claimed_at": "2026-09-14T13:47:41.732Z",
+      "quiesced_at": "2026-09-14T13:47:52.803Z"
+    }
+  ],
+  "closures": [
+    {
+      "command_id": "12c7a01a-8e95-40d4-a1a6-9bd9cc7c7bfc",
+      "proof": {
+        "action_id": "99b7ecc2-70d1-4b88-8aa5-f55706be76ca",
+        "closed_at": "2026-09-14T13:47:52.563Z",
+        "command_id": "12c7a01a-8e95-40d4-a1a6-9bd9cc7c7bfc",
+        "proof_sha256": "349bd77bdd149f7a52571d07a433dcdfa0826ac4cdaac439209f25471d0719d6",
+        "protocol_version": "kff.guardian-closure.v1"
+      },
+      "local_database_match": true
+    }
+  ],
+  "profile_after": "Inactive",
+  "observations": [],
+  "leads": [],
+  "diagnostics": [
+    {
+      "action_id": "99b7ecc2-70d1-4b88-8aa5-f55706be76ca",
+      "manifest": {
+        "step": "facebook-comments-before-navigate",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "e1f1ff10280103576f960045d056b19837961af67efce68d240449381444a1e7",
+            "content": {
+              "result_count": 0,
+              "identity_count": 0,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "BLOCKED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "99b7ecc2-70d1-4b88-8aa5-f55706be76ca",
+        "attempt_id": "2995eb28-286a-454f-9ed7-a476eea83a27",
+        "created_at": "2026-09-14T13:47:52.783Z",
+        "error_code": "IDENTITY_NAVIGATION_FAILED",
+        "duration_ms": 9197,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-search-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    }
+  ],
+  "finished_at": "2026-09-14T13:47:54.671Z",
+  "read_verified": false,
+  "c_matches": [],
+  "new_c_verified": false
+}

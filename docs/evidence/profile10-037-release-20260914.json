@@ -1,0 +1,58 @@
+{
+  "at": "2026-09-14T11:49:54.270Z",
+  "version": "0.1.37",
+  "agent": {
+    "release_id": "kff-agent-0.1.37-win32-x64-5469be74e001",
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.37-win32-x64-5469be74e001",
+    "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.37-win32-x64-5469be74e001.zip",
+    "archive_sha256": "cdcaa9797acbb3c65e7c319763f7dfe837aeb0cc5faa999e5870cfc53d5345f3",
+    "files": 1348,
+    "dependencies": 23,
+    "contains_pairing_or_browser_data": false
+  },
+  "controller": {
+    "release_id": "kff-controller-0.1.37-win32-x64-a63d958d82be",
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.37-win32-x64-a63d958d82be",
+    "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.37-win32-x64-a63d958d82be.zip",
+    "archive_sha256": "a05d6720b74e769cecdb951f5cf68ce3a01eae3f276c1579bf4ce07855ac66f9",
+    "files": 24092,
+    "uncompressed_bytes": 829500745,
+    "dependency_packages": 155,
+    "contains_runtime_data": false,
+    "live_config_values_scanned": 6
+  },
+  "installed_directory": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.37-win32-x64-5469be74e001",
+  "active_runtime": "1a4cb457-192e-4a47-8a7a-bab9d2e61ee0",
+  "open_commands": 0,
+  "monitors": [
+    {
+      "kind": "acquisition",
+      "state": "PAUSED",
+      "count": 13
+    },
+    {
+      "kind": "inbox",
+      "state": "PAUSED",
+      "count": 5
+    }
+  ],
+  "live_sending_enabled": false,
+  "real_whatsapp_destinations": [
+    {
+      "id": "a80a2f14-32b5-4081-858a-ce1a8fca8731",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "state": "PAUSED",
+      "version": 2
+    },
+    {
+      "id": "61cef25d-7e01-4800-9c05-e5d46e070927",
+      "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "state": "PAUSED",
+      "version": 2
+    }
+  ],
+  "whatsapp_receiving_number": "USER_NOT_READY",
+  "account8_to_account10_inbox_verified": true,
+  "accepted_inbox_evidence": "docs/evidence/profile10-message-b-037-20260914.json",
+  "full_goal_complete": false
+}

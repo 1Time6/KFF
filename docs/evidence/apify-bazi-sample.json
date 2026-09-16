@@ -1,0 +1,21 @@
+{
+  "checked_at": "2026-09-12T12:03:47.334Z",
+  "keyword": "八字测算",
+  "search_run_id": "xSq8Gaz0XgBBAyNGd",
+  "comments_run_id": "ZxnnQh3oOIpUQWpov",
+  "counts": {
+    "posts": 22,
+    "source_posts": 2,
+    "comments": 24,
+    "distinct_provider_profiles": 19,
+    "pm_comments": 21,
+    "numeric_author_ids": 0
+  },
+  "run_charge_usd": 0.14905,
+  "live_adapter_read": "PASSED",
+  "kff_database_rows_written": 0,
+  "outbound_messages_sent": 0,
+  "coverage": "PROVIDER_RESULTS_ONLY",
+  "result_path": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\acquisition\\bazi-search-20260912",
+  "remaining_gap": "No real platform account is registered in the local KFF workspace; samples remain separate from synthetic records. Keyword match in parent posts does not imply literal keyword match in comments."
+}

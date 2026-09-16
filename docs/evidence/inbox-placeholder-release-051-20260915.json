@@ -1,0 +1,210 @@
+{
+  "checked_at": "2026-09-15T05:17:50.437Z",
+  "version": "0.1.51",
+  "scope": "Resolve the observed initial Facebook 用户 placeholder only from the same encrypted thread unique numeric header; still verify every inbound avatar",
+  "observed_diagnostic": "docs/evidence/inbox-header-diagnostic-050-r2-20260915.json",
+  "validation": {
+    "checks": {
+      "typecheck": {
+        "exit_code": 0,
+        "checked_at": "2026-09-15T05:08:15.222Z",
+        "sources_current": true
+      },
+      "lint": {
+        "exit_code": 0,
+        "checked_at": "2026-09-15T05:08:23.529Z",
+        "sources_current": true
+      },
+      "contracts": {
+        "exit_code": 0,
+        "checked_at": "2026-09-15T05:08:40.239Z",
+        "sources_current": true
+      },
+      "build": {
+        "exit_code": 0,
+        "checked_at": "2026-09-15T05:10:35.264Z",
+        "sources_current": true
+      }
+    },
+    "contracts_passed": 192,
+    "browser_passed": 28,
+    "inbox_ingest_passed": 8,
+    "inbox_polling_passed": 11,
+    "before_fix_report": ".kff/checks/inbox-placeholder-before-confirmed-051-results.json",
+    "browser_report": ".kff/checks/inbox-placeholder-after-051-results.json",
+    "ingest_report": ".kff/inbox-placeholder-integration-051.json",
+    "polling_report": ".kff/inbox-placeholder-polling-051.json"
+  },
+  "runtime": {
+    "runtime_id": "89ac4f0f-ca79-409c-8d0b-3bbef2ef1d0c",
+    "pid": 31552,
+    "phase": "RUNNING",
+    "updated_at": "2026-09-15T05:17:50.108Z",
+    "app_origin": "http://127.0.0.1:3000",
+    "release_id": "kff-agent-0.1.51-win32-x64-5ed5eaa11e77",
+    "database_owned": false,
+    "components": {
+      "database": {
+        "pid": null,
+        "state": "CONNECTED"
+      },
+      "web": {
+        "pid": 17764,
+        "state": "RUNNING"
+      },
+      "worker": {
+        "pid": 19952,
+        "state": "RUNNING"
+      },
+      "agent": {
+        "pid": 27352,
+        "state": "RUNNING"
+      }
+    }
+  },
+  "health": {
+    "status": "ok",
+    "protocol": "kff.api.v1",
+    "runtime_id": "89ac4f0f-ca79-409c-8d0b-3bbef2ef1d0c"
+  },
+  "configuration": {
+    "discovery_enabled": true,
+    "browser_inbox_enabled": true,
+    "live_sending_enabled": false
+  },
+  "accounts": [
+    {
+      "id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "display_name": "白青天",
+      "outbound_paused": false,
+      "environment_state": "IDLE",
+      "browser_status": "CLOSED",
+      "auto_reply": false
+    },
+    {
+      "id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "display_name": "XiangHuan Master",
+      "outbound_paused": false,
+      "environment_state": "IDLE",
+      "browser_status": "CLOSED",
+      "auto_reply": false
+    },
+    {
+      "id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "display_name": "郑成功",
+      "outbound_paused": true,
+      "environment_state": "DISABLED",
+      "browser_status": "CLOSED",
+      "auto_reply": false
+    }
+  ],
+  "data": {
+    "at": "2026-09-15T05:17:18.658Z",
+    "open_commands": 0,
+    "monitors": [
+      {
+        "state": "PAUSED",
+        "count": 35
+      }
+    ],
+    "tables": {
+      "acquisition_leads": {
+        "count": 53,
+        "sha256": "1c61c772b9ff7c2550995243de12b85c6b0a57448e45ab8e2be01fe69bc86f3b"
+      },
+      "messages": {
+        "count": 140,
+        "sha256": "2640e219d9380b32f868eb4bc87659db851bb9e5eaefd985117a69c3e55ca29c"
+      },
+      "whatsapp_referrals": {
+        "count": 16,
+        "sha256": "a414fb7d35f54cce6aedd25a4ac3a2451826de86730b2e75a2f06ee68a3db5f5"
+      },
+      "customers": {
+        "count": 98,
+        "sha256": "e496d36a67c5c34c88e39e8ffbc322b2348255f261b91af2d14eb75573938019"
+      },
+      "accounts": {
+        "count": 88,
+        "sha256": "fa305e29027e42fd1866b5137fc2e7b95ca43aa94f6353a26d29a4c60a4e645f"
+      },
+      "acquisition_scans": {
+        "count": 77,
+        "sha256": "174573671d30f4f9d68f0b3d47cc2441d6793f54b5f7d262ee02b03fcebd9ba8"
+      },
+      "acquisition_evaluations": {
+        "count": 163,
+        "sha256": "aa1f020894624be5f9247ab0f92e66e076716ab1aae07c8d0b192c9f0053d80f"
+      }
+    },
+    "business_rows_preserved": true
+  },
+  "read_capabilities": {
+    "at": "2026-09-15T05:14:58.362Z",
+    "rows": [
+      {
+        "id": "041982d9-857f-4a67-b461-c57f30f03164",
+        "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+        "capability_key": "facebook.discovery.read.browser",
+        "mode": "CONTROLLED_PILOT",
+        "evidence_state": "IMPLEMENTED_TEST_ONLY",
+        "implementation_digest": "eb68a138361d0de81a46616fe83732ada54174d31a9be78f0fe370615863d41c"
+      },
+      {
+        "id": "074a488f-96d3-469a-bc06-5da275de0a9c",
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "capability_key": "facebook.inbox.read.browser",
+        "mode": "CONTROLLED_PILOT",
+        "evidence_state": "IMPLEMENTED_TEST_ONLY",
+        "implementation_digest": "eb68a138361d0de81a46616fe83732ada54174d31a9be78f0fe370615863d41c"
+      },
+      {
+        "id": "297bcc5d-768f-416e-82c7-5803aec8ce2a",
+        "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+        "capability_key": "facebook.inbox.read.browser",
+        "mode": "CONTROLLED_PILOT",
+        "evidence_state": "IMPLEMENTED_TEST_ONLY",
+        "implementation_digest": "eb68a138361d0de81a46616fe83732ada54174d31a9be78f0fe370615863d41c"
+      },
+      {
+        "id": "a29d063d-cbdb-4d2c-b5d1-230a841df263",
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "capability_key": "facebook.discovery.read.browser",
+        "mode": "CONTROLLED_PILOT",
+        "evidence_state": "IMPLEMENTED_TEST_ONLY",
+        "implementation_digest": "eb68a138361d0de81a46616fe83732ada54174d31a9be78f0fe370615863d41c"
+      }
+    ],
+    "implementation_digest": "eb68a138361d0de81a46616fe83732ada54174d31a9be78f0fe370615863d41c",
+    "platform_calls": 0,
+    "send_capabilities_refreshed": 0
+  },
+  "release": {
+    "agent": {
+      "release_id": "kff-agent-0.1.51-win32-x64-5ed5eaa11e77",
+      "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.51-win32-x64-5ed5eaa11e77",
+      "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.51-win32-x64-5ed5eaa11e77.zip",
+      "archive_sha256": "468fcc1c92e29ab63d87015e7e1993e44b5992b9e8460f6839f32c92c377e0db",
+      "files": 1348,
+      "dependencies": 23,
+      "contains_pairing_or_browser_data": false
+    },
+    "controller": {
+      "release_id": "kff-controller-0.1.51-win32-x64-2f035924a1fb",
+      "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.51-win32-x64-2f035924a1fb",
+      "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.51-win32-x64-2f035924a1fb.zip",
+      "archive_sha256": "06c53b3cd9ccd65c0aadb7e157374352a18e4c369ba9edc87c6610d0d79fb023",
+      "files": 24096,
+      "uncompressed_bytes": 829610674,
+      "dependency_packages": 155,
+      "contains_runtime_data": false,
+      "live_config_values_scanned": 6
+    },
+    "installed_agent": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.51-win32-x64-5ed5eaa11e77"
+  },
+  "new_migrations": 0,
+  "live_placeholder_fix_acceptance": "PENDING_FRESH_AUTHORIZED_WINDOW",
+  "full_goal_complete": false,
+  "other_computer_or_system_reboot_verified": false,
+  "latest_portable_upgrade_evidence": "docs/evidence/controller-upgrade-050-20260915.json"
+}

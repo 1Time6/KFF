@@ -7500,5 +7500,12 @@
     "reason": "用户要求退款部分做完后暂停",
     "shutdown_requested": false,
     "full_delivery": false
+  },
+  "current_workstream": {
+    "name": "本地矩阵执行与消息闭环",
+    "cards": "docs/tasks/local-matrix.md",
+    "provider": "adspower",
+    "status": "IN_PROGRESS",
+    "authorization": "2026-09-12 用户明确要求按目标实施，并选择 AdsPower"
   }
 }

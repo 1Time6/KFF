@@ -1,0 +1,219 @@
+{
+  "schema_version": "kff.browser-environment-checkpoint.v1",
+  "recorded_at": "2026-09-12T15:10:28.911Z",
+  "scope": "Environment configuration, persistent profiles, Agent lifecycle and existing task integration",
+  "goal_complete": false,
+  "provider": {
+    "name": "AdsPower",
+    "client_version": "8.6.3",
+    "selected_serial_number": "7",
+    "user_selected_label": "195",
+    "profile_id_verified": true,
+    "local_service_available": true,
+    "last_check": "2026-09-12T15:10:28.911Z",
+    "result": "LOCAL_API_LIFECYCLE_VERIFIED_PROFILE_PROXY_UNAVAILABLE",
+    "checks": [
+      "V1 user/list by serial_number",
+      "V1 browser/active by serial_number",
+      "V2 browser-profile/list by profile_no"
+    ],
+    "existing_profiles_started": 1,
+    "existing_profiles_changed": 0,
+    "live_profile_acceptance": false,
+    "profile_id": "k1giuoa4",
+    "profile_mapping_evidence": "Native UI label/name 195 and API serial_number 7 both map to user_id k1giuoa4",
+    "direct_status": "Inactive",
+    "native_ui_error": "Missing kernel resolved; profile 195 startup check page now reports proxy failure",
+    "kernel_download_api_result": "TypeError: Cannot read properties of undefined (reading filter)",
+    "api_attempt": "2026-09-12T15:00:00.601Z to 15:00:05.718Z: Inactive -> Local API start -> exact profile endpoint matched -> CDP blank-page check -> Local API stop -> Inactive. No UI startup or follow-up closure intervention required in this lifecycle run.",
+    "api_lifecycle_acceptance": true,
+    "manager_recovery": {
+      "method": "Normally exited the idle manager and launched a new process without inherited HTTP_PROXY, HTTPS_PROXY or ALL_PROXY. No global proxy settings or profile proxy changed.",
+      "profiles_returned": 7,
+      "manager_process_id": 20072,
+      "verified_backup": ".kff/backups/adspower-manager-before-restart-20260912-2253",
+      "backup_files": [
+        "cwd_global/source/conf",
+        "Local State",
+        "Preferences"
+      ],
+      "launcher": "scripts/start-adspower.ps1"
+    },
+    "proxy_network_check": {
+      "profile_id": "k1giuoa4",
+      "type": "socks5",
+      "host": "127.0.0.1",
+      "port": 10905,
+      "tcp_connected": false,
+      "browser_target": "https://www.facebook.com/",
+      "browser_error": "ERR_PROXY_CONNECTION_FAILED",
+      "login_identity_inspected": false,
+      "pending_input": "Which local proxy application originally provided port 10905",
+      "closure": "The inspection exceeded its original stop observation window. A fresh follow-up API check confirmed Inactive at 2026-09-12T15:10:28.911Z."
+    },
+    "readonly_cdp_check": {
+      "profile_endpoint_matched": true,
+      "browser_version": "150.0.7871.47",
+      "language": "en-US",
+      "timezone": "America/Los_Angeles",
+      "document_url": "about:blank",
+      "platform_actions": 0,
+      "account_identity_verified": false
+    },
+    "follow_up_closure": {
+      "checked_at": "2026-09-12T15:10:28.911Z",
+      "status": "Inactive",
+      "native_ui_open_count": 0,
+      "source": "Fresh provider active response after the separate Facebook connectivity inspection"
+    },
+    "kernel_install": {
+      "authorized_by_user": true,
+      "source": "https://api-global.adspower.net/client/sys-version/list?version=2.8.6.9&system=x64",
+      "url": "https://version.adspower.net/software/browsers/chrome/20260721/SunBrowser-64-150-20260721.zip",
+      "bytes": 231799171,
+      "official_md5": "2E120EFA6DB5821493B55E1F24E306E2",
+      "md5_matches": true,
+      "signature_status": "Valid",
+      "signature_publisher": "SUNFLOWER TECH PTE. LTD.",
+      "version": "150.0.7871.47",
+      "update_version": "20260721",
+      "installed_directory": "C:/Users/17731/AppData/Roaming/adspower_global/cwd_global/chrome_150",
+      "existing_148_preserved": true,
+      "method": "UI downloader failed. Downloaded directly from the official HTTPS service, verified hash and executable signatures, then installed into a previously absent version directory.",
+      "network_observation": "Existing system proxy timed out for the archive; direct HTTPS completed. System proxy and profile configurations were not modified."
+    }
+  },
+  "database_backup": {
+    "method": "Stopped database physical copy with every file SHA256 compared",
+    "file_count": 8740,
+    "bytes": 259008727,
+    "sha256_all_files_match": true,
+    "restore_started_from_copy": true,
+    "restored_counts": {
+      "accounts": 78,
+      "prospects": 46,
+      "migrations": 23
+    },
+    "new_migration": "20260912131442_browser_environment_runtime.sql",
+    "applied_to_local_development": true
+  },
+  "checks": [
+    {
+      "command": "node node_modules/vitest/vitest.mjs run tests/contracts/browser-environment.test.ts",
+      "passed": 7,
+      "failed": 0,
+      "stage": "Final delayed shutdown, replacement instance and rate-limited status handling",
+      "duration_seconds": 6.46
+    },
+    {
+      "command": "node node_modules/@playwright/test/cli.js test --project=fixtures tests/browser/fixtures/browser-environments.spec.ts",
+      "passed": 4,
+      "failed": 0,
+      "stage": "After provider shutdown changes; local profile isolation and guardian replay",
+      "duration_seconds_approximate": 72
+    },
+    {
+      "command": "node node_modules/vitest/vitest.mjs run tests/unit tests/contracts",
+      "passed": 126,
+      "failed": 0,
+      "stage": "before final serial lookup addition"
+    },
+    {
+      "command": "node node_modules/vitest/vitest.mjs run tests/contracts/browser-environment.test.ts",
+      "passed": 4,
+      "failed": 0,
+      "stage": "final provider client"
+    },
+    {
+      "command": "node --import tsx scripts/integration.ts tests/integration/lead-reception.test.ts tests/integration/execution.test.ts tests/integration/acquisition.test.ts tests/integration/environments.test.ts",
+      "passed": 66,
+      "failed": 0,
+      "stage": "initial managed environment implementation"
+    },
+    {
+      "command": "node --import tsx scripts/integration.ts tests/integration/environments.test.ts tests/integration/execution.test.ts",
+      "passed": 38,
+      "failed": 0,
+      "stage": "includes two Agent independence and managed browser status"
+    },
+    {
+      "command": "node node_modules/@playwright/test/cli.js test --project=fixtures tests/browser/fixtures/browser-environments.spec.ts",
+      "passed": 4,
+      "failed": 0,
+      "stage": "Includes ambiguous provider startup retaining occupancy",
+      "duration_seconds": 25.8
+    },
+    {
+      "command": "node node_modules/@playwright/test/cli.js test --project=fixtures",
+      "passed": 17,
+      "failed": 1,
+      "failure": "existing durable report replay test exceeded its 15 second wait under concurrent test load",
+      "follow_up": "The failed recovery case passed when rerun alone; this full batch is not reported as green"
+    },
+    {
+      "command": "node node_modules/@playwright/test/cli.js test --project=web tests/browser/web/environments.spec.ts",
+      "passed": 1,
+      "failed": 0,
+      "duration_seconds": 28.3,
+      "stage": "final UI notice and closed status verified"
+    },
+    {
+      "command": "node node_modules/typescript/bin/tsc --noEmit",
+      "result": "passed"
+    },
+    {
+      "command": "node node_modules/eslint/bin/eslint.js .",
+      "result": "passed",
+      "follow_up": "Final edited UI, provider, diagnostic and test files also passed targeted lint"
+    },
+    {
+      "command": "node node_modules/next/dist/bin/next build apps/web",
+      "result": "passed"
+    },
+    {
+      "command": "node --import tsx scripts/verify-planning.ts",
+      "result": "passed",
+      "task_count": 134,
+      "acceptance_count": 72
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed"
+    }
+  ],
+  "screenshots": [
+    "output/playwright/browser-environments-desktop.png",
+    "output/playwright/browser-environments-mobile.png"
+  ],
+  "unverified": [
+    "195 profile proxy connectivity; one full AdsPower API lifecycle is verified but Facebook network inspection failed",
+    "Real Facebook or Instagram login and operating identity",
+    "Browser discovery into the existing lead pool",
+    "Real approved page action",
+    "Browser inbound messages into Inbox",
+    "WhatsApp sales handoff",
+    "Two real account pilot"
+  ],
+  "source_sha256": {
+    "packages/contracts/src/environment.ts": "5a06e803229611b3420118f64edcd3de493b1cb49ccf1d6cdae33f7e28caf662",
+    "packages/contracts/src/index.ts": "3e21b396ffa5f3983510177cc4651f8fbfccdf0214152242d8ebb18ce0effb61",
+    "packages/adapters/src/browser-profile.ts": "9c5c422bbc87acb3f6553e8bb4e77674e54292ef12629f003a1dd146baa2d530",
+    "packages/adapters/src/fixture.ts": "e0b2a2c7f3139b29053d22100ff1d466d1e1953abb7f7e9d9695c99b41b6c31c",
+    "packages/core/src/environments.ts": "9fb9a1ba54a43864eb5bf819cabddd7a62e46d2b63cfdf9876374e3ca0175800",
+    "packages/core/src/execution.ts": "8891d5dd4a9c4fbb2ee6498a7aa40dc2a4d156761a2b7e708ced2f89c36f7cd7",
+    "packages/core/src/reconciliation.ts": "1470869f492224649f3f8163ba63ad6c91dedaa9d400987ee1482c6291657c5e",
+    "packages/core/src/service.ts": "e61ba93f0db302eb13dad6adfcf2efacf02dedc5e5230c687dad43eaf856c45d",
+    "apps/agent/src/main.ts": "75c84e5e4421e6ee42c2ee062352e2f4abf5039ed153b5c674bb66b79b727399",
+    "apps/agent/src/guardian.ts": "38b5e6baa7750995b951664444960aeacbe6d8da6264931df5f73c35614997e2",
+    "apps/agent/src/guardian-child.ts": "6d2aad41b31cd0e6b6ffc888275095920e00515f1b6737a7c23b1da4699d9ec5",
+    "apps/agent/src/environment-child.ts": "25ea279c22b8f023cfa7147fe786952e479fa2cf044d8baadf37f58bcc06e399",
+    "apps/agent/src/environment-runner.ts": "da0c2cd99de4465824fa67539a32382acfba9a28381185b33945201121dd31e2",
+    "apps/agent/src/environment-protocol.ts": "e3d920795455d2fc808dbeb51f90218a5e7b1ae7317abcf2c4bd3e20c3f105eb",
+    "apps/agent/src/browser-provider-configuration.ts": "02a6ec73afbd3820c611df4b357f0ce0fce2317b23ceaa11249bb79028cad488",
+    "apps/web/components/environment-workbench.tsx": "b8a01c80d44341a31fd8cc14a07fa579740011259786d29a0a47c4277ae9e5e6",
+    "apps/web/app/api/[[...path]]/route.ts": "6ade8a40cba2e8634576188b63c287ba253cda3fc41401cd938ef0b323c41b0a",
+    "scripts/adspower-inspect.ts": "b3f015dfec67475aa14af5dea0f6935a4d652f38567ddd9bd50b4d917954f53c",
+    "supabase/migrations/20260912131442_browser_environment_runtime.sql": "97f662ac88d021d9e736e60da02f0f194762896f23cf48498be5075b71f62a8d",
+    "scripts/start-adspower.ps1": "4ae1f2ff3ae3e7869826d36e01fe0509f43da6b5bf700b2b6b3162b068b43256"
+  }
+}

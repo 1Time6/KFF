@@ -1,0 +1,216 @@
+{
+  "checked_at": "2026-09-15T05:00:06.173Z",
+  "version": "0.1.50",
+  "diagnostic": {
+    "started_at": "2026-09-15T04:55:31.419Z",
+    "authorization": {
+      "approval": "USER_APPROVED",
+      "entrypoint": ".kff/diagnose-inbox-header-050.ts",
+      "entrypoint_sha256": "e7f8df6e8cc897ad8514a94058ff2e95b15d9ff736f8689718edb14b4cf6b2bc",
+      "prepared_at": "2026-09-15T04:47:56.0473471Z",
+      "account_number": 8,
+      "profile_id": "k1gvdtft",
+      "maximum_business_seconds": 240,
+      "maximum_exclusive_minutes": 5,
+      "original_thread_id": "2079341482680484",
+      "scope": "Open current directory and only the original failed thread; inspect title and profile link for up to 15 seconds; no message parsing or import",
+      "runtime": "Normally stop original Web/Worker/Agent first and restore afterward only once browser closure is confirmed; keep all monitors paused",
+      "inbox_message_reads": 0,
+      "platform_sends": 0,
+      "manager_restart": false,
+      "proxy_changes": false,
+      "other_accounts_opened": false,
+      "stop_on_first_failure": true,
+      "user_reply": "允许这次 8 号标题诊断",
+      "approved_at": "2026-09-15T04:55:20.2326573Z"
+    },
+    "purpose": "Inspect only the original failed header using the current directory name; do not assume a peer ID from history",
+    "original_task_id": "07f16150-a93c-4090-b87d-348e3b59c830",
+    "profile_id": "k1gvdtft",
+    "thread_id": "2079341482680484",
+    "platform_sends": 0,
+    "messages_parsed": 0,
+    "imported_records": 0,
+    "steps": [
+      {
+        "at": "2026-09-15T04:55:43.934Z",
+        "value": "navigate"
+      },
+      {
+        "at": "2026-09-15T04:55:51.567Z",
+        "value": "resolve"
+      },
+      {
+        "at": "2026-09-15T04:55:51.576Z",
+        "value": "own-controls"
+      },
+      {
+        "at": "2026-09-15T04:55:59.428Z",
+        "value": "heading"
+      },
+      {
+        "at": "2026-09-15T04:55:59.744Z",
+        "value": "profile-type"
+      },
+      {
+        "at": "2026-09-15T04:56:01.770Z",
+        "value": "final-guard"
+      },
+      {
+        "at": "2026-09-15T04:56:01.790Z",
+        "value": "open-current-directory"
+      },
+      {
+        "at": "2026-09-15T04:56:10.175Z",
+        "value": "open-only-original-failed-thread"
+      }
+    ],
+    "header_frames": [
+      {
+        "at": "2026-09-15T04:56:14.331Z",
+        "pass": 0,
+        "header": null
+      }
+    ],
+    "profile_before": "Inactive",
+    "identity_before": {
+      "method": "facebook-profile-dom-v1",
+      "authenticated": true,
+      "operating_identity_id": "61589894042400",
+      "account_type": "profile",
+      "display_name": "XiangHuan Master",
+      "observed_at": "2026-09-15T04:56:01.788Z",
+      "source_url": "https://www.facebook.com/profile.php?id=61589894042400"
+    },
+    "directory": {
+      "ready": true,
+      "visible_threads": 3,
+      "invalid": 0,
+      "empty": false
+    },
+    "current_directory_target": {
+      "thread_id": "2079341482680484",
+      "display_name": "Facebook 用户",
+      "source_url": "https://www.facebook.com/messages/e2ee/t/2079341482680484/"
+    },
+    "error": {
+      "name": "Error",
+      "message": "page.evaluate: ReferenceError: __name is not defined",
+      "code": null
+    },
+    "business_stopped_at": "2026-09-15T04:56:14.339Z",
+    "managed_close_confirmed": true,
+    "profile_after": "Inactive",
+    "owner_lock_retained": false,
+    "finished_at": "2026-09-15T04:56:16.536Z"
+  },
+  "local_diagnostic_fix": {
+    "scope": "Diagnostic collector only; product parser unchanged",
+    "probe": {
+      "synthetic": true,
+      "platform_calls": 0,
+      "original_serialization_failure_reproduced": true,
+      "cases": [
+        {
+          "name": "numeric_link",
+          "passed": true
+        },
+        {
+          "name": "unlinked_title",
+          "passed": true
+        },
+        {
+          "name": "duplicate_title_links",
+          "passed": true
+        },
+        {
+          "name": "message_area_excluded",
+          "passed": true
+        },
+        {
+          "name": "hidden_excluded",
+          "passed": true
+        }
+      ]
+    },
+    "log": ".kff/probe-header-surface-050.log",
+    "corrected_entrypoint": ".kff/diagnose-inbox-header-050-r2.ts",
+    "real_rerun_performed": false
+  },
+  "original_runtime_restored": {
+    "runtime_id": "5eb7b619-1eab-4021-8599-d01c6bf07aae",
+    "pid": 23704,
+    "phase": "RUNNING",
+    "updated_at": "2026-09-15T05:00:04.920Z",
+    "app_origin": "http://127.0.0.1:3000",
+    "release_id": "kff-agent-0.1.50-win32-x64-1f0f07b42ef5",
+    "database_owned": false,
+    "components": {
+      "database": {
+        "pid": null,
+        "state": "CONNECTED"
+      },
+      "web": {
+        "pid": 7576,
+        "state": "RUNNING"
+      },
+      "worker": {
+        "pid": 21888,
+        "state": "RUNNING"
+      },
+      "agent": {
+        "pid": 20528,
+        "state": "RUNNING"
+      }
+    }
+  },
+  "health": {
+    "status": "ok",
+    "protocol": "kff.api.v1",
+    "runtime_id": "5eb7b619-1eab-4021-8599-d01c6bf07aae"
+  },
+  "state": {
+    "business_rows_preserved": true,
+    "tables": {
+      "acquisition_leads": {
+        "count": 53,
+        "sha256": "1c61c772b9ff7c2550995243de12b85c6b0a57448e45ab8e2be01fe69bc86f3b"
+      },
+      "messages": {
+        "count": 140,
+        "sha256": "2640e219d9380b32f868eb4bc87659db851bb9e5eaefd985117a69c3e55ca29c"
+      },
+      "whatsapp_referrals": {
+        "count": 16,
+        "sha256": "a414fb7d35f54cce6aedd25a4ac3a2451826de86730b2e75a2f06ee68a3db5f5"
+      },
+      "customers": {
+        "count": 98,
+        "sha256": "e496d36a67c5c34c88e39e8ffbc322b2348255f261b91af2d14eb75573938019"
+      },
+      "accounts": {
+        "count": 88,
+        "sha256": "fa305e29027e42fd1866b5137fc2e7b95ca43aa94f6353a26d29a4c60a4e645f"
+      },
+      "acquisition_scans": {
+        "count": 77,
+        "sha256": "174573671d30f4f9d68f0b3d47cc2441d6793f54b5f7d262ee02b03fcebd9ba8"
+      },
+      "acquisition_evaluations": {
+        "count": 163,
+        "sha256": "aa1f020894624be5f9247ab0f92e66e076716ab1aae07c8d0b192c9f0053d80f"
+      }
+    },
+    "monitors": [
+      {
+        "state": "PAUSED",
+        "count": 35
+      }
+    ],
+    "open_commands": 0
+  },
+  "result": "PARTIAL_DIAGNOSTIC_STOPPED_ON_COLLECTOR_ERROR",
+  "header_structure_verified": false,
+  "platform_account_deactivation_or_ban_proven": false,
+  "full_goal_complete": false
+}

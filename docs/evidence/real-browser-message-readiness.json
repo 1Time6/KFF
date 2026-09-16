@@ -1,0 +1,235 @@
+{
+  "schema_version": "kff.real-browser-message-readiness.v1",
+  "recorded_at": "2026-09-13T06:47:29.076Z",
+  "status": "READY_FOR_REVIEW_NOT_SENT",
+  "selection": {
+    "ui_sequence": "1876794",
+    "profile_id": "k1gvdtft",
+    "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "external_account_id": "61589894042400",
+    "display_name": "XiangHuan Master"
+  },
+  "target": {
+    "display_name": "郑一哲",
+    "peer_id": "100050174601107",
+    "thread_id": "27724009533944398"
+  },
+  "destination": {
+    "name": "宸均",
+    "phone": "8618730936793"
+  },
+  "draft": "你好，可以通过 WhatsApp 联系宸均继续沟通：https://wa.me/8618730936793",
+  "platform_messages_sent": 0,
+  "real_outgoing_receipt_verified": false,
+  "startup_recovery": {
+    "recorded_at": "2026-09-13T06:38:57.316Z",
+    "command_id": "6cc8233b-aa91-47cf-aac9-63d0bcb5ca3d",
+    "action_id": "b494dc73-f51e-4576-a790-7cfd85ffb38a",
+    "run_id": "4892d2ff-1813-449a-88d1-63bd57fed652",
+    "state": "NEEDS_HUMAN",
+    "quiesced_at": "2026-09-13T06:38:17.148Z",
+    "proof_origin": "observed_operator_recovery",
+    "proof_matches": true,
+    "result": {
+      "released": true
+    }
+  },
+  "prior_read_attempt": {
+    "started_at": "2026-09-13T06:14:57.324Z",
+    "install": {
+      "package": {
+        "release_id": "kff-agent-0.1.3-win32-x64-e2acbfe95eac",
+        "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.3-win32-x64-e2acbfe95eac",
+        "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.3-win32-x64-e2acbfe95eac.zip",
+        "archive_sha256": "df1c68fd7cab08921257bd79921c6ecbc230ff36f14e8e76be72b2e44790b0e4",
+        "files": 1342,
+        "dependencies": 23,
+        "contains_pairing_or_browser_data": false
+      },
+      "release_directory": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.3-win32-x64-e2acbfe95eac",
+      "installed_at": "2026-09-13T06:03:11.0187830Z"
+    },
+    "platform_messages_sent": 0,
+    "before": {
+      "migrations": 31,
+      "accounts": 86,
+      "prospects": 46,
+      "unclosed": 0,
+      "outbound": 0
+    },
+    "account_before": {
+      "id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "state": "DRAFT",
+      "version": 1
+    },
+    "connection": {
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "organization_id": "11111111-1111-4111-8111-111111111111",
+      "brand_id": "22222222-2222-4222-8222-222222222222",
+      "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+      "page_id": "61589894042400",
+      "is_synthetic": false,
+      "state": "ACTIVE",
+      "version": 1,
+      "auto_reply": false,
+      "reply_window_hours": 1,
+      "policy_ref": "kff.facebook-browser.explicit-consent.v1",
+      "created_by": "33333333-3333-4333-8333-333333333333",
+      "created_at": "2026-09-13T06:14:57.623Z",
+      "reception_policy": {},
+      "transport": "BROWSER"
+    },
+    "configuration_request": {
+      "request_id": "2a66808c-cda5-4e40-b0f6-aa9c7d481bde",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+      "expected_version": 0,
+      "transport": "BROWSER",
+      "state": "ACTIVE",
+      "auto_reply": false,
+      "reply_window_hours": 1,
+      "policy_ref": "kff.facebook-browser.explicit-consent.v1"
+    },
+    "connection_backup": {
+      "path": ".kff/changes/real-message-20260913/facebook-connection-before.json",
+      "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+    },
+    "monitor_before": {
+      "id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "version": 9
+    },
+    "checkpoints_before": 2,
+    "progress": {
+      "monitor": {
+        "id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+        "state": "PAUSED",
+        "version": 10,
+        "scan_requested": false,
+        "current_task_id": "d250be2d-561d-4059-82fe-6f9408ae8c3e",
+        "last_error_code": "LEASE_EXPIRED"
+      },
+      "commands": [
+        {
+          "id": "6cc8233b-aa91-47cf-aac9-63d0bcb5ca3d",
+          "action_id": "b494dc73-f51e-4576-a790-7cfd85ffb38a",
+          "agent_id": "66666666-6666-4666-8666-666666666666",
+          "quiesced_at": null,
+          "state": "NEEDS_HUMAN",
+          "error_code": "LEASE_EXPIRED",
+          "receipt": null
+        }
+      ]
+    },
+    "error": "Bounded original read timed out"
+  },
+  "consent_and_permit_granted": false,
+  "real_read_regression": {
+    "checkpoint": {
+      "stored": 0,
+      "duplicates": 2,
+      "observed_at": "2026-09-13T06:46:06.737Z"
+    },
+    "proof": {
+      "command_id": "45107f0c-0d9b-4e3c-9d39-314939f2a8a9",
+      "action_id": "7b942b39-d9e9-424b-a201-983525300db1",
+      "receipt": {
+        "remote_id": "inbox:6a14ca96-4988-4aa2-a0c7-686fc01c15eb:7",
+        "observed_at": "2026-09-13T06:46:06.737Z",
+        "content_hash": "578563651d5b4c6d9d7095cb27987a175d793ed12a8ae45a2ab2e54b8dd66d5d",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61589894042400"
+      },
+      "quiesced_at": "2026-09-13T06:46:13.696Z",
+      "local_closed_at": "2026-09-13T06:46:13.098Z",
+      "matches": true
+    },
+    "provider_after": "Inactive",
+    "account_state": "ACTIVE"
+  },
+  "database": {
+    "before": {
+      "migrations": 31,
+      "accounts": 86,
+      "prospects": 46,
+      "unclosed": 0,
+      "outbound": 0
+    },
+    "after": {
+      "accounts": 86,
+      "prospects": 46,
+      "account_state": "ACTIVE",
+      "unclosed": 0,
+      "referrals": 0
+    },
+    "migrations": 31,
+    "backup": {
+      "recorded_at": "2026-09-13T06:12:43.9699392Z",
+      "backup_path": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\backups\\before-real-browser-message-20260913-140430",
+      "file_count": 17274,
+      "bytes": 414015555,
+      "all_sha256_match": true,
+      "original_database_stopped": true,
+      "config_backup_matches": true
+    }
+  },
+  "package": {
+    "installed_at": "2026-09-13T06:41:56.1179514Z",
+    "package": {
+      "release_id": "kff-agent-0.1.3-win32-x64-7d0acd2ee50b",
+      "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.3-win32-x64-7d0acd2ee50b",
+      "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.3-win32-x64-7d0acd2ee50b.zip",
+      "archive_sha256": "4258f16f89c38c892a851fc4013adceed3cf7c718c3aeeedf395052bf0e7899b",
+      "files": 1342,
+      "dependencies": 23,
+      "contains_pairing_or_browser_data": false
+    },
+    "release_directory": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.3-win32-x64-7d0acd2ee50b"
+  },
+  "runtime": {
+    "data_root": "C:\\Users\\17731\\Desktop\\KFF",
+    "owner_pid": 20876,
+    "live_sending_enabled": false,
+    "release_directory": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.3-win32-x64-7d0acd2ee50b",
+    "agent_created_at": "2026-09-13T06:44:50.8043070Z",
+    "discovery_enabled": true,
+    "browser_inbox_enabled": true,
+    "health_status": 200,
+    "command_line": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.3-win32-x64-7d0acd2ee50b\\node.exe C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.3-win32-x64-7d0acd2ee50b\\agent-launch.mjs start --data-root C:\\Users\\17731\\Desktop\\KFF",
+    "agent_id": "66666666-6666-4666-8666-666666666666",
+    "executable": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.3-win32-x64-7d0acd2ee50b\\node.exe",
+    "recorded_at": "2026-09-13T06:45:21.1283514Z",
+    "agent_pid": 28008,
+    "automatic_restart_on_boot": false
+  },
+  "validation": {
+    "contracts": 122,
+    "final_related_integration": 15,
+    "previous_related_integration": 10,
+    "owned_dom_cases": 7,
+    "typecheck": true,
+    "lint": true,
+    "production_build": true,
+    "logs": {
+      ".kff/real-message-integration-r4.log": "5142a4ef0188407af999f00900cad797069cc8704a8ee37f977299486d2cb24f",
+      ".kff/real-message-integration-r5.log": "263ca29595e6fe6c6418ca3ab887a2c843766d133dbb40c3ef2f37fb923cead2",
+      ".kff/real-message-result-dom-check.txt": "b659f15fe0abb2ad4247f91e6714e8cccb1c44d00f4ebc2660e62df1defc6bba",
+      ".kff/real-message-typecheck-r3.log": "84a7ec499b40507c80df56699ca5daaaf1fe26ea2b20e513ad7894bfd915a2ed",
+      ".kff/real-message-lint-r4.log": "8dc9a514a7ab798aaeae718a8c1f6e5f9ce88f9fa6ae6d5c3b5bbe2b38cb7afe",
+      ".kff/checks/build.log": "2022b2c0a01c65abda6c3838fa81f86d6c22efbfaad614ce598cb32168cdef42",
+      ".kff/real-message-composer-preview.txt": "a0ce6c5c9d8715193dcf4777032cbd6a055e19cc18681f755287c335c64794c4"
+    }
+  },
+  "limitations": [
+    "Real outgoing DOM and first send receipt are pending explicit user approval and platform test.",
+    "Current real inbox reader covers incoming-only history; mixed outgoing and new incoming increments remain pending.",
+    "Invitation delivery, actual customer contact on WhatsApp and sales acceptance are separate pending checks.",
+    "Two real accounts, ongoing unattended operation and complete control-plane installation are not verified."
+  ],
+  "ui": {
+    "screenshot": "output/playwright/real-message-prepared-controls.png",
+    "snapshot_sha256": "414b2b1273ecb5d30b5005f5a1e91c78945a7d813498bafedccee0483c1d9210",
+    "direct_send_buttons": 0,
+    "consent_form_visible": true,
+    "prepare_button_visible": true
+  }
+}

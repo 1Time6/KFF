@@ -1,0 +1,338 @@
+{
+  "recorded_at": "2026-09-13T03:17:43.263Z",
+  "kind": "AGENT_0_1_0_TO_0_1_1_AND_PACKAGED_REAL_READ",
+  "upgrade": {
+    "checked_at": "2026-09-13T03:09:54.765Z",
+    "synthetic": true,
+    "real_platform_verified": false,
+    "independent_agent_processes": 2,
+    "first_agent_restarted": true,
+    "cross_version_upgrade": true,
+    "upgraded_agent_continued": true,
+    "lost_ack_report_replayed_unchanged": true,
+    "original_closure_proof_unchanged": true,
+    "first_action_submission_attempts": 1,
+    "first_action_remote_messages": 1,
+    "second_account_continued_while_first_quarantined": true,
+    "exact_account_destinations_verified": true,
+    "pairing_file_unchanged": true,
+    "release": {
+      "first": "C:\\Users\\17731\\AppData\\Local\\Temp\\kff-agent-delivery-03HW6Q\\first\\kff-agent-0.1.1-win32-x64-32bcf146feca",
+      "second": "C:\\Users\\17731\\AppData\\Local\\Temp\\kff-agent-delivery-03HW6Q\\second\\kff-agent-0.1.1-win32-x64-32bcf146feca",
+      "id": "kff-agent-0.1.1-win32-x64-32bcf146feca",
+      "archive_sha256": "6e7cece483978253b74414f47395c6e0843b6374cc49c12a086206319a7d65ff",
+      "source_implementation_matches": true,
+      "previous": {
+        "directory": "C:\\Users\\17731\\AppData\\Local\\Temp\\kff-agent-delivery-03HW6Q\\previous\\kff-agent-0.1.0-win32-x64-ce717520adc4",
+        "id": "kff-agent-0.1.0-win32-x64-ce717520adc4",
+        "version": "0.1.0",
+        "archive_sha256": "51b23dfac105a3deb9a90ac43d02db5c4de919a44de16d062abf48057b52d3d6",
+        "changed_sources": [
+          "apps/agent/src/environment-child.ts",
+          "apps/agent/src/guardian-child.ts",
+          "apps/agent/src/guardian.ts",
+          "packages/adapters/src/browser-discovery.ts",
+          "packages/adapters/src/collection-fixture.ts",
+          "packages/adapters/src/facebook-browser-comments.ts",
+          "packages/adapters/src/facebook-browser-discovery.ts",
+          "packages/adapters/src/facebook-browser-identity.ts",
+          "packages/adapters/src/facebook-comments-dom.ts",
+          "packages/adapters/src/facebook-search-dom.ts",
+          "packages/adapters/src/templates.ts",
+          "packages/contracts/src/acquisition.ts",
+          "packages/contracts/src/collection.ts",
+          "packages/contracts/src/environment.ts",
+          "packages/contracts/src/index.ts",
+          "packages/contracts/src/template.ts",
+          "packages/core/src/artifacts.ts",
+          "packages/core/src/index.ts"
+        ]
+      }
+    },
+    "runtime_root": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\browser-matrix-process-DUbeDB",
+    "proofs": [
+      {
+        "agent_id": "5208fd2c-379c-44a8-90f7-ab8ba41de13f",
+        "command_id": "73d6cd30-de09-4c98-acf4-e6b82f49bd65",
+        "action_id": "2e1bbc48-5d32-4d2c-b357-724f4f98b459",
+        "proof_matches_database": true
+      },
+      {
+        "agent_id": "5208fd2c-379c-44a8-90f7-ab8ba41de13f",
+        "command_id": "f163692c-1d8a-4704-b411-e436b4d35832",
+        "action_id": "8857a6b5-9013-4139-a8e9-aece8b6af162",
+        "proof_matches_database": true
+      },
+      {
+        "agent_id": "5208fd2c-379c-44a8-90f7-ab8ba41de13f",
+        "command_id": "3ab0bd36-bf17-4a4e-944e-d5b03b3a5423",
+        "action_id": "6c2a8918-8a70-41d4-873a-004628027c8c",
+        "proof_matches_database": true
+      },
+      {
+        "agent_id": "5208fd2c-379c-44a8-90f7-ab8ba41de13f",
+        "command_id": "8d1137b5-a88e-4355-86fa-9fc4ec0183dd",
+        "action_id": "1932b95d-4408-4abe-914a-6ca7eae567cc",
+        "proof_matches_database": true
+      },
+      {
+        "agent_id": "822b55ca-3ca5-430d-b40a-b92fae2e51d9",
+        "command_id": "41ae2510-3f83-47f4-879d-3519d1590f7f",
+        "action_id": "c7c681a1-eb3a-409f-90a8-0d8d0771efca",
+        "proof_matches_database": true
+      },
+      {
+        "agent_id": "822b55ca-3ca5-430d-b40a-b92fae2e51d9",
+        "command_id": "c0386421-c328-43c6-ad8f-f27c33b15979",
+        "action_id": "52567712-4011-41da-b49b-bf7a87c16b00",
+        "proof_matches_database": true
+      },
+      {
+        "agent_id": "822b55ca-3ca5-430d-b40a-b92fae2e51d9",
+        "command_id": "8c070dd5-fae8-4cde-80a5-25d85a3b497c",
+        "action_id": "4980acad-99bc-42c2-bd32-9873248f00e2",
+        "proof_matches_database": true
+      },
+      {
+        "agent_id": "822b55ca-3ca5-430d-b40a-b92fae2e51d9",
+        "command_id": "5ed8ef41-234d-421b-9410-a65a5198577b",
+        "action_id": "fac54993-7379-45f6-ae7f-f60d3b67a2d0",
+        "proof_matches_database": true
+      }
+    ]
+  },
+  "real_read": {
+    "profile_id": "k1gvdtft",
+    "ui_sequence": "1876794",
+    "external_id": "61589894042400",
+    "runtime": {
+      "agent_created_at": "2026-09-13T03:15:22.589402Z",
+      "executable": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.1-win32-x64-32bcf146feca\\node.exe",
+      "data_root": "C:\\Users\\17731\\Desktop\\KFF",
+      "discovery_enabled": true,
+      "live_sending_enabled": false,
+      "agent_id": "66666666-6666-4666-8666-666666666666",
+      "release_directory": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.1-win32-x64-32bcf146feca",
+      "owner_pid": 28600,
+      "command_line": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.1-win32-x64-32bcf146feca\\node.exe C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.1-win32-x64-32bcf146feca\\agent-launch.mjs start --data-root C:\\Users\\17731\\Desktop\\KFF",
+      "health_status": 200,
+      "agent_pid": 23092,
+      "recorded_at": "2026-09-13T03:15:39.6160119Z",
+      "automatic_restart_on_boot": false
+    },
+    "query_id": "cdf34155-2114-4438-bbd0-604299199b49",
+    "monitor_id": "72eceefc-3f5f-4f0a-8953-33c9f309517e",
+    "monitor": {
+      "state": "PAUSED",
+      "version": 3,
+      "scan_number": 3
+    },
+    "runs": [
+      {
+        "id": "cbccfea6-5df0-413d-9cde-c9f8d7f8863b",
+        "state": "PARTIAL",
+        "created_at": "2026-09-13T03:16:02.57Z",
+        "started_at": "2026-09-13T03:16:03.421Z",
+        "finished_at": "2026-09-13T03:17:25.286Z",
+        "returned_count": 10,
+        "unique_count": 10,
+        "committed_pages": 2,
+        "stop_reason": "MAX_RECORDS",
+        "error_code": null
+      }
+    ],
+    "commands": [
+      {
+        "command_id": "c892691c-2f30-40f2-9d68-b6542e8099dc",
+        "agent_id": "66666666-6666-4666-8666-666666666666",
+        "page_number": 1,
+        "returned_count": 5,
+        "receipt": {
+          "remote_id": "collection:cbccfea6-5df0-413d-9cde-c9f8d7f8863b:1",
+          "observed_at": "2026-09-13T03:16:36.661Z",
+          "content_hash": "afdf0647d9b0c8dbe23f78cc88e278d420a8420c9c91f6bd13b14734ade989d6",
+          "evidence_kind": "browser_dom",
+          "actual_account_id": "61589894042400"
+        },
+        "diagnostic": {
+          "step": "facebook-comments-visible",
+          "files": [
+            {
+              "name": "semantic-counts.json",
+              "sha256": "c61c8a0bb53e5a63091bd057ee18e328c58f3c2aefa0f53063207968b052a755",
+              "content": {
+                "result_count": 5,
+                "identity_count": 1,
+                "submit_controls": 0
+              }
+            }
+          ],
+          "level": "D1",
+          "omitted": [
+            "raw_dom",
+            "screenshots",
+            "trace",
+            "cookies",
+            "message_body",
+            "network_bodies"
+          ],
+          "outcome": "VERIFIED_SUCCEEDED",
+          "brand_id": "22222222-2222-4222-8222-222222222222",
+          "action_id": "176e89f6-913f-4132-902a-9b2e1638c2fc",
+          "attempt_id": "2ff3904f-b666-4f30-8aea-dd19463c920c",
+          "created_at": "2026-09-13T03:16:46.261Z",
+          "error_code": null,
+          "duration_ms": 37496,
+          "schema_version": "kff.diagnostic.v2",
+          "adapter_version": "facebook-search-browser-v1",
+          "browser_version": "150.0.7871.47",
+          "organization_id": "11111111-1111-4111-8111-111111111111",
+          "downgrade_reason": null,
+          "executor_version": "kff-agent-0.1.0_node-24.14.1",
+          "protocol_version": "kff.agent.v1",
+          "redaction_version": "allowlist-v1"
+        },
+        "db_quiesced_at": "2026-09-13T03:16:46.3Z",
+        "local_closed_at": "2026-09-13T03:16:45.975Z",
+        "proof_matches": true,
+        "raw_page_compacted": true
+      },
+      {
+        "command_id": "7a525d69-7335-470f-aeee-a759db7aa6c6",
+        "agent_id": "66666666-6666-4666-8666-666666666666",
+        "page_number": 2,
+        "returned_count": 5,
+        "receipt": {
+          "remote_id": "collection:cbccfea6-5df0-413d-9cde-c9f8d7f8863b:2",
+          "observed_at": "2026-09-13T03:17:15.337Z",
+          "content_hash": "5e0508028980cfd94b2a06e4a1d882121b7db12101d75a95e4fbb3ab284baa08",
+          "evidence_kind": "browser_dom",
+          "actual_account_id": "61589894042400"
+        },
+        "diagnostic": {
+          "step": "facebook-comments-visible",
+          "files": [
+            {
+              "name": "semantic-counts.json",
+              "sha256": "c61c8a0bb53e5a63091bd057ee18e328c58f3c2aefa0f53063207968b052a755",
+              "content": {
+                "result_count": 5,
+                "identity_count": 1,
+                "submit_controls": 0
+              }
+            }
+          ],
+          "level": "D1",
+          "omitted": [
+            "raw_dom",
+            "screenshots",
+            "trace",
+            "cookies",
+            "message_body",
+            "network_bodies"
+          ],
+          "outcome": "VERIFIED_SUCCEEDED",
+          "brand_id": "22222222-2222-4222-8222-222222222222",
+          "action_id": "3f00cce5-126c-42ce-9d80-93f708872740",
+          "attempt_id": "10071a24-ae27-494e-8bbe-63085a095010",
+          "created_at": "2026-09-13T03:17:25.377Z",
+          "error_code": null,
+          "duration_ms": 34120,
+          "schema_version": "kff.diagnostic.v2",
+          "adapter_version": "facebook-search-browser-v1",
+          "browser_version": "150.0.7871.47",
+          "organization_id": "11111111-1111-4111-8111-111111111111",
+          "downgrade_reason": null,
+          "executor_version": "kff-agent-0.1.0_node-24.14.1",
+          "protocol_version": "kff.agent.v1",
+          "redaction_version": "allowlist-v1"
+        },
+        "db_quiesced_at": "2026-09-13T03:17:25.426Z",
+        "local_closed_at": "2026-09-13T03:17:25.123Z",
+        "proof_matches": true,
+        "raw_page_compacted": true
+      }
+    ],
+    "observed_comments": 10,
+    "unchanged_comments_from_previous_scan": 10,
+    "leads": 9,
+    "new_leads": 0,
+    "previous_lead_decisions_preserved": true,
+    "qualified": 0,
+    "provider_after": "Inactive",
+    "platform_sends": 0
+  },
+  "preservation": {
+    "backup_verified_files": 162,
+    "pairing_unchanged": true,
+    "configuration_unchanged": true,
+    "historical_closure_files_unchanged": 150
+  },
+  "counts": {
+    "accounts": 86,
+    "existing_prospects": 46,
+    "migrations": 29,
+    "unclosed_commands": 0,
+    "active_monitors": 0
+  },
+  "source_hashes": {
+    "packages/adapters/src/facebook.ts": "e1bcdc6768ebab56d07f35b7fdae3ffc1a51383e8b0f8d197ded3e45d538a318",
+    "packages/adapters/src/templates.ts": "10843f427b63f33275a220ed29471d6ea74d08fd3696eacbe0bc2c63c65c20f5",
+    "packages/contracts/src/template.ts": "9cb2b360deb924d9d2edda18a068fc766cc2eb66c0dccbf378ab9ee6588eedbf",
+    "packages/contracts/src/index.ts": "7f5b26888bc149ae1297f4c88559a7924d9e13a01163e8b87b72c5b60b08a0d8",
+    "packages/contracts/src/environment.ts": "2c610f8f0f3a6b95f2a0eb228f5ced74885b8ebde03dc3b087be063b4624b4b0",
+    "packages/adapters/src/browser-profile.ts": "9c5c422bbc87acb3f6553e8bb4e77674e54292ef12629f003a1dd146baa2d530",
+    "packages/core/src/index.ts": "3fa21711993be243ce79ef2569b2699f291001fe09fbfc86aa8527f6ca02d8fc",
+    "packages/contracts/src/collection.ts": "6b083768524915c2e29660c3be8c768d8e6b42ca8d9a38e4a94d5da98b460a1b",
+    "packages/contracts/src/browser-collection.ts": "e1e2e008a12a458090da26b492412cd78f5e90c12a4b67f4079afd42e3c06d6d",
+    "packages/adapters/src/collection-fixture.ts": "ea5a53b50e4ec3e0f28a1f588f77154ebcddcd04a7c9ae5d225b54aa5489c452",
+    "packages/adapters/src/browser-discovery.ts": "ef203337e7991918445ae6b7877ee2fab18cdefc4cf539506aa1ddbe91a8c8e6",
+    "packages/adapters/src/browser-discovery-fixture.ts": "9d88f8d14d9c81f5bfc6b2739ca7fd0e205b3c1be1f1b4f9cf29d3715a6e0906",
+    "apps/agent/src/guardian.ts": "0804a3c4c3691cf4d5da36deeb42352fec0a0a8665e16e32e7c34bb01ab27dbf",
+    "apps/agent/src/guardian-child.ts": "85f7185b3f780d10ea2e7540a10663a90d14b1ef08c49c9de08346ab2a6f759b",
+    "packages/adapters/src/facebook-browser-identity.ts": "0be81bf04bdb290a0f3831f92c9ff8f23bdfdc3227d8ac8e8d09ddfb1a38daee",
+    "packages/adapters/src/facebook-browser-discovery.ts": "4cccc28aebaa7da3330fdfe2bd5f338caf0d30f2cc3d677dd5d51906b7229257",
+    "packages/adapters/src/facebook-search-dom.ts": "ab3799be37c6a085a0971153eae7147b869d5a2f4cc944a7345b27f1ae086912",
+    "packages/adapters/src/facebook-comments-dom.ts": "54cad032db053c9a5f966ab7b43ebd46e0648b142a42f6032e1c4a53ffb50ff3",
+    "packages/adapters/src/facebook-browser-comments.ts": "18fbfe5bead5fba6a9b946c4d9ea563b61643a8f090c1872ce7c355c22a15720",
+    "packages/adapters/src/discovery.ts": "2375e7509a3821a00d8dbf9617f752c29544ba1e1462b4c02ab064699401aac0",
+    "packages/adapters/src/apify.ts": "4867fa8061924667f69540af8fea6737e122bf88bcf76a2862d71eafc808b6af",
+    "packages/adapters/src/apify-connection.ts": "12db9d4462c90e065a05b39b9ca49de60f360e3571c3be1ae02c8fe6d818fc3b",
+    "packages/adapters/src/source-http.ts": "681d45506a9a1f228f6d67a99012bfd9276f2cbacc7dda6b7af90d1b2f07352b",
+    "packages/adapters/src/social-outreach.ts": "cdb45a6045b1f4a019a2348c8a5cac6d7124f5098074a425e44fa17c66eb0451",
+    "packages/contracts/src/acquisition.ts": "2b1dc48780c6adc8dd966acc3eaced73b3c4589faefbca0ac638be183c49258a",
+    "packages/adapters/src/facebook-messenger.ts": "b6a29de8827fd69b784369c2d48db6eed0570f797590ba98b8f67b57bf43c160",
+    "packages/adapters/src/facebook-events.ts": "d9d3e37a065ef1cb674632366abcdaa4846750da5ad80ff77b45af4bbd94a2c9",
+    "packages/contracts/src/lead.ts": "176ae2acc029ceaa296a58da682c90fea5edc04b98e4d90c102f687480fe2ffa"
+  },
+  "checks": {
+    "typecheck": {
+      "exit_code": 0,
+      "ended_at": "2026-09-13T03:16:07.133Z"
+    },
+    "lint": {
+      "exit_code": 0,
+      "ended_at": "2026-09-13T03:16:27.012Z"
+    }
+  },
+  "limitations": [
+    "Upgrade acceptance covers only the named 0.1.0 and 0.1.1 archives on this Windows host",
+    "Two Agent messaging/WhatsApp flows use synthetic platforms; not real Messenger or WhatsApp receipt",
+    "Real packaged read covers ten public comments from one fixed post on one real account",
+    "Current development owner runs the packaged Agent for this session; no reboot persistence or full controller installer acceptance",
+    "User test incoming Messenger conversation and two real accounts remain pending"
+  ],
+  "manual_messenger_after_read": {
+    "message_requests_verified": false,
+    "evidence_file": ".kff/packaged-agent-messenger-final.txt",
+    "profile_id": "k1gvdtft",
+    "no_chat_selected": true,
+    "checked_at": "2026-09-13T03:20:57.1778113Z",
+    "ui_sequence": "1876794",
+    "page_url": "https://www.facebook.com/messages/t/",
+    "cli_detached": true,
+    "ordinary_chat_list_empty": true,
+    "pin_prompt_visible": false,
+    "manual_browser_left_open": true
+  }
+}

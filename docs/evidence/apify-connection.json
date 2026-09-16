@@ -1,0 +1,74 @@
+{
+  "checked_at": "2026-09-12T11:36:05.296Z",
+  "account_verified": true,
+  "username": "tropical_fishfly",
+  "actors": [
+    {
+      "name": "apify/facebook-comments-scraper",
+      "id": "us5srxAYnsrkgUv2v",
+      "is_public": true,
+      "store_url": "https://apify.com/apify/facebook-comments-scraper",
+      "api_path": "/v2/actors/apify~facebook-comments-scraper/runs"
+    },
+    {
+      "name": "apify/instagram-comment-scraper",
+      "id": "SbK00X0JYCPblD2wp",
+      "is_public": true,
+      "store_url": "https://apify.com/apify/instagram-comment-scraper",
+      "api_path": "/v2/actors/apify~instagram-comment-scraper/runs"
+    },
+    {
+      "name": "apify/facebook-posts-scraper",
+      "id": "KoJrdxJCTtpon81KY",
+      "is_public": true,
+      "store_url": "https://apify.com/apify/facebook-posts-scraper",
+      "api_path": "/v2/actors/apify~facebook-posts-scraper/runs"
+    },
+    {
+      "name": "apify/instagram-hashtag-scraper",
+      "id": "reGe1ST3OBgYZSsZJ",
+      "is_public": true,
+      "store_url": "https://apify.com/apify/instagram-hashtag-scraper",
+      "api_path": "/v2/actors/apify~instagram-hashtag-scraper/runs"
+    },
+    {
+      "name": "scraper_one/facebook-posts-search",
+      "id": "TMBawM4LZpKN15DZX",
+      "is_public": true,
+      "store_url": "https://apify.com/scraper_one/facebook-posts-search",
+      "api_path": "/v2/actors/scraper_one~facebook-posts-search/runs"
+    }
+  ],
+  "actor_runs_started": 0,
+  "real_comments_ingested": 0,
+  "kff_ingestion": "CODE_CONTRACT_ONLY",
+  "credentials_included": false,
+  "local_validation": {
+    "recorded_at": "2026-09-12T11:44:14.046003+00:00",
+    "unit": 26,
+    "contracts": 92,
+    "acquisition_integration": 9,
+    "total": 127,
+    "typecheck": "passed",
+    "lint_changed_files": "passed",
+    "production_build": "passed",
+    "runtime_apify_configured": true,
+    "live_discovery_enabled": false,
+    "live_outbound_enabled": false,
+    "client_chunks_checked": 13,
+    "client_credential_leaks": 0,
+    "source_hashes": {
+      "packages/adapters/src/apify.ts": "4867fa8061924667f69540af8fea6737e122bf88bcf76a2862d71eafc808b6af",
+      "packages/adapters/src/apify-connection.ts": "12db9d4462c90e065a05b39b9ca49de60f360e3571c3be1ae02c8fe6d818fc3b",
+      "packages/adapters/src/source-http.ts": "681d45506a9a1f228f6d67a99012bfd9276f2cbacc7dda6b7af90d1b2f07352b",
+      "packages/adapters/src/discovery.ts": "b7d0e480119f513b3e2de8b0d559d6b01c6b2c156e296461d9b9b4412bf61bc4",
+      "packages/core/src/acquisition.ts": "c304a37d38de7baf0482ba5d89d97badf45a773b34613093c3a735d42e5cdb31",
+      "packages/core/src/collections.ts": "586571170f8adc2ce535f43789f6bbef0f40f6bc037d44ee0a5c0381681085a1",
+      "apps/web/components/acquisition-workbench.tsx": "3a60eafa03f5094ec98d0394837f9108b4f0409768cdefc2fb7399f56b1bef98",
+      "tests/contracts/apify.test.ts": "5de4ea2faf1becabe4d6190028123bccf3759e9186a7b7a16279315821ce4c81",
+      "tests/integration/acquisition.test.ts": "e13c672598986a656dbeb3c591049f83079b88b1a0ba42036ddfaa8d231cbd50",
+      "scripts/apify-connect.ts": "d32f435fefd90a9317f986cfc6890c313d0ab56e035560a67baf25b0af2228a6",
+      "scripts/apify-inspect.ts": "d9f8801fd1dec8033bd53ee20b6f735f0bfd7668faed66cf411f77f509fbafc3"
+    }
+  }
+}

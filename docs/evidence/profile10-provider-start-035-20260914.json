@@ -1,0 +1,112 @@
+{
+  "at": "2026-09-14T10:30:27.633Z",
+  "goal_complete": false,
+  "version": "0.1.35",
+  "controller": {
+    "release_id": "kff-controller-0.1.35-win32-x64-5df99a476ecd",
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.35-win32-x64-5df99a476ecd",
+    "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.35-win32-x64-5df99a476ecd.zip",
+    "archive_sha256": "a4c686bd5f95f07290d7438cd9befeaee2a6dc031f7cff909cf743c6e929b8c1",
+    "files": 24092,
+    "uncompressed_bytes": 829493322,
+    "dependency_packages": 155,
+    "contains_runtime_data": false,
+    "live_config_values_scanned": 6
+  },
+  "controller_verified": {
+    "release_id": "kff-controller-0.1.35-win32-x64-5df99a476ecd",
+    "verified_files": 24092
+  },
+  "key_updated_by_user": true,
+  "manual_browser_check": {
+    "observed_at": "2026-09-14T10:26:23.388Z",
+    "profile_id": "k1gx1n1s",
+    "navigations": 0,
+    "platform_sends": 0,
+    "pending": {
+      "commands": 0,
+      "environments": 0
+    },
+    "status": "Active",
+    "pages": [
+      {
+        "origin": "https://www.facebook.com",
+        "path": "/messages/",
+        "setup_prompt": false,
+        "challenge": false,
+        "chat_list": true,
+        "unsent_edit": false,
+        "dialogs": 0
+      }
+    ]
+  },
+  "manual_release": {
+    "at": "2026-09-14T10:27:01.513Z",
+    "profile": "k1gx1n1s",
+    "purpose": "Release inspected unlocked manual Messenger window for the original Agent single read",
+    "status": "Inactive",
+    "user_editing_detected": false,
+    "exact_instance_stop": true,
+    "platform_sends": 0
+  },
+  "read": {
+    "started_at": "2026-09-14T10:27:21.585Z",
+    "finished_at": "2026-09-14T10:27:34.731Z",
+    "monitor_id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+    "monitor_version": 4,
+    "commands": [
+      {
+        "id": "5c84ae6b-04d6-4ea2-af4c-6d3e9f46535e",
+        "action_id": "fd1f7e36-62c1-4fe5-8e15-069fc3083417",
+        "created_at": "2026-09-14T10:27:24.139Z",
+        "quiesced_at": "2026-09-14T10:27:31.143Z",
+        "state": "BLOCKED",
+        "error_code": "PROVIDER_REJECTED",
+        "receipt": null,
+        "task_id": "243fe6ca-5403-4b7b-afed-fe82c2d219fd",
+        "implementation_digest": "000f84be9f4ea37f5397209269e7f3cdfd270c62160ddbfde702b365aea0643a"
+      }
+    ],
+    "closure": {
+      "protocol_version": "kff.guardian-closure.v1",
+      "command_id": "5c84ae6b-04d6-4ea2-af4c-6d3e9f46535e",
+      "action_id": "fd1f7e36-62c1-4fe5-8e15-069fc3083417",
+      "closed_at": "2026-09-14T10:27:30.951Z",
+      "proof_sha256": "74e601a3751fd571e0cfea29a67ee223c78c953cc1810a8fa4656a0890d47646",
+      "local_and_database_match": true
+    },
+    "profile_after": "Inactive",
+    "existing_inbox_unchanged": true,
+    "accepted": false,
+    "checkpoints": []
+  },
+  "adspower_errors": [
+    {
+      "at": "2026-09-14T18:27:28.644",
+      "host": "api-global.adspower.net",
+      "path": "sys/company/company/get-company-config?_local_api=adspower",
+      "message": "read ECONNRESET"
+    },
+    {
+      "at": "2026-09-14T18:27:29.318",
+      "host": "api-global.adspower.net",
+      "path": "fbcc/user/get-open-app-list?_local_api=adspower",
+      "message": "Request failed with status code 400"
+    },
+    {
+      "at": "2026-09-14T18:27:29.659",
+      "host": "api-global.adspower.net",
+      "path": "sys/company/company/get-company-config?_local_api=adspower",
+      "message": "Request failed with status code 400"
+    },
+    {
+      "at": "2026-09-14T18:27:30.082",
+      "host": "api-global.adspower.net",
+      "path": "fbcc/user/get-open-user-list?_local_api=adspower",
+      "message": "Request failed with status code 400"
+    }
+  ],
+  "pending_original_commands": 0,
+  "platform_sends": 0,
+  "next_step": "User checks one manual launch of AdsPower profile10. Do not repeat PIN setup or API key replacement unless new evidence requires it. No automatic retry."
+}

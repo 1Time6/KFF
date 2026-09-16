@@ -1,0 +1,722 @@
+{
+  "schema_version": "kff.matrix-window.v1",
+  "recorded_at": "2026-09-14T06:01:57.243Z",
+  "goal_complete": false,
+  "accepted": false,
+  "plan": {
+    "duration_limit_seconds": 4200,
+    "public_interval_minutes": 60,
+    "inbox_interval_seconds": 300,
+    "max_public_scans_per_account": 2,
+    "max_inbox_cycles_per_account": 12,
+    "max_inbox_threads": 3,
+    "max_inbox_messages": 25,
+    "original_agent_slots": 1,
+    "platform_sends": 0,
+    "stop_on_first_failure_or_selected_thread_skip": true
+  },
+  "started_at": "2026-09-14T05:44:50.152Z",
+  "finished_at": "2026-09-14T05:47:55.166Z",
+  "elapsed_seconds": 185.014,
+  "stop_reason": "SELECTED_THREAD_INCOMPLETE",
+  "release": "kff-agent-0.1.23-win32-x64-f44b057f54bc",
+  "original_runtime_id": "bb6c4479-5bfd-4196-8d71-9084427b18b7",
+  "scans": [
+    {
+      "monitor_id": "6776ac4f-1baa-4064-a9d6-ecd866c2a34b",
+      "query_id": "d28b9234-3db4-4298-868c-027485cc8d87",
+      "monitor_version": 2,
+      "scan_number": 10,
+      "run_id": "8f8a14b8-8e7a-4448-a0d3-65a7a70406c0",
+      "state": "PARTIAL",
+      "error_code": null,
+      "stop_reason": "MAX_PAGES",
+      "returned_count": 3,
+      "unique_count": 3,
+      "committed_pages": 1,
+      "finished_at": "2026-09-14T05:47:50.671Z"
+    },
+    {
+      "monitor_id": "3ba710a3-f505-4f96-a002-bf29a81e56aa",
+      "query_id": "d7d7bc22-b77e-42e6-b27b-6ac071e03f1d",
+      "monitor_version": 2,
+      "scan_number": 10,
+      "run_id": "5f1ca2b4-599a-45b1-876c-2b8710a5174e",
+      "state": "FAILED",
+      "error_code": "LOGIN_CHALLENGE",
+      "stop_reason": "LOGIN_CHALLENGE",
+      "returned_count": 0,
+      "unique_count": 0,
+      "committed_pages": 0,
+      "finished_at": "2026-09-14T05:46:50.811Z"
+    }
+  ],
+  "commands": [
+    {
+      "id": "a0ef9de3-f6f0-42ae-b0f2-dc22c3f58725",
+      "action_id": "2c291203-99b7-4d61-8a1b-8f0a323d05f4",
+      "created_at": "2026-09-14T05:44:50.597Z",
+      "claimed_at": "2026-09-14T05:44:50.733Z",
+      "quiesced_at": "2026-09-14T05:46:06.257Z",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "receipt": {
+        "remote_id": "inbox:6a14ca96-4988-4aa2-a0c7-686fc01c15eb:23",
+        "observed_at": "2026-09-14T05:45:59.763Z",
+        "content_hash": "ff8c226c589c78029c35fede54a245ab57b9effa8883e238bc350a4b69ca9d7d",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61589894042400"
+      },
+      "task_id": "8a74e9ba-8ede-4bc5-acc3-0554a92d8d8c",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "capability_key": "facebook.inbox.read.browser",
+      "inbox_monitor_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "query_id": null,
+      "profile_id": "k1gvdtft",
+      "external_id": "61589894042400"
+    },
+    {
+      "id": "e6518d1a-cce2-4d22-af17-81a4776d674d",
+      "action_id": "ff977841-83d5-4fe1-b627-a65b7f8746f9",
+      "created_at": "2026-09-14T05:46:06.616Z",
+      "claimed_at": "2026-09-14T05:46:07.407Z",
+      "quiesced_at": "2026-09-14T05:46:28.697Z",
+      "state": "BLOCKED",
+      "error_code": "LOGIN_CHALLENGE",
+      "receipt": null,
+      "task_id": "b6468dff-9a86-4897-9d9c-e92be0dab91d",
+      "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "capability_key": "facebook.inbox.read.browser",
+      "inbox_monitor_id": "149da22d-2ea8-49b1-accd-0ea2f4fc845f",
+      "query_id": null,
+      "profile_id": "k1gw2kh9",
+      "external_id": "61594334430750"
+    },
+    {
+      "id": "97097b4d-733a-453b-b940-e9533eef9589",
+      "action_id": "2ece5f54-b48f-4250-8aa0-c1a6e51a1409",
+      "created_at": "2026-09-14T05:46:29.268Z",
+      "claimed_at": "2026-09-14T05:46:29.963Z",
+      "quiesced_at": "2026-09-14T05:46:50.861Z",
+      "state": "BLOCKED",
+      "error_code": "LOGIN_CHALLENGE",
+      "receipt": null,
+      "task_id": "99b34ddd-8c70-4d65-8454-c26d8b43a744",
+      "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "capability_key": "facebook.discovery.read.browser",
+      "inbox_monitor_id": null,
+      "query_id": "d7d7bc22-b77e-42e6-b27b-6ac071e03f1d",
+      "profile_id": "k1gw2kh9",
+      "external_id": "61594334430750"
+    },
+    {
+      "id": "2f5e1f85-be2f-4cc7-99ae-3a116494b2f7",
+      "action_id": "303c82e2-d45a-4d6a-aff9-93c34cc3003a",
+      "created_at": "2026-09-14T05:46:51.922Z",
+      "claimed_at": "2026-09-14T05:46:52.163Z",
+      "quiesced_at": "2026-09-14T05:47:50.799Z",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "receipt": {
+        "remote_id": "collection:8f8a14b8-8e7a-4448-a0d3-65a7a70406c0:1",
+        "observed_at": "2026-09-14T05:47:41.683Z",
+        "content_hash": "c3aa3c3c3fd3a460eb667b3971f1be1b6446e0fefa9496c045b3356fe71591ad",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61589894042400"
+      },
+      "task_id": "edca75a7-5564-4283-8a16-5f7b9a1b0bfa",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "capability_key": "facebook.discovery.read.browser",
+      "inbox_monitor_id": null,
+      "query_id": "d28b9234-3db4-4298-868c-027485cc8d87",
+      "profile_id": "k1gvdtft",
+      "external_id": "61589894042400"
+    }
+  ],
+  "selected_inbox_pages": [
+    {
+      "details": {
+        "stored": 0,
+        "task_id": "8a74e9ba-8ede-4bc5-acc3-0554a92d8d8c",
+        "has_more": false,
+        "discovery": {
+          "skipped": [
+            {
+              "reason": "THREAD_WINDOW_UNAVAILABLE",
+              "thread_id": "2079341482680484"
+            }
+          ],
+          "threads": [
+            {
+              "peer_id": "100050174601107",
+              "thread_id": "27724009533944398",
+              "display_name": "郑一哲"
+            }
+          ],
+          "strategy": "RECENT_ACCEPTED",
+          "empty_list": false,
+          "unparsed_rows": 0,
+          "window_limited": true,
+          "visible_threads": 2
+        },
+        "duplicates": 5
+      }
+    }
+  ],
+  "inbox_checkpoints": [
+    {
+      "task_id": "8a74e9ba-8ede-4bc5-acc3-0554a92d8d8c",
+      "stored": 0,
+      "duplicates": 5,
+      "observed_at": "2026-09-14T05:45:59.763Z"
+    }
+  ],
+  "serialized": true,
+  "identity_matches": true,
+  "closure_proofs": [
+    {
+      "command_id": "a0ef9de3-f6f0-42ae-b0f2-dc22c3f58725",
+      "proof": {
+        "protocol_version": "kff.guardian-closure.v1",
+        "command_id": "a0ef9de3-f6f0-42ae-b0f2-dc22c3f58725",
+        "action_id": "2c291203-99b7-4d61-8a1b-8f0a323d05f4",
+        "closed_at": "2026-09-14T05:46:05.978Z",
+        "proof_sha256": "eede34a9e2c8966ed78239ff1c5749d1eac9819309245e98ce2aa59b17110012"
+      },
+      "local_database_match": true
+    },
+    {
+      "command_id": "e6518d1a-cce2-4d22-af17-81a4776d674d",
+      "proof": {
+        "protocol_version": "kff.guardian-closure.v1",
+        "command_id": "e6518d1a-cce2-4d22-af17-81a4776d674d",
+        "action_id": "ff977841-83d5-4fe1-b627-a65b7f8746f9",
+        "closed_at": "2026-09-14T05:46:28.291Z",
+        "proof_sha256": "fb705b33ff5f1756e5c2915e38c8e69c4e936d1a560d9559a3eca3477970481d"
+      },
+      "local_database_match": true
+    },
+    {
+      "command_id": "97097b4d-733a-453b-b940-e9533eef9589",
+      "proof": {
+        "protocol_version": "kff.guardian-closure.v1",
+        "command_id": "97097b4d-733a-453b-b940-e9533eef9589",
+        "action_id": "2ece5f54-b48f-4250-8aa0-c1a6e51a1409",
+        "closed_at": "2026-09-14T05:46:50.627Z",
+        "proof_sha256": "275f85b1a33cc6dd2bf5aad624d5a7c5ee63140eafe3281d1acbb27bb0b0f596"
+      },
+      "local_database_match": true
+    },
+    {
+      "command_id": "2f5e1f85-be2f-4cc7-99ae-3a116494b2f7",
+      "proof": {
+        "protocol_version": "kff.guardian-closure.v1",
+        "command_id": "2f5e1f85-be2f-4cc7-99ae-3a116494b2f7",
+        "action_id": "303c82e2-d45a-4d6a-aff9-93c34cc3003a",
+        "closed_at": "2026-09-14T05:47:50.510Z",
+        "proof_sha256": "7a5aa832fc45b5d528a202512b00fb5f0296299131288d42272744e4e7ae1ce0"
+      },
+      "local_database_match": true
+    }
+  ],
+  "monitors_after": {
+    "public": [
+      {
+        "id": "6776ac4f-1baa-4064-a9d6-ecd866c2a34b",
+        "state": "PAUSED",
+        "version": 3,
+        "interval_minutes": 60
+      },
+      {
+        "id": "3ba710a3-f505-4f96-a002-bf29a81e56aa",
+        "state": "PAUSED",
+        "version": 3,
+        "interval_minutes": 60
+      }
+    ],
+    "inbox": [
+      {
+        "id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+        "state": "PAUSED",
+        "version": 29,
+        "interval_seconds": 300,
+        "current_task_id": null,
+        "scan_requested": false,
+        "last_error_code": null
+      },
+      {
+        "id": "149da22d-2ea8-49b1-accd-0ea2f4fc845f",
+        "state": "PAUSED",
+        "version": 13,
+        "interval_seconds": 300,
+        "current_task_id": null,
+        "scan_requested": false,
+        "last_error_code": "LOGIN_CHALLENGE"
+      }
+    ]
+  },
+  "profiles_at_window_close": [
+    {
+      "id": "k1gvdtft",
+      "status": "Inactive"
+    },
+    {
+      "id": "k1gw2kh9",
+      "status": "Inactive"
+    }
+  ],
+  "platform_submissions": 0,
+  "diagnostics": [
+    {
+      "action_id": "2c291203-99b7-4d61-8a1b-8f0a323d05f4",
+      "manifest": {
+        "step": "facebook-inbox-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "c61c8a0bb53e5a63091bd057ee18e328c58f3c2aefa0f53063207968b052a755",
+            "content": {
+              "result_count": 5,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "2c291203-99b7-4d61-8a1b-8f0a323d05f4",
+        "attempt_id": "6b4ff74f-20b2-4d03-8e2e-dcb4a600e548",
+        "created_at": "2026-09-14T05:46:06.226Z",
+        "error_code": null,
+        "duration_ms": 73051,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-inbox-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    },
+    {
+      "action_id": "ff977841-83d5-4fe1-b627-a65b7f8746f9",
+      "manifest": {
+        "step": "facebook-inbox-identity-before",
+        "files": [],
+        "level": "D0",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "BLOCKED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "ff977841-83d5-4fe1-b627-a65b7f8746f9",
+        "attempt_id": "bc822fee-79dd-46ce-9493-0dbd21ed9b18",
+        "created_at": "2026-09-14T05:46:28.675Z",
+        "error_code": "LOGIN_CHALLENGE",
+        "duration_ms": 19464,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-inbox-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": "本驱动未取得可安全导出的现场，保留 D0",
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    },
+    {
+      "action_id": "2ece5f54-b48f-4250-8aa0-c1a6e51a1409",
+      "manifest": {
+        "step": "facebook-comments-before-navigate",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "e1f1ff10280103576f960045d056b19837961af67efce68d240449381444a1e7",
+            "content": {
+              "result_count": 0,
+              "identity_count": 0,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "BLOCKED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "2ece5f54-b48f-4250-8aa0-c1a6e51a1409",
+        "attempt_id": "445043a5-09bb-4b19-95ba-e4e9ea7f5fdb",
+        "created_at": "2026-09-14T05:46:50.846Z",
+        "error_code": "LOGIN_CHALLENGE",
+        "duration_ms": 17835,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-search-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    },
+    {
+      "action_id": "303c82e2-d45a-4d6a-aff9-93c34cc3003a",
+      "manifest": {
+        "step": "facebook-comments-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "5e2b5eb7a24afc3f7a22166cb8e27bddd39105c59061fa7c2ab7e0a8ca95098e",
+            "content": {
+              "result_count": 3,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "303c82e2-d45a-4d6a-aff9-93c34cc3003a",
+        "attempt_id": "7407b473-7c3d-4af1-9636-62b65ce72329",
+        "created_at": "2026-09-14T05:47:50.783Z",
+        "error_code": null,
+        "duration_ms": 54801,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-search-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    }
+  ],
+  "first_account_diagnosis": {
+    "started_at": "2026-09-14T05:53:06.699Z",
+    "source_task": "8a74e9ba-8ede-4bc5-acc3-0554a92d8d8c",
+    "source_command": "a0ef9de3-f6f0-42ae-b0f2-dc22c3f58725",
+    "max_cycles": 1,
+    "platform_sends": 0,
+    "stages": [
+      {
+        "step": "facebook-inbox-directory-load",
+        "at": "2026-09-14T05:53:38.069Z"
+      },
+      {
+        "step": "facebook-inbox-directory-thread",
+        "at": "2026-09-14T05:53:45.888Z"
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "at": "2026-09-14T05:53:50.708Z"
+      },
+      {
+        "step": "facebook-inbox-directory-thread",
+        "at": "2026-09-14T05:54:07.565Z"
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "at": "2026-09-14T05:54:12.653Z"
+      },
+      {
+        "step": "facebook-inbox-directory-composer",
+        "at": "2026-09-14T05:54:15.461Z"
+      },
+      {
+        "step": "facebook-inbox-load",
+        "at": "2026-09-14T05:54:15.533Z"
+      },
+      {
+        "step": "facebook-inbox-wait-content",
+        "at": "2026-09-14T05:54:17.397Z"
+      },
+      {
+        "step": "facebook-inbox-parse",
+        "at": "2026-09-14T05:54:18.513Z"
+      },
+      {
+        "step": "facebook-inbox-peer",
+        "at": "2026-09-14T05:54:18.514Z"
+      },
+      {
+        "step": "facebook-inbox-peer-hit-target",
+        "at": "2026-09-14T05:54:18.657Z"
+      },
+      {
+        "step": "facebook-inbox-peer-menu",
+        "at": "2026-09-14T05:54:18.929Z"
+      }
+    ],
+    "identity_before": {
+      "method": "facebook-profile-dom-v1",
+      "authenticated": true,
+      "operating_identity_id": "61589894042400",
+      "account_type": "profile",
+      "display_name": "XiangHuan Master",
+      "observed_at": "2026-09-14T05:53:38.067Z",
+      "source_url": "https://www.facebook.com/profile.php?id=61589894042400"
+    },
+    "step": "facebook-inbox-peer-menu",
+    "error": "当前窗口没有可核实的已接受会话；需要人工查看，不认定没有消息",
+    "diagnostics": [
+      {
+        "thread_id": "2079341482680484",
+        "stage": "facebook-inbox-directory-identity",
+        "error": "会话标题没有唯一且一致的发送者主页",
+        "error_name": "AppError",
+        "scene": {
+          "url": "https://www.facebook.com/messages/e2ee/t/2079341482680484/",
+          "logs": [
+            {
+              "label": "与郑成功的对话中的消息",
+              "messages": 2
+            }
+          ],
+          "menus": [],
+          "avatars": [
+            {
+              "message_id": "61594334430750@msgr.7505102217959993218",
+              "rect": {
+                "x": 331.6000061035156,
+                "y": 385.4750061035156,
+                "width": 28,
+                "height": 28
+              },
+              "hit_matches": true,
+              "hit_tag": "IMG",
+              "hit_role": null
+            }
+          ]
+        },
+        "screenshot": "C:\\Users\\17731\\Desktop\\KFF/.kff/matrix-first-diagnostic-023-2079341482680484.png"
+      },
+      {
+        "thread_id": "27724009533944398",
+        "stage": "facebook-inbox-peer-menu",
+        "error": "locator.waitFor: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('menuitem', { name: '查看个人主页', exact: true }) to be visible\u001b[22m\n",
+        "error_name": "TimeoutError",
+        "scene": {
+          "url": "https://www.facebook.com/messages/e2ee/t/27724009533944398/",
+          "logs": [
+            {
+              "label": "与郑一哲的对话中的消息",
+              "messages": 5
+            }
+          ],
+          "menus": [],
+          "avatars": [
+            {
+              "message_id": "100050174601107@msgr.7504736197992583760",
+              "rect": {
+                "x": 331.6000061035156,
+                "y": 269.32501220703125,
+                "width": 28,
+                "height": 28
+              },
+              "hit_matches": true,
+              "hit_tag": "IMG",
+              "hit_role": null
+            },
+            {
+              "message_id": "100050174601107@msgr.7504750673031032433",
+              "rect": {
+                "x": 331.6000061035156,
+                "y": 357.3000183105469,
+                "width": 28,
+                "height": 28
+              },
+              "hit_matches": true,
+              "hit_tag": "IMG",
+              "hit_role": null
+            },
+            {
+              "message_id": "100050174601107@msgr.7504805443784841461",
+              "rect": {
+                "x": 331.6000061035156,
+                "y": 597.2374877929688,
+                "width": 28,
+                "height": 28
+              },
+              "hit_matches": false
+            }
+          ]
+        },
+        "screenshot": "C:\\Users\\17731\\Desktop\\KFF/.kff/matrix-first-diagnostic-023-27724009533944398.png"
+      }
+    ],
+    "closed": true,
+    "finished_at": "2026-09-14T05:54:32.440Z"
+  },
+  "second_account": {
+    "initial_checkpoint": {
+      "url": "https://www.facebook.com/checkpoint/1501092823525282/",
+      "text": "郑成功\n郑成功，请验证你是真人来使用你的主页\n继续\n大约需要 30 秒",
+      "screenshot": "C:\\Users\\17731\\Desktop\\KFF/.kff/second-login-challenge-023-settled.png"
+    },
+    "user_report": "我已经完成验证了",
+    "after_report": [
+      {
+        "url": "https://www.facebook.com/checkpoint/1501092823525282/",
+        "title": "Facebook",
+        "body": "郑成功\n郑成功，你已提出申诉\n时间：2026年9月14日\n请稍后回到这里查看结果。\n你的个人主页不会显示给其他 Facebook 用户，也无法供你使用。\n接下来呢？\n我们通常需要一个小时左右来审核你的信息。请稍后回来看看。\n如果我们发现你的个人主页确实未违反社群守则，你便可以再次使用 Facebook。\n如果我们发现你的主页违反社群守则，则会永久禁用你的主页，而且你将无法再次提交申诉。",
+        "screenshot": "C:\\Users\\17731\\Desktop\\KFF/.kff/second-verification-tab-023-0.png"
+      }
+    ],
+    "interpretation": "The user completed the requested verification submission. The original Facebook page now says an appeal was submitted and the profile is unavailable pending review. Do not repeat verification or treat the account as usable until a new original identity check succeeds."
+  },
+  "limits": [
+    "The planned 70-minute window stopped after 185 seconds; this is a failed readiness check, not sustained-operation acceptance.",
+    "One page of first-account public comments returned three records, limited by MAX_PAGES. This is not complete public-source coverage.",
+    "First-account Inbox accepted five duplicate messages from the older thread but skipped the controlled test thread; VERIFIED_SUCCEEDED does not establish complete selected-thread coverage.",
+    "Second-account Inbox and public read both stopped at LOGIN_CHALLENGE before reading any page content. All four already-queued first-round commands closed; no later cycle was started.",
+    "The independent first-account diagnosis observed missing header identity for the test peer and an avatar-menu timeout for the older peer. It does not change the original report or prove a repair.",
+    "The appeal page says review usually takes about an hour. This is platform text, not a promised completion time."
+  ],
+  "old_thread_menu_probe": {
+    "started_at": "2026-09-14T05:58:52.720Z",
+    "source_task": "8a74e9ba-8ede-4bc5-acc3-0554a92d8d8c",
+    "target": {
+      "thread_id": "27724009533944398",
+      "peer_id": "100050174601107",
+      "display_name": "郑一哲"
+    },
+    "max_cycles": 1,
+    "max_extra_menu_open_clicks": 1,
+    "platform_sends": 0,
+    "stages": [
+      {
+        "step": "facebook-inbox-load",
+        "at": "2026-09-14T05:59:14.912Z"
+      },
+      {
+        "step": "facebook-inbox-wait-content",
+        "at": "2026-09-14T05:59:24.180Z"
+      },
+      {
+        "step": "facebook-inbox-parse",
+        "at": "2026-09-14T05:59:25.064Z"
+      },
+      {
+        "step": "facebook-inbox-peer",
+        "at": "2026-09-14T05:59:25.066Z"
+      },
+      {
+        "step": "facebook-inbox-peer-hit-target",
+        "at": "2026-09-14T05:59:25.129Z"
+      },
+      {
+        "step": "facebook-inbox-peer-menu",
+        "at": "2026-09-14T05:59:25.223Z"
+      },
+      {
+        "step": "facebook-inbox-peer",
+        "at": "2026-09-14T05:59:26.468Z"
+      },
+      {
+        "step": "facebook-inbox-peer-hit-target",
+        "at": "2026-09-14T05:59:26.500Z"
+      },
+      {
+        "step": "facebook-inbox-peer-menu",
+        "at": "2026-09-14T05:59:26.616Z"
+      },
+      {
+        "step": "facebook-inbox-peer",
+        "at": "2026-09-14T05:59:26.968Z"
+      },
+      {
+        "step": "facebook-inbox-peer-hit-target",
+        "at": "2026-09-14T05:59:27.019Z"
+      },
+      {
+        "step": "facebook-inbox-peer-menu",
+        "at": "2026-09-14T05:59:27.135Z"
+      },
+      {
+        "step": "facebook-inbox-recheck",
+        "at": "2026-09-14T05:59:27.381Z"
+      }
+    ],
+    "identity_before": {
+      "method": "facebook-profile-dom-v1",
+      "authenticated": true,
+      "operating_identity_id": "61589894042400",
+      "account_type": "profile",
+      "display_name": "XiangHuan Master",
+      "observed_at": "2026-09-14T05:59:14.909Z",
+      "source_url": "https://www.facebook.com/profile.php?id=61589894042400"
+    },
+    "step": "facebook-inbox-recheck",
+    "message_identifiers": [
+      {
+        "id": "100050174601107@msgr.7504736197992583760",
+        "direction": "INBOUND",
+        "body_length": 20
+      },
+      {
+        "id": "100050174601107@msgr.7504750673031032433",
+        "direction": "INBOUND",
+        "body_length": 8
+      },
+      {
+        "id": "100050174601107@msgr.7504799492323995768",
+        "direction": "OUTBOUND",
+        "body_length": 53
+      },
+      {
+        "id": "100050174601107@msgr.7504805443784841461",
+        "direction": "INBOUND",
+        "body_length": 8
+      },
+      {
+        "id": "100050174601107@msgr.7505055556361771799",
+        "direction": "OUTBOUND",
+        "body_length": 12
+      }
+    ],
+    "identity_after": {
+      "method": "facebook-profile-dom-v1",
+      "authenticated": true,
+      "operating_identity_id": "61589894042400",
+      "account_type": "profile",
+      "display_name": "XiangHuan Master",
+      "observed_at": "2026-09-14T05:59:33.010Z",
+      "source_url": "https://www.facebook.com/profile.php?id=61589894042400"
+    },
+    "read_returned": true,
+    "diagnostics": [],
+    "closed": true,
+    "finished_at": "2026-09-14T05:59:36.039Z"
+  }
+}

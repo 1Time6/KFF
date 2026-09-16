@@ -1,0 +1,651 @@
+{
+  "started_at": "2026-09-14T17:06:58.953Z",
+  "keyword": "八字",
+  "platform_sends": 0,
+  "manual_scans": 0,
+  "author_created_test_content": false,
+  "latest_scope": "用户要求冻结已通过的 Messenger/C 接待链，只推进真实关键词自动发现；第一条非人工制造的新潜客进入 lead 后优先 V1 交接并停止非必要开发。",
+  "status": "CLOSED_WITH_FINDINGS",
+  "runtime_id": "5b38befe-7245-45c0-b5db-e12ea223e00f",
+  "baseline_lead_ids": [
+    "b63c4585-bcea-4e62-bf0d-abb73cf6fe8e",
+    "f2572483-6a84-4486-8eee-ee3b51f18153",
+    "62743d3c-2081-4f8c-9062-5f3837a2b5b0",
+    "3e7d3a09-f8f0-4297-a3e6-2887a0eb44bf",
+    "8bce7a29-d230-4f04-a031-14a0fd1e7f2b",
+    "38764407-f780-4a83-8f39-53ca545ad165",
+    "059c04ae-bc08-4ef2-ba0e-7b44acf8229e",
+    "1cafb118-0f01-40a7-a2c9-00ccab0bc7cb",
+    "945ccf1a-dd2b-4bec-a246-c726549a292b",
+    "735cd202-2685-4a29-8945-7663b2ddfcde",
+    "accbd154-a469-44c5-862f-4046677af630",
+    "644dde49-1c2e-47bd-9be5-69ec66a09d23",
+    "e0c3324e-e9f1-47b9-b966-4770d4fb74ef",
+    "a0690603-1ada-4aaf-b8a7-16138697a883",
+    "5e04890e-7814-4856-be55-5d177fa126cf",
+    "81d21971-e353-45de-a216-3c66061fbcc8",
+    "b65bb311-96d8-463a-bb8f-d87e65eeda79",
+    "ce0e4cb7-b690-4bc6-858b-63f51b15fd46",
+    "252a4db7-0cc5-4155-ba7b-bb7606fa9292",
+    "35542a0f-c2c9-4566-b22d-9a689f09f8de",
+    "3efc8312-4c08-49f6-9dc4-91e29daa5365",
+    "5d2a85ff-c908-4480-ae27-9397ed9011c7",
+    "63cb8fc6-5f49-485d-b405-131e12339f0e",
+    "894075c7-d00d-44e0-a242-05e32934a92d",
+    "61c54a55-7f54-4d26-a369-c6121ddefb9e",
+    "19eb0c88-2002-40fd-acad-6040b684cd54",
+    "288caeca-c517-4d76-9411-f7ea80710333",
+    "445ae4fc-0df1-40ef-81ad-136f06aabd92",
+    "67a18414-e51d-4e98-bdc9-cfbed548f69f",
+    "d593af5c-9826-444d-b3e6-61da1e45fb34",
+    "5d0744dc-46aa-482d-903c-3119c459b18f",
+    "37f7d85e-2f7c-4059-ab67-f3633b22a358",
+    "d9843787-0e20-4b68-aa0c-a8e88ce3cfd4",
+    "1c43f70e-e89c-43e9-b49a-0a8feb4207f2",
+    "a501f766-4b75-4f59-b944-c1579a121ee4",
+    "b8ed2ad3-61ab-4ecc-bebe-39a2d86dd29c",
+    "dec6b356-fe22-46b2-99ca-c6e9b5ab7ddd",
+    "bd7d506e-a852-4834-85f1-f963533a7eec",
+    "275b70d9-f67f-45a3-b231-8c3b66be0edd",
+    "f0fb7c53-76fa-4c16-b61f-ea8725821562"
+  ],
+  "baseline_source_ids": [
+    "facebook:comment:1382008900690725",
+    "facebook:post:pfbid02TPyhwWpT5x5xcTqsWda8ZjSbzuZCBZKBupUtubQjrr4Jw9tJnshM6iCkuULfMRbXl",
+    "00025",
+    "00000",
+    "facebook:comment:899678139871570",
+    "156469192459477633815711109783104159488_2",
+    "00023",
+    "199744314471809879741051834906773920364_4",
+    "116626378047931884670285795419281253202_4",
+    "facebook:comment:2386091551919086",
+    "00032",
+    "00029",
+    "00012",
+    "00030",
+    "facebook:comment:1039935125404089",
+    "199744314471809879741051834906773920364_2",
+    "00011",
+    "00018",
+    "9007199254740993123456789",
+    "00026",
+    "facebook:reel:2163157911082094",
+    "facebook:post:pfbid02inLKQH7pxELb9D9HusD6XkVf1VcQmS8Qrw5AmL7wKgAwuxoTaDPV6euTCrWnPja7l",
+    "00014",
+    "116626378047931884670285795419281253202_1",
+    "facebook:post:pfbid036uDymnMGfrYY8M7akRKHBej8nh9D1n5szzWnXigv2XnexW3u64wnqWbSvXQ7uS5Gl",
+    "156469192459477633815711109783104159488_1",
+    "00024",
+    "facebook:post:pfbid02ZyLfFziM7RSEqE6ZkiujsrspKox649JQ7ibQHKdiy7uEuwvLXVhQvbfZRoYmRbKhl",
+    "00003",
+    "00001",
+    "facebook:post:pfbid0eXxUhWyXpjtSd4dcmRJjJM8qFFyKDeEZYPmsWKzhYsoHVGPrk3srMM6erNw9D7Qpl",
+    "facebook:reel:1419888406765492",
+    "00013",
+    "156469192459477633815711109783104159488_4",
+    "duplicate",
+    "00027",
+    "9007199254740993123456790",
+    "00004",
+    "facebook:reel:1809956393694426",
+    "facebook:reel:1098432833113428",
+    "facebook:comment:1353993326906858",
+    "00005",
+    "00031",
+    "00010",
+    "00009",
+    "00007",
+    "00015",
+    "facebook:reel:1815660013151689",
+    "00021",
+    "facebook:post:pfbid022sdGHy9i14MrJE7t8CKuRH2gfgCGPdUaT7PEGEuQWPySBLefiKhkkewbM5nkafE3l",
+    "311849710373835193294296754455192102202_2",
+    "00028",
+    "facebook:comment:27903656085989070",
+    "facebook:comment:1077076494991097",
+    "facebook:comment:1393237392903595",
+    "00019",
+    "311849710373835193294296754455192102202_4",
+    "facebook:reel:2319710731766760",
+    "facebook:post:pfbid0UpeftT8hmyP9u3CAG1LVQsuMwVikLRUTuGLHp4whoXcjmkSakSp943pcRewn8FXSl",
+    "facebook:comment:4652715068308205",
+    "facebook:post:pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl",
+    "00006",
+    "00016",
+    "facebook:post:pfbid0SfPQgTjQcdQpyvbCRtdw4xB8VVaW7d7BfP9sFDGGC4eTvBnCHFqbD66Am1hQJWyPl",
+    "116626378047931884670285795419281253202_3",
+    "facebook:reel:1611645807171944",
+    "199744314471809879741051834906773920364_3",
+    "199744314471809879741051834906773920364_1",
+    "311849710373835193294296754455192102202_1",
+    "116626378047931884670285795419281253202_2",
+    "00002",
+    "facebook:comment:1798186518043775",
+    "311849710373835193294296754455192102202_3",
+    "00022",
+    "facebook:comment:4486227441644316",
+    "00020",
+    "facebook:post:pfbid032dKT7S2AnpRfz8ksSNXBMQNehy4n6hpP2pWbnhsngTBZYsXJDy1qeDRJubjqsTwPl",
+    "facebook:comment:1217101133887549",
+    "00008",
+    "facebook:reel:4019385248369368",
+    "facebook:comment:4028276564148800",
+    "000123456789012345678901234567890",
+    "facebook:post:pfbid02DwLweqyR6nUHySLTTNfYrdm2mzCsXmt9A5yiPprhNZhUVSxF5wscUsMQqn2wq3A8l",
+    "156469192459477633815711109783104159488_3",
+    "facebook:comment:1581943333556716",
+    "00017"
+  ],
+  "monitor_request_id": "7d60660d-cc08-4b21-b92c-fedd1b0dae7b",
+  "start_request_id": "81a239da-4282-4b00-8e02-fc9401a1fbd3",
+  "pause_request_id": "23b634d1-4c67-4029-9e58-5bab83e52c76",
+  "previous_failed_query": "bda6b5b2-5303-421c-9571-b64c4a543833",
+  "identity_recheck": {
+    "started_at": "2026-09-14T17:06:03.431Z",
+    "platform_sends": 0,
+    "imports": 0,
+    "steps": [
+      "navigate",
+      "resolve",
+      "own-controls",
+      "heading",
+      "profile-type",
+      "final-guard"
+    ],
+    "identity": {
+      "method": "facebook-profile-dom-v1",
+      "authenticated": true,
+      "operating_identity_id": "61589894042400",
+      "account_type": "profile",
+      "display_name": "XiangHuan Master",
+      "observed_at": "2026-09-14T17:06:15.715Z",
+      "source_url": "https://www.facebook.com/profile.php?id=61589894042400"
+    },
+    "ui": {
+      "url": "https://www.facebook.com/profile.php?id=61589894042400",
+      "title": "(2) Facebook",
+      "passwords": 0,
+      "headings": [
+        {
+          "text": "通知",
+          "visible": false
+        },
+        {
+          "text": "XiangHuan Master ",
+          "visible": true
+        }
+      ],
+      "friends": [
+        {
+          "text": "",
+          "label": "好友",
+          "role": "link",
+          "href": "/friends/",
+          "visible": true,
+          "in_main": false,
+          "in_article": false
+        },
+        {
+          "text": "未读你有新的推荐好友：Patrick Conteh 。9小时",
+          "label": null,
+          "role": "link",
+          "href": "https://www.facebook.com/patrick.conteh.1?notif_id=1789372867010490&notif_t=pymk_email&ref=notif",
+          "visible": false,
+          "in_main": false,
+          "in_article": false
+        },
+        {
+          "text": "未读你有新的推荐好友：Lynch Bae 。6小时",
+          "label": null,
+          "role": "link",
+          "href": "https://www.facebook.com/profile.php?id=100068905667968&notif_id=1788940985024557&notif_t=japan_ci_friends_suggestion&ref=notif",
+          "visible": false,
+          "in_main": false,
+          "in_article": false
+        },
+        {
+          "text": "1 位好友",
+          "label": null,
+          "role": "link",
+          "href": "https://www.facebook.com/profile.php?id=61589894042400&sk=friends",
+          "visible": true,
+          "in_main": true,
+          "in_article": false
+        },
+        {
+          "text": "查看全部",
+          "label": null,
+          "role": "link",
+          "href": "https://www.facebook.com/friends/suggestions/",
+          "visible": true,
+          "in_main": true,
+          "in_article": false
+        },
+        {
+          "text": "好友",
+          "label": null,
+          "role": "tab",
+          "href": null,
+          "visible": true,
+          "in_main": true,
+          "in_article": false
+        }
+      ],
+      "actions": [
+        {
+          "text": "发布快拍编辑个人主页",
+          "visible": true
+        }
+      ]
+    },
+    "profile_after": "Inactive",
+    "finished_at": "2026-09-14T17:06:16.813Z"
+  },
+  "monitor": {
+    "id": "b8b84f75-67b3-4e0c-af67-af13d4311d1e",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "request_id": "cec2be45-a7f6-4a56-a9c2-8225aac2cf44",
+    "request_hash": "6ce099720a61fbfdf2660ba739057aa6d0073ecc30f0393fb1a0b386602cb802",
+    "title": "V1 · 八字 公开搜索（不限发布时间）",
+    "config": {
+      "title": "V1 · 八字 公开搜索（不限发布时间）",
+      "discovery": {
+        "target": "",
+        "browser": {
+          "template": "facebook-search-dom-v1",
+          "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042"
+        },
+        "keywords": [
+          "八字"
+        ],
+        "platform": "facebook",
+        "provider": "LOCAL_BROWSER",
+        "strategy": "KEYWORD",
+        "exclusions": [
+          "KFF-0914",
+          "KFF-0913"
+        ],
+        "processing_basis": "按用户最新 V1 范围自动读取公开 bazi 搜索结果，发现非人工制造的新潜客并保留来源、原文和页面时间；不发布测试内容，不发送评论或私信，不重做 C 接待链。"
+      },
+      "max_pages": 2,
+      "page_size": 10,
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "request_id": "cec2be45-a7f6-4a56-a9c2-8225aac2cf44",
+      "max_records": 20,
+      "retention_days": 14,
+      "interval_minutes": 60
+    },
+    "state": "PAUSED",
+    "version": 3,
+    "interval_minutes": 60,
+    "next_due_at": "2026-09-14T17:04:51.331Z",
+    "scan_number": 1,
+    "automation": null,
+    "created_by": "33333333-3333-4333-8333-333333333333",
+    "created_at": "2026-09-14T17:04:22.934Z"
+  },
+  "started_monitor": {
+    "id": "b8b84f75-67b3-4e0c-af67-af13d4311d1e",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "request_id": "cec2be45-a7f6-4a56-a9c2-8225aac2cf44",
+    "request_hash": "6ce099720a61fbfdf2660ba739057aa6d0073ecc30f0393fb1a0b386602cb802",
+    "title": "V1 · 八字 公开搜索（不限发布时间）",
+    "config": {
+      "title": "V1 · 八字 公开搜索（不限发布时间）",
+      "discovery": {
+        "target": "",
+        "browser": {
+          "template": "facebook-search-dom-v1",
+          "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042"
+        },
+        "keywords": [
+          "八字"
+        ],
+        "platform": "facebook",
+        "provider": "LOCAL_BROWSER",
+        "strategy": "KEYWORD",
+        "exclusions": [
+          "KFF-0914",
+          "KFF-0913"
+        ],
+        "processing_basis": "按用户最新 V1 范围自动读取公开 bazi 搜索结果，发现非人工制造的新潜客并保留来源、原文和页面时间；不发布测试内容，不发送评论或私信，不重做 C 接待链。"
+      },
+      "max_pages": 2,
+      "page_size": 10,
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "request_id": "cec2be45-a7f6-4a56-a9c2-8225aac2cf44",
+      "max_records": 20,
+      "retention_days": 14,
+      "interval_minutes": 60
+    },
+    "state": "ACTIVE",
+    "version": 4,
+    "interval_minutes": 60,
+    "next_due_at": "2026-09-14T17:06:59.216Z",
+    "scan_number": 1,
+    "automation": null,
+    "created_by": "33333333-3333-4333-8333-333333333333",
+    "created_at": "2026-09-14T17:04:22.934Z"
+  },
+  "scans": [
+    {
+      "query_id": "fe71ec24-2d3e-431d-9fd1-38f25f629a5b",
+      "scan_number": 2,
+      "run_id": "c3811365-0517-43dd-b17e-2cd2cf57d8ad",
+      "state": "PARTIAL",
+      "returned_count": 1,
+      "unique_count": 1,
+      "committed_pages": 1,
+      "stop_reason": "SOURCE_WINDOW_ENDED",
+      "error_code": "SOURCE_WINDOW_ENDED",
+      "finished_at": "2026-09-14T17:07:58.684Z"
+    }
+  ],
+  "commands": [
+    {
+      "command_id": "e34f6061-f685-43c1-8fe0-bc19681b17d4",
+      "action_id": "2f431c98-788f-4397-85fa-694a564563e1",
+      "claimed_at": "2026-09-14T17:07:00.710Z",
+      "quiesced_at": "2026-09-14T17:07:33.202Z",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "receipt": {
+        "remote_id": "collection:c3811365-0517-43dd-b17e-2cd2cf57d8ad:1",
+        "observed_at": "2026-09-14T17:07:22.204Z",
+        "content_hash": "bdf70cf46fb5074fa1872c9c409cdbe9f225d3bd86fa9ddd28e773df08880463",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61589894042400"
+      },
+      "task_id": "aae1ad58-718e-43a5-ad2e-385ac3ff6c22"
+    },
+    {
+      "command_id": "1d35db37-1837-4954-9628-3c53885b2282",
+      "action_id": "3e5dff32-b343-4e93-b553-710ce8f7a0d6",
+      "claimed_at": "2026-09-14T17:07:34.373Z",
+      "quiesced_at": "2026-09-14T17:07:58.723Z",
+      "state": "BLOCKED",
+      "error_code": "SOURCE_WINDOW_ENDED",
+      "receipt": null,
+      "task_id": "78ac4b08-6420-4ba7-aba9-9bc1e99f0f79"
+    }
+  ],
+  "paused_monitor": {
+    "id": "b8b84f75-67b3-4e0c-af67-af13d4311d1e",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "request_id": "cec2be45-a7f6-4a56-a9c2-8225aac2cf44",
+    "request_hash": "6ce099720a61fbfdf2660ba739057aa6d0073ecc30f0393fb1a0b386602cb802",
+    "title": "V1 · 八字 公开搜索（不限发布时间）",
+    "config": {
+      "title": "V1 · 八字 公开搜索（不限发布时间）",
+      "discovery": {
+        "target": "",
+        "browser": {
+          "template": "facebook-search-dom-v1",
+          "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042"
+        },
+        "keywords": [
+          "八字"
+        ],
+        "platform": "facebook",
+        "provider": "LOCAL_BROWSER",
+        "strategy": "KEYWORD",
+        "exclusions": [
+          "KFF-0914",
+          "KFF-0913"
+        ],
+        "processing_basis": "按用户最新 V1 范围自动读取公开 bazi 搜索结果，发现非人工制造的新潜客并保留来源、原文和页面时间；不发布测试内容，不发送评论或私信，不重做 C 接待链。"
+      },
+      "max_pages": 2,
+      "page_size": 10,
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "request_id": "cec2be45-a7f6-4a56-a9c2-8225aac2cf44",
+      "max_records": 20,
+      "retention_days": 14,
+      "interval_minutes": 60
+    },
+    "state": "PAUSED",
+    "version": 5,
+    "interval_minutes": 60,
+    "next_due_at": "2026-09-14T17:07:59.730Z",
+    "scan_number": 2,
+    "automation": null,
+    "created_by": "33333333-3333-4333-8333-333333333333",
+    "created_at": "2026-09-14T17:04:22.934Z"
+  },
+  "closures": [
+    {
+      "command_id": "e34f6061-f685-43c1-8fe0-bc19681b17d4",
+      "local_database_match": true,
+      "proof": {
+        "action_id": "2f431c98-788f-4397-85fa-694a564563e1",
+        "closed_at": "2026-09-14T17:07:32.970Z",
+        "command_id": "e34f6061-f685-43c1-8fe0-bc19681b17d4",
+        "proof_sha256": "974afbcd72c5e5a3290e74fa138fd67a633fa2996d79b56f1ebb932b94ba0070",
+        "protocol_version": "kff.guardian-closure.v1"
+      }
+    },
+    {
+      "command_id": "1d35db37-1837-4954-9628-3c53885b2282",
+      "local_database_match": true,
+      "proof": {
+        "action_id": "3e5dff32-b343-4e93-b553-710ce8f7a0d6",
+        "closed_at": "2026-09-14T17:07:58.535Z",
+        "command_id": "1d35db37-1837-4954-9628-3c53885b2282",
+        "proof_sha256": "30613a946e23f32ccb1e6ae73e122dd2881c66a7f3b7c4c35927c4d79bbfc20f",
+        "protocol_version": "kff.guardian-closure.v1"
+      }
+    }
+  ],
+  "leads": [
+    {
+      "id": "136e57a6-d36e-4b39-bbdf-14c299d09773",
+      "organization_id": "11111111-1111-4111-8111-111111111111",
+      "brand_id": "22222222-2222-4222-8222-222222222222",
+      "monitor_id": "b8b84f75-67b3-4e0c-af67-af13d4311d1e",
+      "object_id": "57ae8301-c759-4d15-9b62-8e9a05b6aaab",
+      "observation_id": "80a4b240-a629-4144-b8ea-7c85cb983ad2",
+      "version": 1,
+      "state": "NEW",
+      "score": 50,
+      "matched_keywords": [
+        "八字"
+      ],
+      "reason": "关键词匹配 1 项。规则评分，不代表购买概率。",
+      "automation_error": null,
+      "next_action_at": "2026-09-14T17:07:33.994Z",
+      "first_seen_at": "2026-09-14T17:07:33.994Z",
+      "last_seen_at": "2026-09-14T17:07:33.994Z",
+      "source_object_id": "facebook:reel:1368671042091738",
+      "source_url": "https://www.facebook.com/reel/1368671042091738/",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "留言查八字\n私訊你查詢連結\n十神看相貌氣質（女生篇）\n每人都有三柱十神\n月柱下的十神相貌最明顯\n 更多命理大小事大詳見轉運棧粉專\n 八字不能單論，需完整命盤才能準確分析\n#八字 #命理 #十神 #命格 #紫微"
+        },
+        "author_id": {
+          "kind": "NOT_RETURNED"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月2日周三19:41"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "observed_at": "2026-09-14T17:07:22.204Z",
+      "expires_at": "2026-09-28T17:06:59.215Z"
+    }
+  ],
+  "observations": [
+    {
+      "id": "80a4b240-a629-4144-b8ea-7c85cb983ad2",
+      "object_id": "57ae8301-c759-4d15-9b62-8e9a05b6aaab",
+      "source_object_id": "facebook:reel:1368671042091738",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "留言查八字\n私訊你查詢連結\n十神看相貌氣質（女生篇）\n每人都有三柱十神\n月柱下的十神相貌最明顯\n 更多命理大小事大詳見轉運棧粉專\n 八字不能單論，需完整命盤才能準確分析\n#八字 #命理 #十神 #命格 #紫微"
+        },
+        "author_id": {
+          "kind": "NOT_RETURNED"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月2日周三19:41"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "source_url": "https://www.facebook.com/reel/1368671042091738/",
+      "observed_at": "2026-09-14T17:07:22.204Z",
+      "expires_at": "2026-09-28T17:06:59.215Z",
+      "score": 50,
+      "reason": "关键词匹配 1 项。规则评分，不代表购买概率。"
+    }
+  ],
+  "new_source_leads": [
+    {
+      "id": "136e57a6-d36e-4b39-bbdf-14c299d09773",
+      "organization_id": "11111111-1111-4111-8111-111111111111",
+      "brand_id": "22222222-2222-4222-8222-222222222222",
+      "monitor_id": "b8b84f75-67b3-4e0c-af67-af13d4311d1e",
+      "object_id": "57ae8301-c759-4d15-9b62-8e9a05b6aaab",
+      "observation_id": "80a4b240-a629-4144-b8ea-7c85cb983ad2",
+      "version": 1,
+      "state": "NEW",
+      "score": 50,
+      "matched_keywords": [
+        "八字"
+      ],
+      "reason": "关键词匹配 1 项。规则评分，不代表购买概率。",
+      "automation_error": null,
+      "next_action_at": "2026-09-14T17:07:33.994Z",
+      "first_seen_at": "2026-09-14T17:07:33.994Z",
+      "last_seen_at": "2026-09-14T17:07:33.994Z",
+      "source_object_id": "facebook:reel:1368671042091738",
+      "source_url": "https://www.facebook.com/reel/1368671042091738/",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "留言查八字\n私訊你查詢連結\n十神看相貌氣質（女生篇）\n每人都有三柱十神\n月柱下的十神相貌最明顯\n 更多命理大小事大詳見轉運棧粉專\n 八字不能單論，需完整命盤才能準確分析\n#八字 #命理 #十神 #命格 #紫微"
+        },
+        "author_id": {
+          "kind": "NOT_RETURNED"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月2日周三19:41"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "observed_at": "2026-09-14T17:07:22.204Z",
+      "expires_at": "2026-09-28T17:06:59.215Z"
+    }
+  ],
+  "diagnostics": [
+    {
+      "action_id": "2f431c98-788f-4397-85fa-694a564563e1",
+      "manifest": {
+        "step": "facebook-search-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "c5db21c7f4029734b2e8f54327390988016ff939a5c369da5dbe94f2e6c99fc1",
+            "content": {
+              "result_count": 1,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "2f431c98-788f-4397-85fa-694a564563e1",
+        "attempt_id": "cee29a69-abcc-4f30-9928-11c17fb08ae9",
+        "created_at": "2026-09-14T17:07:33.187Z",
+        "error_code": null,
+        "duration_ms": 30770,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-search-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    },
+    {
+      "action_id": "3e5dff32-b343-4e93-b553-710ce8f7a0d6",
+      "manifest": {
+        "step": "facebook-search-read-final-scope",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "d6c270a3fde6109ca6aaf4399aa721f3a4b656559bb5cbb4f55c17b2fb6e55d8",
+            "content": {
+              "result_count": 0,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "BLOCKED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "3e5dff32-b343-4e93-b553-710ce8f7a0d6",
+        "attempt_id": "76bfea5a-c7ce-471e-86a6-b7459f31d095",
+        "created_at": "2026-09-14T17:07:58.707Z",
+        "error_code": "SOURCE_WINDOW_ENDED",
+        "duration_ms": 22346,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-search-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    }
+  ],
+  "profile_after": "Inactive",
+  "finished_at": "2026-09-14T17:08:01.275Z"
+}

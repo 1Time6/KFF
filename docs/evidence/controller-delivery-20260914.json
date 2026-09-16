@@ -1,0 +1,231 @@
+{
+  "schema_version": "kff.controller-delivery.v1",
+  "recorded_at": "2026-09-14T05:40:08.227Z",
+  "goal_complete": false,
+  "package": {
+    "release_id": "kff-controller-0.1.23-win32-x64-e3058fdd98eb",
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.23-win32-x64-e3058fdd98eb",
+    "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.23-win32-x64-e3058fdd98eb.zip",
+    "archive_sha256": "42c829c6b01c0cbf7300497398e3f198e8dffa33b19de975482b1986a8a97184",
+    "files": 24089,
+    "uncompressed_bytes": 829445524,
+    "dependency_packages": 155,
+    "contains_runtime_data": false,
+    "live_config_values_scanned": 6
+  },
+  "isolated_test": {
+    "directory": "C:\\Users\\17731\\AppData\\Local\\KFF\\ControllerTests\\kff-controller-0.1.23-win32-x64-e3058fdd98eb",
+    "started_at": "2026-09-14T05:37:49.204Z",
+    "finished_at": "2026-09-14T05:38:36.589Z",
+    "steps": [
+      {
+        "name": "verify",
+        "started_at": "2026-09-14T05:29:33.376Z",
+        "pid": 27516,
+        "exit_code": 0,
+        "finished_at": "2026-09-14T05:32:02.331Z",
+        "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-023-retry1-verify.log"
+      },
+      {
+        "name": "busy-port",
+        "started_at": "2026-09-14T05:32:02.332Z",
+        "pid": 20516,
+        "exit_code": 1,
+        "finished_at": "2026-09-14T05:32:11.241Z",
+        "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-023-retry1-busy-port.log"
+      },
+      {
+        "name": "setup",
+        "started_at": "2026-09-14T05:32:11.243Z",
+        "pid": 18648,
+        "exit_code": 0,
+        "finished_at": "2026-09-14T05:32:42.172Z",
+        "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-023-retry1-setup.log"
+      },
+      {
+        "name": "duplicate-setup",
+        "started_at": "2026-09-14T05:32:42.175Z",
+        "pid": 30632,
+        "exit_code": 1,
+        "finished_at": "2026-09-14T05:32:42.396Z",
+        "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-023-retry1-duplicate-setup.log"
+      },
+      {
+        "name": "start",
+        "started_at": "2026-09-14T05:37:49.207Z",
+        "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-023-retry3-start.log",
+        "pid": 8836,
+        "exit_code": 0,
+        "finished_at": "2026-09-14T05:38:06.849Z"
+      },
+      {
+        "name": "repeat-start",
+        "started_at": "2026-09-14T05:38:10.959Z",
+        "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-023-retry3-repeat-start.log",
+        "pid": 13472,
+        "exit_code": 0,
+        "finished_at": "2026-09-14T05:38:22.523Z"
+      },
+      {
+        "name": "stop",
+        "started_at": "2026-09-14T05:38:22.525Z",
+        "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-023-retry3-stop.log",
+        "pid": 25584,
+        "exit_code": 0,
+        "finished_at": "2026-09-14T05:38:27.270Z"
+      },
+      {
+        "name": "verify-after-stop",
+        "started_at": "2026-09-14T05:38:27.271Z",
+        "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-023-retry3-verify-after-stop.log",
+        "pid": 9156,
+        "exit_code": 0,
+        "finished_at": "2026-09-14T05:38:36.588Z"
+      }
+    ],
+    "restricted_path": true,
+    "busy_port_created_no_data": true,
+    "duplicate_setup_preserved": true,
+    "login_verified": true,
+    "rendered_page_verified": true,
+    "acquisition_html_verified": true,
+    "duplicate_start_preserved": true,
+    "database": {
+      "directory": "C:/Users/17731/AppData/Local/KFF/ControllerTests/kff-controller-0.1.23-win32-x64-e3058fdd98eb/.kff/postgres",
+      "port": "55439",
+      "accounts": 0,
+      "leads": 0,
+      "messages": 0,
+      "users": 1,
+      "agents": 1
+    },
+    "runtime": {
+      "runtime_id": "4623ae4e-d8a1-4164-bfa8-3a957da52371",
+      "pid": 8516,
+      "phase": "RUNNING",
+      "updated_at": "2026-09-14T05:38:06.046Z",
+      "app_origin": "http://127.0.0.1:3000",
+      "release_id": "kff-agent-0.1.23-win32-x64-f44b057f54bc",
+      "database_owned": true,
+      "components": {
+        "database": {
+          "pid": 20364,
+          "state": "CONNECTED"
+        },
+        "web": {
+          "pid": 8240,
+          "state": "RUNNING"
+        },
+        "worker": {
+          "pid": 23496,
+          "state": "RUNNING"
+        },
+        "agent": {
+          "pid": 9944,
+          "state": "RUNNING"
+        }
+      }
+    },
+    "screenshot": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-023-workbench.png",
+    "authenticated_acquisition_api_verified": true,
+    "initial_install_started_at": "2026-09-14T05:29:33.374Z",
+    "resumed_from": ".kff/controller-023-retry1-install-test.json",
+    "acquisition_http_status": 200,
+    "acquisition_initial_shell": true,
+    "screenshot_visually_reviewed": true
+  },
+  "existing_business_data": {
+    "at": "2026-09-14T05:38:55.336Z",
+    "tables": 92,
+    "all_table_rows_and_config_hashes_unchanged": true,
+    "changed_tables": []
+  },
+  "original_runtime_restored": {
+    "at": "2026-09-14T05:39:58.645Z",
+    "phase": "RUNNING",
+    "runtime_id": "bb6c4479-5bfd-4196-8d71-9084427b18b7",
+    "release_id": "kff-agent-0.1.23-win32-x64-f44b057f54bc",
+    "components": {
+      "database": {
+        "pid": null,
+        "state": "CONNECTED"
+      },
+      "web": {
+        "pid": 3780,
+        "state": "RUNNING"
+      },
+      "worker": {
+        "pid": 7364,
+        "state": "RUNNING"
+      },
+      "agent": {
+        "pid": 29144,
+        "state": "RUNNING"
+      }
+    },
+    "live_sending_enabled": false,
+    "health_runtime_id": "bb6c4479-5bfd-4196-8d71-9084427b18b7",
+    "source_agent_digest_match": true,
+    "open_commands": 0,
+    "monitors": [
+      {
+        "id": "6776ac4f-1baa-4064-a9d6-ecd866c2a34b",
+        "state": "PAUSED"
+      },
+      {
+        "id": "3ba710a3-f505-4f96-a002-bf29a81e56aa",
+        "state": "PAUSED"
+      },
+      {
+        "id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+        "state": "PAUSED"
+      },
+      {
+        "id": "149da22d-2ea8-49b1-accd-0ea2f4fc845f",
+        "state": "PAUSED"
+      }
+    ],
+    "profiles": [
+      {
+        "id": "k1gvdtft",
+        "status": "Inactive"
+      },
+      {
+        "id": "k1gw2kh9",
+        "status": "Inactive"
+      }
+    ],
+    "goal_complete": false
+  },
+  "validation": {
+    "typecheck": 0,
+    "build": 0
+  },
+  "limits": [
+    "Tested a fresh installation directory and separate PostgreSQL cluster on the current Windows machine, with Node and pnpm excluded from the child PATH. This is not a second clean-machine test.",
+    "No production database or account pairing is included in the archive. New setup creates zero Facebook accounts, leads or messages.",
+    "Existing Chrome rendered the local workbench; AdsPower and real Facebook logins are configured separately.",
+    "Full controller cross-version upgrade, OS reboot/power loss, complete sustained matrix operation, new Page post increment and current-lead WhatsApp sales receipt remain separate acceptance items."
+  ],
+  "platform_sends": 0,
+  "initial_html_assertion_correction": {
+    "record": ".kff/controller-023-retry2-install-test.json",
+    "login_and_acquisition_api_passed": true,
+    "cause": "The harness expected acquisition text in the initial HTML, while the application initially renders a loading shell. Corrected the check to validate HTTP HTML response and actual authenticated browser-rendered workbench.",
+    "product_files_changed": false
+  },
+  "test_harness_interruption": {
+    "record": ".kff/controller-023-harness-stall.json",
+    "failed_observation": ".kff/controller-023-retry1-install-test.json",
+    "cause": "Start exited successfully, but the harness waited for inherited pipe EOF. Normal isolated shutdown released the pipe, so the subsequent HTTP probe observed the intentionally stopped service. The corrected harness uses file-based output and waits on command process exit.",
+    "resumed_same_installation": true,
+    "product_files_changed": false
+  },
+  "previous_failed_installation": {
+    "record": ".kff/controller-023-install-test.json",
+    "release_id": "kff-controller-0.1.23-win32-x64-0779db9e4763",
+    "accepted": false,
+    "cause": "Windows runtime PowerShell entrypoint was omitted from the archive. Setup and preservation checks passed; start could not invoke the missing script. The original failed installation and logs were retained.",
+    "fix": "Include scripts/local-runtime.ps1 in the package and its release identity; verify required entrypoints before any setup or start."
+  }
+}

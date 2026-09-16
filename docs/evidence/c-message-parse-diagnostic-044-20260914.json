@@ -1,0 +1,110 @@
+{
+  "at": "2026-09-14T15:56:40.304Z",
+  "steps": [
+    "facebook-inbox-load",
+    "facebook-inbox-wait-content",
+    "facebook-inbox-parse"
+  ],
+  "platform_sends": 0,
+  "identity": {
+    "method": "facebook-profile-dom-v1",
+    "authenticated": true,
+    "operating_identity_id": "61594402378582",
+    "account_type": "profile",
+    "display_name": "白青天",
+    "observed_at": "2026-09-14T15:56:51.103Z",
+    "source_url": "https://www.facebook.com/profile.php?id=61594402378582"
+  },
+  "error": {
+    "name": "AppError",
+    "message": "可见消息缺少可核对发送者的来信、明确文字字段或超过读取上限",
+    "code": "INBOX_SOURCE_MISMATCH"
+  },
+  "parsed": {
+    "rows": [
+      {
+        "message_id": "100050174601107@msgr.7505287682298342954",
+        "body": "感谢您的咨询。我们的咨询流程是先确认您想探讨的一个问题，再通过官方预约表提交必要的出生信息。请问您目前想了解的是感情、事业还是人生方向方面的疑问？",
+        "direction": "OUTBOUND",
+        "display_name": null,
+        "displayed_time": "08:33",
+        "has_attachment": false
+      },
+      {
+        "message_id": "100050174601107@msgr.7505288161128367482",
+        "body": "如需继续咨询，可以通过 WhatsApp 联系接待人员：https://wa.me/8618730836793",
+        "direction": "OUTBOUND",
+        "display_name": null,
+        "displayed_time": "08:35",
+        "has_attachment": false
+      }
+    ],
+    "invalid": 0
+  },
+  "articles": [
+    {
+      "article_role": "article",
+      "messages": [
+        {
+          "id": "100050174601107@msgr.7505287682298342954",
+          "label": "08:33，你：感谢您的咨询。我们的咨询流程是先确认您想探讨的一个问题，再通过官方预约表提交必要的出生信息。请问您目前想了解的是感情、事业还是人生方向方面的疑问？",
+          "bodies": [
+            {
+              "text": "感谢您的咨询。我们的咨询流程是先确认您想探讨的一个问题，再通过官方预约表提交必要的出生信息。请问您目前想了解的是感情、事业还是人生方向方面的疑问？",
+              "tags": [],
+              "role": null
+            }
+          ],
+          "media": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "article_role": "article",
+      "messages": [
+        {
+          "id": "100050174601107@msgr.7505288161128367482",
+          "label": "08:35，你：如需继续咨询，可以通过 WhatsApp 联系接待人员：https://wa.me/8618730836793",
+          "bodies": [
+            {
+              "text": "如需继续咨询，可以通过 WhatsApp 联系接待人员：https://wa.me/8618730836793",
+              "tags": [
+                "SPAN"
+              ],
+              "role": null
+            }
+          ],
+          "media": [
+            {
+              "tag": "IMG",
+              "alt": "郑一哲于08:36已读",
+              "hidden": false,
+              "role": null,
+              "parent_tag": "SPAN",
+              "parent_role": null,
+              "link": false,
+              "avatar": false,
+              "width": "14",
+              "height": "14"
+            }
+          ],
+          "links": [
+            {
+              "text": "https://wa.me/8618730836793",
+              "role": "link",
+              "label": null
+            },
+            {
+              "text": "wa.me",
+              "role": "link",
+              "label": "打开附件，wa.me"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "profile_after": "Inactive",
+  "finished_at": "2026-09-14T15:56:58.082Z"
+}

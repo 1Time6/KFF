@@ -1,0 +1,515 @@
+{
+  "schema_version": "kff.inbox-failure-update.v1",
+  "recorded_at": "2026-09-14T06:25:45.558Z",
+  "version": "0.1.24",
+  "goal_complete": false,
+  "changes": [
+    "Optional allowlisted failure stage and code in skipped-thread discovery reports; no identity guard, interaction or retry changes.",
+    "Retry atomic runtime JSON replacement for up to one second on Windows EPERM/EACCES/EBUSY; preserve the old complete state and throw on persistent failure."
+  ],
+  "runtime_failure": {
+    "previous_runtime_id": "bb6c4479-5bfd-4196-8d71-9084427b18b7",
+    "observed_at": "2026-09-14T06:10:03.397Z",
+    "error": "EPERM renaming .kff/local-runtime/state.json.tmp to state.json",
+    "observed_old_components_exited": true,
+    "external_database_preserved": true,
+    "proof": "Original host error copied into .kff/changes/inbox-failure-024/original-host-error.log; real Windows reader-lock unit tests cover temporary success and bounded persistent failure."
+  },
+  "checks": {
+    "contracts": 164,
+    "isolated_inbox_integration": 9,
+    "windows_runtime_unit": 3,
+    "typecheck": 0,
+    "build": 0,
+    "owned_eslint": 0
+  },
+  "agent": {
+    "release_id": "kff-agent-0.1.24-win32-x64-88c516aba284",
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.24-win32-x64-88c516aba284",
+    "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.24-win32-x64-88c516aba284.zip",
+    "archive_sha256": "81c5b3c031209a1c559bd99c2682895e35473d5643842cfabb1262f13ecbb0d4",
+    "files": 1348,
+    "dependencies": 23,
+    "contains_pairing_or_browser_data": false
+  },
+  "controller": {
+    "release_id": "kff-controller-0.1.24-win32-x64-12f52d897450",
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.24-win32-x64-12f52d897450",
+    "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.24-win32-x64-12f52d897450.zip",
+    "archive_sha256": "7798b711117b9d9866d766cc3f79d5d3b3ca819ee858c57d497181e1ba2dfbc1",
+    "files": 24090,
+    "uncompressed_bytes": 829458832,
+    "dependency_packages": 155,
+    "contains_runtime_data": false,
+    "live_config_values_scanned": 6,
+    "manifest_verified": true,
+    "contains_runtime_fix": true,
+    "new_installation_test": "NOT_REPEATED_FOR_0.1.24",
+    "previous_0_1_23_installation_evidence": "controller-delivery-20260914.json",
+    "clean_second_machine": "PENDING",
+    "cross_version_controller_upgrade": "PENDING"
+  },
+  "first_account_read": {
+    "started_at": "2026-09-14T06:16:39.596Z",
+    "request_id": "26240880-d1f5-4e22-9202-1e334ac2d262",
+    "platform_sends": 0,
+    "scope": "ONE_ORIGINAL_FIRST_ACCOUNT_INBOX_SCAN",
+    "before": {
+      "runtime": {
+        "runtime_id": "59a86131-cff6-462e-8e30-21c1f2f0ec4f",
+        "pid": 31196,
+        "phase": "RUNNING",
+        "updated_at": "2026-09-14T06:16:38.603Z",
+        "app_origin": "http://127.0.0.1:3000",
+        "release_id": "kff-agent-0.1.24-win32-x64-88c516aba284",
+        "database_owned": false,
+        "components": {
+          "database": {
+            "pid": null,
+            "state": "CONNECTED"
+          },
+          "web": {
+            "pid": 9020,
+            "state": "RUNNING"
+          },
+          "worker": {
+            "pid": 6444,
+            "state": "RUNNING"
+          },
+          "agent": {
+            "pid": 10564,
+            "state": "RUNNING"
+          }
+        }
+      },
+      "profiles": [
+        {
+          "id": "k1gvdtft",
+          "status": "Inactive"
+        },
+        {
+          "id": "k1gw2kh9",
+          "status": "Active"
+        }
+      ],
+      "monitors": [
+        {
+          "id": "149da22d-2ea8-49b1-accd-0ea2f4fc845f",
+          "state": "PAUSED",
+          "version": 13,
+          "current_task_id": null,
+          "scan_requested": false,
+          "binding": {
+            "discovery": {
+              "strategy": "RECENT_ACCEPTED",
+              "max_threads": 3
+            },
+            "environment": {
+              "agent_id": "66666666-6666-4666-8666-666666666666",
+              "brand_id": "22222222-2222-4222-8222-222222222222",
+              "platform": "facebook",
+              "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+              "profile_key": "51268916-1583-4b2a-918c-a804ccbca7fe",
+              "account_type": "profile",
+              "is_synthetic": false,
+              "configuration": {
+                "driver": "adspower",
+                "locale": "en-US",
+                "proxy_ref": null,
+                "timezone_id": "America/Los_Angeles",
+                "login_account_id": "61594334430750",
+                "provider_profile_id": "k1gw2kh9",
+                "operating_identity_id": "61594334430750"
+              },
+              "environment_id": "bd009fb1-2f65-448e-8536-440225d913d9",
+              "organization_id": "11111111-1111-4111-8111-111111111111",
+              "configuration_version": 2
+            },
+            "account_version": 1
+          }
+        },
+        {
+          "id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+          "state": "PAUSED",
+          "version": 29,
+          "current_task_id": null,
+          "scan_requested": false,
+          "binding": {
+            "discovery": {
+              "strategy": "RECENT_ACCEPTED",
+              "max_threads": 3
+            },
+            "environment": {
+              "agent_id": "66666666-6666-4666-8666-666666666666",
+              "brand_id": "22222222-2222-4222-8222-222222222222",
+              "platform": "facebook",
+              "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+              "profile_key": "b066c427-43c0-49b0-827f-73d15143fb82",
+              "account_type": "profile",
+              "is_synthetic": false,
+              "configuration": {
+                "driver": "adspower",
+                "locale": "en-US",
+                "proxy_ref": null,
+                "timezone_id": "Asia/Singapore",
+                "login_account_id": "61589894042400",
+                "provider_profile_id": "k1gvdtft",
+                "operating_identity_id": "61589894042400"
+              },
+              "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+              "organization_id": "11111111-1111-4111-8111-111111111111",
+              "configuration_version": 2
+            },
+            "account_version": 1
+          }
+        }
+      ]
+    },
+    "version": 30,
+    "command": {
+      "id": "aa0d586e-db21-44b2-8466-955bb2af821d",
+      "action_id": "f1db9b4a-a01b-450d-a869-563a16388a32",
+      "quiesced_at": "2026-09-14T06:18:54.894Z",
+      "state": "NEEDS_HUMAN",
+      "error_code": "LEASE_EXPIRED",
+      "task_id": "1df74211-db87-4a22-a51f-4f6e3849736a",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c"
+    },
+    "closure": {
+      "command_id": "aa0d586e-db21-44b2-8466-955bb2af821d",
+      "proof": {
+        "protocol_version": "kff.guardian-closure.v1",
+        "command_id": "aa0d586e-db21-44b2-8466-955bb2af821d",
+        "action_id": "f1db9b4a-a01b-450d-a869-563a16388a32",
+        "closed_at": "2026-09-14T06:18:53.599Z",
+        "proof_sha256": "81f15023bbb4ca8a4954164ff238b7601dfce2641cfb814014829afdba647276"
+      },
+      "local_database_match": true,
+      "report_acknowledged": false,
+      "report_quarantined": true
+    },
+    "checkpoints": [],
+    "audit": [],
+    "workspace_latest_read": {
+      "monitor_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "discovery": {
+        "skipped": [
+          {
+            "reason": "THREAD_WINDOW_UNAVAILABLE",
+            "thread_id": "2079341482680484"
+          }
+        ],
+        "threads": [
+          {
+            "peer_id": "100050174601107",
+            "thread_id": "27724009533944398",
+            "display_name": "郑一哲"
+          }
+        ],
+        "strategy": "RECENT_ACCEPTED",
+        "empty_list": false,
+        "unparsed_rows": 0,
+        "window_limited": true,
+        "visible_threads": 2
+      }
+    },
+    "workspace_audit_match": false,
+    "profiles_after": [
+      {
+        "id": "k1gvdtft",
+        "status": "Inactive"
+      },
+      {
+        "id": "k1gw2kh9",
+        "status": "Active"
+      }
+    ],
+    "monitors_after": [
+      {
+        "id": "149da22d-2ea8-49b1-accd-0ea2f4fc845f",
+        "state": "PAUSED",
+        "version": 13,
+        "current_task_id": null,
+        "scan_requested": false,
+        "last_error_code": "LOGIN_CHALLENGE"
+      },
+      {
+        "id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+        "state": "PAUSED",
+        "version": 30,
+        "current_task_id": null,
+        "scan_requested": false,
+        "last_error_code": "LEASE_EXPIRED"
+      }
+    ],
+    "original_open_commands": 0,
+    "second_untouched": true,
+    "failure_metadata_observed": false,
+    "complete_thread_coverage": false,
+    "read_safely_closed": true,
+    "observer_correction": {
+      "original_error": "Original closure proof mismatch",
+      "reason": "The observer originally required a successful report acknowledgement for any closure. A quarantined expired command can have a matching closure proof without an accepted report; these are now recorded separately."
+    },
+    "finished_at": "2026-09-14T06:20:52.468Z"
+  },
+  "timeout_diagnosis": {
+    "at": "2026-09-14T06:20:06.878Z",
+    "command": {
+      "id": "aa0d586e-db21-44b2-8466-955bb2af821d",
+      "action_id": "f1db9b4a-a01b-450d-a869-563a16388a32",
+      "state": "EXPIRED",
+      "created_at": "2026-09-14T06:16:44.138Z",
+      "claimed_at": "2026-09-14T06:16:44.760Z",
+      "expires_at": "2026-09-14T06:18:44.260Z",
+      "quiesced_at": "2026-09-14T06:18:54.894Z"
+    },
+    "diagnostics": [],
+    "audit": [
+      {
+        "event_type": "task.created",
+        "object_id": "1df74211-db87-4a22-a51f-4f6e3849736a",
+        "details": {
+          "snapshot_hash": "1c1994e3ef4d9dfd4c49a929ab6af5790d747c8af91005a5409d1680a4145db3"
+        },
+        "created_at": "2026-09-14T06:16:43.893Z"
+      },
+      {
+        "event_type": "action.lease_expired",
+        "object_id": "f1db9b4a-a01b-450d-a869-563a16388a32",
+        "details": {
+          "outcome": "NEEDS_HUMAN",
+          "quarantined": true,
+          "closure_evidence": null
+        },
+        "created_at": "2026-09-14T06:18:44.765Z"
+      },
+      {
+        "event_type": "guardian.quiesced",
+        "object_id": "aa0d586e-db21-44b2-8466-955bb2af821d",
+        "details": {
+          "proof": {
+            "action_id": "f1db9b4a-a01b-450d-a869-563a16388a32",
+            "closed_at": "2026-09-14T06:18:53.599Z",
+            "command_id": "aa0d586e-db21-44b2-8466-955bb2af821d",
+            "proof_sha256": "81f15023bbb4ca8a4954164ff238b7601dfce2641cfb814014829afdba647276",
+            "protocol_version": "kff.guardian-closure.v1"
+          },
+          "actor_kind": "agent"
+        },
+        "created_at": "2026-09-14T06:18:54.894Z"
+      }
+    ],
+    "journal": {
+      "quiesced": true,
+      "quarantined": true,
+      "acknowledged": false
+    },
+    "local_closure": {
+      "command_id": "aa0d586e-db21-44b2-8466-955bb2af821d",
+      "action_id": "f1db9b4a-a01b-450d-a869-563a16388a32",
+      "nonce": "0efa7827cb5f0a1857f89c90e4af4e37c044621af83a6f527b12d96df35ebe58",
+      "closed_at": "2026-09-14T06:18:53.599Z",
+      "context_closed": true,
+      "protocol_version": "kff.guardian-closure-compact.v1",
+      "proof_sha256": "81f15023bbb4ca8a4954164ff238b7601dfce2641cfb814014829afdba647276",
+      "result_sha256": "54b0195c3b404b3c3a454e9727b69ba8744a7135d2ead79378126ba660373534",
+      "compacted_at": "2026-09-14T06:18:54.916Z",
+      "reason": "DELIVERED"
+    },
+    "db_proof": {
+      "action_id": "f1db9b4a-a01b-450d-a869-563a16388a32",
+      "closed_at": "2026-09-14T06:18:53.599Z",
+      "command_id": "aa0d586e-db21-44b2-8466-955bb2af821d",
+      "proof_sha256": "81f15023bbb4ca8a4954164ff238b7601dfce2641cfb814014829afdba647276",
+      "protocol_version": "kff.guardian-closure.v1"
+    },
+    "proof_matches": true
+  },
+  "quarantine_release": {
+    "at": "2026-09-14T06:21:40.499Z",
+    "action_id": "f1db9b4a-a01b-450d-a869-563a16388a32",
+    "run_id": "64c8f64b-c94b-4fb1-a6c7-17fc488a3c9c",
+    "released": {
+      "released": true
+    },
+    "after": {
+      "action": [
+        {
+          "id": "f1db9b4a-a01b-450d-a869-563a16388a32",
+          "state": "NEEDS_HUMAN",
+          "error_code": "LEASE_EXPIRED"
+        }
+      ],
+      "environment": [
+        {
+          "id": "8a712567-b324-41f6-b3dd-693aaf431042",
+          "state": "IDLE",
+          "browser_status": "CLOSED"
+        }
+      ],
+      "leases": [
+        {
+          "resource_type": "account",
+          "resource_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+          "quarantined": false,
+          "holder_attempt_id": null
+        },
+        {
+          "resource_type": "environment",
+          "resource_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+          "quarantined": false,
+          "holder_attempt_id": null
+        }
+      ]
+    },
+    "platform_submissions": 0,
+    "retried": false
+  },
+  "restored_runtime": {
+    "at": "2026-09-14T06:25:45.264Z",
+    "phase": "RUNNING",
+    "runtime_id": "59a86131-cff6-462e-8e30-21c1f2f0ec4f",
+    "release_id": "kff-agent-0.1.24-win32-x64-88c516aba284",
+    "components": {
+      "database": {
+        "pid": null,
+        "state": "CONNECTED"
+      },
+      "web": {
+        "pid": 9020,
+        "state": "RUNNING"
+      },
+      "worker": {
+        "pid": 6444,
+        "state": "RUNNING"
+      },
+      "agent": {
+        "pid": 10564,
+        "state": "RUNNING"
+      }
+    },
+    "health_runtime_id": "59a86131-cff6-462e-8e30-21c1f2f0ec4f",
+    "source_agent_digest_match": true,
+    "live_sending_enabled": false,
+    "open_commands": 0,
+    "monitors": [
+      {
+        "id": "faf8718e-cd9c-4650-80f3-9f8249e9282d",
+        "state": "PAUSED"
+      },
+      {
+        "id": "7205b958-b063-4fd9-aef5-52c7f41d66e7",
+        "state": "PAUSED"
+      },
+      {
+        "id": "6160dda8-de45-443a-9638-45e8ad0423a0",
+        "state": "PAUSED"
+      },
+      {
+        "id": "6ea416de-a5fe-44bb-8978-561b7be75194",
+        "state": "PAUSED"
+      },
+      {
+        "id": "c960d86e-5496-4a45-adb6-a43a3bfb6caa",
+        "state": "PAUSED"
+      },
+      {
+        "id": "72eceefc-3f5f-4f0a-8953-33c9f309517e",
+        "state": "PAUSED"
+      },
+      {
+        "id": "489cf2bc-a9ff-4793-8716-4f823d086c89",
+        "state": "PAUSED"
+      },
+      {
+        "id": "6045f65a-d8d3-4b92-ba39-9140b31bd336",
+        "state": "PAUSED"
+      },
+      {
+        "id": "96966f3c-ff03-4161-a7cf-bfd8fe577519",
+        "state": "PAUSED"
+      },
+      {
+        "id": "2808250f-061d-4ca4-bea5-495baaf5d7c8",
+        "state": "PAUSED"
+      },
+      {
+        "id": "6776ac4f-1baa-4064-a9d6-ecd866c2a34b",
+        "state": "PAUSED"
+      },
+      {
+        "id": "3ba710a3-f505-4f96-a002-bf29a81e56aa",
+        "state": "PAUSED"
+      },
+      {
+        "id": "cdde409b-8272-4751-b22e-dc196f2acc64",
+        "state": "PAUSED"
+      },
+      {
+        "id": "7125fe67-e3d6-4266-8261-738bb0206a01",
+        "state": "PAUSED"
+      },
+      {
+        "id": "149da22d-2ea8-49b1-accd-0ea2f4fc845f",
+        "state": "PAUSED"
+      },
+      {
+        "id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+        "state": "PAUSED"
+      }
+    ],
+    "profiles": [
+      {
+        "id": "k1gvdtft",
+        "status": "Inactive"
+      },
+      {
+        "id": "k1gw2kh9",
+        "status": "Active"
+      }
+    ],
+    "second_profile_user_owned": true,
+    "new_lead_referral": {
+      "id": "9ece8f0a-58f9-4cca-814a-7d48f08811ce",
+      "state": "REFERRED",
+      "version": 2,
+      "sent_at": "2026-09-14T03:16:54.593Z",
+      "confirmed_at": null
+    },
+    "goal_complete": false
+  },
+  "second_account": {
+    "status": "APPEAL_PENDING",
+    "last_ui_observed_at": "2026-09-14T06:25:14.575Z",
+    "verification_submission_completed": true,
+    "user_owned_window_preserved": true,
+    "second_inbox_monitor_unchanged": true,
+    "latest_ui": {
+      "at": "2026-09-14T06:25:14.575Z",
+      "purpose": "Read current user-owned Facebook page text only after screenshot timeout; no navigation, click, close, or submission.",
+      "tabs": [
+        {
+          "url": "https://www.facebook.com/checkpoint/1501092823525282/",
+          "title": "Facebook",
+          "body": "郑成功\n郑成功，你已提出申诉\n时间：2026年9月14日\n请稍后回到这里查看结果。\n你的个人主页不会显示给其他 Facebook 用户，也无法供你使用。\n接下来呢？\n我们通常需要一个小时左右来审核你的信息。请稍后回来看看。\n如果我们发现你的个人主页确实未违反社群守则，你便可以再次使用 Facebook。\n如果我们发现你的主页违反社群守则，则会永久禁用你的主页，而且你将无法再次提交申诉。"
+        }
+      ],
+      "finished_at": "2026-09-14T06:25:14.700Z"
+    },
+    "screenshot_attempt": {
+      "at": "2026-09-14T06:24:13.045Z",
+      "purpose": "Read current second-profile Facebook tabs after user reported verification complete; do not navigate, click, close or submit.",
+      "tabs": [],
+      "error": "page.screenshot: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - taking page screenshot\u001b[22m\n\u001b[2m  - waiting for fonts to load...\u001b[22m\n\u001b[2m  - fonts loaded\u001b[22m\n",
+      "finished_at": "2026-09-14T06:24:43.211Z"
+    }
+  },
+  "limits": [
+    "The first-account live read reached its original 120-second command expiry. No Inbox checkpoint was committed, and the optional failure metadata was not observed in a new real report.",
+    "The skipped-thread metadata path passed the original ingestion/audit path in an isolated test database; this is not a successful live Inbox read.",
+    "The original timeout remains NEEDS_HUMAN/LEASE_EXPIRED with a quarantined report. Matching Guardian closure and no submission intent allowed only the original resource quarantine to be released; the task was not rerun or marked successful.",
+    "No new messages were sent. Neither sustained two-account coverage nor new-lead WhatsApp sales receipt is accepted.",
+    "The controller archive is built and fully hash-verified. Its previous-version isolated installation result does not establish a 0.1.24 clean installation, cross-version upgrade or OS reboot acceptance."
+  ]
+}

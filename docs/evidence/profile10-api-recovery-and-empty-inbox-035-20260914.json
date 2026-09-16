@@ -1,0 +1,180 @@
+{
+  "at": "2026-09-14T10:56:59.734Z",
+  "version": "0.1.35",
+  "goal_complete": false,
+  "platform_sends": 0,
+  "source_build_agent_match": true,
+  "launch": {
+    "at": "2026-09-14T10:53:06.849Z",
+    "executable": "C:/Program Files/AdsPower Global/AdsPower Global.exe",
+    "removed_environment_names": [
+      "HTTPS_PROXY"
+    ],
+    "account_proxy_changes": 0,
+    "global_environment_changes": 0,
+    "pid": 15876
+  },
+  "process_before": {
+    "at": "2026-09-14T10:43:27.6829895Z",
+    "pid": 31632,
+    "created": "2026-09-14T18:36:47.65289+08:00",
+    "read_only": true,
+    "selected_network_environment": [
+      {
+        "name": "HTTPS_PROXY",
+        "scheme": "http",
+        "host": "127.0.0.1",
+        "port": 10808,
+        "credentials_present": false
+      }
+    ]
+  },
+  "process_after": {
+    "at": "2026-09-14T10:53:38.9711149Z",
+    "pid": 12888,
+    "created": "2026-09-14T18:53:08.699696+08:00",
+    "read_only": true,
+    "selected_network_environment": [
+      {
+        "name": "ALL_PROXY",
+        "scheme": "http",
+        "host": "127.0.0.1",
+        "port": 10808,
+        "credentials_present": false
+      },
+      {
+        "name": "HTTP_PROXY",
+        "scheme": "http",
+        "host": "127.0.0.1",
+        "port": 10808,
+        "credentials_present": false
+      },
+      {
+        "name": "NO_PROXY",
+        "includes_loopback": true,
+        "includes_adspower": false
+      }
+    ]
+  },
+  "api_profile_list": {
+    "at": "2026-09-14T10:53:42.131Z",
+    "profiles": [
+      {
+        "user_id": "k1gx1n1s",
+        "serial_number": "10",
+        "name": "客户-32857-B",
+        "domain_name": ""
+      }
+    ],
+    "cloud_list_available": true,
+    "platform_requests": 0
+  },
+  "read": {
+    "monitor_id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+    "monitor_version": 5,
+    "commands": [
+      {
+        "id": "ae9a58fa-97d0-4188-83d9-32b9c1e13fb7",
+        "action_id": "97f15540-dbf0-4152-ac14-043132d3cd3d",
+        "created_at": "2026-09-14T10:54:12.156Z",
+        "quiesced_at": "2026-09-14T10:54:50.524Z",
+        "state": "VERIFIED_SUCCEEDED",
+        "error_code": null,
+        "receipt": {
+          "remote_id": "inbox:e693f9db-6faa-4b7f-9e98-cf1079297665:4",
+          "observed_at": "2026-09-14T10:54:38.817Z",
+          "content_hash": "82bddde2f60949b8f826bba1f24f715104c31f55202f827ca867dfe399929f09",
+          "evidence_kind": "browser_dom",
+          "actual_account_id": "61594402378582"
+        },
+        "task_id": "4cbcd534-444f-4d17-a6ca-c4dfa09146be",
+        "implementation_digest": "000f84be9f4ea37f5397209269e7f3cdfd270c62160ddbfde702b365aea0643a"
+      }
+    ],
+    "closure": {
+      "protocol_version": "kff.guardian-closure.v1",
+      "command_id": "ae9a58fa-97d0-4188-83d9-32b9c1e13fb7",
+      "action_id": "97f15540-dbf0-4152-ac14-043132d3cd3d",
+      "closed_at": "2026-09-14T10:54:49.769Z",
+      "proof_sha256": "106e61d08b0b3b145ac11f9243860e4e40fcd4bb13e229bd88b4620f3ab8471f",
+      "local_and_database_match": true
+    },
+    "checkpoints": [
+      {
+        "task_id": "4cbcd534-444f-4d17-a6ca-c4dfa09146be",
+        "stored": 0,
+        "duplicates": 0,
+        "page_sha256": "82bddde2f60949b8f826bba1f24f715104c31f55202f827ca867dfe399929f09",
+        "observed_at": "2026-09-14T10:54:38.817Z"
+      }
+    ],
+    "audit": [
+      {
+        "event_type": "browser_inbox.page_committed",
+        "details": {
+          "stored": 0,
+          "task_id": "4cbcd534-444f-4d17-a6ca-c4dfa09146be",
+          "has_more": false,
+          "discovery": {
+            "skipped": [],
+            "threads": [],
+            "strategy": "RECENT_ACCEPTED",
+            "empty_list": true,
+            "unparsed_rows": 0,
+            "window_limited": false,
+            "visible_threads": 0
+          },
+          "duplicates": 0
+        }
+      }
+    ],
+    "accepted": true,
+    "profile_after": "Inactive",
+    "finished_at": "2026-09-14T10:54:54.053Z"
+  },
+  "runtime": {
+    "runtime_id": "c92afdf5-9fbe-466a-9ca5-8d2ec3eb1d70",
+    "monitors": [
+      {
+        "kind": "acquisition",
+        "state": "PAUSED",
+        "count": 13
+      },
+      {
+        "kind": "inbox",
+        "state": "PAUSED",
+        "count": 5
+      }
+    ],
+    "open_commands": 0,
+    "live_sending_enabled": false
+  },
+  "preserved_history": {
+    "messages": {
+      "count": 128,
+      "digest": "e88da1cc8deba9f88906762e6368b761"
+    },
+    "conversations": {
+      "count": 95,
+      "digest": "ec9b1521a9d672c11d5ef7070059d736"
+    },
+    "whatsapp_referrals": {
+      "count": 13,
+      "digest": "d4e2c7ebe15894e09b9e989c3a2aea12"
+    },
+    "collection_observations": {
+      "count": 705,
+      "digest": "97d0d17b1feb7aaf438430fe40529b44"
+    },
+    "acquisition_evaluations": {
+      "count": 121,
+      "digest": "93bc65e04cae5f994a95336c8017b666"
+    },
+    "acquisition_leads": {
+      "count": 38,
+      "digest": "b5f1d85f5b239911cb74b76ad196b6f3"
+    }
+  },
+  "coverage": "Original profile10 identity + empty accepted Messenger directory + local/DB closure accepted. No inbound message, new-lead routing, ongoing dual-account operation, or WhatsApp receipt is proven by an empty read.",
+  "next_step": "User sends KFF-0914-B from account8 to account10 and accepts the chat if it is a message request; then verify original Inbox ingestion and account routing. Do not resend historical comments or invitations."
+}

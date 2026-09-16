@@ -1,0 +1,138 @@
+{
+  "started_at": "2026-09-14T15:30:32.696Z",
+  "conversation_id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+  "trigger_message_id": "f232db4d-9c02-46d1-b903-33254e01de93",
+  "request_id": "1227b959-5717-4c62-a599-aa241a446ad1",
+  "provider": "DeepSeek",
+  "model": "deepseek-flash",
+  "platform_sends": 0,
+  "before": {
+    "id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "customer_id": "e7ddc7f2-bb3b-41c0-9a08-9bd17ec682f2",
+    "identity_id": "a053edb4-c7e5-4a95-bd3f-59fa62bfe5fe",
+    "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+    "channel_id": null,
+    "last_sequence": 1,
+    "last_message_at": "2026-09-14T15:29:20.853Z",
+    "reply_window_expires_at": null,
+    "created_at": "2026-09-14T15:29:20.803Z",
+    "channel_kind": "FACEBOOK_BROWSER_MESSENGER",
+    "handling_mode": "HUMAN",
+    "control_version": 1,
+    "last_inbound_sequence": 1,
+    "last_outbound_at": null,
+    "last_answered_sequence": 0
+  },
+  "tasks_before": [],
+  "request": {
+    "job_id": "4afdaaba-f1d3-4354-a274-4effa0f7cf16",
+    "status": "DRAFT_QUEUED",
+    "expires_at": "2026-09-14T15:50:32.875Z"
+  },
+  "job": {
+    "id": "4afdaaba-f1d3-4354-a274-4effa0f7cf16",
+    "state": "DONE",
+    "attempts": 1,
+    "error_code": null,
+    "result": {
+      "model": "OPENAI_COMPATIBLE",
+      "status": "DRAFT_READY",
+      "decision": {
+        "tags": [
+          "process",
+          "bazi"
+        ],
+        "reply": "感谢您的咨询。我们的咨询流程是先确认您想探讨的一个问题，再通过官方预约表提交必要的出生信息。请问您目前想了解的是感情、事业还是人生方向方面的疑问？",
+        "action": "REPLY",
+        "intent": "OTHER",
+        "reason": "General process question; clarify the single focus question without pricing or personal details in public comments.",
+        "confidence": 0.86,
+        "intent_level": "MEDIUM",
+        "valid_inquiry": true
+      },
+      "expires_at": "2026-09-14T15:50:32.875Z",
+      "generated_at": "2026-09-14T15:30:34.524Z"
+    }
+  },
+  "after": {
+    "id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+    "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+    "handling_mode": "HUMAN",
+    "control_version": 1,
+    "last_sequence": 1,
+    "last_inbound_sequence": 1,
+    "last_answered_sequence": 0
+  },
+  "reception": {
+    "drafting": {
+      "provider": "OPENAI_COMPATIBLE",
+      "configured": true,
+      "unanswered": true
+    },
+    "destination": {
+      "id": "c9776ea9-040f-459f-bb33-6a75c03f8f32",
+      "organization_id": "11111111-1111-4111-8111-111111111111",
+      "brand_id": "22222222-2222-4222-8222-222222222222",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "name": "EasternWisdom 咨询接待",
+      "phone": "8618730836793",
+      "state": "ACTIVE",
+      "version": 1,
+      "template": "如需继续咨询，可以通过 WhatsApp 联系接待人员：{whatsapp_url}",
+      "cooldown_hours": 24,
+      "created_at": "2026-09-14T13:13:11.506Z"
+    },
+    "referrals": [],
+    "manual_permissions": [],
+    "replies": [],
+    "public_interactions": [
+      {
+        "task_id": "163cfb04-45da-40bd-a8f7-60e2148e82e1",
+        "action_id": "b07939a4-7b01-4d2c-830e-075ebade093a",
+        "run_id": "da127d17-d06a-4330-9c04-1b7555cf2ef4",
+        "lead_id": "bd7d506e-a852-4834-85f1-f963533a7eec",
+        "peer_id": "100050174601107",
+        "first_inbox_at": "2026-09-14T15:29:20.853Z",
+        "source_body": "KFF-0914-C 我想了解咨询流程",
+        "source_url": "https://www.facebook.com/reel/2163157911082094/?comment_id=1798186518043775",
+        "reply_body": "KFF-0914-C：收到。请私信我并带上 KFF-0914-C，我们继续了解您的咨询需求。",
+        "reply_url": "https://www.facebook.com/reel/2163157911082094/?comment_id=1798186518043775&reply_comment_id=1134029302282428",
+        "verified_at": "2026-09-14T15:09:02.679Z"
+      }
+    ],
+    "jobs": [
+      {
+        "id": "4afdaaba-f1d3-4354-a274-4effa0f7cf16",
+        "state": "DONE",
+        "attempts": 1,
+        "result": {
+          "model": "OPENAI_COMPATIBLE",
+          "status": "DRAFT_READY",
+          "decision": {
+            "tags": [
+              "process",
+              "bazi"
+            ],
+            "reply": "感谢您的咨询。我们的咨询流程是先确认您想探讨的一个问题，再通过官方预约表提交必要的出生信息。请问您目前想了解的是感情、事业还是人生方向方面的疑问？",
+            "action": "REPLY",
+            "intent": "OTHER",
+            "reason": "General process question; clarify the single focus question without pricing or personal details in public comments.",
+            "confidence": 0.86,
+            "intent_level": "MEDIUM",
+            "valid_inquiry": true
+          },
+          "expires_at": "2026-09-14T15:50:32.875Z",
+          "generated_at": "2026-09-14T15:30:34.524Z"
+        },
+        "error_code": null,
+        "created_at": "2026-09-14T15:30:32.832Z",
+        "draft_only": true,
+        "draft_usable": true
+      }
+    ]
+  },
+  "accepted": true,
+  "finished_at": "2026-09-14T15:30:35.000Z"
+}

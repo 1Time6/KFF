@@ -1,0 +1,113 @@
+{
+  "at": "2026-09-15T02:02:41.675Z",
+  "review_only": true,
+  "platform_reads": 0,
+  "platform_sends": 0,
+  "product_changes": 0,
+  "runtime": {
+    "runtime_id": "5b38befe-7245-45c0-b5db-e12ea223e00f",
+    "pid": 25484,
+    "phase": "RUNNING",
+    "updated_at": "2026-09-15T02:02:41.587Z",
+    "app_origin": "http://127.0.0.1:3000",
+    "release_id": "kff-agent-0.1.47-win32-x64-c3ecf395f30a",
+    "database_owned": false,
+    "components": {
+      "database": {
+        "pid": null,
+        "state": "CONNECTED"
+      },
+      "web": {
+        "pid": 29828,
+        "state": "RUNNING"
+      },
+      "worker": {
+        "pid": 9968,
+        "state": "RUNNING"
+      },
+      "agent": {
+        "pid": 12112,
+        "state": "RUNNING"
+      }
+    }
+  },
+  "health": {
+    "status": "ok",
+    "protocol": "kff.api.v1",
+    "runtime_id": "5b38befe-7245-45c0-b5db-e12ea223e00f"
+  },
+  "live_sending_enabled": false,
+  "implementation_matches_installed": true,
+  "monitors": [
+    {
+      "state": "PAUSED",
+      "count": 27
+    }
+  ],
+  "open_commands": [],
+  "accounts": [
+    {
+      "id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "display_name": "XiangHuan Master",
+      "external_id": "61589894042400",
+      "state": "ACTIVE"
+    },
+    {
+      "id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "display_name": "郑成功",
+      "external_id": "61594334430750",
+      "state": "ACTIVE"
+    },
+    {
+      "id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "display_name": "白青天",
+      "external_id": "61594402378582",
+      "state": "ACTIVE"
+    }
+  ],
+  "new_leads": [
+    {
+      "id": "cd7d9b87-93d5-4be8-920d-e72a86452599",
+      "state": "NEW",
+      "version": 1,
+      "first_seen_at": "2026-09-14T17:09:08.390Z",
+      "observation_id": "fc8cc24a-07ae-487f-abea-e64aff59cb8f"
+    },
+    {
+      "id": "87afb3e5-ad2c-4206-8faa-6837dd234824",
+      "state": "NEW",
+      "version": 1,
+      "first_seen_at": "2026-09-14T17:09:08.390Z",
+      "observation_id": "a91c2432-70f0-4146-b332-f9ece66ce43f"
+    },
+    {
+      "id": "5045122f-c939-42b6-999a-d6fbcf03237a",
+      "state": "NEW",
+      "version": 1,
+      "first_seen_at": "2026-09-14T17:09:08.390Z",
+      "observation_id": "f6876618-05c7-49f3-9a32-899b169d1ed1"
+    }
+  ],
+  "c_referral": [
+    {
+      "id": "61f34822-3028-49c8-9255-0aebc01a0e5b",
+      "state": "CONFIRMED",
+      "version": 3,
+      "confirmed_at": "2026-09-14T16:27:27.414Z"
+    }
+  ],
+  "inbox_monitor": [
+    {
+      "id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+      "state": "PAUSED",
+      "version": 21,
+      "page_size": 25,
+      "scan_requested": false,
+      "current_task_id": null
+    }
+  ],
+  "prior_v1_evidence": "v1-handoff-047-20260915.json",
+  "original_full_goal_complete": false,
+  "narrowed_v1_handoff_complete": true,
+  "provider_status_note": "No AdsPower or Facebook call during document review; profile status is historical V1 evidence, not a fresh provider check."
+}

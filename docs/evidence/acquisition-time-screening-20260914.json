@@ -1,0 +1,393 @@
+{
+  "schema_version": "kff.acquisition-time-screening.v1",
+  "recorded_at": "2026-09-14T07:54:21.183Z",
+  "goal_complete": false,
+  "changes": [
+    "Unified ranking respects each existing monitor publication-age limit; OLDER becomes score 0 while source score, original text and review state remain unchanged.",
+    "UNKNOWN time under a configured limit retains the content score with a time-verification explanation and cannot offer public reply preparation.",
+    "The public reply preparation hint now also requires the original positive source score, matching the existing server gate.",
+    "Unrestricted sources and separate provider policies retain their existing behavior; the change does not assign a new global age limit."
+  ],
+  "regression": {
+    "before_failed": 4,
+    "before_passed": 8,
+    "after_total_passed": 168,
+    "candidate_assertions": [
+      {
+        "title": "groups exact public profile references across accounts and providers while retaining every source, state and version",
+        "status": "passed"
+      },
+      {
+        "title": "keeps vanity names, contradictory IDs, missing identities and API-scoped authors separate",
+        "status": "passed"
+      },
+      {
+        "title": "never merges synthetic authors or Instagram identifiers with Facebook public identities",
+        "status": "passed"
+      },
+      {
+        "title": "uses the same inquiry and promotion rules without mutating stored provider scores or authorizing a send",
+        "status": "passed"
+      },
+      {
+        "title": "preserves parent topic context but gives unverified topics no score",
+        "status": "passed"
+      },
+      {
+        "title": "surfaces a same-reference opt-out without overwriting any other review or creating a contact",
+        "status": "passed"
+      },
+      {
+        "title": "preserves unknown and displayed source times without inventing a timezone",
+        "status": "passed"
+      },
+      {
+        "title": "recognizes only exact supported public-profile URL shapes and keeps platform IDs as strings",
+        "status": "passed"
+      },
+      {
+        "title": "keeps comments outside their monitor time range out of ranked candidates and reply preparation without changing their review",
+        "status": "passed"
+      },
+      {
+        "title": "marks an unresolved publication time for review and only offers preparation when no time limit was requested",
+        "status": "passed"
+      },
+      {
+        "title": "preserves eligible recent comments while respecting the original positive-source-score requirement",
+        "status": "passed"
+      },
+      {
+        "title": "keeps a browser time limit local to that source when another provider shares the public identity",
+        "status": "passed"
+      }
+    ],
+    "types_exit": 0,
+    "owned_eslint_exit": 0,
+    "build_exit": 0
+  },
+  "business_data": {
+    "before": {
+      "at": "2026-09-14T07:42:11.828Z",
+      "version": "0.1.26",
+      "stage": "before",
+      "record_count": 81,
+      "limited": [
+        {
+          "id": "61c54a55-7f54-4d26-a369-c6121ddefb9e",
+          "synthetic": false,
+          "kind": "POST",
+          "state": "DISMISSED",
+          "publication_age": "RECENT",
+          "max_age_days": 7,
+          "source_score": 0,
+          "score": 0,
+          "can_prepare_public_reply": false,
+          "reason": "帖子保留作来源背景；评论候选按统一规则排序。"
+        }
+      ],
+      "older_with_positive_score": 0,
+      "unverified_time_with_reply_button": 0,
+      "zero_source_with_reply_button": 0,
+      "tables": {
+        "acquisition_leads": {
+          "count": 35,
+          "digest": "353bec8ce9d99f5885f7e336eef3498e"
+        },
+        "acquisition_prospects": {
+          "count": 46,
+          "digest": "1e5fc43e4b0aef25061f1b4696e3bca4"
+        },
+        "acquisition_monitors": {
+          "count": 12,
+          "digest": "ee61ff528210527221b73708a75dc44c"
+        },
+        "collection_observations": {
+          "count": 702,
+          "digest": "14be350ba0b640091ee5bfd7a4fc74c7"
+        },
+        "customers": {
+          "count": 95,
+          "digest": "c4d823f8345f17c3bde8b3e258f0d07c"
+        },
+        "messages": {
+          "count": 128,
+          "digest": "a783c519ccd97a4676a5fdbc327b2c17"
+        },
+        "tasks": {
+          "count": 284,
+          "digest": "ea0e1e38a066f8f258502d9d4119e6c5"
+        },
+        "whatsapp_referrals": {
+          "count": 13,
+          "digest": "d43becca7347137c2b024c8cc3b0e79b"
+        },
+        "contact_permissions": {
+          "count": 112,
+          "digest": "7c300becaa90949f87e046efe8d2ff0f"
+        }
+      },
+      "read_did_not_change_records": true,
+      "platform_sends": 0
+    },
+    "after": {
+      "at": "2026-09-14T07:45:02.750Z",
+      "version": "0.1.27",
+      "stage": "after",
+      "record_count": 81,
+      "limited": [
+        {
+          "id": "61c54a55-7f54-4d26-a369-c6121ddefb9e",
+          "synthetic": false,
+          "kind": "POST",
+          "state": "DISMISSED",
+          "publication_age": "RECENT",
+          "max_age_days": 7,
+          "source_score": 0,
+          "score": 0,
+          "can_prepare_public_reply": false,
+          "reason": "帖子保留作来源背景；评论候选按统一规则排序。"
+        }
+      ],
+      "older_with_positive_score": 0,
+      "unverified_time_with_reply_button": 0,
+      "zero_source_with_reply_button": 0,
+      "tables": {
+        "acquisition_leads": {
+          "count": 35,
+          "digest": "353bec8ce9d99f5885f7e336eef3498e"
+        },
+        "acquisition_prospects": {
+          "count": 46,
+          "digest": "1e5fc43e4b0aef25061f1b4696e3bca4"
+        },
+        "acquisition_monitors": {
+          "count": 12,
+          "digest": "ee61ff528210527221b73708a75dc44c"
+        },
+        "collection_observations": {
+          "count": 702,
+          "digest": "14be350ba0b640091ee5bfd7a4fc74c7"
+        },
+        "customers": {
+          "count": 95,
+          "digest": "c4d823f8345f17c3bde8b3e258f0d07c"
+        },
+        "messages": {
+          "count": 128,
+          "digest": "a783c519ccd97a4676a5fdbc327b2c17"
+        },
+        "tasks": {
+          "count": 284,
+          "digest": "ea0e1e38a066f8f258502d9d4119e6c5"
+        },
+        "whatsapp_referrals": {
+          "count": 13,
+          "digest": "d43becca7347137c2b024c8cc3b0e79b"
+        },
+        "contact_permissions": {
+          "count": 112,
+          "digest": "7c300becaa90949f87e046efe8d2ff0f"
+        }
+      },
+      "read_did_not_change_records": true,
+      "platform_sends": 0,
+      "stored_data_unchanged_since_before": true
+    },
+    "original_tables_unchanged": 9,
+    "existing_live_rows_exhibiting_the_fixed_boundaries": 0,
+    "scope": "Regression cases prove the boundary correction; current live data did not exhibit these cases. No production rows were inserted to create an apparent success."
+  },
+  "ui": {
+    "at": "2026-09-14T07:49:53.384Z",
+    "runtime_id": "522931ab-6b5a-43f1-b7d4-318a53e6de1f",
+    "release_id": "kff-agent-0.1.27-win32-x64-2915a6c7b21a",
+    "api_authenticated": true,
+    "record_count": 81,
+    "group_count": 63,
+    "time_and_source_eligibility_violations": [],
+    "unified_screening_rendered": true,
+    "screenshot": "output/playwright/acquisition-time-027.png",
+    "platform_sends": 0,
+    "scope": "Live API and actual current list rendering only; the four time-boundary regressions are covered separately by contract tests, not fabricated production rows.",
+    "business_records_written": false,
+    "authentication_session_used": true
+  },
+  "runtime": {
+    "at": "2026-09-14T07:49:58.450Z",
+    "version": "0.1.27",
+    "phase": "RUNNING",
+    "runtime_id": "522931ab-6b5a-43f1-b7d4-318a53e6de1f",
+    "release_id": "kff-agent-0.1.27-win32-x64-2915a6c7b21a",
+    "components": {
+      "database": {
+        "pid": null,
+        "state": "CONNECTED"
+      },
+      "web": {
+        "pid": 12044,
+        "state": "RUNNING"
+      },
+      "worker": {
+        "pid": 15508,
+        "state": "RUNNING"
+      },
+      "agent": {
+        "pid": 20848,
+        "state": "RUNNING"
+      }
+    },
+    "database_owned": false,
+    "live_sending_enabled": false,
+    "build_source_changes": [],
+    "agent_source_changes": [],
+    "open_commands": 0,
+    "monitors": [
+      {
+        "kind": "acquisition",
+        "id": "faf8718e-cd9c-4650-80f3-9f8249e9282d",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "7205b958-b063-4fd9-aef5-52c7f41d66e7",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "6160dda8-de45-443a-9638-45e8ad0423a0",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "6ea416de-a5fe-44bb-8978-561b7be75194",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "c960d86e-5496-4a45-adb6-a43a3bfb6caa",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "72eceefc-3f5f-4f0a-8953-33c9f309517e",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "489cf2bc-a9ff-4793-8716-4f823d086c89",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "6045f65a-d8d3-4b92-ba39-9140b31bd336",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "96966f3c-ff03-4161-a7cf-bfd8fe577519",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "2808250f-061d-4ca4-bea5-495baaf5d7c8",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "6776ac4f-1baa-4064-a9d6-ecd866c2a34b",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "3ba710a3-f505-4f96-a002-bf29a81e56aa",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "inbox",
+        "id": "cdde409b-8272-4751-b22e-dc196f2acc64",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "inbox",
+        "id": "7125fe67-e3d6-4266-8261-738bb0206a01",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "inbox",
+        "id": "149da22d-2ea8-49b1-accd-0ea2f4fc845f",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "inbox",
+        "id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+        "state": "PAUSED"
+      }
+    ],
+    "profiles": [
+      {
+        "id": "k1gvdtft",
+        "status": "Inactive"
+      },
+      {
+        "id": "k1gw2kh9",
+        "status": "Active"
+      }
+    ],
+    "whatsapp_referral": [
+      {
+        "id": "9ece8f0a-58f9-4cca-814a-7d48f08811ce",
+        "state": "REFERRED",
+        "version": 2,
+        "confirmed_at": null
+      }
+    ],
+    "goal_complete": false
+  },
+  "packages": {
+    "agent": {
+      "release_id": "kff-agent-0.1.27-win32-x64-2915a6c7b21a",
+      "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.27-win32-x64-2915a6c7b21a",
+      "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.27-win32-x64-2915a6c7b21a.zip",
+      "archive_sha256": "120ace003dfbe624f5290e45e0e13221a5dfc4fdaa88d42d7d68aa2f3e89f6ee",
+      "files": 1348,
+      "dependencies": 23,
+      "contains_pairing_or_browser_data": false
+    },
+    "controller": {
+      "release_id": "kff-controller-0.1.27-win32-x64-189908224819",
+      "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.27-win32-x64-189908224819",
+      "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.27-win32-x64-189908224819.zip",
+      "archive_sha256": "678a98cf7bc509033dc421a7a59e17895d5b81143d2e9a35bac12c68773c28b0",
+      "files": 24092,
+      "uncompressed_bytes": 829476881,
+      "dependency_packages": 155,
+      "contains_runtime_data": false,
+      "live_config_values_scanned": 6
+    }
+  },
+  "installation": {
+    "started_at": "2026-09-14T07:47:44.120Z",
+    "log": ".kff/acquisition-time-027-install-retry1.log",
+    "pid": 18024,
+    "exit_code": 0,
+    "finished_at": "2026-09-14T07:48:24.281Z",
+    "prior_failed_observation": {
+      "started_at": "2026-09-14T07:46:43.880Z",
+      "log": ".kff/acquisition-time-027-install.log",
+      "pid": 32416,
+      "exit_code": 1,
+      "finished_at": "2026-09-14T07:46:44.504Z"
+    },
+    "prior_error": "Inherited PowerShell module path prevented Get-FileHash before installation. The observer now lets Windows PowerShell load its own default module path."
+  },
+  "platform_sends": 0,
+  "remaining": [
+    "Second Facebook account appeal and full two-account continuous read/discovery acceptance",
+    "Current new-lead WhatsApp receipt confirmed by the intended salesperson",
+    "Approved business context and a configured real AI provider",
+    "New post increment from the specified Page",
+    "Capacity under the intended real workload, clean second machine and OS reboot"
+  ],
+  "package_boundary": "0.1.27 full package is built and individually hash-verified. The independently tested full-package cross-version upgrade remains the prior 0.1.23 to 0.1.26 result; it is not relabeled as a 0.1.27 upgrade test."
+}

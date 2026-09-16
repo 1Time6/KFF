@@ -31,6 +31,7 @@ async function harness(scenario: TaskSnapshot['fixture_scenario'], dropReportRep
       const body = JSON.parse(raw || '{}'); const endpoint = req.url?.replace('/api/agent/', '');
       let result: unknown;
       if (endpoint === 'heartbeats') { state.heartbeat_count++; result = { continue: state.continue }; }
+      else if (endpoint === 'environment-claims') result = { command: null };
       else if (endpoint === 'claims') { state.claims++; result = { command: state.claims === 1 || state.replay ? command : null }; }
       else if (endpoint === 'commands/' + command.id + '/status') result = { state: reports.length ? 'DONE' : 'CLAIMED', action_state: state.action };
       else if (endpoint === 'commands/' + command.id + '/submit') { state.submit_count++; state.action = 'SUBMITTING'; result = { accepted: true }; }

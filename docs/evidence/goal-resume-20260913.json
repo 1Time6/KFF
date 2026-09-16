@@ -1,0 +1,1021 @@
+{
+  "schema": "kff.goal-progress.v1",
+  "at": "2026-09-13T18:57:15.118Z",
+  "goal_complete": false,
+  "release": "kff-agent-0.1.18-win32-x64-244c3ca81d65",
+  "runtime": {
+    "runtime_id": "dc79b138-54ed-4ef1-9c11-a22681c5bee3",
+    "pid": 9796,
+    "phase": "RUNNING",
+    "updated_at": "2026-09-13T18:57:13.024Z",
+    "app_origin": "http://127.0.0.1:3000",
+    "release_id": "kff-agent-0.1.18-win32-x64-244c3ca81d65",
+    "database_owned": true,
+    "components": {
+      "database": {
+        "pid": 21844,
+        "state": "CONNECTED"
+      },
+      "web": {
+        "pid": 14984,
+        "state": "RUNNING"
+      },
+      "worker": {
+        "pid": 22640,
+        "state": "RUNNING"
+      },
+      "agent": {
+        "pid": 17832,
+        "state": "RUNNING"
+      }
+    }
+  },
+  "settings": {
+    "schema": "kff.local-runtime.v1",
+    "agent_release": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.18-win32-x64-244c3ca81d65",
+    "discovery_enabled": true,
+    "browser_inbox_enabled": true,
+    "live_sending_enabled": false,
+    "build_id": "oKFms1qWvqj-E_ZH9_TfO",
+    "build_sha256": "a75190fa965c51cbd4d428c0477c5535b3a4eda0d53bfb5f774f6ad2ac775c3a"
+  },
+  "source": "https://www.facebook.com/reel/2163157911082094/",
+  "source_comment_classification": "EXISTING_PUBLIC_COMMENTS_NOT_CONTROLLED_NEW_COMMENTS",
+  "platform_sends_this_resumption": 0,
+  "checks": {
+    "contracts": {
+      "exit_code": 0,
+      "ended_at": "2026-09-13T18:49:54.290Z",
+      "source_files": 335,
+      "current_sources_match": true
+    },
+    "typecheck": {
+      "exit_code": 0,
+      "ended_at": "2026-09-13T18:49:33.127Z",
+      "source_files": 335,
+      "current_sources_match": true
+    },
+    "build": {
+      "exit_code": 0,
+      "ended_at": "2026-09-13T18:51:32.532Z",
+      "source_files": 335,
+      "current_sources_match": true
+    }
+  },
+  "read_execution_release": "0.1.16",
+  "current_read_adapter_matches": false,
+  "unified_candidates": {
+    "at": "2026-09-13T17:17:05.466Z",
+    "source_version": "0.1.13",
+    "deployed": true,
+    "counts_before": {
+      "customers": 93,
+      "tasks": 236,
+      "prospects": 46,
+      "leads": 29
+    },
+    "counts_after": {
+      "customers": 93,
+      "tasks": 236,
+      "prospects": 46,
+      "leads": 29
+    },
+    "candidate_records": 75,
+    "reference_groups": 61,
+    "real_records": 63,
+    "synthetic_records": 12,
+    "real_comments": 37,
+    "controlled_reel_groups": [
+      {
+        "identity_key": "facebook:public-profile:100090732198621",
+        "identity_basis": "PUBLIC_PROFILE_LINK",
+        "record_count": 2,
+        "accounts": [
+          "71895ed1-9cb8-490b-817b-dc1f82da1785",
+          "51bb1a34-7436-4fed-8efd-72a05f58607c"
+        ],
+        "source_urls": [
+          "https://www.facebook.com/reel/2163157911082094/?comment_id=4028276564148800",
+          "https://www.facebook.com/reel/2163157911082094/?comment_id=4028276564148800"
+        ]
+      },
+      {
+        "identity_key": "facebook:public-profile:61578850341360",
+        "identity_basis": "PUBLIC_PROFILE_LINK",
+        "record_count": 2,
+        "accounts": [
+          "71895ed1-9cb8-490b-817b-dc1f82da1785",
+          "51bb1a34-7436-4fed-8efd-72a05f58607c"
+        ],
+        "source_urls": [
+          "https://www.facebook.com/reel/2163157911082094/?comment_id=4486227441644316",
+          "https://www.facebook.com/reel/2163157911082094/?comment_id=4486227441644316"
+        ]
+      }
+    ],
+    "unchanged_database": true,
+    "scope": "当前品牌未到期来源的有限展示窗口；按同一公开链接或来源内标识分组，不创建或合并 Messenger 联系人。"
+  },
+  "tests": {
+    "contracts": 162,
+    "public_outreach_and_reception_integration": 18,
+    "typecheck": true,
+    "targeted_eslint": true,
+    "production_build": true,
+    "scope": "Isolated database, local UI fixture, actual empty-match read and unchanged original Inbox. No new real public reply or contact."
+  },
+  "closures": [
+    {
+      "id": "ca9c32cf-5248-454b-8592-cc532be4a72f",
+      "action_id": "4be4cffd-97f3-4f2e-999b-e54111dabe31",
+      "created_at": "2026-09-13T18:29:46.888Z",
+      "quiesced_at": "2026-09-13T18:30:16.078Z",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "receipt": {
+        "remote_id": "inbox:6a14ca96-4988-4aa2-a0c7-686fc01c15eb:14",
+        "observed_at": "2026-09-13T18:30:10.323Z",
+        "content_hash": "bfeef8dbdc88e62687c2c859037619290c42c2222e87b90740505422ee84fc9d",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61589894042400"
+      },
+      "task_id": "c796a776-147f-4f18-9b0b-f63650eabc50",
+      "implementation_digest": "dccd86dc3390e41fff1c698b58afcb949418d8d6d2b3d5219cb112a19f9574e3",
+      "protocol_version": "kff.guardian-closure.v1",
+      "command_id": "ca9c32cf-5248-454b-8592-cc532be4a72f",
+      "closed_at": "2026-09-13T18:30:15.835Z",
+      "proof_sha256": "f44347184743d582ad2305d8fe48cb5ca96a14cb5f4813ebc2725975cdcb8ab1",
+      "local_and_database_match": true
+    }
+  ],
+  "serialized": true,
+  "repeat_deduplicated_without_version_change": true,
+  "profiles_after": [
+    {
+      "profile_id": "k1gvdtft",
+      "status": "Inactive"
+    },
+    {
+      "profile_id": "k1gw2kh9",
+      "status": "Inactive"
+    }
+  ],
+  "coverage": {
+    "first_account": "NEWEST, one page of visible comments, PARTIAL/MAX_PAGES",
+    "second_account": "Explicit VISIBLE_WINDOW, one currently visible window, COMPLETED/SOURCE_EXHAUSTED refers only to that requested window; not all comments or newest order"
+  },
+  "second_reception": {
+    "at": "2026-09-13T16:46:13.864Z",
+    "before": null,
+    "after": {
+      "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "state": "ACTIVE",
+      "version": 1,
+      "transport": "BROWSER",
+      "auto_reply": false
+    },
+    "platform_sends": 0,
+    "meaning": "Manual reception configuration only; no new Inbox or contact permission is established"
+  },
+  "negative_evidence": [
+    {
+      "query_id": "6a5ffee3-8b95-4899-bdc1-2333a4906c97",
+      "meaning": "0.1.11 second account missing sort control; failed original run retained"
+    },
+    {
+      "file": ".kff/reel-two-accounts-012.log",
+      "meaning": "Both original reads succeeded; post-read provider status polling hit local rate limit. Read-only completion resumed after spacing calls; no new read or write was created by that resume."
+    }
+  ],
+  "ui": {
+    "files": [
+      "output/playwright/inbox-discovery-first-016.png",
+      "output/playwright/inbox-discovery-second-016.png",
+      "output/playwright/inbox-discovery-form-016.png"
+    ],
+    "reviewed": true,
+    "mutation_performed": false
+  },
+  "pending": [
+    "Controlled new Reel comment and immutable source review",
+    "One exact approved public reply and a new verified receipt",
+    "Second account Messenger setup in its original AdsPower profile",
+    "New accepted sender discovery and real two-account Inbox isolation",
+    "Real model setup and review of prepared business context",
+    "Real human takeover and same-lead WhatsApp confirmation",
+    "Controlled new Page post increment acceptance",
+    "Bounded continuous runtime/capacity and clean-machine recovery acceptance"
+  ],
+  "page_source": {
+    "publisher_id": "61594197356279",
+    "source": "https://www.facebook.com/61594197356279/",
+    "monitor_id": "2808250f-061d-4ca4-bea5-495baaf5d7c8",
+    "baseline_query_id": "9000f4e2-ca90-4f36-ab18-2b82a3e97133",
+    "repeat_query_id": "cd92bf3a-9c5d-40a6-913d-eb474b942fce",
+    "runs": [
+      {
+        "id": "edba911d-4cd2-42f0-86b0-bbb5362504fc",
+        "state": "PARTIAL",
+        "returned_count": 4,
+        "unique_count": 4,
+        "committed_pages": 1,
+        "error_code": null,
+        "stop_reason": "MAX_PAGES"
+      },
+      {
+        "id": "175772ca-db40-4e0c-9220-92a32dd704d0",
+        "state": "PARTIAL",
+        "returned_count": 4,
+        "unique_count": 4,
+        "committed_pages": 1,
+        "error_code": null,
+        "stop_reason": "MAX_PAGES"
+      }
+    ],
+    "observations": [
+      {
+        "object_id": "211d42fc-4c8e-428d-b914-4064d67eca88",
+        "source_object_id": "facebook:post:pfbid02ZyLfFziM7RSEqE6ZkiujsrspKox649JQ7ibQHKdiy7uEuwvLXVhQvbfZRoYmRbKhl",
+        "source_url": "https://www.facebook.com/permalink.php?story_fbid=pfbid02ZyLfFziM7RSEqE6ZkiujsrspKox649JQ7ibQHKdiy7uEuwvLXVhQvbfZRoYmRbKhl&id=61594197356279",
+        "fields": {
+          "message": {
+            "kind": "VALUE",
+            "value": "BEFORE YOU BOOK: 4 QUESTIONS ABOUT YOUR FIRST BAZI READING\n1. What can I ask about?\nChoose one question about love, career or life direction. A specific situation gives your written reading a clearer focus.\n2. How do I phrase my question?\nTry a question that leaves room for reflection and your own judgment. For example:\n• What should I consider before changing careers?\n• What recurring relationship pattern would I like to understand?\n• What should I reflect on as I choose my next step?\nThese are example questions, not predictions or customer cases.\n3. What should I prepare?\nWrite one clear question and a little relevant background. Use the booking form for your birth details and personal information; please don’t post them in public comments. You can review your order before payment.\n4. Can a reading guarantee what will happen?\nNo. BaZi is used here as a traditional framework for reflection. Your choices remain your own. This service does not answer crisis, medical or pregnancy, gambling, legal-outcome or investment-return questions.\nBefore deciding, explore the illustrative sample, full FAQ and service details:\nhttps://reading.easternwisdomstudio.com/en\n#BaZi #EasternWisdom"
+          },
+          "author_id": {
+            "kind": "VALUE",
+            "value": "61594197356279"
+          },
+          "created_time": {
+            "kind": "DISPLAYED_TIME",
+            "value": "2026年9月8日周二18:47"
+          },
+          "comment_count": {
+            "kind": "NOT_RETURNED"
+          },
+          "reaction_count": {
+            "kind": "NOT_RETURNED"
+          }
+        },
+        "observed_at": "2026-09-13T17:41:37.593Z"
+      },
+      {
+        "object_id": "08342af3-3753-40fe-91ed-e1e4336e9e8f",
+        "source_object_id": "facebook:post:pfbid036uDymnMGfrYY8M7akRKHBej8nh9D1n5szzWnXigv2XnexW3u64wnqWbSvXQ7uS5Gl",
+        "source_url": "https://www.facebook.com/permalink.php?story_fbid=pfbid036uDymnMGfrYY8M7akRKHBej8nh9D1n5szzWnXigv2XnexW3u64wnqWbSvXQ7uS5Gl&id=61594197356279",
+        "fields": {
+          "message": {
+            "kind": "VALUE",
+            "value": "WHAT DOES A $10 BAZI READING INCLUDE?\nOne question. A personal written answer in English.\nHere’s what you receive:\n1. A focused response\nAn answer centred on the one question and background you share.\n2. Relevant chart themes and three observations\nPatterns to reflect on in the context of your situation.\n3. A practical next step\nOne action to consider, plus something to avoid as you think through your decision.\nYour reading is manually prepared in English and delivered within 24 hours. You can request one written clarification within 7 days.\n$10 one-time. No subscription. This service covers one BaZi question; it does not include a home Feng Shui consultation or guarantee a future outcome.\nWant to see the format before booking? Our website includes a clearly labelled fictional sample, so you can explore the structure without using anyone’s private reading.\nView the sample and booking details:\nhttps://reading.easternwisdomstudio.com/en\n#BaZi #EasternWisdom"
+          },
+          "author_id": {
+            "kind": "VALUE",
+            "value": "61594197356279"
+          },
+          "created_time": {
+            "kind": "DISPLAYED_TIME",
+            "value": "2026年9月8日周二18:47"
+          },
+          "comment_count": {
+            "kind": "NOT_RETURNED"
+          },
+          "reaction_count": {
+            "kind": "NOT_RETURNED"
+          }
+        },
+        "observed_at": "2026-09-13T17:41:37.593Z"
+      },
+      {
+        "object_id": "17d9d2fa-fd42-40ec-b982-feeb65359f34",
+        "source_object_id": "facebook:post:pfbid0SfPQgTjQcdQpyvbCRtdw4xB8VVaW7d7BfP9sFDGGC4eTvBnCHFqbD66Am1hQJWyPl",
+        "source_url": "https://www.facebook.com/permalink.php?story_fbid=pfbid0SfPQgTjQcdQpyvbCRtdw4xB8VVaW7d7BfP9sFDGGC4eTvBnCHFqbD66Am1hQJWyPl&id=61594197356279",
+        "fields": {
+          "message": {
+            "kind": "VALUE",
+            "value": "WELCOME TO EASTERNWISDOM — START HERE\nNew to BaZi? You’re in the right place.\nBaZi, also known as the Four Pillars, is a traditional Chinese framework for reflecting on personal patterns and life choices. We offer private written readings in English, focused on one question about love, career or life direction.\nHere we’ll share simple BaZi explanations, ways to ask a focused question, and what a personal reading includes.\nOur one-question reading is $10, with a written answer within 24 hours and one written clarification within 7 days. No subscription.\nA reading offers a perspective for reflection; it does not guarantee a future outcome.\nView an illustrative sample and service details:\nhttps://reading.easternwisdomstudio.com/en\n#BaZi #EasternWisdom"
+          },
+          "author_id": {
+            "kind": "VALUE",
+            "value": "61594197356279"
+          },
+          "created_time": {
+            "kind": "DISPLAYED_TIME",
+            "value": "5天"
+          },
+          "comment_count": {
+            "kind": "NOT_RETURNED"
+          },
+          "reaction_count": {
+            "kind": "NOT_RETURNED"
+          }
+        },
+        "observed_at": "2026-09-13T17:41:37.593Z"
+      },
+      {
+        "object_id": "9b680a4e-aa7c-414e-b9a4-082cea97281e",
+        "source_object_id": "facebook:reel:2163157911082094",
+        "source_url": "https://www.facebook.com/reel/2163157911082094/",
+        "fields": {
+          "message": {
+            "kind": "VALUE",
+            "value": "New to BaZi? Start here. \nDiscover a traditional Chinese perspective on personal patterns and life choices. EasternWisdom offers private written readings in English about love, career and life direction.\nA reading is a perspective for reflection, not a guaranteed prediction.\nMessage us through the WhatsApp button on our page to learn about private readings.\nPresented with an AI digital avatar.\n#BaZi #EasternWisdom"
+          },
+          "author_id": {
+            "kind": "VALUE",
+            "value": "61594197356279"
+          },
+          "created_time": {
+            "kind": "DISPLAYED_TIME",
+            "value": "2026年9月9日周三16:25"
+          },
+          "comment_count": {
+            "kind": "NOT_RETURNED"
+          },
+          "reaction_count": {
+            "kind": "NOT_RETURNED"
+          }
+        },
+        "observed_at": "2026-09-13T17:41:37.593Z"
+      }
+    ],
+    "records": 4,
+    "leads": [
+      {
+        "id": "37f7d85e-2f7c-4059-ab67-f3633b22a358",
+        "version": 1,
+        "state": "NEW",
+        "score": 50
+      },
+      {
+        "id": "1c43f70e-e89c-43e9-b49a-0a8feb4207f2",
+        "version": 1,
+        "state": "NEW",
+        "score": 50
+      },
+      {
+        "id": "5d0744dc-46aa-482d-903c-3119c459b18f",
+        "version": 1,
+        "state": "NEW",
+        "score": 50
+      },
+      {
+        "id": "d9843787-0e20-4b68-aa0c-a8e88ce3cfd4",
+        "version": 1,
+        "state": "NEW",
+        "score": 50
+      }
+    ],
+    "repeat_same_original_objects_and_fields": true,
+    "repeat_same_lead_versions_and_states": true,
+    "coverage": "BROWSER_VISIBLE_ONLY; one bounded page; PARTIAL/MAX_PAGES. Existing publisher posts, not controlled newly published posts or prospective customers.",
+    "scope": "Only the pinned numeric public Page publisher; no groups, visitor posts, chronological completeness or all-page coverage claimed",
+    "evidence_release": "0.1.14",
+    "current_adapter_acceptance": false
+  },
+  "pending_runtime": {
+    "commands": 0,
+    "environment_commands": 0,
+    "acquisition_monitors": 0,
+    "inbox_monitors": 0
+  },
+  "current_read_scope": "No new platform command in 0.1.17. The existing 0.1.16 Inbox read is tied to unchanged reader bytes by manifest_byte_bridge; the expanded digest itself has local gate/integrity tests. Public collection evidence remains historical at 0.1.14.",
+  "historical_collection_evidence": {
+    "release": "0.1.14",
+    "closures": [
+      {
+        "command_id": "5c97fdb3-166b-4ee3-bcf0-9988c4ad9bfd",
+        "action_id": "7e535160-44a1-4021-becf-4386c94db37f",
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+        "query_id": "9000f4e2-ca90-4f36-ab18-2b82a3e97133",
+        "state": "VERIFIED_SUCCEEDED",
+        "actual_account_id": "61589894042400",
+        "created_at": "2026-09-13T17:40:17.334Z",
+        "closed_at": "2026-09-13T17:40:49.962Z",
+        "quiesced_at": "2026-09-13T17:40:50.279Z",
+        "proof_sha256": "f11b755656151e1d8523388d59e37287972a4378eb7558c178213ad2a7103bbf",
+        "page_sha256": "d5cd37e35eef5db3e046b3ad50e70937c6bea209b75a7866fafcb6b456d177a0",
+        "implementation_digest": "d9718b3223d06afb914728858ec8fecf19930b54eb3f4e79e97f890b4128ef0e",
+        "local_journal_acknowledged": true,
+        "local_journal_quiesced": true,
+        "local_and_database_match": true
+      },
+      {
+        "command_id": "89ca57c2-c1b6-4064-9c38-675a12c6a3ff",
+        "action_id": "78e8300b-23cf-47cf-9053-1cded7b928c9",
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+        "query_id": "cd92bf3a-9c5d-40a6-913d-eb474b942fce",
+        "state": "VERIFIED_SUCCEEDED",
+        "actual_account_id": "61589894042400",
+        "created_at": "2026-09-13T17:41:13.465Z",
+        "closed_at": "2026-09-13T17:41:42.964Z",
+        "quiesced_at": "2026-09-13T17:41:43.188Z",
+        "proof_sha256": "fa33b02019520b576dfca7a687d85e9937b9bdde4ea09990321f90d5a2ecd88b",
+        "page_sha256": "4cff046540cac60f5537eef38b5a893170e0ee6d80802d199f312d66c5cd0b13",
+        "implementation_digest": "d9718b3223d06afb914728858ec8fecf19930b54eb3f4e79e97f890b4128ef0e",
+        "local_journal_acknowledged": true,
+        "local_journal_quiesced": true,
+        "local_and_database_match": true
+      },
+      {
+        "command_id": "cfea16f9-ef4c-4623-a50e-58e50bf6b70c",
+        "action_id": "3f25ef8a-bf30-417d-bfc2-81a10d57eea8",
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+        "query_id": "aaa7ad7b-c249-4462-be53-86b12bf32192",
+        "state": "VERIFIED_SUCCEEDED",
+        "actual_account_id": "61589894042400",
+        "created_at": "2026-09-13T17:42:51.725Z",
+        "closed_at": "2026-09-13T17:43:18.493Z",
+        "quiesced_at": "2026-09-13T17:43:18.701Z",
+        "proof_sha256": "a0739fa90438b8ae9b82c43e353af4168b4d528c2c891eb3e13c90988e98a28a",
+        "page_sha256": "685de2a5986373a58196a08aec0b2e44dee74b57e9cc58f328dc98138c4b69e1",
+        "implementation_digest": "d9718b3223d06afb914728858ec8fecf19930b54eb3f4e79e97f890b4128ef0e",
+        "local_journal_acknowledged": true,
+        "local_journal_quiesced": true,
+        "local_and_database_match": true
+      },
+      {
+        "command_id": "7e029a3a-c0e7-403b-b13a-59143ca2bd14",
+        "action_id": "57340479-75dd-4fb9-93f3-37be05343408",
+        "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+        "environment_id": "bd009fb1-2f65-448e-8536-440225d913d9",
+        "query_id": "2257e23e-0873-40e3-9be3-087be8c18656",
+        "state": "VERIFIED_SUCCEEDED",
+        "actual_account_id": "61594334430750",
+        "created_at": "2026-09-13T17:43:18.770Z",
+        "closed_at": "2026-09-13T17:43:38.754Z",
+        "quiesced_at": "2026-09-13T17:43:38.935Z",
+        "proof_sha256": "45667bbed8c0762fddf667c84c14b5be5e88de2acdc289040eb88651258f0177",
+        "page_sha256": "cc6432e9e9847c063b98bd687ab9acbc21a56d7c370750514ac882fe9a8d76e7",
+        "implementation_digest": "d9718b3223d06afb914728858ec8fecf19930b54eb3f4e79e97f890b4128ef0e",
+        "local_journal_acknowledged": true,
+        "local_journal_quiesced": true,
+        "local_and_database_match": true
+      }
+    ],
+    "runs": [
+      {
+        "id": "e2c5b513-564c-42e5-af86-a19e13e941cd",
+        "state": "PARTIAL",
+        "returned_count": 2,
+        "unique_count": 2,
+        "committed_pages": 1,
+        "error_code": null,
+        "stop_reason": "MAX_PAGES"
+      },
+      {
+        "id": "19ab3d35-aa1c-4f5b-ae87-043bb8e7a003",
+        "state": "COMPLETED",
+        "returned_count": 2,
+        "unique_count": 2,
+        "committed_pages": 1,
+        "error_code": null,
+        "stop_reason": "SOURCE_EXHAUSTED"
+      }
+    ],
+    "accounts": [
+      {
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+        "profile_id": "k1gvdtft",
+        "monitor_id": "6776ac4f-1baa-4064-a9d6-ecd866c2a34b",
+        "request_id": "35093e4e-2644-4cb4-91a7-1d917938cd56",
+        "query_id": "aaa7ad7b-c249-4462-be53-86b12bf32192",
+        "run_id": "e2c5b513-564c-42e5-af86-a19e13e941cd"
+      },
+      {
+        "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+        "environment_id": "bd009fb1-2f65-448e-8536-440225d913d9",
+        "profile_id": "k1gw2kh9",
+        "monitor_id": "3ba710a3-f505-4f96-a002-bf29a81e56aa",
+        "create_id": "5bd1c870-0a4c-40a0-96f7-c94031a8f6b1",
+        "request_id": "bdf0a720-a2d5-4d9a-9ce0-b589704a304c",
+        "query_id": "2257e23e-0873-40e3-9be3-087be8c18656",
+        "run_id": "19ab3d35-aa1c-4f5b-ae87-043bb8e7a003"
+      }
+    ],
+    "leads": [
+      {
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "id": "445ae4fc-0df1-40ef-81ad-136f06aabd92",
+        "version": 1,
+        "state": "NEW",
+        "object_id": "47c2f0b6-835e-4ed3-b390-cd10eaf91696",
+        "source_object_id": "facebook:comment:4028276564148800",
+        "fields": {
+          "message": {
+            "kind": "VALUE",
+            "value": "怎么联系你"
+          },
+          "author_id": {
+            "kind": "VALUE",
+            "value": "100090732198621"
+          },
+          "created_time": {
+            "kind": "DISPLAYED_TIME",
+            "value": "2026年9月11日周五18:15"
+          },
+          "comment_count": {
+            "kind": "NOT_RETURNED"
+          },
+          "reaction_count": {
+            "kind": "NOT_RETURNED"
+          }
+        }
+      },
+      {
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "id": "67a18414-e51d-4e98-bdc9-cfbed548f69f",
+        "version": 1,
+        "state": "NEW",
+        "object_id": "e5be2d7b-8a34-4d28-adc6-72fa95ad5953",
+        "source_object_id": "facebook:comment:4486227441644316",
+        "fields": {
+          "message": {
+            "kind": "VALUE",
+            "value": "怎么测算啊"
+          },
+          "author_id": {
+            "kind": "VALUE",
+            "value": "61578850341360"
+          },
+          "created_time": {
+            "kind": "DISPLAYED_TIME",
+            "value": "2026年9月11日周五18:13"
+          },
+          "comment_count": {
+            "kind": "NOT_RETURNED"
+          },
+          "reaction_count": {
+            "kind": "NOT_RETURNED"
+          }
+        }
+      },
+      {
+        "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+        "id": "f0fb7c53-76fa-4c16-b61f-ea8725821562",
+        "version": 1,
+        "state": "NEW",
+        "object_id": "293e7259-7d54-4a4d-a322-8432ac7fc65f",
+        "source_object_id": "facebook:comment:4028276564148800",
+        "fields": {
+          "message": {
+            "kind": "VALUE",
+            "value": "怎么联系你"
+          },
+          "author_id": {
+            "kind": "VALUE",
+            "value": "100090732198621"
+          },
+          "created_time": {
+            "kind": "DISPLAYED_TIME",
+            "value": "2026年9月11日周五03:15"
+          },
+          "comment_count": {
+            "kind": "NOT_RETURNED"
+          },
+          "reaction_count": {
+            "kind": "NOT_RETURNED"
+          }
+        }
+      },
+      {
+        "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+        "id": "288caeca-c517-4d76-9411-f7ea80710333",
+        "version": 1,
+        "state": "NEW",
+        "object_id": "36bfc73b-23d1-4852-abdc-37860f2ddae8",
+        "source_object_id": "facebook:comment:4486227441644316",
+        "fields": {
+          "message": {
+            "kind": "VALUE",
+            "value": "怎么测算啊"
+          },
+          "author_id": {
+            "kind": "VALUE",
+            "value": "61578850341360"
+          },
+          "created_time": {
+            "kind": "DISPLAYED_TIME",
+            "value": "2026年9月11日周五03:13"
+          },
+          "comment_count": {
+            "kind": "NOT_RETURNED"
+          },
+          "reaction_count": {
+            "kind": "NOT_RETURNED"
+          }
+        }
+      }
+    ],
+    "previous": {
+      "release": "0.1.12",
+      "closures": [
+        {
+          "command_id": "d572f4dd-4578-4ad8-ac94-33c648dd6781",
+          "action_id": "e634227a-52a1-4398-a794-b87cd6295cf5",
+          "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+          "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+          "query_id": "c4571a15-5392-4e5e-a9f9-4408ef2491ac",
+          "state": "VERIFIED_SUCCEEDED",
+          "actual_account_id": "61589894042400",
+          "created_at": "2026-09-13T16:43:29.957Z",
+          "closed_at": "2026-09-13T16:43:58.245Z",
+          "quiesced_at": "2026-09-13T16:43:58.525Z",
+          "proof_sha256": "c5cace70dd2b1c603ce352b83eee3315021cbffc1044293fe2e2f5501c4a42af",
+          "page_sha256": "b57288746e0901458bf1ea560b40dc80e79333302d379b784f15967df252fb3c",
+          "implementation_digest": "dcd4809f9a909e83d1e6097e41484bbb4024818d48cc227aaf378b1e8ec1996b",
+          "local_journal_acknowledged": true,
+          "local_journal_quiesced": true,
+          "local_and_database_match": true
+        },
+        {
+          "command_id": "bc9d625f-2504-4556-a5ad-cfd142910688",
+          "action_id": "33967d59-c2e3-4e6f-ae63-da98577b45a5",
+          "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+          "environment_id": "bd009fb1-2f65-448e-8536-440225d913d9",
+          "query_id": "76af86f3-8790-4f25-8c13-bf36795fde49",
+          "state": "VERIFIED_SUCCEEDED",
+          "actual_account_id": "61594334430750",
+          "created_at": "2026-09-13T16:43:59.504Z",
+          "closed_at": "2026-09-13T16:44:17.639Z",
+          "quiesced_at": "2026-09-13T16:44:17.825Z",
+          "proof_sha256": "e9001faf074b66a2a842ebce22e71c08e09025b0da2dcb51eb7e2fd3378e8ba8",
+          "page_sha256": "bb4d9cdd0a52d0eaeaa850dadebac5a1ce6117f397cabac1275acbea38eed461",
+          "implementation_digest": "dcd4809f9a909e83d1e6097e41484bbb4024818d48cc227aaf378b1e8ec1996b",
+          "local_journal_acknowledged": true,
+          "local_journal_quiesced": true,
+          "local_and_database_match": true
+        },
+        {
+          "command_id": "ba155135-b7e1-419a-bcd5-52a04a22d050",
+          "action_id": "7798bd46-bc56-45df-b1a6-f3f4fd2476a8",
+          "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+          "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+          "query_id": "1c9ba78c-59e8-4e7d-a868-d71cb3f85330",
+          "state": "VERIFIED_SUCCEEDED",
+          "actual_account_id": "61589894042400",
+          "created_at": "2026-09-13T16:46:20.367Z",
+          "closed_at": "2026-09-13T16:46:44.981Z",
+          "quiesced_at": "2026-09-13T16:46:45.220Z",
+          "proof_sha256": "519b75b28ee1a6f549aa1b96dad95930c42083eb7400d0f9f690b53b1e1afff2",
+          "page_sha256": "e884d46194bb41dfd615ceb2d680d0ee376309eae4e115631c2fdfaefa7af928",
+          "implementation_digest": "dcd4809f9a909e83d1e6097e41484bbb4024818d48cc227aaf378b1e8ec1996b",
+          "local_journal_acknowledged": true,
+          "local_journal_quiesced": true,
+          "local_and_database_match": true
+        },
+        {
+          "command_id": "24611165-0ba9-47d2-ae66-d321aecf8c32",
+          "action_id": "19492814-9e72-47cf-94b7-fd7c86ad8ffe",
+          "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+          "environment_id": "bd009fb1-2f65-448e-8536-440225d913d9",
+          "query_id": "bad8662a-16d1-4512-81c1-da96131b5b9b",
+          "state": "VERIFIED_SUCCEEDED",
+          "actual_account_id": "61594334430750",
+          "created_at": "2026-09-13T16:46:47.258Z",
+          "closed_at": "2026-09-13T16:47:03.944Z",
+          "quiesced_at": "2026-09-13T16:47:04.129Z",
+          "proof_sha256": "85cf6c41af15a78cdc91e288732efbf394ed94e45832ad9b54df1ce25a402af3",
+          "page_sha256": "15c18350bf78ad87ed90268e66426acf707f436df43bcb4ce3660313db50809f",
+          "implementation_digest": "dcd4809f9a909e83d1e6097e41484bbb4024818d48cc227aaf378b1e8ec1996b",
+          "local_journal_acknowledged": true,
+          "local_journal_quiesced": true,
+          "local_and_database_match": true
+        }
+      ],
+      "read_runs": [
+        {
+          "id": "ed0daf02-6564-46eb-8579-6df90462dd4d",
+          "state": "PARTIAL",
+          "returned_count": 2,
+          "unique_count": 2,
+          "committed_pages": 1,
+          "error_code": null,
+          "stop_reason": "MAX_PAGES"
+        },
+        {
+          "id": "32abbb63-ef22-4f48-81b9-1b0a58b0d005",
+          "state": "COMPLETED",
+          "returned_count": 2,
+          "unique_count": 2,
+          "committed_pages": 1,
+          "error_code": null,
+          "stop_reason": "SOURCE_EXHAUSTED"
+        },
+        {
+          "id": "2ebdc465-e084-4144-9b26-4cc05260121f",
+          "state": "PARTIAL",
+          "returned_count": 2,
+          "unique_count": 2,
+          "committed_pages": 1,
+          "error_code": null,
+          "stop_reason": "MAX_PAGES"
+        },
+        {
+          "id": "a1d2f399-acf3-4323-892b-eacf0b391e47",
+          "state": "COMPLETED",
+          "returned_count": 2,
+          "unique_count": 2,
+          "committed_pages": 1,
+          "error_code": null,
+          "stop_reason": "SOURCE_EXHAUSTED"
+        }
+      ],
+      "meaning": "Historical real reads retained; latest evidence below verifies the changed adapter"
+    },
+    "meaning": "Historical bounded collection evidence; no fresh collection acceptance claimed for the changed Inbox adapter."
+  },
+  "inbox_directory": {
+    "strategy": "RECENT_ACCEPTED",
+    "max_threads": 3,
+    "message_limit": 25,
+    "read": {
+      "release": "0.1.16",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "monitor_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "monitor_version": 21,
+      "commands": [
+        {
+          "id": "ca9c32cf-5248-454b-8592-cc532be4a72f",
+          "action_id": "4be4cffd-97f3-4f2e-999b-e54111dabe31",
+          "created_at": "2026-09-13T18:29:46.888Z",
+          "quiesced_at": "2026-09-13T18:30:16.078Z",
+          "state": "VERIFIED_SUCCEEDED",
+          "error_code": null,
+          "receipt": {
+            "remote_id": "inbox:6a14ca96-4988-4aa2-a0c7-686fc01c15eb:14",
+            "observed_at": "2026-09-13T18:30:10.323Z",
+            "content_hash": "bfeef8dbdc88e62687c2c859037619290c42c2222e87b90740505422ee84fc9d",
+            "evidence_kind": "browser_dom",
+            "actual_account_id": "61589894042400"
+          },
+          "task_id": "c796a776-147f-4f18-9b0b-f63650eabc50",
+          "implementation_digest": "dccd86dc3390e41fff1c698b58afcb949418d8d6d2b3d5219cb112a19f9574e3"
+        }
+      ],
+      "closure": {
+        "protocol_version": "kff.guardian-closure.v1",
+        "command_id": "ca9c32cf-5248-454b-8592-cc532be4a72f",
+        "action_id": "4be4cffd-97f3-4f2e-999b-e54111dabe31",
+        "closed_at": "2026-09-13T18:30:15.835Z",
+        "proof_sha256": "f44347184743d582ad2305d8fe48cb5ca96a14cb5f4813ebc2725975cdcb8ab1",
+        "local_and_database_match": true
+      },
+      "checkpoints": [
+        {
+          "task_id": "c796a776-147f-4f18-9b0b-f63650eabc50",
+          "stored": 0,
+          "duplicates": 4,
+          "page_sha256": "bfeef8dbdc88e62687c2c859037619290c42c2222e87b90740505422ee84fc9d",
+          "observed_at": "2026-09-13T18:30:10.323Z"
+        }
+      ],
+      "discovery": {
+        "skipped": [],
+        "threads": [
+          {
+            "peer_id": "100050174601107",
+            "thread_id": "27724009533944398",
+            "display_name": "郑一哲"
+          }
+        ],
+        "strategy": "RECENT_ACCEPTED",
+        "empty_list": false,
+        "unparsed_rows": 0,
+        "window_limited": false,
+        "visible_threads": 1
+      },
+      "existing_inbox_unchanged": true,
+      "profile_after": "Inactive",
+      "status": "REAL_DISCOVERY_READ_CLOSED"
+    },
+    "previous_failed_attempt": {
+      "release": "0.1.16",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "monitor_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "monitor_version": 20,
+      "commands": [
+        {
+          "id": "f6b49619-0145-4c40-a3d1-a6b6f52fef4b",
+          "action_id": "b41b5417-f4e4-4627-856c-936ec672398d",
+          "created_at": "2026-09-13T18:23:00.273Z",
+          "quiesced_at": "2026-09-13T18:23:36.787Z",
+          "state": "BLOCKED",
+          "error_code": "INBOX_WINDOW_UNAVAILABLE",
+          "receipt": null,
+          "task_id": "c423a540-37c0-4cc3-9162-a990de8f7cd8",
+          "implementation_digest": "dccd86dc3390e41fff1c698b58afcb949418d8d6d2b3d5219cb112a19f9574e3"
+        }
+      ],
+      "closure": {
+        "protocol_version": "kff.guardian-closure.v1",
+        "command_id": "f6b49619-0145-4c40-a3d1-a6b6f52fef4b",
+        "action_id": "b41b5417-f4e4-4627-856c-936ec672398d",
+        "closed_at": "2026-09-13T18:23:36.614Z",
+        "proof_sha256": "9595510232bdab8a870b5a5a7bfbcd7455046573260978ce4f3e4a86e67a2415",
+        "local_and_database_match": true
+      },
+      "checkpoints": [],
+      "discovery": null,
+      "existing_inbox_unchanged": true,
+      "profile_after": "Inactive",
+      "status": "REAL_DISCOVERY_READ_CLOSED"
+    },
+    "second_setup": {
+      "release": "0.1.15",
+      "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "monitor_id": "149da22d-2ea8-49b1-accd-0ea2f4fc845f",
+      "monitor_version": 2,
+      "commands": [
+        {
+          "id": "006f4577-af48-46bd-888c-409a95f8f8de",
+          "action_id": "75e005bb-5e33-4ad2-a17b-3f9e5a2f54ec",
+          "created_at": "2026-09-13T18:16:10.177Z",
+          "quiesced_at": "2026-09-13T18:16:22.784Z",
+          "state": "BLOCKED",
+          "error_code": "MESSENGER_SETUP_REQUIRED",
+          "receipt": null,
+          "task_id": "fde31e95-1200-4eda-a0e3-3abee2676e57",
+          "implementation_digest": "1109a4d73a24e604abc88f761abad5558e29707cc4f8b900d5a084fa4cfef836"
+        }
+      ],
+      "closure": {
+        "protocol_version": "kff.guardian-closure.v1",
+        "command_id": "006f4577-af48-46bd-888c-409a95f8f8de",
+        "action_id": "75e005bb-5e33-4ad2-a17b-3f9e5a2f54ec",
+        "closed_at": "2026-09-13T18:16:22.642Z",
+        "proof_sha256": "4ed1b2a86f3c465dd358119f232a4c88afbad79ddb675a0463daa8cae69aa1a0",
+        "local_and_database_match": true
+      },
+      "checkpoints": [],
+      "discovery": null,
+      "existing_inbox_unchanged": true,
+      "profile_after": "Inactive",
+      "status": "SECOND_MESSENGER_SETUP_REQUIRED"
+    },
+    "first_failed_attempt": {
+      "release": "0.1.15",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "monitor_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "monitor_version": 18,
+      "commands": [
+        {
+          "id": "43081389-5aed-451b-aca8-6c49ae391052",
+          "action_id": "db779d9b-f141-4609-aa4d-0e1efd7b4d3b",
+          "created_at": "2026-09-13T18:15:14.489Z",
+          "quiesced_at": "2026-09-13T18:15:37.430Z",
+          "state": "BLOCKED",
+          "error_code": "INBOX_WINDOW_UNAVAILABLE",
+          "receipt": null,
+          "task_id": "fee35918-8d9b-46b8-8b92-b7295c724eb4",
+          "implementation_digest": "1109a4d73a24e604abc88f761abad5558e29707cc4f8b900d5a084fa4cfef836"
+        }
+      ],
+      "closure": {
+        "protocol_version": "kff.guardian-closure.v1",
+        "command_id": "43081389-5aed-451b-aca8-6c49ae391052",
+        "action_id": "db779d9b-f141-4609-aa4d-0e1efd7b4d3b",
+        "closed_at": "2026-09-13T18:15:37.243Z",
+        "proof_sha256": "8146af7ce6a09911f429c5a1ba4fc6d936aa57ae301435ebedeeb259a26b1803",
+        "local_and_database_match": true
+      },
+      "checkpoints": [],
+      "discovery": null,
+      "existing_inbox_unchanged": true,
+      "profile_after": "Inactive",
+      "status": "REAL_DISCOVERY_READ_CLOSED"
+    },
+    "failure_cause": "The visible conversation name and composer preceded hydration of the numeric profile link. 0.1.16 waits up to 15 seconds for the same exact profile evidence and records separate identity/composer stages. Its first read then stopped during peer verification; direct bounded UI inspection succeeded and the subsequent original queue read succeeded. The first peer-stage failure is retained without claiming its exact transient cause has been repaired.",
+    "scope": "Existing accepted test thread only. No newly received contact, real two-account inbound isolation, new outbound message, or sales acceptance was performed."
+  },
+  "previous_validation": {
+    "contracts": 162,
+    "manifest_integrity_contracts": 2,
+    "real_scope_integration": 12,
+    "typecheck": true,
+    "targeted_eslint": true,
+    "production_build": true,
+    "scope": "Isolated DB and local temporary source mutation; no new platform read or send."
+  },
+  "manifest_byte_bridge": {
+    "at": "2026-09-13T18:39:03.376Z",
+    "historical_release": "0.1.16",
+    "current_definition_release": "0.1.17",
+    "newly_covered_files": [
+      {
+        "file": "packages/adapters/src/facebook-browser-page.ts",
+        "sha256": "55a9e61c123ec44da521e730ce2607c0796444d4bad9f818f819463f8bca25b7",
+        "matches_historical_installed_bytes": true
+      },
+      {
+        "file": "packages/adapters/src/facebook-inbox-directory-dom.ts",
+        "sha256": "f47e80a050ee6963cdc00008c1a81afa7c1d86704201021b4a8c289c2627628f",
+        "matches_historical_installed_bytes": true
+      }
+    ],
+    "all_reader_source_bytes_unchanged": true,
+    "legacy_digest": "dccd86dc3390e41fff1c698b58afcb949418d8d6d2b3d5219cb112a19f9574e3",
+    "current_digest": "c985f94f01e5d4809ff5aff701ddea5aee6db135e154012bba14da438e7d2f91",
+    "meaning": "The execution manifest now covers two already-installed runtime files. The actual reader code bytes remain identical to the verified 0.1.16 read. This does not claim a new real command under the expanded digest."
+  },
+  "manifest_integrity": {
+    "covered_source_hashes": {
+      "packages/adapters/src/facebook.ts": "e1bcdc6768ebab56d07f35b7fdae3ffc1a51383e8b0f8d197ded3e45d538a318",
+      "packages/adapters/src/templates.ts": "a6b489c269326de6ca5334874d17a91afb08da4325cab6790705e94a87b0266b",
+      "packages/contracts/src/template.ts": "fad05666d7d20440a243a96d0b5e084e7a82ff36bf801f6bd333e3ff18404841",
+      "packages/contracts/src/index.ts": "3fd4cbad497607fe54e4f2ce98c8096bcddf533b49810a1d759b715987bbacef",
+      "packages/contracts/src/environment.ts": "2c610f8f0f3a6b95f2a0eb228f5ced74885b8ebde03dc3b087be063b4624b4b0",
+      "packages/adapters/src/browser-profile.ts": "370712c686d7c7a1f107dfe7a4552643cf2f8e20334e82bf6f2fd2270eeb26c5",
+      "packages/core/src/index.ts": "b1ce3747ea824ebf0c9be70c5fb38a5e139921c3c3822b138e766c20a1449279",
+      "packages/contracts/src/collection.ts": "b0b33d261886abdc8e7ca33b3894b89e702650c4907e307be8531b7ed3643258",
+      "packages/contracts/src/browser-collection.ts": "e1e2e008a12a458090da26b492412cd78f5e90c12a4b67f4079afd42e3c06d6d",
+      "packages/adapters/src/collection-fixture.ts": "6e6768b133725dccb6285c79e21ae0523a4bfee6e1e8bae7fb83bf355e1b4370",
+      "packages/adapters/src/browser-discovery.ts": "9e92dc416a43fb7daf33a0d8cc2858d9a24b979dc704f73879b5ec0eb97acacf",
+      "packages/adapters/src/browser-discovery-fixture.ts": "9d88f8d14d9c81f5bfc6b2739ca7fd0e205b3c1be1f1b4f9cf29d3715a6e0906",
+      "apps/agent/src/guardian.ts": "fdccd99e6d48ec0acda55ef2f2b06d7feda176dbf89df9d8138750e77517baaa",
+      "apps/agent/src/guardian-child.ts": "a1a5f0f227c70d283f8ee03226dede4eae3d1e52fcb85173bb015202f1d5969b",
+      "packages/adapters/src/facebook-browser-comment.ts": "cbe2ec5e095604961ef9bfc19e72b48358c9b071100d1cc9ea1ee925c3457f03",
+      "packages/adapters/src/facebook-comment-reply-dom.ts": "44e9c60141ae8625604c036aa9be29de4c68bdcbd1ab8bb3f0a2603f50f7d782",
+      "packages/adapters/src/facebook-browser-message.ts": "4eac51d6cda60083a8de61c732aacca9fcc27ecbfb9e5946a4f0b1ad0728aacc",
+      "packages/adapters/src/facebook-message-result-dom.ts": "aba5efd1db2c6ddc6b1099c1384ed2e824a4301200fb38229b1c50ab5fab6c44",
+      "packages/adapters/src/facebook-browser-inbox.ts": "5721c35c37678f00b55e2e4f2fce3434a258f12c91e18a13231d1f217b91a23a",
+      "packages/adapters/src/facebook-inbox-dom.ts": "e98d0c1f44e03b44f090da921b87c4ef852ec81ca5ed6be720569cdfd905eae6",
+      "packages/contracts/src/browser-inbox.ts": "a14405f3700534709e998cf9e00195cb2ab38bced661c46a0a0c255163c3cbcc",
+      "packages/adapters/src/facebook-browser-identity.ts": "602e5ade05579eb8264a719cb34b5bf4d2161eb52dbf14bdd99be1c47182b485",
+      "packages/adapters/src/facebook-browser-discovery.ts": "687f1976b05e9fb58a502ead782da256a09a33c01a74faea97ed5739d1c32d9c",
+      "packages/adapters/src/facebook-search-dom.ts": "5feba56d7c702a80dfa8c7a93bb351d94dfe0000f4fce7487fa0754e5f0e7e1a",
+      "packages/adapters/src/facebook-comments-dom.ts": "ea94a90b7e30f8aacf8506e37f5f51f5c214aa3217fb61fc0c86516dfd4b9f90",
+      "packages/adapters/src/facebook-browser-comments.ts": "989f34f0dda3e5f60306506e5365b0178874cd80a3fd9dd72081f09d8b191639",
+      "packages/adapters/src/discovery.ts": "2375e7509a3821a00d8dbf9617f752c29544ba1e1462b4c02ab064699401aac0",
+      "packages/adapters/src/apify.ts": "4867fa8061924667f69540af8fea6737e122bf88bcf76a2862d71eafc808b6af",
+      "packages/adapters/src/apify-connection.ts": "12db9d4462c90e065a05b39b9ca49de60f360e3571c3be1ae02c8fe6d818fc3b",
+      "packages/adapters/src/source-http.ts": "681d45506a9a1f228f6d67a99012bfd9276f2cbacc7dda6b7af90d1b2f07352b",
+      "packages/adapters/src/social-outreach.ts": "cdb45a6045b1f4a019a2348c8a5cac6d7124f5098074a425e44fa17c66eb0451",
+      "packages/contracts/src/acquisition.ts": "e8abae7f7dba7d51f045cdee1efab7b1ff902287eed755e3218ad1a68d67e0df",
+      "packages/adapters/src/facebook-messenger.ts": "b6a29de8827fd69b784369c2d48db6eed0570f797590ba98b8f67b57bf43c160",
+      "packages/adapters/src/facebook-events.ts": "d9d3e37a065ef1cb674632366abcdaa4846750da5ad80ff77b45af4bbd94a2c9",
+      "packages/contracts/src/lead.ts": "6708299bd13978734178b9dcbaf61912d7ad480bc606851889a492bf4a10b1ae",
+      "packages/adapters/src/facebook-browser-page.ts": "55a9e61c123ec44da521e730ce2607c0796444d4bad9f818f819463f8bca25b7",
+      "packages/adapters/src/facebook-inbox-directory-dom.ts": "f47e80a050ee6963cdc00008c1a81afa7c1d86704201021b4a8c289c2627628f"
+    },
+    "tests": 2,
+    "temporary_changed_files_only": true,
+    "original_checkout_unchanged_by_tests": true,
+    "read_capabilities": [
+      {
+        "id": "a29d063d-cbdb-4d2c-b5d1-230a841df263",
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "capability_key": "facebook.discovery.read.browser",
+        "evidence_state": "IMPLEMENTED_TEST_ONLY",
+        "mode": "CONTROLLED_PILOT",
+        "implementation_digest": "c985f94f01e5d4809ff5aff701ddea5aee6db135e154012bba14da438e7d2f91"
+      },
+      {
+        "id": "074a488f-96d3-469a-bc06-5da275de0a9c",
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "capability_key": "facebook.inbox.read.browser",
+        "evidence_state": "IMPLEMENTED_TEST_ONLY",
+        "mode": "CONTROLLED_PILOT",
+        "implementation_digest": "c985f94f01e5d4809ff5aff701ddea5aee6db135e154012bba14da438e7d2f91"
+      },
+      {
+        "id": "128ad21b-b389-4e08-aa85-d137df5a7385",
+        "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+        "capability_key": "facebook.discovery.read.browser",
+        "evidence_state": "IMPLEMENTED_TEST_ONLY",
+        "mode": "CONTROLLED_PILOT",
+        "implementation_digest": "c985f94f01e5d4809ff5aff701ddea5aee6db135e154012bba14da438e7d2f91"
+      },
+      {
+        "id": "bc1bd472-62ff-44e6-8501-8df76f723ffb",
+        "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+        "capability_key": "facebook.inbox.read.browser",
+        "evidence_state": "IMPLEMENTED_TEST_ONLY",
+        "mode": "CONTROLLED_PILOT",
+        "implementation_digest": "c985f94f01e5d4809ff5aff701ddea5aee6db135e154012bba14da438e7d2f91"
+      }
+    ],
+    "new_platform_commands": 0
+  },
+  "source_trace": {
+    "implementation": "Read-only original conversation reception query; no new table, customer or permission.",
+    "relation": "Same operating account plus the independently verified browser sender profile ID; not causal attribution.",
+    "eligibility": "Verified browser comment reply with matching recipient and operating identity; all associated commands closed; no pending or failed receipt shown.",
+    "display_limit": 20,
+    "original_conversation_id": "cf4cb0be-4191-4451-bfda-825ce1b35798",
+    "real_existing_public_matches": 0,
+    "original_inbox_and_handoff_unchanged": true,
+    "positive_ui_scope": "Owned intercepted local response visibly labeled as a fixture; not production data or a real new lead.",
+    "ui_files": [
+      "output/playwright/public-interaction-trace-empty-018.png",
+      "output/playwright/public-interaction-trace-owned-018.png"
+    ],
+    "ui_reviewed": true,
+    "api_and_browser_returned_to_real_empty_state": true,
+    "positive_integration_cases": 2,
+    "platform_actions": 0
+  }
+}

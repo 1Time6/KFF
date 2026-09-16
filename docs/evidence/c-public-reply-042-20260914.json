@@ -1,0 +1,167 @@
+{
+  "created_at": "2026-09-14T14:40:28.533Z",
+  "body": "KFF-0914-C：收到。请私信我并带上 KFF-0914-C，我们继续了解您的咨询需求。",
+  "max_sends": 1,
+  "platform_sends": 0,
+  "authorization": "用户持续授权同类受控单条测试无需再问；用户本轮确认C作者郑一哲是本人控制账号。",
+  "before": {
+    "lead": {
+      "id": "bd7d506e-a852-4834-85f1-f963533a7eec",
+      "organization_id": "11111111-1111-4111-8111-111111111111",
+      "brand_id": "22222222-2222-4222-8222-222222222222",
+      "monitor_id": "833f62a5-0976-4d30-a1d2-cfe759062064",
+      "object_id": "34109353-e1dd-4fc3-9580-9dd57273b9a0",
+      "observation_id": "3b778625-73f9-40a6-aa7d-5d07975dd6a4",
+      "version": 1,
+      "state": "NEW",
+      "score": 50,
+      "matched_keywords": [
+        "KFF-0914-C"
+      ],
+      "reason": "关键词匹配 1 项。规则评分，不代表购买概率。",
+      "automation_error": null,
+      "next_action_at": "2026-09-14T14:40:05.916Z",
+      "first_seen_at": "2026-09-14T14:40:05.916Z",
+      "last_seen_at": "2026-09-14T14:40:05.916Z",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "KFF-0914-C 我想了解咨询流程"
+        },
+        "author_id": {
+          "kind": "VALUE",
+          "value": "100050174601107"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月14日周一06:39"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "source_object_id": "facebook:comment:1798186518043775",
+      "source_url": "https://www.facebook.com/reel/2163157911082094/?comment_id=1798186518043775",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6"
+    },
+    "runtime": {
+      "runtime_id": "103d1b98-cd15-41de-9f8a-99b6706c524e",
+      "pid": 23772,
+      "phase": "RUNNING",
+      "updated_at": "2026-09-14T14:40:28.582Z",
+      "app_origin": "http://127.0.0.1:3000",
+      "release_id": "kff-agent-0.1.42-win32-x64-0bef39741851",
+      "database_owned": false,
+      "components": {
+        "database": {
+          "pid": null,
+          "state": "CONNECTED"
+        },
+        "web": {
+          "pid": 12260,
+          "state": "RUNNING"
+        },
+        "worker": {
+          "pid": 9288,
+          "state": "RUNNING"
+        },
+        "agent": {
+          "pid": 14340,
+          "state": "RUNNING"
+        }
+      }
+    }
+  },
+  "review": {
+    "sender": {
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "facebook_id": "61594402378582",
+      "profile_id": "k1gx1n1s",
+      "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+      "name": "白青天"
+    },
+    "target": {
+      "author_id": "100050174601107",
+      "author_name": "郑一哲",
+      "comment_id": "1798186518043775",
+      "comment_url": "https://www.facebook.com/reel/2163157911082094/?comment_id=1798186518043775",
+      "lead_id": "bd7d506e-a852-4834-85f1-f963533a7eec"
+    },
+    "body": "KFF-0914-C：收到。请私信我并带上 KFF-0914-C，我们继续了解您的咨询需求。"
+  },
+  "expires_at": "2026-09-14T15:10:28.778Z",
+  "task_id": "f05e4df4-fc2c-444a-b2e7-81ae6ae67ef4",
+  "status": "CLOSED_WITH_FINDINGS",
+  "permit_id": "2b9e4f64-c6a7-4602-8166-28bb21804f28",
+  "snapshot_hash": "f41f1d21f57ba6284eae887f6bf270a45dd4c63e7a7eb9e1c42ff90146b796e0",
+  "prepared_at": "2026-09-14T14:40:28.989Z",
+  "run_id": "96dc1626-55b8-4cf6-9341-1fc1d2000384",
+  "actions": [
+    {
+      "action_id": "eea96eff-8337-482c-a50a-ceefa69139ca",
+      "state": "BLOCKED",
+      "error_code": "BROWSER_LOCATOR_AMBIGUOUS",
+      "receipt": null,
+      "command_id": "e5f9a234-e79e-4b0d-bb39-20a563fdb21c",
+      "claimed_at": "2026-09-14T14:41:31.881Z",
+      "quiesced_at": "2026-09-14T14:42:07.643Z"
+    }
+  ],
+  "closure": {
+    "proof": {
+      "action_id": "eea96eff-8337-482c-a50a-ceefa69139ca",
+      "closed_at": "2026-09-14T14:42:07.412Z",
+      "command_id": "e5f9a234-e79e-4b0d-bb39-20a563fdb21c",
+      "proof_sha256": "1366a147f8a2b2c067e8a66893937fd2747f50340858287957018aed49ccce2c",
+      "protocol_version": "kff.guardian-closure.v1"
+    },
+    "local_database_match": true
+  },
+  "attempts": [
+    {
+      "id": "66a8cd54-8170-4de0-b236-531a99269f29",
+      "attempt_number": 1,
+      "submitted_at": null,
+      "state": "BLOCKED"
+    }
+  ],
+  "diagnostics": [
+    {
+      "action_id": "eea96eff-8337-482c-a50a-ceefa69139ca",
+      "manifest": {
+        "step": "facebook-comment-prepare",
+        "files": [],
+        "level": "D0",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "BLOCKED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "eea96eff-8337-482c-a50a-ceefa69139ca",
+        "attempt_id": "66a8cd54-8170-4de0-b236-531a99269f29",
+        "created_at": "2026-09-14T14:42:07.617Z",
+        "error_code": "BROWSER_LOCATOR_AMBIGUOUS",
+        "duration_ms": 33971,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-browser-comment-v1",
+        "browser_version": null,
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": "本驱动未取得可安全导出的现场，保留 D0",
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    }
+  ],
+  "profile_after": "Inactive",
+  "accepted": false,
+  "finished_at": "2026-09-14T14:42:09.643Z"
+}

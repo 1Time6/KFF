@@ -1,0 +1,82 @@
+{
+  "checked_at": "2026-09-15T04:54:55.438Z",
+  "version": "0.1.50",
+  "input": "Verified actual controller ZIP extracted to a fresh isolated directory",
+  "archive_sha256": "4567eb2bda4078900f7b1e63a1991c3854027aa1179a1a66a466726ac47d415d",
+  "synthetic_source": true,
+  "record": {
+    "schema_version": "kff.controller-upgrade.v1",
+    "id": "caced159-fe45-413f-8013-4bef1b6a4d63",
+    "pid": 22560,
+    "source": "C:\\Users\\17731\\AppData\\Local\\KFF\\ControllerTests\\kff-controller-0.1.26-win32-x64-c7abed97c5f8",
+    "source_release": "kff-controller-0.1.26-win32-x64-c7abed97c5f8",
+    "target": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-upgrade-050\\kff-controller-0.1.50-win32-x64-b91d228874db",
+    "target_release": "kff-controller-0.1.50-win32-x64-b91d228874db",
+    "started_at": "2026-09-15T04:52:57.252Z",
+    "source_preserved": true,
+    "phase": "VERIFIED",
+    "updated_at": "2026-09-15T04:53:40.044Z",
+    "copied_files": 1925,
+    "copied_bytes": 73755559,
+    "migrations_before": 32,
+    "migrations_after": 33,
+    "refreshed_capabilities": 0,
+    "live_sending_enabled": false,
+    "source_unchanged": true,
+    "target_database_closed": true,
+    "finished_at": "2026-09-15T04:53:40.055Z"
+  },
+  "evidence_record": ".kff/controller-upgrade-050/kff-controller-0.1.50-win32-x64-b91d228874db/.kff/upgrades/caced159-fe45-413f-8013-4bef1b6a4d63.json",
+  "command_log": ".kff/upgrade-current-050-command.log",
+  "original_runtime_id": "87e9fda4-cbae-40fc-bb78-1335280e07c6",
+  "original_data": {
+    "tables": {
+      "acquisition_leads": {
+        "count": 53,
+        "sha256": "1c61c772b9ff7c2550995243de12b85c6b0a57448e45ab8e2be01fe69bc86f3b"
+      },
+      "messages": {
+        "count": 140,
+        "sha256": "2640e219d9380b32f868eb4bc87659db851bb9e5eaefd985117a69c3e55ca29c"
+      },
+      "whatsapp_referrals": {
+        "count": 16,
+        "sha256": "a414fb7d35f54cce6aedd25a4ac3a2451826de86730b2e75a2f06ee68a3db5f5"
+      },
+      "customers": {
+        "count": 98,
+        "sha256": "e496d36a67c5c34c88e39e8ffbc322b2348255f261b91af2d14eb75573938019"
+      },
+      "accounts": {
+        "count": 88,
+        "sha256": "fa305e29027e42fd1866b5137fc2e7b95ca43aa94f6353a26d29a4c60a4e645f"
+      },
+      "acquisition_scans": {
+        "count": 77,
+        "sha256": "174573671d30f4f9d68f0b3d47cc2441d6793f54b5f7d262ee02b03fcebd9ba8"
+      },
+      "acquisition_evaluations": {
+        "count": 163,
+        "sha256": "aa1f020894624be5f9247ab0f92e66e076716ab1aae07c8d0b192c9f0053d80f"
+      }
+    },
+    "open_commands": 0,
+    "monitors": [
+      {
+        "state": "PAUSED",
+        "count": 35
+      }
+    ],
+    "business_rows_preserved": true
+  },
+  "health": {
+    "status": "ok",
+    "protocol": "kff.api.v1",
+    "runtime_id": "87e9fda4-cbae-40fc-bb78-1335280e07c6"
+  },
+  "no_original_runtime_restart": true,
+  "platform_actions": 0,
+  "other_computer_verified": false,
+  "system_reboot_verified": false,
+  "full_goal_complete": false
+}

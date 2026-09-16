@@ -1,0 +1,63 @@
+{
+  "started_at": "2026-09-14T16:46:03.987Z",
+  "steps": [
+    "navigate",
+    "scope"
+  ],
+  "platform_sends": 0,
+  "imports": 0,
+  "frames": [
+    {
+      "at": "2026-09-14T16:46:15.279Z",
+      "ui": {
+        "url": "https://www.facebook.com/search/top?q=bazi",
+        "title": "bazi - 搜索结果",
+        "mains": [],
+        "search": [],
+        "passwords": 0,
+        "body_count": 0,
+        "switches": []
+      }
+    },
+    {
+      "at": "2026-09-14T16:46:16.302Z",
+      "ui": {
+        "url": "https://www.facebook.com/search/top?q=bazi",
+        "title": "bazi - 搜索结果",
+        "mains": [],
+        "search": [],
+        "passwords": 0,
+        "body_count": 0,
+        "switches": []
+      }
+    },
+    {
+      "at": "2026-09-14T16:46:17.318Z",
+      "ui": {
+        "url": "https://www.facebook.com/search/top?q=bazi",
+        "title": "bazi - 搜索结果",
+        "mains": [],
+        "search": [],
+        "passwords": 0,
+        "body_count": 0,
+        "switches": []
+      }
+    }
+  ],
+  "identity": {
+    "method": "facebook-profile-dom-v1",
+    "authenticated": true,
+    "operating_identity_id": "61589894042400",
+    "account_type": "profile",
+    "display_name": "XiangHuan Master",
+    "observed_at": "2026-09-14T16:46:13.229Z",
+    "source_url": "https://www.facebook.com/profile.php?id=61589894042400"
+  },
+  "error": {
+    "name": "AppError",
+    "message": "搜索主区域不唯一",
+    "code": "COLLECTION_SOURCE_MISMATCH"
+  },
+  "profile_after": "Inactive",
+  "finished_at": "2026-09-14T16:46:18.389Z"
+}

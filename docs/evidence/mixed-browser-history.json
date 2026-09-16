@@ -1,0 +1,84 @@
+{
+  "schema_version": "kff.mixed-browser-history-evidence.v1",
+  "recorded_at": "2026-09-13T07:03:52.282Z",
+  "status": "CONTROL_PLANE_ISOLATED_TESTS_PASSED_REAL_MIXED_DOM_PENDING",
+  "changed_behavior": "Original fixed-thread inbox report accepts schema-validated INBOUND and OUTBOUND observations while preserving bound peer, thread, unknown date and unverified thread restrictions.",
+  "source_sha256": {
+    "packages/core/src/browser-inbox.ts": "dec973005cb548c1e771633ad2f312cce0a94147c2af780106f6fc0fefaf14bd",
+    "tests/integration/real-browser-message.test.ts": "4bd2c50184fc2ef1b26a94f4744b49aa5e496c55ac7cfc491342f70c44a2970d",
+    "tests/integration/real-browser-inbox.test.ts": "39f5a7c0be8c6164fa3c3d76fa69841411c0779777a5456d460f7b307a6cc1b1"
+  },
+  "validation": {
+    "test_command": "node --import tsx scripts/integration.ts tests/integration/real-browser-message.test.ts tests/integration/real-browser-inbox.test.ts",
+    "passed": 10,
+    "failed": 0,
+    "log": ".kff/mixed-browser-history-integration-r2.log",
+    "log_sha256": "2467b247c124d1900e39a8fd2eb6a1caa44616266f861f1d1800dab0dfd6cf44",
+    "results_sha256": "c3f8f06125b5730ea51560e27cca0f14c56f1d8fcb51cbd86d05ebf9d93260be",
+    "isolated_database_only": true,
+    "successful_test_database_removed": true,
+    "typecheck_exit_code": 0,
+    "lint_exit_code": 0,
+    "new_scenarios": [
+      "Original send receipt echo plus new inbound and rescan: three Message rows, one referral, echo only one observation audit, old consent cannot serve new inbound.",
+      "Native outgoing is EXTERNAL_OUTBOUND and forces HUMAN; mixed-page identity and reused-ID conflicts roll back events, messages and checkpoint."
+    ],
+    "first_test_run": {
+      "failed": 1,
+      "reason": "Test compared control version before preparing the manual send; preparation legitimately advances it. Assertion now captures the post-send baseline.",
+      "retained_database": "kff_test_512200cc449c87e737b4",
+      "log": ".kff/mixed-browser-history-integration-r1.log"
+    }
+  },
+  "main_database_readonly_observation": {
+    "checked_at": "2026-09-13T07:01:41.311Z",
+    "scope": "Read-only main database observation; no provider or send calls",
+    "account": {
+      "id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "external_id": "61589894042400",
+      "state": "ACTIVE",
+      "version": 1
+    },
+    "messages": [
+      {
+        "direction": "INBOUND",
+        "count": 2
+      }
+    ],
+    "monitors": [
+      {
+        "state": "PAUSED",
+        "version": 12,
+        "scan_requested": false,
+        "current_task_id": null,
+        "last_error_code": null
+      }
+    ],
+    "connection": {
+      "transport": "BROWSER",
+      "state": "ACTIVE",
+      "auto_reply": false
+    },
+    "totals": {
+      "accounts": 86,
+      "external_prospects": 46,
+      "selected_referrals": 0,
+      "selected_manual_permissions": 0
+    }
+  },
+  "runtime_changes": {
+    "main_database_writes": 0,
+    "migrations_added": 0,
+    "agent_repackaged": false,
+    "agent_restarted": false,
+    "real_dom_reader_changed": false,
+    "platform_send_attempts": 0
+  },
+  "limits": [
+    "These are explicitly isolated report fixtures, not real browser outgoing observations.",
+    "Current installed real DOM reader still accepts incoming-only threads. A first approved real send is needed before adapting and verifying mixed visible history.",
+    "No real WhatsApp referral delivery or sales acceptance is established."
+  ],
+  "pending": "Explicit user authorization for the exact draft in docs/whatsapp-test-review.md remains pending; destination configuration alone is not send approval.",
+  "backup": ".kff/changes/mixed-browser-history-20260913"
+}

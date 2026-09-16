@@ -1,0 +1,90 @@
+{
+  "schema_version": "kff.second-account-login.v1",
+  "recorded_at": "2026-09-14T08:02:58.309Z",
+  "goal_complete": false,
+  "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+  "facebook_id": "61594334430750",
+  "profile_id": "k1gw2kh9",
+  "refresh": {
+    "started_at": "2026-09-14T07:57:13.375Z",
+    "profile_id": "k1gw2kh9",
+    "refresh_count": 1,
+    "submitted_forms": 0,
+    "closed_user_window": false,
+    "provider_status": "Active",
+    "before": {
+      "url": "https://www.facebook.com/checkpoint/1501092823525282/?next=https%3A%2F%2Fwww.facebook.com%2Fprofile.php%3Fid%3D61594334430750#",
+      "appeal_submitted": true
+    },
+    "http_status": 200,
+    "after": {
+      "url": "https://www.facebook.com/login.php",
+      "title": "Facebook"
+    },
+    "outcome": "PAGE_CHANGED_REQUIRES_ORIGINAL_AGENT_IDENTITY_CHECK",
+    "finished_at": "2026-09-14T07:57:19.761Z"
+  },
+  "inspection": {
+    "started_at": "2026-09-14T08:01:45.606Z",
+    "profile_id": "k1gw2kh9",
+    "navigations": 0,
+    "submitted_forms": 0,
+    "closed_user_window": false,
+    "credential_values_read": false,
+    "provider_status": "Active",
+    "page": {
+      "url": "https://www.facebook.com/login.php",
+      "title": "Facebook",
+      "body": "Explore the things you love.\nLog into Facebook\nEmail or mobile number\nPassword\nLog in\nForgot password?\nCreate new account\nEnglish (US)\n中文(简体)\n日本語\n한국어\nFrançais (France)\nBahasa Indonesia\nPolski\nMore languages…\nSign Up\nLog In\nMessenger\nFacebook Lite\nVideo\nMeta Pay\nMeta Store\nMeta Quest\nRay-Ban Meta\nMeta AI\nMuse\nInstagram\nThreads\nPrivacy Policy\nPrivacy Center\nAbout\nCreate ad\nCreate Page\nDevelopers\nCareers\nCookies\nAd choices \nTerms\nHelp\nContact Uploading & Non-Users",
+      "visible_fields": [
+        {
+          "tag": "INPUT",
+          "type": "text",
+          "name": "email",
+          "label": null,
+          "placeholder": null
+        },
+        {
+          "tag": "INPUT",
+          "type": "password",
+          "name": "pass",
+          "label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    "outcome": "LOGIN_PAGE_OBSERVED_ACCOUNT_RECOVERY_UNCONFIRMED",
+    "finished_at": "2026-09-14T08:01:45.970Z"
+  },
+  "conclusion": "The previously submitted appeal page redirected to the generic Facebook login form. Appeal outcome and account recovery remain unconfirmed. The user must restore login in the same profile before the original Agent can verify identity.",
+  "runtime": {
+    "runtime_id": "522931ab-6b5a-43f1-b7d4-318a53e6de1f",
+    "phase": "RUNNING",
+    "release_id": "kff-agent-0.1.27-win32-x64-2915a6c7b21a",
+    "live_sending_enabled": false,
+    "open_commands": 0,
+    "monitors": [
+      {
+        "kind": "acquisition",
+        "state": "PAUSED",
+        "count": 12
+      },
+      {
+        "kind": "inbox",
+        "state": "PAUSED",
+        "count": 4
+      }
+    ]
+  },
+  "whatsapp_referral": [
+    {
+      "id": "9ece8f0a-58f9-4cca-814a-7d48f08811ce",
+      "state": "REFERRED",
+      "version": 2,
+      "confirmed_at": null
+    }
+  ],
+  "platform_sends": 0,
+  "user_window_closed": false,
+  "original_profile_or_proxy_changed": false
+}

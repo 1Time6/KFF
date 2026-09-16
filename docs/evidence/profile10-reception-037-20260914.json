@@ -1,0 +1,30 @@
+{
+  "at": "2026-09-14T11:54:42.583Z",
+  "version": "0.1.37",
+  "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+  "account_state_before": "ACTIVE",
+  "conversation_id": "82307e44-911c-49db-ab82-878d8dfde1f5",
+  "connection": {
+    "state": "ACTIVE",
+    "version": 1,
+    "transport": "BROWSER",
+    "auto_reply": false
+  },
+  "draft_job_id": "e04b7a9c-d77a-41eb-ac63-1f2cd947287e",
+  "model": "LOCAL_RULES",
+  "draft_ready_and_usable_before": true,
+  "initial_control_version": 1,
+  "draft_control_version": 2,
+  "final_control_version": 3,
+  "final_mode": "HUMAN",
+  "old_draft_usable_after": false,
+  "old_draft_error": "DRAFT_STALE",
+  "idempotent_takeover": true,
+  "customer_messages_tasks_referrals_unchanged": true,
+  "platform_sends": 0,
+  "platform_reads": 0,
+  "real_ai_calls": 0,
+  "accepted": true,
+  "scope": "Original reception queue and takeover on the verified real account10 test conversation, with LOCAL_RULES only. No provider AI or platform send was performed. No current usable draft remains.",
+  "backup": ".kff/profile10-reception-037-20260914.json"
+}

@@ -1,3 +1,8 @@
+import {executeFacebookBrowserComment} from '../../../packages/adapters/src/facebook-browser-comment';
+import { executeFacebookBrowserMessage } from '../../../packages/adapters/src/facebook-browser-message';
+import { executeBrowserMessage } from '../../../packages/adapters/src/browser-message';
+import { executeFacebookBrowserInbox } from '../../../packages/adapters/src/facebook-browser-inbox';
+import { executeBrowserInbox } from '../../../packages/adapters/src/browser-inbox';
 import { z } from 'zod';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -8,9 +13,11 @@ import { AppError, requireCondition, digest } from '@kff/core';
 import { adapterImplementationDigest } from '../../../packages/core/src/artifacts';
 import { executeFixture, FacebookPageAdapter } from '@kff/adapters';
 import {FacebookMessengerAdapter,executeFixtureMessage} from '../../../packages/adapters/src/facebook-messenger';
+import {executeInstagramIdentity,executeSocialOutreach} from '../../../packages/adapters/src/social-outreach';
+import { executeBrowserDiscovery, executeFacebookBrowserDiscovery } from '../../../packages/adapters/src/browser-discovery';
 import { saveClosure } from './guardian-protocol';
 
-const startInput = z.object({ type: z.literal('start'), command: agentCommandSchema, runtime: z.string(), nonce: hashSchema }).strict();
+const startInput = z.object({ type: z.literal('start'), command: agentCommandSchema, runtime: z.string(), profile_root: z.string().optional(), nonce: hashSchema }).strict();
 const control = new AbortController();
 let context: BrowserContext | null = null; let started = false;
 let lastControl = performance.now();
@@ -49,7 +56,10 @@ process.on('message', async raw => {
     requireCondition(digest(command.snapshot) === command.snapshot_hash && digest(command.snapshot.body) === command.snapshot.content_hash, 'APPROVAL_STALE', '任务快照不匹配');
     requireCondition(Date.parse(command.expires_at) > Date.now(), 'LEASE_STALE', '命令已经过期');
     if (command.snapshot.is_synthetic) {
-      result = command.snapshot.message?{outcome:'VERIFIED_SUCCEEDED',receipt:await executeFixtureMessage(command,{beforeSubmit,assertControlled,signal:control.signal}),diagnostic:{step:'message-accepted'}}:await executeFixture(command, path.join(runtime, 'profiles'), { beforeSubmit, assertControlled, onContext: value => { context = value; if (value && process.connected) process.send?.({ type: 'context-opened' }, () => {}); if (value && control.signal.aborted) void value.close().catch(() => {}); } });
+      result = command.snapshot.inbox ? await executeBrowserInbox(command, parsed.data.profile_root ?? path.join(runtime, 'browser-environments'), { beforeSubmit, assertControlled, onContext: value => { context = value; if (value && process.connected) process.send?.({ type: 'context-opened' }, () => {}); if (value && control.signal.aborted) void value.close().catch(() => {}); } }, process.env.KFF_BROWSER_INBOX_FIXTURE_ORIGIN) : command.snapshot.collection ? await executeBrowserDiscovery(command, parsed.data.profile_root ?? path.join(runtime, 'browser-environments'), { beforeSubmit, assertControlled, onContext: value => { context = value; if (value && process.connected) process.send?.({ type: 'context-opened' }, () => {}); if (value && control.signal.aborted) void value.close().catch(() => {}); } }, process.env.KFF_BROWSER_COLLECTION_FIXTURE_ORIGIN) : command.snapshot.outreach?{outcome:'VERIFIED_SUCCEEDED',receipt:await executeSocialOutreach(command.snapshot,command.action_id,{beforeSubmit,signal:control.signal}),diagnostic:{step:'social-accepted'}}:command.snapshot.message?.browser?await executeBrowserMessage(command, parsed.data.profile_root ?? path.join(runtime, 'browser-environments'), { beforeSubmit, assertControlled, onContext: value => { context = value; if (value && process.connected) process.send?.({ type: 'context-opened' }, () => {}); if (value && control.signal.aborted) void value.close().catch(() => {}); } }, process.env.KFF_BROWSER_MESSAGE_FIXTURE_ORIGIN):command.snapshot.message?{outcome:'VERIFIED_SUCCEEDED',receipt:await executeFixtureMessage(command,{beforeSubmit,assertControlled,signal:control.signal}),diagnostic:{step:'message-accepted'}}:await executeFixture(command, command.snapshot.browser_environment ? parsed.data.profile_root ?? path.join(runtime, 'browser-environments') : path.join(runtime, 'profiles'), { beforeSubmit, assertControlled, onContext: value => { context = value; if (value && process.connected) process.send?.({ type: 'context-opened' }, () => {}); if (value && control.signal.aborted) void value.close().catch(() => {}); } });
+    } else if (['facebook.discovery.read.browser','facebook.inbox.read.browser','facebook.messenger.reply.browser','facebook.comment.reply.browser'].includes(command.snapshot.capability_key)) {
+      requireCondition(command.snapshot.implementation_digest === adapterImplementationDigest(fileURLToPath(new URL('../../../',import.meta.url)), 'facebook'), 'VERSION_CONFLICT', '本机采集适配器与已审核实现不匹配');
+      result = await (command.snapshot.outreach?.browser ? executeFacebookBrowserComment : command.snapshot.message ? executeFacebookBrowserMessage : command.snapshot.inbox ? executeFacebookBrowserInbox : executeFacebookBrowserDiscovery)(command, parsed.data.profile_root ?? path.join(runtime, 'browser-environments'), { beforeSubmit, assertControlled, onContext: value => { context = value; if (value && process.connected) process.send?.({ type: 'context-opened' }, () => {}); if (value && control.signal.aborted) void value.close().catch(() => {}); } });
     } else {
       requireCondition(process.env.KFF_ENABLE_LIVE === 'true', 'LIVE_DISABLED', '真实执行未启用');
       requireCondition(command.snapshot.implementation_digest === adapterImplementationDigest(fileURLToPath(new URL('../../../',import.meta.url)), 'facebook'), 'VERSION_CONFLICT', '本机适配器与已审核实现不匹配');
@@ -58,14 +68,15 @@ process.on('message', async raw => {
       requireCondition(credential && process.env.KFF_FACEBOOK_GRAPH_VERSION, 'AUTH_EXPIRED', 'Facebook 凭据和版本尚未配置');
       requireCondition(command.snapshot.platform_api_version === process.env.KFF_FACEBOOK_GRAPH_VERSION, 'VERSION_CONFLICT', 'Graph API 版本与已审核版本不符');
       const options={ version: command.snapshot.platform_api_version!, pageToken: credential, signal: control.signal, assertControlled };
-      const receipt = command.snapshot.message?await new FacebookMessengerAdapter(options).execute(command.snapshot,beforeSubmit,command.action_id):await new FacebookPageAdapter(options).execute(command.snapshot,beforeSubmit);
+      const receipt = command.snapshot.capability_key==='instagram.account.read.api'?await executeInstagramIdentity(command.snapshot,{token:credential,signal:control.signal}):command.snapshot.outreach?await executeSocialOutreach(command.snapshot,command.action_id,{beforeSubmit,signal:control.signal,token:credential}):command.snapshot.message?await new FacebookMessengerAdapter(options).execute(command.snapshot,beforeSubmit,command.action_id):await new FacebookPageAdapter(options).execute(command.snapshot,beforeSubmit);
       result = { outcome: 'VERIFIED_SUCCEEDED', receipt, diagnostic: { step: 'graph-verified' } };
     }
-  } catch (error) { result = { outcome: intentGranted?'UNKNOWN_OUTCOME':control.signal.aborted ? 'CANCELED' : 'BLOCKED', error_code: error instanceof AppError ? error.code : 'EXECUTOR_ERROR', diagnostic: { step: 'executor-failed' } }; }
+  } catch (error) { if (error instanceof AppError && error.code === 'GUARDIAN_UNCONFIRMED') { clearInterval(watchdog); process.exit(1); return; } result = { outcome: intentGranted?'UNKNOWN_OUTCOME':control.signal.aborted ? 'CANCELED' : 'BLOCKED', error_code: error instanceof AppError ? error.code : 'EXECUTOR_ERROR', diagnostic: { step: 'executor-failed' } }; }
   if (control.signal.aborted && result.outcome !== 'VERIFIED_SUCCEEDED') { result.outcome = intentGranted ? 'UNKNOWN_OUTCOME' : 'CANCELED'; result.error_code = 'STOP_REQUESTED'; }
   // A failed or killed guardian never writes this proof. Its caller must retain isolation.
   try {
     if (context) await (context as BrowserContext).close(); context = null;
+    if ((command.snapshot.collection || command.snapshot.inbox) && Date.parse(command.snapshot.inbox?.expires_at ?? command.snapshot.collection?.expires_at ?? command.expires_at) <= Date.now()) result = { outcome: 'BLOCKED', error_code: 'RETENTION_EXPIRED', diagnostic: { step: 'collection-retention-expired' } };
     result.diagnostic.duration_ms = Math.min(3600000, Math.round(performance.now() - start));
     result.diagnostic.executor_version = 'kff-agent-0.1.0_node-' + process.versions.node;
     saveClosure(runtime, { protocol_version: 'kff.guardian-closure.v1', command_id: command.id, action_id: command.action_id, nonce, closed_at: new Date().toISOString(), context_closed: true, result });

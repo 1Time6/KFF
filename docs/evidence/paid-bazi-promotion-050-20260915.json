@@ -1,0 +1,188 @@
+{
+  "checked_at": "2026-09-15T04:42:42.074Z",
+  "version": "0.1.50",
+  "scope": "Exclude an observed affirmative paid BaZi seller invitation while retaining genuine price questions and quoted ads",
+  "observed_text": "想瞭解自身八字可直接私信我（批八字需卦金！）",
+  "source_evidence": "docs/evidence/search-continuation-049-20260915.json",
+  "validation": {
+    "checks": {
+      "typecheck": {
+        "exit_code": 0,
+        "checked_at": "2026-09-15T04:32:01.758Z",
+        "runtime_sources_current": true
+      },
+      "lint": {
+        "exit_code": 0,
+        "checked_at": "2026-09-15T04:32:02.828Z",
+        "runtime_sources_current": true
+      },
+      "contracts": {
+        "exit_code": 0,
+        "checked_at": "2026-09-15T04:32:15.736Z",
+        "runtime_sources_current": true
+      },
+      "build": {
+        "exit_code": 0,
+        "checked_at": "2026-09-15T04:32:05.008Z",
+        "runtime_sources_current": true
+      }
+    },
+    "contracts_passed": 192,
+    "acquisition_integration_passed": 12,
+    "regression_red_log": ".kff/paid-bazi-promotion-before-050.log",
+    "regression_green_log": ".kff/paid-bazi-promotion-after-050.log",
+    "integration_report": ".kff/paid-bazi-acquisition-050.json"
+  },
+  "manual_review": {
+    "lead": {
+      "id": "6cc91a4d-72e7-48fb-b965-d497dc003344",
+      "state": "DISMISSED",
+      "version": 2,
+      "score": 50,
+      "reason": "原评论明确自称批八字收费并邀请私信，属于商家自推，不是自然客户咨询。保留原评论与历史规则评分，不准备外联。"
+    },
+    "external_action_links": 0,
+    "original_observation_and_historical_score_preserved": true
+  },
+  "runtime": {
+    "runtime_id": "87e9fda4-cbae-40fc-bb78-1335280e07c6",
+    "pid": 28508,
+    "phase": "RUNNING",
+    "updated_at": "2026-09-15T04:42:40.809Z",
+    "app_origin": "http://127.0.0.1:3000",
+    "release_id": "kff-agent-0.1.50-win32-x64-1f0f07b42ef5",
+    "database_owned": false,
+    "components": {
+      "database": {
+        "pid": null,
+        "state": "CONNECTED"
+      },
+      "web": {
+        "pid": 3660,
+        "state": "RUNNING"
+      },
+      "worker": {
+        "pid": 10972,
+        "state": "RUNNING"
+      },
+      "agent": {
+        "pid": 19112,
+        "state": "RUNNING"
+      }
+    }
+  },
+  "health": {
+    "status": "ok",
+    "protocol": "kff.api.v1",
+    "runtime_id": "87e9fda4-cbae-40fc-bb78-1335280e07c6"
+  },
+  "accounts": [
+    {
+      "id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "display_name": "白青天",
+      "outbound_paused": false,
+      "environment_state": "IDLE",
+      "browser_status": "CLOSED",
+      "auto_reply": false
+    },
+    {
+      "id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "display_name": "XiangHuan Master",
+      "outbound_paused": false,
+      "environment_state": "IDLE",
+      "browser_status": "CLOSED",
+      "auto_reply": false
+    },
+    {
+      "id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "display_name": "郑成功",
+      "outbound_paused": true,
+      "environment_state": "DISABLED",
+      "browser_status": "CLOSED",
+      "auto_reply": false
+    }
+  ],
+  "data": {
+    "at": "2026-09-15T04:40:48.360Z",
+    "open_commands": 0,
+    "monitors": [
+      {
+        "state": "PAUSED",
+        "count": 35
+      }
+    ],
+    "tables": {
+      "acquisition_leads": {
+        "count": 53,
+        "sha256": "1c61c772b9ff7c2550995243de12b85c6b0a57448e45ab8e2be01fe69bc86f3b"
+      },
+      "messages": {
+        "count": 140,
+        "sha256": "2640e219d9380b32f868eb4bc87659db851bb9e5eaefd985117a69c3e55ca29c"
+      },
+      "whatsapp_referrals": {
+        "count": 16,
+        "sha256": "a414fb7d35f54cce6aedd25a4ac3a2451826de86730b2e75a2f06ee68a3db5f5"
+      },
+      "customers": {
+        "count": 98,
+        "sha256": "e496d36a67c5c34c88e39e8ffbc322b2348255f261b91af2d14eb75573938019"
+      },
+      "accounts": {
+        "count": 88,
+        "sha256": "fa305e29027e42fd1866b5137fc2e7b95ca43aa94f6353a26d29a4c60a4e645f"
+      },
+      "acquisition_scans": {
+        "count": 77,
+        "sha256": "174573671d30f4f9d68f0b3d47cc2441d6793f54b5f7d262ee02b03fcebd9ba8"
+      },
+      "acquisition_evaluations": {
+        "count": 163,
+        "sha256": "aa1f020894624be5f9247ab0f92e66e076716ab1aae07c8d0b192c9f0053d80f"
+      }
+    },
+    "business_rows_preserved": true
+  },
+  "configuration": {
+    "discovery_enabled": true,
+    "browser_inbox_enabled": true,
+    "live_sending_enabled": false
+  },
+  "release": {
+    "agent": {
+      "release_id": "kff-agent-0.1.50-win32-x64-1f0f07b42ef5",
+      "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.50-win32-x64-1f0f07b42ef5",
+      "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.50-win32-x64-1f0f07b42ef5.zip",
+      "archive_sha256": "cda8648c9f6596fd1767ce3d06114e49a5e69ae0fe07940490821c02d2740705",
+      "files": 1348,
+      "dependencies": 23,
+      "contains_pairing_or_browser_data": false
+    },
+    "controller": {
+      "release_id": "kff-controller-0.1.50-win32-x64-b91d228874db",
+      "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.50-win32-x64-b91d228874db",
+      "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.50-win32-x64-b91d228874db.zip",
+      "archive_sha256": "4567eb2bda4078900f7b1e63a1991c3854027aa1179a1a66a466726ac47d415d",
+      "files": 24096,
+      "uncompressed_bytes": 829609576,
+      "dependency_packages": 155,
+      "contains_runtime_data": false,
+      "live_config_values_scanned": 6
+    },
+    "installed_agent": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.50-win32-x64-1f0f07b42ef5"
+  },
+  "migrations_added": 0,
+  "historical_rescoring": false,
+  "new_platform_window_this_release": false,
+  "current_version_other_pc_or_reboot_verified": false,
+  "latest_portable_upgrade_evidence": "docs/evidence/controller-upgrade-049-20260915.json",
+  "full_goal_complete": false,
+  "remaining": [
+    "Same genuine natural customer to confirmed WhatsApp arrival",
+    "Newly published Page increment",
+    "Sustained two-account Inbox and search window",
+    "Remaining native occupation and in-flight send combinations",
+    "Clean other Windows PC and system reboot",
+    "Independent operator handoff"
+  ]
+}

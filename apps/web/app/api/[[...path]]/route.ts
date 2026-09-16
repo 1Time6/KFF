@@ -1,9 +1,11 @@
+import { browserInboxWorkspace, configureBrowserInbox, controlBrowserInbox } from '@kff/core/browser-inbox';
+import { environmentWorkspace, configureEnvironment, queueEnvironmentOperation, controlEnvironment, claimEnvironmentCommand, environmentHeartbeat, completeEnvironmentCommand } from '@kff/core/environments';
 import { z } from 'zod';
 import { randomUUID } from 'node:crypto';
 import { loginInput, uuid, taskInput, accountInput, environmentInput, approvalInput, heartbeatInput, resultInput, stopInput, permitInput, pauseInput, agentInput, agentControlInput, quiescenceInput, contactTargetInput, contactPermissionInput, contactExitInput, contactReviewInput, budgetInput, costReconciliationInput } from '@kff/contracts';
 import { AppError, redactError, requireCondition } from '@kff/core';
 import { workspace, createAccount, createEnvironment, createTask, approveTask, enqueueTask, stopRun, runDetail, setBrandPause } from '@kff/core/service';
-import { authenticateAgent, agentHeartbeat, claimCommand, beginSubmission, acceptReport, commandStatus } from '@kff/core/execution';
+import { authenticateAgent, agentHeartbeat, claimCommand, beginSubmission, acceptReport, commandStatus, recordBrowserOpened } from '@kff/core/execution';
 import { exportDiagnostic, reconcileSynthetic, releaseQuarantine, recordQuiescence } from '@kff/core/reconciliation';
 import { createPermit, revokePermit } from '@kff/core/permits';
 import { attachLocalEvidence } from '@kff/core/capabilities';
@@ -37,12 +39,16 @@ import {facebookEvent,facebookConnectionInput,facebookFixtureInput} from '../../
 import {facebookChallenge} from '../../../../../packages/adapters/src/facebook-events';
 import {facebookWorkspace,configureFacebook,createFacebookFixture,injectFacebookFixture,receiveFacebookWebhook} from '@kff/core/facebook-inbound';
 import {whatsappDestinationInput,conversationControlInput,replyInput,referralResultInput} from '../../../../../packages/contracts/src/lead';
-import {whatsappWorkspace,configureWhatsapp,conversationControl,sendConversationReply,conversationReception,referralResult} from '@kff/core/lead-reception';
+import {whatsappWorkspace,configureWhatsapp,conversationControl,sendConversationReply,prepareMessengerPilot,conversationReception,referralResult,recordBrowserConsent} from '@kff/core/lead-reception';
 import {receptionPolicyInput} from '../../../../../packages/contracts/src/lead';
 import {configureReceptionPolicy,retryReception} from '@kff/core/reception-worker';
+import {requestReceptionDraft} from '@kff/core/reception-drafts';
 import {leadUpdateInput} from '../../../../../packages/contracts/src/lead';
 import {updateLead,leadAnalytics,leadAnalyticsInput,leadAudit} from '@kff/core/lead-management';
 
+import {acquisitionWorkspace,createMonitor,controlMonitor,controlDiscoveryLead,configureAcquisitionAutomation,queueOutreach,createAcquisitionFixture} from '@kff/core/acquisition';
+import {connectApifySource,importApifyDataset,controlProviderProspect} from '@kff/core/acquisition-provider';
+import {prepareProviderBrowserVerification} from '@kff/core/provider-verification';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 type Context = { params: Promise<{ path?: string[] }> };
@@ -71,7 +77,7 @@ async function handle(request: Request, context: Context) {
   const requestId = randomUUID();
   try {
     const parts = (await context.params).path ?? []; const path = parts.join('/'); const write = request.method === 'POST';
-    if (path === 'health' && !write) return json({ status: 'ok', protocol: 'kff.api.v1' });
+    if (path === 'health' && !write) return json({ status: 'ok', protocol: 'kff.api.v1', runtime_id: process.env.KFF_LOCAL_RUNTIME_ID ?? null });
     if(path==='facebook/webhook'){
       if(!write)return new Response(facebookChallenge(new URL(request.url).searchParams,process.env.KFF_FACEBOOK_VERIFY_TOKEN),{headers:{'Cache-Control':'no-store','Content-Type':'text/plain'}});
       requireCondition(Number(request.headers.get('content-length')??0)<=524288,'INVALID_INPUT','Facebook 回调超过限制',413);
@@ -114,8 +120,16 @@ async function handle(request: Request, context: Context) {
       requireCondition(write, 'NOT_FOUND', '接口不存在', 404);
       const agent = await authenticateAgent(request);
       if (path === 'agent/heartbeats') { const input = heartbeatInput.parse(await body(request)); return json(await agentHeartbeat(agent, input.command_id)); }
+      if (path === 'agent/environment-claims') return json({ command: await claimEnvironmentCommand(agent) });
+      if (parts.length === 4 && parts[1] === 'environment-commands') {
+        const id = uuid.parse(parts[2]);
+        if (parts[3] === 'heartbeat') return json(await environmentHeartbeat(agent, id));
+        if (parts[3] === 'opened') return json(await environmentHeartbeat(agent, id, await body(request)));
+        if (parts[3] === 'result') return json(await completeEnvironmentCommand(agent, id, await body(request)));
+      }
       if (path === 'agent/claims') return json({ command: await claimCommand(agent) });
-      if (path === 'agent/action-reports') return json(await acceptReport(agent, resultInput.parse(await body(request))));
+      if (path === 'agent/action-reports') return json(await acceptReport(agent, resultInput.parse(await body(request, 2 * 1024 * 1024))));
+      if (parts.length === 4 && parts[1] === 'commands' && parts[3] === 'context-opened') return json(await recordBrowserOpened(agent, uuid.parse(parts[2])));
       if (parts.length === 4 && parts[1] === 'commands' && parts[3] === 'submit') return json(await beginSubmission(agent, uuid.parse(parts[2])));
       if (parts.length === 4 && parts[1] === 'commands' && parts[3] === 'status') return json(await commandStatus(agent, uuid.parse(parts[2])));
       if (parts.length === 4 && parts[1] === 'commands' && parts[3] === 'quiescence') return json(await recordQuiescence(agent, uuid.parse(parts[2]), quiescenceInput.parse(await body(request))));
@@ -123,6 +137,16 @@ async function handle(request: Request, context: Context) {
     }
     const scope = await requestScope(request);
     if (write) checkOrigin(request);
+    if (path === 'browser-inbox' && !write) return json(await browserInboxWorkspace(scope));
+    if (path === 'browser-inbox/monitors' && write) return json(await configureBrowserInbox(scope, await body(request)));
+    if (parts.length === 4 && parts[0] === 'browser-inbox' && parts[1] === 'monitors' && parts[3] === 'control' && write) return json(await controlBrowserInbox(scope, uuid.parse(parts[2]), await body(request)));
+    if (path === 'browser-environments' && !write) return json(await environmentWorkspace(scope));
+    if (parts.length === 3 && parts[0] === 'environments' && write) {
+      const id = uuid.parse(parts[1]);
+      if (parts[2] === 'configuration') return json(await configureEnvironment(scope, id, await body(request)));
+      if (parts[2] === 'operations') return json(await queueEnvironmentOperation(scope, id, await body(request)), 202);
+      if (parts[2] === 'controls') return json(await controlEnvironment(scope, id, await body(request)));
+    }
     if (path === 'workspace' && !write) return json(await workspace(scope));
     if(path==='whatsapp')return write?json(await configureWhatsapp(scope,whatsappDestinationInput.parse(await body(request)))):json(await whatsappWorkspace(scope));
     if(parts.length===3&&parts[0]==='conversations'){
@@ -130,9 +154,23 @@ async function handle(request: Request, context: Context) {
       if(parts[2]==='controls'&&write)return json(await conversationControl(scope,id,conversationControlInput.parse(await body(request))));
       if(parts[2]==='replies'&&write)return json(await sendConversationReply(scope,id,replyInput.parse(await body(request))),202);
       if(parts[2]==='reception'&&!write)return json(await conversationReception(scope,id));
+      if(parts[2]==='drafts'&&write)return json(await requestReceptionDraft(scope,id,await body(request)),202);
       if(parts[2]==='retry-reception'&&write){const value=z.object({request_id:uuid,expected_version:z.number().int().positive()}).strict().parse(await body(request));return json(await retryReception(scope,id,value.request_id,value.expected_version),202);}
     }
     if(parts.length===3&&parts[0]==='whatsapp-referrals'&&parts[2]==='result'&&write)return json(await referralResult(scope,uuid.parse(parts[1]),referralResultInput.parse(await body(request))));
+    if(parts.length===3&&parts[0]==='conversations'&&parts[2]==='pilot-reply'&&write)return json(await prepareMessengerPilot(scope,uuid.parse(parts[1]),await body(request)));
+    if(parts.length===3&&parts[0]==='conversations'&&parts[2]==='browser-consent'&&write)return json(await recordBrowserConsent(scope,uuid.parse(parts[1]),await body(request)),201);
+    if(path==='acquisition'&&!write)return json(await acquisitionWorkspace(scope));
+    if(path==='acquisition/sources/apify'&&write)return json(await connectApifySource(scope),201);
+    if(path==='acquisition/imports/apify'&&write)return json(await importApifyDataset(scope,await body(request)),201);
+    if(parts.length===4&&parts[0]==='acquisition'&&parts[1]==='prospects'&&parts[3]==='control'&&write)return json(await controlProviderProspect(scope,uuid.parse(parts[2]),await body(request)));
+    if(parts.length===4&&parts[0]==='acquisition'&&parts[1]==='prospects'&&parts[3]==='browser-verification'&&write)return json(await prepareProviderBrowserVerification(scope,uuid.parse(parts[2]),await body(request)),201);
+    if(path==='acquisition/monitors'&&write)return json(await createMonitor(scope,await body(request)),201);
+    if(path==='acquisition/fixtures'&&write)return json(await createAcquisitionFixture(scope,await body(request)),201);
+    if(path==='acquisition/automation'&&write)return json(await configureAcquisitionAutomation(scope,await body(request)));
+    if(path==='acquisition/outreach'&&write)return json(await queueOutreach(scope,await body(request)));
+    if(parts.length===4&&parts[0]==='acquisition'&&parts[1]==='monitors'&&parts[3]==='control'&&write)return json(await controlMonitor(scope,uuid.parse(parts[2]),await body(request)));
+    if(parts.length===4&&parts[0]==='acquisition'&&parts[1]==='leads'&&parts[3]==='control'&&write)return json(await controlDiscoveryLead(scope,uuid.parse(parts[2]),await body(request)));
     if(path==='facebook'&&!write)return json(await facebookWorkspace(scope));
     if(path==='facebook/reception-policy'&&write)return json(await configureReceptionPolicy(scope,receptionPolicyInput.parse(await body(request))));
     if(path==='facebook/connections'&&write)return json(await configureFacebook(scope,facebookConnectionInput.parse(await body(request))));

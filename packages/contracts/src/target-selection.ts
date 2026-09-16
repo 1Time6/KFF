@@ -4,7 +4,7 @@ import {collectionField,type CollectionRecord} from './collection';
 export const collectionFilterSchema=z.object({
   id_prefix:z.string().max(160).default(''),message_contains:z.string().max(100).default(''),author_id:z.string().max(160).default(''),
   min_reactions:z.number().int().min(0).max(Number.MAX_SAFE_INTEGER).nullable().default(null),
-  field_states:z.partialRecord(collectionField,z.enum(['VALUE','NULL','NOT_RETURNED','HIDDEN'])).default({}),
+  field_states:z.partialRecord(collectionField,z.enum(['VALUE','DISPLAYED_TIME','NULL','NOT_RETURNED','HIDDEN'])).default({}),
 }).strict();
 export const targetSelectionMode=z.enum(['CURRENT_PAGE','MANUAL','ALL_FILTERED']);
 export const targetPreviewInput=z.object({

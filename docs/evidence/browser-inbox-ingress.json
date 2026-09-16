@@ -1,0 +1,125 @@
+{
+  "schema_version": "kff.browser-inbox-ingress-foundation.v1",
+  "recorded_at": "2026-09-12T16:46:08.237Z",
+  "goal_complete": false,
+  "real_platform_verified": false,
+  "implementation": {
+    "existing_customer_and_inbox_tables_reused": true,
+    "browser_and_api_identity_namespaces_separate": true,
+    "internal_transaction_primitive": true,
+    "public_browser_ingress_endpoint": false,
+    "agent_receipt_wiring": false,
+    "browser_dom_reader": false,
+    "polling_cursor": false,
+    "browser_reply_executor": false,
+    "bounded_messages": 50,
+    "no_api_contact_permission_created": true,
+    "account_environment_brand_guards": true,
+    "conflicting_batch_rolls_back": true,
+    "native_echo_and_opt_out_preserved": true
+  },
+  "checks": {
+    "contracts": {
+      "passed": 26,
+      "failed": 0
+    },
+    "final_browser_inbox_integration": {
+      "passed": 8,
+      "failed": 0
+    },
+    "earlier_existing_inbound_reception": {
+      "passed": 31,
+      "initial_new_inbox_failures": 2,
+      "resolved_by": "Scoped test permission count to its account and added the explicit stop contacting me phrase; final browser inbox and reception model tests pass"
+    },
+    "web": {
+      "passed": 1,
+      "failed": 0,
+      "duration_ms": 22644.087,
+      "synthetic_batch_seeded_via_internal_core": true,
+      "actual_platform_dom_read": false,
+      "screenshot": "output/playwright/browser-inbox-contract.png"
+    },
+    "typecheck": {
+      "passed": true,
+      "ended_at": "2026-09-12T16:43:40.033Z",
+      "source_files": 270
+    },
+    "targeted_eslint": true
+  },
+  "migration": {
+    "name": "20260912162852_browser_inbox_identity.sql",
+    "applied_locally": true,
+    "backup": {
+      "recorded_at": "2026-09-12T16:43:23.3794444Z",
+      "backup_path": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\backups\\before-browser-inbox-20260913-004044",
+      "file_count": 11453,
+      "bytes": 306058432,
+      "all_sha256_match": true,
+      "original_database_stopped": true,
+      "config_backup_matches": true
+    }
+  },
+  "runtime": {
+    "counts": {
+      "accounts": 83,
+      "prospects": 46,
+      "migrations": 26,
+      "synthetic_browser_events": 1,
+      "real_browser_events": 0
+    },
+    "rls": [
+      {
+        "relname": "contact_targets",
+        "relrowsecurity": true
+      },
+      {
+        "relname": "inbound_events",
+        "relrowsecurity": true
+      },
+      {
+        "relname": "customer_identities",
+        "relrowsecurity": true
+      },
+      {
+        "relname": "customers",
+        "relrowsecurity": true
+      },
+      {
+        "relname": "conversations",
+        "relrowsecurity": true
+      },
+      {
+        "relname": "messages",
+        "relrowsecurity": true
+      }
+    ],
+    "active_message_guard": {
+      "proname": "check_inbound_message_scope",
+      "prosecdef": false,
+      "proconfig": [
+        "search_path=\"\""
+      ]
+    }
+  },
+  "next_work": [
+    "Connect the internal batch transaction to verified Agent reports and existing resource leases",
+    "Implement browser Inbox read tasks, checkpointed polling and raw journal retention",
+    "Observe real logged-in DOM and validate stable actor, thread, peer and message identifiers",
+    "Wire browser replies to existing conversation controls, stale-draft checks and WhatsApp referral confirmation",
+    "Complete two-account real-platform and sales handoff acceptance"
+  ],
+  "source_hashes": {
+    "packages/contracts/src/browser-inbox.ts": "7ca527672ac225888966f1e688d5244285a7a6c20d8a96993ed8c82505b55edf",
+    "packages/contracts/src/contact.ts": "091f00d0d8fc7be06e92199ee7c5ab5f63f39ef821984af0e041116cebc45fcc",
+    "packages/core/src/facebook-inbound.ts": "64fde1d7b95a2854f61821ff5eadd5588fba81ff07c626e92be8c85eb67ea530",
+    "packages/adapters/src/reception-model.ts": "e02faf2abc15efce7079c536b9b3f7bab97de4a853e99cc28253ea2d0bcc4c3b",
+    "apps/web/components/inbox-workbench.tsx": "b0898d17ba225db551a4668cbf520dc65cf41a173de827f1feb3e338fc031cf6",
+    "supabase/migrations/20260912162852_browser_inbox_identity.sql": "c11bc96974d0bf1b2d76fc649c509c49da838597a4920a704e0f04cde45fb777",
+    "tests/helpers/browser-inbox.ts": "5044d142b1177094b44df9c85208b434253feb9a1da607aaaa353bce0859a8a5",
+    "tests/contracts/browser-inbox.test.ts": "d4aa2495554786c884a3b4f9d0cdd894a6e599c8d9eddd17879ed2dcd2152f0d",
+    "tests/contracts/reception-model.test.ts": "d10f5416e2d8d769545feb54bd25d70866b7f34763e8615405e39a95ee2c7c4f",
+    "tests/integration/browser-inbox.test.ts": "8b1310e86fa8fe28f8f187cfbb2c2419ae02daf7caa712e0de2b943ebf2e7659",
+    "tests/browser/web/browser-inbox.spec.ts": "8abfac37ee53d18266ca1258845d146cacfc4c38cf0a47dfd56931079c52245c"
+  }
+}

@@ -1,0 +1,404 @@
+{
+  "started_at": "2026-09-14T16:55:11.158Z",
+  "keyword": "求看八字",
+  "platform_sends": 0,
+  "manual_scans": 0,
+  "author_created_test_content": false,
+  "latest_scope": "用户要求冻结已通过的 Messenger/C 接待链，只推进真实关键词自动发现；第一条非人工制造的新潜客进入 lead 后优先 V1 交接并停止非必要开发。",
+  "status": "AUTOMATIC_READ_COMPLETE",
+  "previous_completed_query": "80f80e70-3df7-479a-af27-1180f1208706",
+  "runtime_id": "5b38befe-7245-45c0-b5db-e12ea223e00f",
+  "baseline_lead_ids": [
+    "b63c4585-bcea-4e62-bf0d-abb73cf6fe8e",
+    "f2572483-6a84-4486-8eee-ee3b51f18153",
+    "62743d3c-2081-4f8c-9062-5f3837a2b5b0",
+    "3e7d3a09-f8f0-4297-a3e6-2887a0eb44bf",
+    "8bce7a29-d230-4f04-a031-14a0fd1e7f2b",
+    "38764407-f780-4a83-8f39-53ca545ad165",
+    "059c04ae-bc08-4ef2-ba0e-7b44acf8229e",
+    "1cafb118-0f01-40a7-a2c9-00ccab0bc7cb",
+    "945ccf1a-dd2b-4bec-a246-c726549a292b",
+    "735cd202-2685-4a29-8945-7663b2ddfcde",
+    "accbd154-a469-44c5-862f-4046677af630",
+    "644dde49-1c2e-47bd-9be5-69ec66a09d23",
+    "e0c3324e-e9f1-47b9-b966-4770d4fb74ef",
+    "a0690603-1ada-4aaf-b8a7-16138697a883",
+    "5e04890e-7814-4856-be55-5d177fa126cf",
+    "81d21971-e353-45de-a216-3c66061fbcc8",
+    "b65bb311-96d8-463a-bb8f-d87e65eeda79",
+    "ce0e4cb7-b690-4bc6-858b-63f51b15fd46",
+    "252a4db7-0cc5-4155-ba7b-bb7606fa9292",
+    "35542a0f-c2c9-4566-b22d-9a689f09f8de",
+    "3efc8312-4c08-49f6-9dc4-91e29daa5365",
+    "5d2a85ff-c908-4480-ae27-9397ed9011c7",
+    "63cb8fc6-5f49-485d-b405-131e12339f0e",
+    "894075c7-d00d-44e0-a242-05e32934a92d",
+    "61c54a55-7f54-4d26-a369-c6121ddefb9e",
+    "19eb0c88-2002-40fd-acad-6040b684cd54",
+    "288caeca-c517-4d76-9411-f7ea80710333",
+    "445ae4fc-0df1-40ef-81ad-136f06aabd92",
+    "67a18414-e51d-4e98-bdc9-cfbed548f69f",
+    "d593af5c-9826-444d-b3e6-61da1e45fb34",
+    "5d0744dc-46aa-482d-903c-3119c459b18f",
+    "37f7d85e-2f7c-4059-ab67-f3633b22a358",
+    "d9843787-0e20-4b68-aa0c-a8e88ce3cfd4",
+    "1c43f70e-e89c-43e9-b49a-0a8feb4207f2",
+    "a501f766-4b75-4f59-b944-c1579a121ee4",
+    "b8ed2ad3-61ab-4ecc-bebe-39a2d86dd29c",
+    "dec6b356-fe22-46b2-99ca-c6e9b5ab7ddd",
+    "bd7d506e-a852-4834-85f1-f963533a7eec",
+    "275b70d9-f67f-45a3-b231-8c3b66be0edd",
+    "f0fb7c53-76fa-4c16-b61f-ea8725821562"
+  ],
+  "baseline_source_ids": [
+    "facebook:comment:1382008900690725",
+    "facebook:post:pfbid02TPyhwWpT5x5xcTqsWda8ZjSbzuZCBZKBupUtubQjrr4Jw9tJnshM6iCkuULfMRbXl",
+    "00025",
+    "00000",
+    "facebook:comment:899678139871570",
+    "156469192459477633815711109783104159488_2",
+    "00023",
+    "199744314471809879741051834906773920364_4",
+    "116626378047931884670285795419281253202_4",
+    "facebook:comment:2386091551919086",
+    "00032",
+    "00029",
+    "00012",
+    "00030",
+    "facebook:comment:1039935125404089",
+    "199744314471809879741051834906773920364_2",
+    "00011",
+    "00018",
+    "9007199254740993123456789",
+    "00026",
+    "facebook:reel:2163157911082094",
+    "facebook:post:pfbid02inLKQH7pxELb9D9HusD6XkVf1VcQmS8Qrw5AmL7wKgAwuxoTaDPV6euTCrWnPja7l",
+    "00014",
+    "116626378047931884670285795419281253202_1",
+    "facebook:post:pfbid036uDymnMGfrYY8M7akRKHBej8nh9D1n5szzWnXigv2XnexW3u64wnqWbSvXQ7uS5Gl",
+    "156469192459477633815711109783104159488_1",
+    "00024",
+    "facebook:post:pfbid02ZyLfFziM7RSEqE6ZkiujsrspKox649JQ7ibQHKdiy7uEuwvLXVhQvbfZRoYmRbKhl",
+    "00003",
+    "00001",
+    "facebook:reel:1419888406765492",
+    "00013",
+    "156469192459477633815711109783104159488_4",
+    "duplicate",
+    "00027",
+    "9007199254740993123456790",
+    "00004",
+    "facebook:reel:1809956393694426",
+    "facebook:reel:1098432833113428",
+    "facebook:comment:1353993326906858",
+    "00005",
+    "00031",
+    "00010",
+    "00009",
+    "00007",
+    "00015",
+    "facebook:reel:1815660013151689",
+    "00021",
+    "facebook:post:pfbid022sdGHy9i14MrJE7t8CKuRH2gfgCGPdUaT7PEGEuQWPySBLefiKhkkewbM5nkafE3l",
+    "311849710373835193294296754455192102202_2",
+    "00028",
+    "facebook:comment:27903656085989070",
+    "facebook:comment:1077076494991097",
+    "facebook:comment:1393237392903595",
+    "00019",
+    "311849710373835193294296754455192102202_4",
+    "facebook:reel:2319710731766760",
+    "facebook:post:pfbid0UpeftT8hmyP9u3CAG1LVQsuMwVikLRUTuGLHp4whoXcjmkSakSp943pcRewn8FXSl",
+    "facebook:comment:4652715068308205",
+    "facebook:post:pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl",
+    "00006",
+    "00016",
+    "facebook:post:pfbid0SfPQgTjQcdQpyvbCRtdw4xB8VVaW7d7BfP9sFDGGC4eTvBnCHFqbD66Am1hQJWyPl",
+    "116626378047931884670285795419281253202_3",
+    "facebook:reel:1611645807171944",
+    "199744314471809879741051834906773920364_3",
+    "199744314471809879741051834906773920364_1",
+    "311849710373835193294296754455192102202_1",
+    "116626378047931884670285795419281253202_2",
+    "00002",
+    "facebook:comment:1798186518043775",
+    "311849710373835193294296754455192102202_3",
+    "00022",
+    "facebook:comment:4486227441644316",
+    "00020",
+    "facebook:post:pfbid032dKT7S2AnpRfz8ksSNXBMQNehy4n6hpP2pWbnhsngTBZYsXJDy1qeDRJubjqsTwPl",
+    "facebook:comment:1217101133887549",
+    "00008",
+    "facebook:reel:4019385248369368",
+    "facebook:comment:4028276564148800",
+    "000123456789012345678901234567890",
+    "facebook:post:pfbid02DwLweqyR6nUHySLTTNfYrdm2mzCsXmt9A5yiPprhNZhUVSxF5wscUsMQqn2wq3A8l",
+    "156469192459477633815711109783104159488_3",
+    "facebook:comment:1581943333556716",
+    "00017"
+  ],
+  "monitor_request_id": "79ff2dbf-721b-4a84-aaaf-d8f2604481cf",
+  "start_request_id": "970e3485-b373-41c0-b5d0-5c31542b05b3",
+  "pause_request_id": "66f3e3ef-d761-4de3-96ef-e77641a55227",
+  "monitor": {
+    "id": "d2737f61-0726-415f-bbee-8135e7de2f12",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "request_id": "79ff2dbf-721b-4a84-aaaf-d8f2604481cf",
+    "request_hash": "3efbab74596e86e2f70f7d24c53f8fb6300b433cf9f144ac536887c07acb7aa0",
+    "title": "V1 · 求看八字 真实关键词自动发现",
+    "config": {
+      "title": "V1 · 求看八字 真实关键词自动发现",
+      "discovery": {
+        "target": "",
+        "browser": {
+          "template": "facebook-search-dom-v1",
+          "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042"
+        },
+        "keywords": [
+          "求看八字"
+        ],
+        "platform": "facebook",
+        "provider": "LOCAL_BROWSER",
+        "strategy": "KEYWORD",
+        "exclusions": [
+          "KFF-0914",
+          "KFF-0913"
+        ],
+        "max_age_days": 30,
+        "processing_basis": "按用户最新 V1 范围自动读取公开 bazi 搜索结果，发现非人工制造的新潜客并保留来源、原文和页面时间；不发布测试内容，不发送评论或私信，不重做 C 接待链。"
+      },
+      "max_pages": 1,
+      "page_size": 5,
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "request_id": "79ff2dbf-721b-4a84-aaaf-d8f2604481cf",
+      "max_records": 5,
+      "retention_days": 14,
+      "interval_minutes": 60
+    },
+    "state": "PAUSED",
+    "version": 1,
+    "interval_minutes": 60,
+    "next_due_at": "2026-09-14T16:55:11.368Z",
+    "scan_number": 0,
+    "automation": null,
+    "created_by": "33333333-3333-4333-8333-333333333333",
+    "created_at": "2026-09-14T16:55:11.368Z"
+  },
+  "started_monitor": {
+    "id": "d2737f61-0726-415f-bbee-8135e7de2f12",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "request_id": "79ff2dbf-721b-4a84-aaaf-d8f2604481cf",
+    "request_hash": "3efbab74596e86e2f70f7d24c53f8fb6300b433cf9f144ac536887c07acb7aa0",
+    "title": "V1 · 求看八字 真实关键词自动发现",
+    "config": {
+      "title": "V1 · 求看八字 真实关键词自动发现",
+      "discovery": {
+        "target": "",
+        "browser": {
+          "template": "facebook-search-dom-v1",
+          "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042"
+        },
+        "keywords": [
+          "求看八字"
+        ],
+        "platform": "facebook",
+        "provider": "LOCAL_BROWSER",
+        "strategy": "KEYWORD",
+        "exclusions": [
+          "KFF-0914",
+          "KFF-0913"
+        ],
+        "max_age_days": 30,
+        "processing_basis": "按用户最新 V1 范围自动读取公开 bazi 搜索结果，发现非人工制造的新潜客并保留来源、原文和页面时间；不发布测试内容，不发送评论或私信，不重做 C 接待链。"
+      },
+      "max_pages": 1,
+      "page_size": 5,
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "request_id": "79ff2dbf-721b-4a84-aaaf-d8f2604481cf",
+      "max_records": 5,
+      "retention_days": 14,
+      "interval_minutes": 60
+    },
+    "state": "ACTIVE",
+    "version": 2,
+    "interval_minutes": 60,
+    "next_due_at": "2026-09-14T16:55:11.434Z",
+    "scan_number": 0,
+    "automation": null,
+    "created_by": "33333333-3333-4333-8333-333333333333",
+    "created_at": "2026-09-14T16:55:11.368Z"
+  },
+  "scans": [
+    {
+      "query_id": "53de299b-f559-4003-b92a-a6ac98bfef6c",
+      "scan_number": 1,
+      "run_id": "c9a885a6-2a91-446a-8da0-87683351fe94",
+      "state": "PARTIAL",
+      "returned_count": 1,
+      "unique_count": 1,
+      "committed_pages": 1,
+      "stop_reason": "MAX_PAGES",
+      "error_code": null,
+      "finished_at": "2026-09-14T16:55:40.448Z"
+    }
+  ],
+  "commands": [
+    {
+      "command_id": "fe6fbfad-9978-4bf5-a5e8-a64cdb6083c0",
+      "action_id": "901809e9-5206-4d4e-bd7b-9bbcbdabfe6f",
+      "claimed_at": "2026-09-14T16:55:11.797Z",
+      "quiesced_at": "2026-09-14T16:55:40.548Z",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "receipt": {
+        "remote_id": "collection:c9a885a6-2a91-446a-8da0-87683351fe94:1",
+        "observed_at": "2026-09-14T16:55:34.599Z",
+        "content_hash": "96570396f858ea88c5e869ec58cfe4bb6f31f2c716a2852267b7f5729040faf7",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61589894042400"
+      },
+      "task_id": "ae236afa-02e4-4be1-8cff-59bf7a5a77fc"
+    }
+  ],
+  "paused_monitor": {
+    "id": "d2737f61-0726-415f-bbee-8135e7de2f12",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "request_id": "79ff2dbf-721b-4a84-aaaf-d8f2604481cf",
+    "request_hash": "3efbab74596e86e2f70f7d24c53f8fb6300b433cf9f144ac536887c07acb7aa0",
+    "title": "V1 · 求看八字 真实关键词自动发现",
+    "config": {
+      "title": "V1 · 求看八字 真实关键词自动发现",
+      "discovery": {
+        "target": "",
+        "browser": {
+          "template": "facebook-search-dom-v1",
+          "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042"
+        },
+        "keywords": [
+          "求看八字"
+        ],
+        "platform": "facebook",
+        "provider": "LOCAL_BROWSER",
+        "strategy": "KEYWORD",
+        "exclusions": [
+          "KFF-0914",
+          "KFF-0913"
+        ],
+        "max_age_days": 30,
+        "processing_basis": "按用户最新 V1 范围自动读取公开 bazi 搜索结果，发现非人工制造的新潜客并保留来源、原文和页面时间；不发布测试内容，不发送评论或私信，不重做 C 接待链。"
+      },
+      "max_pages": 1,
+      "page_size": 5,
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "request_id": "79ff2dbf-721b-4a84-aaaf-d8f2604481cf",
+      "max_records": 5,
+      "retention_days": 14,
+      "interval_minutes": 60
+    },
+    "state": "PAUSED",
+    "version": 3,
+    "interval_minutes": 60,
+    "next_due_at": "2026-09-14T16:55:41.739Z",
+    "scan_number": 1,
+    "automation": null,
+    "created_by": "33333333-3333-4333-8333-333333333333",
+    "created_at": "2026-09-14T16:55:11.368Z"
+  },
+  "closures": [
+    {
+      "command_id": "fe6fbfad-9978-4bf5-a5e8-a64cdb6083c0",
+      "local_database_match": true,
+      "proof": {
+        "action_id": "901809e9-5206-4d4e-bd7b-9bbcbdabfe6f",
+        "closed_at": "2026-09-14T16:55:40.283Z",
+        "command_id": "fe6fbfad-9978-4bf5-a5e8-a64cdb6083c0",
+        "proof_sha256": "a66372f6030e0cd2ab7b71070d6208be2b41b183b540ec52f96f2d6059031ee7",
+        "protocol_version": "kff.guardian-closure.v1"
+      }
+    }
+  ],
+  "leads": [],
+  "observations": [
+    {
+      "id": "a4cea386-81e4-4d12-a75f-368229d1593c",
+      "object_id": "ad3e15d2-387b-44bc-b0da-efcf75b9c14f",
+      "source_object_id": "facebook:post:pfbid0eXxUhWyXpjtSd4dcmRJjJM8qFFyKDeEZYPmsWKzhYsoHVGPrk3srMM6erNw9D7Qpl",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "我以密法講法空，我身其實是空殼，我語實是法自在，我心就是佛智慧。弟子只要習我法，毫無疑問證菩提。\n　陰陽隱情\n　一對夫婦，拿其女兒照片及八字來找我，問女兒的婚姻，我占算一下，覺得甚奇異。\n　　夫婦之女，名邵卿，年三十，未婚。\n　　邵卿女子，條件很好，教育程度高，有固定收入，談吐風雅，人也長得漂漂亮亮。\n　　邵卿不乏人求婚，只是她始終不答應，邵卿也非木石無情無性，也非想出家修行，只是一談到婚嫁，她本人就是搖頭，悉避之不談。\n　　此事急壞父母。\n　　我占算時——\n　　在靈異的感應上，覺得有迷惑的地方，問女子有婚姻緣否？答「有」。問在幾時，答「現在」。問對象是誰？答「人不知」。\n　　我問得愕愕然。\n　　於是我再問，對象到底是誰？我好回答人家的詢問，回答是：「無形。」\n　　「無形是何？」\n　　答：「在亡之人。」\n　　我要告訴大家的是，這問話的，當然是我。這回話的，是我供奉的神佛。我得到答案之後，我要轉述給問事的夫婦。\n　　這一次的問事，答案就如同上述，我自己本人都相當迷惑，如何把答案對人說出，但不說也不行，最後，只有實實在在的告訴這對夫婦。\n　　我答：「邵卿的婚姻已有，就是現在，對象是無形，是人不知，是在亡之人。」\n　　我準備對方罵我「神經病」。\n　　然而，邵姓夫婦卻沒有罵我，把我拖到一邊去，告訴我一件不可思議的怪事。\n　　邵卿有一表兄，年長邵卿四歲，從小就很愛慕邵卿，誓言娶邵卿為妻。\n　　後來，這位表兄得病，竟歿了。\n　　邵卿二十五歲時，有一晚睡夢中，忽然看見一人從窗口入，再看詳細，竟然是這位亡故的表兄，已是一位偉丈夫的模樣，夢中，表兄對邵卿說：「勿相畏，我是你表兄，我愛你，不會給你帶來災禍，今夜與你結婚。」\n　　這位表兄一表人才。\n　　邵卿在夢中也未拒絕。\n　　二人在夢中纏綿，令邵卿非常暢快。\n　　邵卿醒後，自覺不對勁，表兄早已亡故，這夢是真是假，很難說，又心甚羞之，也不敢對父母說。\n　　然而，表兄第二夜又至，第三夜又至，第四夜又至……。\n　　夜夜同眠共枕。\n　　這成了「陰陽隱情」。\n　　開始時，邵卿以為只是一場夢，一場春夢，過後就沒事了，但，表兄夜夜均至，而且夜夜索求，漸漸的，邵卿知道，表兄是鬼，是亡人，是靈魂，也自然而然的產生了恐懼。\n　　「你是鬼？」邵卿問。\n　　「是鬼。」\n　　「鬼不害人？」\n　　「不害你，反而愛你。」\n　　「家人要我結婚。」邵卿告訴表兄。\n　　「我們已是夫妻，你不可再婚。」\n　　「不行。」邵卿說。\n　　「如果你結婚，對方一定會死。」\n　　「是你害的。」\n　　「正是。」\n　　這位鬼表兄也絕不含糊，只要邵卿交男朋友，稍微親熱一點，對方不是跌倒，就是車禍，或者生病，出意外等等，令邵卿莫敢喘息！\n　　邵卿連交男朋友都不敢，更不用談婚嫁了。此事，原本只邵卿一人知之，後來父母逼急了，邵卿只好一五一十的告訴父母。\n　　父母驚訝得不得了。\n　　邵卿家人，原來是基督教的世家，闔家惶懼之下，只有不得已告訴了牧師一人，牧師一聞此等事，亦相當的錯愕，於是召集所有的主內兄弟姐妹，並未告訴其他人是何病因，只告訴邵卿病了，大家一起赴她家祈禱。\n　　那天，邵卿疲憊不起，大家圍著她，由牧師帶領祈禱，牧師為了鄭重其事，穿了白色的聖服，所有主內兄弟姐妹也穿聖服。\n　　他們先唸「祈禱文」，祈求天上的聖父，耶和華上帝，期盼耶和華的牽引……。\n　　再唸邵卿的名字，希望邵卿的病，快快痊癒。\n　　唸完沒多久，邵卿忽然坐起，睜大的眼睛，大家以為她好了，正要鼓掌讚美！\n　　想不到邵卿卻對著牧師大叫：\n　　「我要你死！」\n　　牧師當時，愕住了，不知所措！\n　　大家都看到電影「大法師」的那一幕，只差邵卿的臉沒有大變化，身子也沒有浮在床上，但，就算是這樣，牧師已嚇得半死，連連說：「求主引領，求主引領，求……。」祈禱會草草結束，牧師一溜，大家都溜了。\n　　更想不到的是，牧師在當天，竟然得了「中風」，整個人的臉歪了，眼口斜一邊，半身痳痺，牧師夫人一看情形不對，連祈禱也用不著，急急送醫治療。\n　　那個聚會所的主內兄弟姐妹，只要去參加祈禱的，大家均心惕惕然，恐懼自己也如此。牧師夫人一個個的造訪，挨家挨戶，戒主內兄弟姐妹勿傳播出去。\n　　邵卿曾與鬼表兄對話：\n　　「你不怕牧師！」\n　　「不怕。」\n　　「你不怕牧師，怕什麼？」\n　　「上帝、佛祖。」\n　　「牧師可以請求上帝治你？」\n　　「那位牧師請不來，他是混飯吃的。」\n　　「那我要找別的牧師。」\n　　「不要和我過不去，我們不是相處挺好的！」鬼表兄說。\n　　「這不正常。」邵卿講了實話。\n　　「見鬼，現在的世界，有同性戀，有人妖，有變性男女，不正常的多的是。」鬼表兄理由充分。\n　　邵卿說：\n　　「我仍然覺得不對勁！」\n　　鬼表兄說：\n　　「你再請他們來，我要一個一個收拾。」\n　　邵氏夫婦迫得無法，去請了一尊「佛祖」來家中鎮宅，這「佛祖」是一位大師開光的，大師還揚言，「佛祖」會靈得要命，保證萬靈萬效。\n　　剛請回家的那一天，卻驚聞大師入院動手術，原來是心臟有問題。\n　　「是你弄的？」邵卿又問。\n　　「沒有。」\n　　「不是你，還有誰？」\n　　「說沒有就沒有，這位是假大師，自身難保，我不用給他惡作劇，他自己就倒了，根本不用跟他作對。」\n　　「我倒底有什麼辦法，請你走？」\n　　「沒有辦法！」鬼表兄說。\n　　鬼表兄還表演他的神通，他白天就住在佛祖的身子裏，同邵卿擠眉弄眼，晚上出來同邵卿睡覺，別人均看不見，邵卿對他莫可奈何。\n　　「我要再想辦法？」\n　　「隨你！」鬼表兄無所謂。\n　　「你不是怕佛祖嗎？」\n　　「是怕佛祖。」\n　　「家裏請來了佛祖。」\n　　「那不是佛祖，那是柴頭匡啊（木頭）！」鬼表兄哈哈大笑不止。\n　　邵卿的父母還請教了許多高人，結果均不了了之，高人剛開始均說：「能。」\n　　結果是：「不能。」\n　　最後「逃之夭夭。」\n　　邵卿父母問我：\n　　「你能嗎？」\n　　我沒有正面回答，我說：「鬼表兄來了。」\n　　其父母大駭：「在哪裡？」\n　　「在門外。」\n　　「為什麼在門外？」\n　　「寒舍有結界，我整個家，是密教曼荼羅。」我對其父母說：「你們兩位先坐坐，我禪定一下，出去會會他。」\n　　我坐下，閉目，神識飛了出去。\n　　我找到鬼表兄。\n　　鬼表兄一見我（蓮生活佛盧勝彥）以神識出現，也著實吃了一驚，知道來者不善。\n　　鬼表兄向我的頭吹了一口氣，此氣相當寒凜，如果被吹到，整個頭都會結凍成冰，我明白牧師何以一回去，便得「中風」的原因了。\n　　我的手結「火天」印，「右手舒張五指，大拇指屈入掌心，按住火指中節」。\n　　我周身出火，寒凜之氣不能入。\n　　鬼表兄也不知從何處取來一「彎刀」，伸手向我的腳，就是一刀掃來。\n　　我現在也明白，何以管閒事的會一一跌倒的原因了。\n　　我手結「金輪印」。\n　　「雙手先內縛，二中指伸直並立，指尖相觸。二大拇指，及二食指曲成二個圓圈圈。」\n　　我變化成「黃金的法輪」在虛空中旋轉，這法輪是金剛不壞的，是無堅不摧的，只要法輪一轉，任何東西一碰到，便輾成碎粉。\n　　那「彎刀」一碰。\n　　金鐵交鳴。「叮噹」一聲巨響。\n　　「彎刀」斷斷壞。\n　　鬼表兄大驚失色：「你是誰？」\n　　「蓮生活佛盧勝彥。」\n　　「你就是盧勝彥。」那鬼表兄原是認識我的，就算不認識，也一定聽過我的名頭。\n　　「如何？」我問。\n　　「承教！」鬼表兄說：「請活佛勿管閒事，此事有夙緣，是邵卿念我，非我之罪。」\n　　我說：\n　　「今天不管如何，既然碰在我的手上，我這閒事是管定了。更何況你無緣無故傷害了不少人，淫佔良女。今天還好你只淫佔邵卿，如果你一見美婦，一一淫佔，為害就更厲害。」\n　　鬼表兄相當生氣，但他大概也明白我非常不好惹，不敢動什麼手腳。\n　　我奉勸他：\n　　「我是蓮生活佛盧勝彥，已經了知如來的智慧，又有超度中陰靈魂的大秘訣，我可接引你到達心中期望的世界。你不應該在人間自作孽，你現在的境界是平庸的，而且是黑暗的，如同在夢幻中自己造罪，放逸自己的心，縱自己的慾，未來的宿業苦不堪言。這些你應該明明白白，慾望是幻化不實的，你今逢我，我接引你，豈不更好？」\n鬼表兄聽了我話，低頭沉思說：\n　　「但，我捨不得邵卿！」\n　　我說：\n　　「慾念如獸追太陽，徒勞無益馳荒野。」\n　　我又顯現「慾海」讓鬼表兄看，慾海沒有盡頭，多人沉溺其中，困倦疲勞，驚濤駭浪，令人生畏……。\n　　「我……。」鬼表兄仍然念念不捨。\n　　我大喝一聲：\n　　「如再下去，雷火焚身，一聲霹靂，形神皆滅！」\n　　鬼表兄慚愧低頭。\n　　我說一偈：\n　　「接引汝生妙欲國，\n　　人如欲界眾天神；\n　　盛世清平如賢劫，\n　　此路易行去為勝。」\n　　鬼表兄終於點頭。\n　　我將神識運回自己禪定的軀殼之中，我這妙法就是「出神」，是密教「奪舍法」的第一步。我以密法講法空，我身其實是空殼，我語實是法自在，我心就是佛智慧，弟子只要習我法，毫無疑問證菩提。\n　　我出了禪定。\n　　邵卿父母問：\n　　「你見著沒有？」\n　　「見著。」我聲調平靜。\n　　「他沒有和你過不去？」\n　　「沒有，」我說：「我不會有事，你女兒邵卿也不會有事了，依我看，一切圓滿了。」\n　　「還要做什麼嗎？」\n　　「什麼都不用做了，你們看看邵卿，這幾晚是不是好了，我目前只要一場超度法會。」\n　　邵卿父母稍覺寬心。\n　　邵卿父母及邵卿本人來參加我的超度法會。\n　　他們告訴我，自從當天回家，當晚邵卿一夜無事，鬼表兄一夜無來，這根本是從來沒有的事。接連幾晚，鬼表兄好像失蹤了，不告而別似的，完完全全沒有鬼夢了。\n　　邵卿本人問我：\n　　「你真的見著他本人？」\n　　「真的。」\n　　「有何證據？」\n　　「他的右眉毛尾有一顆大痣！」\n　　「哇！」邵卿驚呆了。\n　　我上法座——\n　　「一心召請，黌門才子，白屋書生，探花足步文，射策身遊棘院，白螢燈飛散，三年徒用工夫鐵硯磨穿，十載慢施辛苦，嗚呼，七尺紅羅書姓字，一坯黃土蓋文章，如是文人舉子之流，×××，速請臨壇。」\n　　（鬼表兄是讀書人）\n　　「學古窮今，錦繡文章，士映雪偷光苦，志寒窗內，命運蹉跎，金榜無名字，鬱鬱幽魂，來受甘露味。」\n　　我修密法——\n　　「吙——\n　　藉成就金剛持上師曼荼羅之力，\n　　願我與無量有情中陰眾生，\n　　自然往生，\n　　並被解脫至法身光明空性之中。」\n　　「嗡。阿。吽。\n　　吽。吽。吽。\n　　如海之三身諸佛在光明中示現，\n　　令中陰淨除一切障礙，\n　　中陰現出智慧神通，\n　　瓦架拉。三昧耶。佳。佳。\n　　薩爾瓦。嘎那。迦卡拉。布達。吙。」\n　　我看見「中陰」進入光明之中。\n　　……。\n　　邵卿本人及父母，原是基督教世家，因為我治好邵卿的毛病，便全家皈依真佛宗，不只是邵卿一家，連他們的親戚，連他們的朋友，因為邵卿的見證，全來皈依了，這一皈依就百多位，此事有夠轟動。\n　　但，也因為如此，引起該教會的不滿，牧師及牧師娘均恨我恨的牙癢癢的，牧師「中風」之後，經過復健，好了七成，只是嘴略歪，面部神經無法控制，牧師及其教友，曾為我祈禱，又送來許多「宣傳小冊」。\n　　我看了這些「宣傳小冊」，哈哈大笑！坦白說，我在高中時代，是主日學師範班畢業，當過教會的老師，也是查經班的老師，我編輯過「宣傳小冊」，在那時候，我亦是「福音報」的通訊記者。\n　　談到教會，要特別提到，當時有一位長老，看我在教會認真教學，品學兼優，又是主日學老師，又是聖歌隊，又是報社記者，又編輯宣傳小冊，聖誕節一到，我又主持「聖誕晚會」的節目，那位長老特別對我示好，主動把他的女兒「詹淑芬」介紹給我，請我吃飯，幸好當時我不是有定力，而是我的心中已先入為主，另有別人，這位就是秀秀麗麗的鄰居小女孩—「高純心」。\n　　好了，言歸正傳。\n　　邵卿真的好了。\n　　該教會宣傳我是「魔鬼」。但，我這「魔鬼」確實有一些力量，我這力量是基督教徒永遠不明白的，我修出密教的證量之後，我出入「十法界」，我見過耶穌基督，我見過耶和華上帝。\n　　在「諸天境界」之中。\n　　耶穌在度眾生，在愛世人。\n　　耶和華上帝在度眾生，在愛世人。\n　　他們是「天主」。\n　　耶和華、耶穌、聖靈，有「天主境界」。\n～本文摘錄自蓮生活佛盧勝彥文集第131冊《超度的怪談》"
+        },
+        "author_id": {
+          "kind": "NOT_RETURNED"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月14日周一23:09"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "source_url": "https://www.facebook.com/tan.mo.li.396359/posts/pfbid0eXxUhWyXpjtSd4dcmRJjJM8qFFyKDeEZYPmsWKzhYsoHVGPrk3srMM6erNw9D7Qpl/",
+      "observed_at": "2026-09-14T16:55:34.599Z",
+      "expires_at": "2026-09-28T16:55:11.587Z",
+      "score": 0,
+      "reason": "未命中关键词"
+    }
+  ],
+  "new_source_leads": [],
+  "diagnostics": [
+    {
+      "action_id": "901809e9-5206-4d4e-bd7b-9bbcbdabfe6f",
+      "manifest": {
+        "step": "facebook-search-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "c5db21c7f4029734b2e8f54327390988016ff939a5c369da5dbe94f2e6c99fc1",
+            "content": {
+              "result_count": 1,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "901809e9-5206-4d4e-bd7b-9bbcbdabfe6f",
+        "attempt_id": "49d8ec49-4bea-4651-b4cf-7b88afa902ec",
+        "created_at": "2026-09-14T16:55:40.524Z",
+        "error_code": null,
+        "duration_ms": 26906,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-search-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    }
+  ],
+  "profile_after": "Inactive",
+  "finished_at": "2026-09-14T16:55:43.285Z"
+}

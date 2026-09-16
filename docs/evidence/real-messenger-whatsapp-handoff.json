@@ -1,0 +1,539 @@
+{
+  "recorded_at": "2026-09-13T08:26:37.847Z",
+  "status": "REAL_TEST_HANDOFF_AND_NEW_INBOUND_VERIFIED",
+  "full_goal_complete": false,
+  "scope": {
+    "profile": "1876794 / k1gvdtft",
+    "account_id": "61589894042400",
+    "peer_id": "100050174601107",
+    "thread_id": "27724009533944398",
+    "conversation_id": "cf4cb0be-4191-4451-bfda-825ce1b35798"
+  },
+  "send": {
+    "task_id": "4fecccc2-f6c6-43a3-8527-224c0442fad8",
+    "action_id": "df8a42c0-9f23-4af5-b1d7-1398abb16bed",
+    "command_id": "4775cabf-fa76-4b71-ae30-54e5cd85c3d3",
+    "attempts": [
+      {
+        "attempt_number": 1,
+        "submitted_at": "2026-09-13T07:13:50.882Z",
+        "completed_at": "2026-09-13T07:14:09.083Z",
+        "state": "UNKNOWN_OUTCOME"
+      }
+    ],
+    "original_report": "UNKNOWN_OUTCOME / SUBMISSION_UNCERTAIN",
+    "adjudication_id": "ac582b93-491f-459b-91e6-08317e467d04",
+    "final_action": {
+      "state": "VERIFIED_SUCCEEDED",
+      "receipt": {
+        "remote_id": "100050174601107@msgr.7504799492323995768",
+        "thread_id": "27724009533944398",
+        "observed_at": "2026-09-13T07:20:11.806Z",
+        "content_hash": "3f322e26b154f43dea706cce1f6ecf289a92c64935441f1a514090458b56507f",
+        "recipient_id": "100050174601107",
+        "evidence_kind": "human_review",
+        "adjudication_id": "ac582b93-491f-459b-91e6-08317e467d04",
+        "actual_account_id": "61589894042400"
+      },
+      "attempts": 1
+    },
+    "message": {
+      "remote_id": "100050174601107@msgr.7504799492323995768",
+      "body": "你好，可以通过 WhatsApp 联系宸均继续沟通：https://wa.me/8618730936793",
+      "displayed_time": "15:13",
+      "displayed_status": "5分钟前发送",
+      "observed_at": "2026-09-13T07:20:11.806Z"
+    },
+    "participants": {
+      "observed_at": "2026-09-13T07:22:29.031Z",
+      "peer_id": "100050174601107",
+      "peer_profile_href": "/100050174601107/",
+      "thread_id": "27724009533944398",
+      "own_profile_url": "https://www.facebook.com/profile.php?id=61589894042400",
+      "own_id": "61589894042400",
+      "own_name": "XiangHuan Master",
+      "own_edit_control": true,
+      "own_friends_tab": true
+    },
+    "closure": {
+      "matches": true,
+      "quiesced_at": "2026-09-13T07:14:09.182Z",
+      "closed_at": "2026-09-13T07:14:08.915Z"
+    },
+    "retried": false,
+    "screenshot": "output/playwright/approved-whatsapp-message.png"
+  },
+  "whatsapp": {
+    "referral_id": "e23834d4-6c30-43e4-b62e-d9736d4832e9",
+    "state": "CONFIRMED",
+    "customer_status": "HANDOFF_COMPLETE",
+    "source": "explicit_user_confirmation",
+    "user_text": "WhatsApp已收到",
+    "recorded_at": "2026-09-13T07:31:55.824Z",
+    "platform_callback_observed": false
+  },
+  "incremental_inbox": {
+    "new_client_message_id": "100050174601107@msgr.7504805443784841461",
+    "new_client_messages": 1,
+    "outbound_messages": 1,
+    "scans": [
+      {
+        "number": 1,
+        "started_at": "2026-09-13T08:22:25.649Z",
+        "request_id": "73903d11-5f6a-4be1-9470-d4f946ade7a1",
+        "monitor_version": 14,
+        "progress": {
+          "monitor": {
+            "state": "PAUSED",
+            "version": 15,
+            "scan_requested": false,
+            "current_task_id": null,
+            "last_error_code": null
+          },
+          "commands": [
+            {
+              "id": "cfd4ca54-a52e-4032-a1fd-a3478cfe2dba",
+              "action_id": "77e875a2-0947-4e98-a6b4-135b1ef59c91",
+              "agent_id": "66666666-6666-4666-8666-666666666666",
+              "quiesced_at": "2026-09-13T08:23:23.816Z",
+              "task_id": "3807eaf6-e742-4a39-93b0-ccb409fe36cd",
+              "state": "VERIFIED_SUCCEEDED",
+              "error_code": null,
+              "receipt": {
+                "remote_id": "inbox:6a14ca96-4988-4aa2-a0c7-686fc01c15eb:10",
+                "observed_at": "2026-09-13T08:23:10.338Z",
+                "content_hash": "890ae5de1f454a5f72c2b3d4d5ae2a355832112e70c30784b287c5356d9e4790",
+                "evidence_kind": "browser_dom",
+                "actual_account_id": "61589894042400"
+              }
+            }
+          ]
+        },
+        "checkpoint": {
+          "stored": 2,
+          "duplicates": 2,
+          "observed_at": "2026-09-13T08:23:10.338Z"
+        },
+        "proof": {
+          "matches": true,
+          "command_id": "cfd4ca54-a52e-4032-a1fd-a3478cfe2dba",
+          "action_id": "77e875a2-0947-4e98-a6b4-135b1ef59c91",
+          "receipt": {
+            "remote_id": "inbox:6a14ca96-4988-4aa2-a0c7-686fc01c15eb:10",
+            "observed_at": "2026-09-13T08:23:10.338Z",
+            "content_hash": "890ae5de1f454a5f72c2b3d4d5ae2a355832112e70c30784b287c5356d9e4790",
+            "evidence_kind": "browser_dom",
+            "actual_account_id": "61589894042400"
+          },
+          "quiesced_at": "2026-09-13T08:23:23.816Z",
+          "local_closed_at": "2026-09-13T08:23:23.236Z"
+        },
+        "provider_after": "Inactive",
+        "after": [
+          {
+            "id": "fcc1ce5b-12e3-455c-b915-ca83fb924b67",
+            "sequence": 1,
+            "direction": "INBOUND",
+            "body": "XiangHuan Master，你好！",
+            "source": {
+              "ref": null,
+              "kind": "MESSENGER",
+              "ad_id": null,
+              "page_id": "61589894042400",
+              "peer_id": "100050174601107",
+              "source_id": "100050174601107@msgr.7504736197992583760",
+              "thread_id": "27724009533944398",
+              "transport": "BROWSER",
+              "source_url": "https://www.facebook.com/messages/e2ee/t/27724009533944398/",
+              "thread_kind": "UNVERIFIED",
+              "displayed_time": "11:02"
+            },
+            "client_sent_at": null,
+            "contact_permission_id": null,
+            "action_id": null
+          },
+          {
+            "id": "9677a477-d1f0-499a-ad55-746ac2cb020f",
+            "sequence": 2,
+            "direction": "INBOUND",
+            "body": "KFF 联调测试",
+            "source": {
+              "ref": null,
+              "kind": "MESSENGER",
+              "ad_id": null,
+              "page_id": "61589894042400",
+              "peer_id": "100050174601107",
+              "source_id": "100050174601107@msgr.7504750673031032433",
+              "thread_id": "27724009533944398",
+              "transport": "BROWSER",
+              "source_url": "https://www.facebook.com/messages/e2ee/t/27724009533944398/",
+              "thread_kind": "UNVERIFIED",
+              "displayed_time": "11:59"
+            },
+            "client_sent_at": null,
+            "contact_permission_id": null,
+            "action_id": null
+          },
+          {
+            "id": "8919c623-df05-4c64-a6a1-d0627b0a908c",
+            "sequence": 3,
+            "direction": "OUTBOUND",
+            "body": "你好，可以通过 WhatsApp 联系宸均继续沟通：https://wa.me/8618730936793",
+            "source": {
+              "ref": null,
+              "kind": "MESSENGER",
+              "ad_id": null,
+              "page_id": "61589894042400",
+              "peer_id": "100050174601107",
+              "source_id": "100050174601107@msgr.7504750673031032433",
+              "thread_id": "27724009533944398",
+              "transport": "BROWSER",
+              "source_url": "https://www.facebook.com/messages/e2ee/t/27724009533944398/",
+              "thread_kind": "UNVERIFIED",
+              "displayed_time": "11:59"
+            },
+            "client_sent_at": null,
+            "contact_permission_id": "9afd0e5f-5f52-4d64-b55d-32eb50ef7a84",
+            "action_id": "df8a42c0-9f23-4af5-b1d7-1398abb16bed"
+          },
+          {
+            "id": "d6cdde66-dc62-4bd7-8d5b-d7d2bf401d17",
+            "sequence": 4,
+            "direction": "INBOUND",
+            "body": "KFF 增量测试",
+            "source": {
+              "ref": null,
+              "kind": "MESSENGER",
+              "ad_id": null,
+              "page_id": "61589894042400",
+              "peer_id": "100050174601107",
+              "source_id": "100050174601107@msgr.7504805443784841461",
+              "thread_id": "27724009533944398",
+              "transport": "BROWSER",
+              "source_url": "https://www.facebook.com/messages/e2ee/t/27724009533944398/",
+              "thread_kind": "UNVERIFIED",
+              "displayed_time": "15:37"
+            },
+            "client_sent_at": null,
+            "contact_permission_id": null,
+            "action_id": null
+          }
+        ],
+        "finished_at": "2026-09-13T08:23:24.243Z"
+      },
+      {
+        "number": 2,
+        "started_at": "2026-09-13T08:23:24.247Z",
+        "request_id": "6cc1144b-fe88-4325-93b9-71f69b30c4e3",
+        "monitor_version": 15,
+        "progress": {
+          "monitor": {
+            "state": "PAUSED",
+            "version": 16,
+            "scan_requested": false,
+            "current_task_id": null,
+            "last_error_code": null
+          },
+          "commands": [
+            {
+              "id": "e62fc38d-2c27-4c40-a6e3-efcafc1e7b1e",
+              "action_id": "90be21fe-7a14-4bc1-9b2b-835f90ce967a",
+              "agent_id": "66666666-6666-4666-8666-666666666666",
+              "quiesced_at": "2026-09-13T08:24:19.155Z",
+              "task_id": "6cac7cee-d1e2-495e-981b-d0d54a66e039",
+              "state": "VERIFIED_SUCCEEDED",
+              "error_code": null,
+              "receipt": {
+                "remote_id": "inbox:6a14ca96-4988-4aa2-a0c7-686fc01c15eb:11",
+                "observed_at": "2026-09-13T08:24:04.367Z",
+                "content_hash": "b6feb0293c54e06e22f7a6c015bc684d0698fadfd8cf86a9bf1b4996df241ba0",
+                "evidence_kind": "browser_dom",
+                "actual_account_id": "61589894042400"
+              }
+            }
+          ]
+        },
+        "checkpoint": {
+          "stored": 0,
+          "duplicates": 4,
+          "observed_at": "2026-09-13T08:24:04.367Z"
+        },
+        "proof": {
+          "matches": true,
+          "command_id": "e62fc38d-2c27-4c40-a6e3-efcafc1e7b1e",
+          "action_id": "90be21fe-7a14-4bc1-9b2b-835f90ce967a",
+          "receipt": {
+            "remote_id": "inbox:6a14ca96-4988-4aa2-a0c7-686fc01c15eb:11",
+            "observed_at": "2026-09-13T08:24:04.367Z",
+            "content_hash": "b6feb0293c54e06e22f7a6c015bc684d0698fadfd8cf86a9bf1b4996df241ba0",
+            "evidence_kind": "browser_dom",
+            "actual_account_id": "61589894042400"
+          },
+          "quiesced_at": "2026-09-13T08:24:19.155Z",
+          "local_closed_at": "2026-09-13T08:24:17.868Z"
+        },
+        "provider_after": "Inactive",
+        "after": [
+          {
+            "id": "fcc1ce5b-12e3-455c-b915-ca83fb924b67",
+            "sequence": 1,
+            "direction": "INBOUND",
+            "body": "XiangHuan Master，你好！",
+            "source": {
+              "ref": null,
+              "kind": "MESSENGER",
+              "ad_id": null,
+              "page_id": "61589894042400",
+              "peer_id": "100050174601107",
+              "source_id": "100050174601107@msgr.7504736197992583760",
+              "thread_id": "27724009533944398",
+              "transport": "BROWSER",
+              "source_url": "https://www.facebook.com/messages/e2ee/t/27724009533944398/",
+              "thread_kind": "UNVERIFIED",
+              "displayed_time": "11:02"
+            },
+            "client_sent_at": null,
+            "contact_permission_id": null,
+            "action_id": null
+          },
+          {
+            "id": "9677a477-d1f0-499a-ad55-746ac2cb020f",
+            "sequence": 2,
+            "direction": "INBOUND",
+            "body": "KFF 联调测试",
+            "source": {
+              "ref": null,
+              "kind": "MESSENGER",
+              "ad_id": null,
+              "page_id": "61589894042400",
+              "peer_id": "100050174601107",
+              "source_id": "100050174601107@msgr.7504750673031032433",
+              "thread_id": "27724009533944398",
+              "transport": "BROWSER",
+              "source_url": "https://www.facebook.com/messages/e2ee/t/27724009533944398/",
+              "thread_kind": "UNVERIFIED",
+              "displayed_time": "11:59"
+            },
+            "client_sent_at": null,
+            "contact_permission_id": null,
+            "action_id": null
+          },
+          {
+            "id": "8919c623-df05-4c64-a6a1-d0627b0a908c",
+            "sequence": 3,
+            "direction": "OUTBOUND",
+            "body": "你好，可以通过 WhatsApp 联系宸均继续沟通：https://wa.me/8618730936793",
+            "source": {
+              "ref": null,
+              "kind": "MESSENGER",
+              "ad_id": null,
+              "page_id": "61589894042400",
+              "peer_id": "100050174601107",
+              "source_id": "100050174601107@msgr.7504750673031032433",
+              "thread_id": "27724009533944398",
+              "transport": "BROWSER",
+              "source_url": "https://www.facebook.com/messages/e2ee/t/27724009533944398/",
+              "thread_kind": "UNVERIFIED",
+              "displayed_time": "11:59"
+            },
+            "client_sent_at": null,
+            "contact_permission_id": "9afd0e5f-5f52-4d64-b55d-32eb50ef7a84",
+            "action_id": "df8a42c0-9f23-4af5-b1d7-1398abb16bed"
+          },
+          {
+            "id": "d6cdde66-dc62-4bd7-8d5b-d7d2bf401d17",
+            "sequence": 4,
+            "direction": "INBOUND",
+            "body": "KFF 增量测试",
+            "source": {
+              "ref": null,
+              "kind": "MESSENGER",
+              "ad_id": null,
+              "page_id": "61589894042400",
+              "peer_id": "100050174601107",
+              "source_id": "100050174601107@msgr.7504805443784841461",
+              "thread_id": "27724009533944398",
+              "transport": "BROWSER",
+              "source_url": "https://www.facebook.com/messages/e2ee/t/27724009533944398/",
+              "thread_kind": "UNVERIFIED",
+              "displayed_time": "15:37"
+            },
+            "client_sent_at": null,
+            "contact_permission_id": null,
+            "action_id": null
+          }
+        ],
+        "finished_at": "2026-09-13T08:24:20.693Z"
+      }
+    ],
+    "final": {
+      "accounts": 86,
+      "external_prospects": 46,
+      "unclosed": 0,
+      "referral_state": "CONFIRMED",
+      "customer_status": "HANDOFF_COMPLETE"
+    },
+    "failed_reads": [
+      {
+        "command": {
+          "id": "6f88cff0-cf7c-4f48-b7ae-438a4f6730d2",
+          "action_id": "7377e615-79cf-4112-ab54-c95add2c4cf1",
+          "quiesced_at": "2026-09-13T07:47:25.616Z",
+          "state": "BLOCKED",
+          "error_code": "IDENTITY_UNVERIFIED"
+        },
+        "diagnostics": [
+          {
+            "manifest": {
+              "step": "facebook-inbox-identity-before",
+              "files": [],
+              "level": "D0",
+              "omitted": [
+                "raw_dom",
+                "screenshots",
+                "trace",
+                "cookies",
+                "message_body",
+                "network_bodies"
+              ],
+              "outcome": "BLOCKED",
+              "brand_id": "22222222-2222-4222-8222-222222222222",
+              "action_id": "7377e615-79cf-4112-ab54-c95add2c4cf1",
+              "attempt_id": "e2546748-3299-4cda-a1f6-4ff60c29969b",
+              "created_at": "2026-09-13T07:47:25.517Z",
+              "error_code": "IDENTITY_UNVERIFIED",
+              "duration_ms": 31602,
+              "schema_version": "kff.diagnostic.v2",
+              "adapter_version": "facebook-inbox-browser-v1",
+              "browser_version": "150.0.7871.47",
+              "organization_id": "11111111-1111-4111-8111-111111111111",
+              "downgrade_reason": "本驱动未取得可安全导出的现场，保留 D0",
+              "executor_version": "kff-agent-0.1.0_node-24.14.1",
+              "protocol_version": "kff.agent.v1",
+              "redaction_version": "allowlist-v1"
+            }
+          }
+        ],
+        "closure_matches": true,
+        "provider_after": "Inactive"
+      },
+      {
+        "command": {
+          "id": "b23d08ca-8637-464d-beae-89a7727148c2",
+          "action_id": "d0ed550a-f502-42ad-b647-b39acbde5530",
+          "quiesced_at": "2026-09-13T08:10:57.508Z",
+          "state": "BLOCKED",
+          "error_code": "INBOX_SOURCE_MISMATCH"
+        },
+        "diagnostics": [
+          {
+            "manifest": {
+              "step": "facebook-inbox-recheck",
+              "files": [],
+              "level": "D0",
+              "omitted": [
+                "raw_dom",
+                "screenshots",
+                "trace",
+                "cookies",
+                "message_body",
+                "network_bodies"
+              ],
+              "outcome": "BLOCKED",
+              "brand_id": "22222222-2222-4222-8222-222222222222",
+              "action_id": "d0ed550a-f502-42ad-b647-b39acbde5530",
+              "attempt_id": "290c2785-d64b-46e4-8cb5-c095c969bb06",
+              "created_at": "2026-09-13T08:10:57.433Z",
+              "error_code": "INBOX_SOURCE_MISMATCH",
+              "duration_ms": 43592,
+              "schema_version": "kff.diagnostic.v2",
+              "adapter_version": "facebook-inbox-browser-v1",
+              "browser_version": "150.0.7871.47",
+              "organization_id": "11111111-1111-4111-8111-111111111111",
+              "downgrade_reason": "本驱动未取得可安全导出的现场，保留 D0",
+              "executor_version": "kff-agent-0.1.0_node-24.14.1",
+              "protocol_version": "kff.agent.v1",
+              "redaction_version": "allowlist-v1"
+            }
+          }
+        ],
+        "closure_matches": true,
+        "provider_after": "Inactive"
+      }
+    ]
+  },
+  "installation": {
+    "package": {
+      "release_id": "kff-agent-0.1.4-win32-x64-26490623ce0a",
+      "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.4-win32-x64-26490623ce0a",
+      "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.4-win32-x64-26490623ce0a.zip",
+      "archive_sha256": "9ad6abbaaa89b9701d60842f0ac3a3ee4a24b6f0f1739d06d3793de9ec4954d5",
+      "files": 1342,
+      "dependencies": 23,
+      "contains_pairing_or_browser_data": false
+    },
+    "installed_at": "2026-09-13T08:21:19.1212468Z",
+    "release_directory": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.4-win32-x64-26490623ce0a"
+  },
+  "runtime": {
+    "recorded_at": "2026-09-13T08:24:16.4541911Z",
+    "agent_id": "66666666-6666-4666-8666-666666666666",
+    "automatic_restart_on_boot": false,
+    "health_status": 200,
+    "discovery_enabled": true,
+    "browser_inbox_enabled": true,
+    "command_line": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.4-win32-x64-26490623ce0a\\node.exe C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.4-win32-x64-26490623ce0a\\agent-launch.mjs start --data-root C:\\Users\\17731\\Desktop\\KFF",
+    "executable": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.4-win32-x64-26490623ce0a\\node.exe",
+    "data_root": "C:\\Users\\17731\\Desktop\\KFF",
+    "live_sending_enabled": false,
+    "owner_pid": 8504,
+    "agent_pid": 608,
+    "agent_created_at": "2026-09-13T08:22:08.3004050Z",
+    "release_directory": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.4-win32-x64-26490623ce0a"
+  },
+  "control": {
+    "state": "PAUSED",
+    "scan_requested": false,
+    "current_task_id": null,
+    "last_error_code": null
+  },
+  "inbox_ui": {
+    "observed_at": "2026-09-13T08:24:26.597Z",
+    "rows": [
+      "XiangHuan Master，你好！#1 · 收件于 2026/9/13 13:10:33 · 平台显示 11:02（完整日期未取得） · 客户消息",
+      "KFF 联调测试#2 · 收件于 2026/9/13 13:10:33 · 平台显示 11:59（完整日期未取得） · 客户消息",
+      "你好，可以通过 WhatsApp 联系宸均继续沟通：https://wa.me/8618730936793#3 · 记录于 2026/9/13 15:25:58 · 人工回复 · 已确认发送",
+      "KFF 增量测试#4 · 收件于 2026/9/13 16:23:23 · 平台显示 15:37（完整日期未取得） · 客户消息"
+    ],
+    "outbound_count": 1,
+    "incremental_count": 1,
+    "referral_visible": true,
+    "screenshot": "output/playwright/verified-messenger-incremental-inbox.png"
+  },
+  "validation": {
+    "contracts": {
+      "passed": 125,
+      "total": 125,
+      "success": true
+    },
+    "related_integration": {
+      "passed": 20,
+      "total": 20,
+      "success": true,
+      "source_note": "Control/queue integration completed before final DOM-only fixes; final installed reader separately verified by the real Agent scans above"
+    },
+    "owned_dom_and_captured_replay": {
+      "passed": 21,
+      "file": ".kff/verified-messenger-dom-result-r3.txt"
+    },
+    "typecheck": ".kff/verified-messenger-typecheck-r5.log",
+    "lint": ".kff/verified-messenger-lint-r5.log"
+  },
+  "limitations": [
+    "One explicitly authorized message to the user-owned test account; no further sending authorization inferred.",
+    "The original real send is confirmed by independent platform UI review, not by a new automatic browser_message receipt.",
+    "WhatsApp arrival and handoff are explicitly user-confirmed, without an observed WhatsApp platform callback.",
+    "Reads cover one fixed rendered conversation and retain incomplete dates as null and thread kind UNVERIFIED.",
+    "Bounded scans with monitoring paused; no claim of long-term unattended operation, boot startup, two real accounts or newly qualified commercial leads."
+  ]
+}

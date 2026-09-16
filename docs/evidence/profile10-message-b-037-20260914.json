@@ -1,0 +1,318 @@
+{
+  "at": "2026-09-14T11:40:50.425Z",
+  "version": "0.1.37",
+  "goal_complete": false,
+  "platform_sends": 0,
+  "source_build_agent_match": true,
+  "tests": {
+    "browser": {
+      "startTime": "2026-09-14T11:34:20.147Z",
+      "duration": 13415.52,
+      "expected": 11,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "contracts": 178,
+    "typecheck": 0,
+    "build": 0
+  },
+  "prior_failure": {
+    "commands": [
+      {
+        "id": "4d006aa5-1520-4306-abe2-e3919e7ec278",
+        "action_id": "07f1864c-1968-4894-9a2e-607a1c5a52b8",
+        "created_at": "2026-09-14T11:03:10.117Z",
+        "quiesced_at": "2026-09-14T11:03:53.630Z",
+        "state": "BLOCKED",
+        "error_code": "IDENTITY_UNVERIFIED",
+        "receipt": null,
+        "task_id": "a817ab5a-63dc-43f8-860f-903e8343c09e",
+        "implementation_digest": "000f84be9f4ea37f5397209269e7f3cdfd270c62160ddbfde702b365aea0643a"
+      }
+    ],
+    "closure": {
+      "protocol_version": "kff.guardian-closure.v1",
+      "command_id": "4d006aa5-1520-4306-abe2-e3919e7ec278",
+      "action_id": "07f1864c-1968-4894-9a2e-607a1c5a52b8",
+      "closed_at": "2026-09-14T11:03:53.237Z",
+      "proof_sha256": "9be79b74876c42812c5890a0b1215c9358ab2e6c0ba8ee773f84d29a214c68a6",
+      "local_and_database_match": true
+    },
+    "profile_after": "Inactive",
+    "stored": 0,
+    "step": "facebook-inbox-identity-before"
+  },
+  "diagnosis": {
+    "error": "个人账号页面类型未核实",
+    "steps": [
+      {
+        "at": "2026-09-14T11:07:50.081Z",
+        "step": "navigate"
+      },
+      {
+        "at": "2026-09-14T11:07:55.436Z",
+        "step": "resolve"
+      },
+      {
+        "at": "2026-09-14T11:07:55.543Z",
+        "step": "own-controls"
+      },
+      {
+        "at": "2026-09-14T11:07:56.065Z",
+        "step": "heading"
+      },
+      {
+        "at": "2026-09-14T11:07:59.152Z",
+        "step": "profile-type"
+      }
+    ],
+    "profile_id": "61594402378582",
+    "friend_link": [
+      {
+        "tag": "A",
+        "role": "link",
+        "label": "1 位好友",
+        "href": "https://www.facebook.com/profile.php?id=61594402378582&sk=friends_all"
+      }
+    ],
+    "closed": true
+  },
+  "read": {
+    "monitor_id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+    "monitor_version": 8,
+    "commands": [
+      {
+        "id": "38ce0309-e237-471e-aff5-df44bb6440dd",
+        "action_id": "f3b0e06c-18c4-4de3-94a7-9c7e5ac5c800",
+        "created_at": "2026-09-14T11:39:38.592Z",
+        "quiesced_at": "2026-09-14T11:40:39.034Z",
+        "state": "VERIFIED_SUCCEEDED",
+        "error_code": null,
+        "receipt": {
+          "remote_id": "inbox:e693f9db-6faa-4b7f-9e98-cf1079297665:7",
+          "observed_at": "2026-09-14T11:40:26.936Z",
+          "content_hash": "8e0c4fae6f131f392a78b742159ee5c0c0f416087dc2fa1873f7d55e7e9bf09d",
+          "evidence_kind": "browser_dom",
+          "actual_account_id": "61594402378582"
+        },
+        "task_id": "a587c7c8-b224-4a2d-8ffa-1c5b4dec098b",
+        "implementation_digest": "d53a9866da92de260f5153846c78049da8fe84aff2e671dd07ed7d58f932dade"
+      }
+    ],
+    "closure": {
+      "protocol_version": "kff.guardian-closure.v1",
+      "command_id": "38ce0309-e237-471e-aff5-df44bb6440dd",
+      "action_id": "f3b0e06c-18c4-4de3-94a7-9c7e5ac5c800",
+      "closed_at": "2026-09-14T11:40:38.052Z",
+      "proof_sha256": "a7998db67b4c0014a1ca762f1f2a60931b4e5ca2aa2611659ec4b699b2c3ed41",
+      "local_and_database_match": true
+    },
+    "checkpoints": [
+      {
+        "task_id": "a587c7c8-b224-4a2d-8ffa-1c5b4dec098b",
+        "stored": 2,
+        "duplicates": 0,
+        "page_sha256": "8e0c4fae6f131f392a78b742159ee5c0c0f416087dc2fa1873f7d55e7e9bf09d",
+        "observed_at": "2026-09-14T11:40:26.936Z"
+      }
+    ],
+    "audit": [
+      {
+        "event_type": "browser_inbox.page_committed",
+        "details": {
+          "stored": 2,
+          "task_id": "a587c7c8-b224-4a2d-8ffa-1c5b4dec098b",
+          "has_more": false,
+          "discovery": {
+            "skipped": [],
+            "threads": [
+              {
+                "peer_id": "61589894042400",
+                "thread_id": "2234491403949554",
+                "display_name": "XiangHuan Master"
+              }
+            ],
+            "strategy": "RECENT_ACCEPTED",
+            "empty_list": false,
+            "unparsed_rows": 0,
+            "window_limited": false,
+            "visible_threads": 1
+          },
+          "duplicates": 0
+        }
+      }
+    ],
+    "accepted": true,
+    "profile_after": "Inactive",
+    "finished_at": "2026-09-14T11:40:42.411Z"
+  },
+  "expected_message": {
+    "id": "a5a72fee-40d2-496b-b484-41d038778082",
+    "conversation_id": "82307e44-911c-49db-ab82-878d8dfde1f5",
+    "body": "KFF-0914-B 我想了解咨询流程",
+    "direction": "INBOUND",
+    "source": {
+      "ref": null,
+      "kind": "MESSENGER",
+      "ad_id": null,
+      "page_id": "61594402378582",
+      "peer_id": "61589894042400",
+      "source_id": "61589894042400@msgr.7505218155968561851",
+      "thread_id": "2234491403949554",
+      "transport": "BROWSER",
+      "source_url": "https://www.facebook.com/messages/e2ee/t/2234491403949554/",
+      "thread_kind": "UNVERIFIED",
+      "displayed_time": "03:57"
+    },
+    "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+    "handling_mode": "HUMAN"
+  },
+  "message_count": 2,
+  "account8_to_account10_inbox_verified": true,
+  "runtime": {
+    "runtime_id": "1a4cb457-192e-4a47-8a7a-bab9d2e61ee0",
+    "monitors": [
+      {
+        "kind": "acquisition",
+        "state": "PAUSED",
+        "count": 13
+      },
+      {
+        "kind": "inbox",
+        "state": "PAUSED",
+        "count": 5
+      }
+    ],
+    "open_commands": 0,
+    "live_sending_enabled": false
+  },
+  "preserved_history": {
+    "whatsapp_referrals": {
+      "count": 13,
+      "digest": "d4e2c7ebe15894e09b9e989c3a2aea12"
+    },
+    "collection_observations": {
+      "count": 705,
+      "digest": "97d0d17b1feb7aaf438430fe40529b44"
+    },
+    "acquisition_evaluations": {
+      "count": 121,
+      "digest": "93bc65e04cae5f994a95336c8017b666"
+    },
+    "acquisition_leads": {
+      "count": 38,
+      "digest": "b5f1d85f5b239911cb74b76ad196b6f3"
+    }
+  },
+  "coverage": "Only controlled account8-to-account10 accepted private message routing. Not a new public lead, continuous two-account operation, AI acceptance or WhatsApp sales receipt.",
+  "group_diagnosis": {
+    "identity": {
+      "method": "facebook-profile-dom-v1",
+      "authenticated": true,
+      "operating_identity_id": "61594402378582",
+      "account_type": "profile",
+      "display_name": "白青天",
+      "observed_at": "2026-09-14T11:31:44.178Z",
+      "source_url": "https://www.facebook.com/profile.php?id=61594402378582"
+    },
+    "header": {
+      "thread_id": "2234491403949554",
+      "peer_id": "61589894042400",
+      "display_name": "XiangHuan Master"
+    },
+    "parsed": {
+      "invalid": 1,
+      "rows": [
+        {
+          "message_id": "61589894042400@msgr.7505218155968561851",
+          "body": "KFF-0914-B 我想了解咨询流程",
+          "direction": "INBOUND",
+          "display_name": "XiangHuan Master",
+          "displayed_time": "03:57",
+          "has_attachment": false
+        }
+      ]
+    },
+    "layout": [
+      {
+        "nodes": [
+          {
+            "id": "61589894042400@msgr.7505218016684724428",
+            "test_marker": true,
+            "label_prefix": "03:56，XiangHuan",
+            "label_matches_body": true,
+            "bodies": [
+              {
+                "length": 10,
+                "test_body": "KFF-0914-B"
+              }
+            ],
+            "avatars": [],
+            "media": []
+          }
+        ]
+      },
+      {
+        "nodes": [
+          {
+            "id": "61589894042400@msgr.7505218155968561851",
+            "test_marker": true,
+            "label_prefix": "03:57，XiangHuan",
+            "label_matches_body": true,
+            "bodies": [
+              {
+                "length": 19,
+                "test_body": "KFF-0914-B 我想了解咨询流程"
+              }
+            ],
+            "avatars": [
+              {
+                "alt": "XiangHuan Master",
+                "hidden": true
+              }
+            ],
+            "media": [
+              {
+                "tag": "IMG",
+                "hidden": true,
+                "alt": "XiangHuan Master",
+                "width": null,
+                "height": null,
+                "in_body": false,
+                "interactive": true
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "closed": true,
+    "profile_after": "Inactive"
+  },
+  "prior36": {
+    "commands": [
+      {
+        "id": "6d22bb22-db5c-4cc8-a043-f3f2da968b9d",
+        "action_id": "138f1162-b8c0-41a9-ae24-4bab6fc1a100",
+        "created_at": "2026-09-14T11:14:55.616Z",
+        "quiesced_at": "2026-09-14T11:15:42.310Z",
+        "state": "BLOCKED",
+        "error_code": "INBOX_WINDOW_UNAVAILABLE",
+        "receipt": null,
+        "task_id": "c12cf556-6d5c-4d18-bd58-f13c5324d9a1",
+        "implementation_digest": "43ccb495c3656595d4a2074e2c0b76b41cd934139fc847d5ba60b3869d9a9ab2"
+      }
+    ],
+    "closure": {
+      "protocol_version": "kff.guardian-closure.v1",
+      "command_id": "6d22bb22-db5c-4cc8-a043-f3f2da968b9d",
+      "action_id": "138f1162-b8c0-41a9-ae24-4bab6fc1a100",
+      "closed_at": "2026-09-14T11:15:41.869Z",
+      "proof_sha256": "50ed8bd08aa83ce02397bd18d25974ecccf3aea096650f3ec35cd5f2a8a24185",
+      "local_and_database_match": true
+    },
+    "checkpoints": []
+  },
+  "whatsapp": "User has no confirmed receiving number yet; both inherited destinations paused. Historical A referral is unchanged and unconfirmed."
+}

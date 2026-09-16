@@ -1,0 +1,405 @@
+{
+  "checked_at": "2026-09-16T03:30:00.000Z",
+  "version": "0.1.53",
+  "supersedes": null,
+  "extends": "docs/evidence/inbox-composer-fix-053-20260915.json",
+  "scope": "User supplementary directive: isolate a conversation-level anomaly and keep going, stop the environment only for identity or run-safety anomalies, never hardcode a skipped thread ID, and report successful reads, skips, failures and real coverage separately. The Inbox reader no longer treats a usable composer as a precondition for reading a thread whose identity was already verified.",
+  "user_directive": {
+    "received_at_note": "2026-09-16 会话内直接指令；原话见 user_reply",
+    "user_reply": "最终以用户在该会话中的补充指令为准：局部异常隔离、身份与运行安全异常停止；禁止硬编码跳过 thread ID；被跳过的会话不算读取成功、不推进水位、后续仍可补读；验收必须分别报告成功读取数量、跳过数量、失败数量和实际覆盖率。",
+    "implementation_choice_delegated": true,
+    "confirmation_still_required_for": "真实 Facebook 账号占用、真实发送、重启电脑、修改代理或其他真实外部影响"
+  },
+  "answer_to_the_read_question": {
+    "question": "现有 Inbox 是否把“能够发送消息”当成了“能够读取消息”的必要条件？",
+    "answer": "是，0.1.53 第一轮仍然如此：composer 解析失败就直接跳过会话，即使标题身份已经核实。",
+    "resolution": "新增只读路径：只有“本次观察完全没有输入框”时才启用；仍要求标题唯一数字主页身份、唯一消息区域、消息区域标题等于该已核实姓名、逐条来信头像主页 ID 核对、前后操作账号身份核对。核实不了就跳过，不代读。",
+    "identity_checks_relaxed": false
+  },
+  "read_only_path": {
+    "enabled_when": "composer 观测为 ABSENT（candidate_count=0，label_kind=ABSENT）",
+    "refused_when": [
+      "输入框存在但只重复目录占位名（THREAD_COMPOSER_UNVERIFIED）",
+      "输入框指向他人或仅裸前缀/搜索框（THREAD_INPUT_FOREIGN）",
+      "输入框存在但 disabled/aria-disabled（THREAD_INPUT_UNUSABLE）",
+      "标题身份不唯一、消息区域不唯一或标题姓名不符（THREAD_IDENTITY_UNVERIFIED / INBOX_SOURCE_MISMATCH）"
+    ],
+    "recorded_as": "discovery.threads[].read_only_reason + discovery.observed[]（含 composer_surface 事实观测）",
+    "new_failure_stage": "facebook-inbox-read-only"
+  },
+  "isolation_and_counting": {
+    "local_skip": "单个会话的局部异常写入 discovery.skipped 并继续下一个会话；不算读取成功，不推进任何水位，下一轮目录发现会重新尝试",
+    "run_safety_stop": "身份、账号环境、Guardian/Agent、关闭证明或读取对象身份无法确认时停止对应环境或窗口（LOCAL_THREAD_CODES 之外的所有错误都不被吞掉）",
+    "counters": "discovery.coverage = {threads_attempted, threads_read, threads_skipped, threads_failed}；controllers 入库前校验逐会话条数与覆盖计数",
+    "hardcoded_thread_ids": 0,
+    "known_thread_2079341482680484": "与其他会话同规则，无任何写死跳过"
+  },
+  "changed_files": [
+    "packages/contracts/src/browser-inbox.ts",
+    "packages/adapters/src/facebook-inbox-directory-dom.ts",
+    "packages/adapters/src/facebook-browser-inbox.ts",
+    "packages/core/src/browser-inbox.ts",
+    "tests/contracts/browser-inbox-discovery.test.ts",
+    "tests/browser/fixtures/facebook-inbox-directory.spec.ts",
+    "tests/integration/real-browser-inbox.test.ts",
+    ".kff/run-matrix-window-053.ts",
+    ".kff/matrix-window-053-plan.json"
+  ],
+  "unchanged_on_purpose": [
+    "身份判断链（inspectFacebookInboxHeaderDom、逐条来信头像主页核对、操作账号前后核对）没有放宽任何一条",
+    "调度体系、Guardian、数据库 schema、Agent 协议、模板与许可链未改动；无新增迁移",
+    "0.1.51/0.1.52 的证据文件与历史窗口结论保持原样，不改写成通过"
+  ],
+  "validation": {
+    "typecheck": {"exit_code": 0},
+    "lint": {"exit_code": 0},
+    "build": {"exit_code": 0},
+    "contracts": {"exit_code": 0, "passed": 194, "failed": 0, "skipped": 0},
+    "browser_inbox_directory_regression": {"passed": 26, "failed": 0, "command": "npx playwright test --project=fixtures facebook-inbox-directory", "report_prefix": ".kff/checks/inbox-directory-053-r"},
+    "inbox_integration": {"passed": 11, "failed": 0, "command": "node --import tsx scripts/integration.ts tests/integration/real-browser-inbox.test.ts", "isolated_database": true, "report": ".kff/checks/integration-results.json"},
+    "scenarios_covered": {
+      "normal_thread_is_read": "yes (browser regression + integration ingest)",
+      "local_anomaly_then_next_thread_continues": "yes (per-thread isolation loop, coverage counters)",
+      "identity_conflict_must_stop": "yes (only LOCAL_THREAD_CODES are skipped; everything else rethrows and stops the environment)",
+      "skipped_thread_can_be_read_later": "yes (no persisted skip; the directory window is re-discovered every cycle and the integration test re-reads the same thread in a second cycle)",
+      "re_read_does_not_duplicate": "yes (stored=1 duplicates=1 across two cycles for the same read-only conversation)",
+      "anomaly_is_not_counted_as_success": "yes (read/message_count/coverage are cross-checked and the controller refuses inconsistent windows)"
+    },
+    "new_migrations": 0
+  },
+  "runtime": {
+    "runtime_id": "41f608ba-394f-4523-aadd-61e3b2d162d3",
+    "pid": 14900,
+    "phase": "RUNNING",
+    "app_origin": "http://127.0.0.1:3000",
+    "release_id": "kff-agent-0.1.53-win32-x64-660e67dac2d6",
+    "database_owned": true,
+    "components": {"database": {"pid": 16640, "state": "CONNECTED"}, "web": {"pid": 22996, "state": "RUNNING"}, "worker": {"pid": 7120, "state": "RUNNING"}, "agent": {"pid": 7716, "state": "RUNNING"}},
+    "web_http_status": 200,
+    "build_id": "_EOOxDuPm6JGRkyBLD6tb",
+    "build_sha256": "524e6f44561ad06f6f740d57b60fd440f0b35e2c2813774251e94be7b8e5897e",
+    "restart_note": "正常 Stop → build → 重新打包 Agent → 安装新 release 目录 → configure --discovery --inbox → relaunch-local-runtime.ts；build 变化后必须重新 configure，否则启动会被拒绝（Prepared build changed）。没有重启电脑、没有改代理、没有打开任何 Facebook 账号。",
+    "business_tables_identical_across_restart": true,
+    "business_table_digests_note": "重启前后 messages 140 / whatsapp_referrals 16 / customers 98 / accounts 88 / acquisition_leads 57 / acquisition_scans 80 / acquisition_evaluations 168 逐表行数与行摘要哈希完全一致（.kff/checks/baseline-before-restart.json 与 baseline-after-restart.json）"
+  },
+  "adapter_digest": {
+    "source": "4818f7ea3d567b4401c45550337fa98fb19953a01422feab362c93ca34e09c02",
+    "installed": "4818f7ea3d567b4401c45550337fa98fb19953a01422feab362c93ca34e09c02",
+    "match": true
+  },
+  "configuration": {"discovery_enabled": true, "browser_inbox_enabled": true, "live_sending_enabled": false},
+  "data_after_reinstall": {
+    "note": "升级前后逐表行数一致；这些数字与 0.1.53 第一轮结束时的基线相同",
+    "messages": 140,
+    "whatsapp_referrals": 16,
+    "customers": 98,
+    "accounts": 88,
+    "acquisition_leads": 57,
+    "acquisition_scans": 80,
+    "acquisition_evaluations": 168,
+    "acquisition_monitors": 33,
+    "browser_inbox_monitors": 5,
+    "acquisition_monitors_all_paused": true,
+    "open_agent_commands": 0,
+    "open_environment_commands": 0,
+    "active_monitors": 0,
+    "active_inbox_monitors": 0,
+    "pending_inbox_tasks": 0,
+    "account8_and_10_environment_state": "IDLE",
+    "account9_outbound_paused": true,
+    "account9_environment_state": "DISABLED"
+  },
+  "release": {
+    "agent": {
+      "release_id": "kff-agent-0.1.53-win32-x64-660e67dac2d6",
+      "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.53-win32-x64-660e67dac2d6",
+      "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.53-win32-x64-660e67dac2d6.zip",
+      "archive_sha256": "6236ddd3b8374d88dac3bad3b97983b0fb2c03f5ae3cc18fe6c61a8a7485f3e5",
+      "files": 1348,
+      "dependencies": 23,
+      "contains_pairing_or_browser_data": false,
+      "installed_at": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.53-win32-x64-660e67dac2d6",
+      "supersedes_for_local_runtime": "kff-agent-0.1.53-win32-x64-153bd4ef175d"
+    },
+    "controller": {
+      "status": "NOT_REPACKAGED_IN_THIS_ROUND",
+      "reason": "只读路径只改到 packages/ 源码；本机运行使用 next build 产物与已安装 Agent 源码。交付给另一台电脑前需要重新生成完整包，当前 dist 里的 0.1.53 完整包仍是第一轮内容，不能当作本轮修复的交付物。",
+      "previous_full_package": "dist/kff-controller-0.1.53-win32-x64-984bc7dad026.zip"
+    }
+  },
+  "acceptance_window_prepared": {
+    "entrypoint": ".kff/run-matrix-window-053.ts",
+    "entrypoint_sha256": "086d0ae3efc4b6f73ddced505bf860c009d8b983ee4d3c1e7f3756daec89d692",
+    "plan": ".kff/matrix-window-053-plan.json",
+    "approval": "PENDING_USER_CONFIRMATION",
+    "approved_at": null,
+    "user_reply": "",
+    "accounts": [8, 10],
+    "account9_enabled": false,
+    "monitor_restart_or_proxy_change": false,
+    "maximum_business_seconds": 3600,
+    "stop_rule": "运行安全异常停止窗口；单个会话的局部异常记录后继续",
+    "reports": "成功读取数、跳过数、失败数、实际覆盖率",
+    "executed": false
+  },
+  "live_composer_fix_acceptance": "PENDING_FRESH_AUTHORIZED_WINDOW",
+  "full_goal_complete": false,
+  "other_computer_or_system_reboot_verified": false,
+  "live_sending_enabled": false,
+  "automatic_reception_enabled": false,
+  "account9_enabled": false,
+  "platform_actions_in_this_round": 0,
+  "authorized_window_attempt_1": {
+    "authorization": "用户在会话中回复“授权”",
+    "approved_at": "2026-09-16T04:09:03.519Z",
+    "plan": ".kff/matrix-window-053-plan-attempt1.json",
+    "record": ".kff/matrix-window-053-attempt1-version-conflict.json",
+    "entrypoint_sha256": "086d0ae3efc4b6f73ddced505bf860c009d8b983ee4d3c1e7f3756daec89d692",
+    "started_at": "2026-09-16T04:09:19.612Z",
+    "finished_at": "2026-09-16T04:09:25.977Z",
+    "elapsed_seconds": 6.365,
+    "result": "CLOSED_WITH_FINDINGS / RUN_SAFETY_FAILURE",
+    "root_cause": "四条命令全部以 VERSION_CONFLICT 被拒。真实原因：capability.implementation_digest 仍是本机重装源码之前的旧值（eb68a138…），与任务快照里的 adapterImplementationDigest（4818f7ea…）不一致，因此 packages/core/src/execution.ts 的实现摘要门禁在任何命令到达 Agent 之前就拒绝执行。这是既有安全门禁按设计工作，不是本次只读路径改动引入的问题。",
+    "what_did_not_happen": [
+      "没有任何命令到达 Agent 或 Guardian",
+      "没有打开任何 Facebook 账号 Profile（两个 Profile 复查仍为 Inactive）",
+      "没有打开浏览器、没有读取任何会话或消息、没有发送",
+      "没有修改代理、没有重启电脑或 AdsPower 管理程序（管理程序在本轮之前由用户环境未运行，已按原项目入口脚本只启动管理程序）"
+    ],
+    "remediation": {
+      "step_1": "node --import tsx scripts/register-evidence.ts —— 按当前通过的全部合同报告登记当前实现摘要",
+      "step_2": ".kff/attach-capability-evidence-053.ts —— 对 8/10 号的能力行调用原 attachLocalEvidence，把四类 Facebook 浏览器能力的 implementation_digest 更新为当前值。只刷新证据到当前实现，不新增任何发送权限。",
+      "step_3": "隔离库复现 tests/integration/inbox-capability-digest.test.ts：旧摘要会在排队前被拒（monitor 记录真实失败码、agent_commands 为 0），当前摘要则让同一命令正常到达 Agent。两项均通过。",
+      "digest_after": "4818f7ea3d567b4401c45550337fa98fb19953a01422feab362c93ca34e09c02（与运行中源码、已安装 Agent 一致）"
+    },
+    "cleanup_verified": {
+      "open_commands": 0,
+      "monitors": "全部 PAUSED",
+      "profiles": "k1gvdtft / k1gx1n1s 均 Inactive",
+      "account9": "outbound_paused=true 且环境 DISABLED",
+      "live_sending_enabled": false,
+      "action_attempts_in_window": 0
+    },
+    "re_run_requires": "用户新的明确授权。按用户既定规则，一次授权对应一次有边界窗口；本次授权已被这一次尝试消耗，不自动重跑真实账号。"
+  },
+  "authorized_window_attempt_2": {
+    "authorization": "用户在会话中选择“授权重跑一次（推荐）”",
+    "approved_at": "2026-09-16T04:20:30.434Z",
+    "plan": ".kff/matrix-window-053-plan.json",
+    "record": ".kff/matrix-window-053.json",
+    "entrypoint_sha256": "086d0ae3efc4b6f73ddced505bf860c009d8b983ee4d3c1e7f3756daec89d692",
+    "started_at": "2026-09-16T04:20:40.390Z",
+    "finished_at": "2026-09-16T04:21:20.271Z",
+    "elapsed_seconds": 39.881,
+    "result": "CLOSED_WITH_FINDINGS / RUN_SAFETY_FAILURE",
+    "what_happened": "第 1 条命令（8 号收件）已到达 Agent 与 Guardian，但账号身份核验的页面导航失败，报 IDENTITY_NAVIGATION_FAILED，按用户约定的运行安全规则立即停止窗口。另外 3 条命令在派发前取消（STOP_REQUESTED），没有到达平台。",
+    "identity_gate_detail": "IDENTITY_NAVIGATION_FAILED 来自 packages/adapters/src/facebook-browser-identity.ts 第 27 行：page.goto('https://www.facebook.com/me/') 抛错（不是超时）。它不是身份不匹配、不是 READ_ONLY 路径的判定结果，也不代表账号异常。",
+    "closure_proof": "两条已领取命令都有本地 Guardian 与数据库一致的关闭证明（local_database_match=true）：8 号收件命令 c33dbc8b… / 证明 773e2913…，10 号收件命令 d1de17b4… / 证明 2b74f6f3…。",
+    "platform_submissions": 0,
+    "profiles_after": "k1gvdtft / k1gx1n1s 均 Inactive；没有遗留打开的 Profile",
+    "inbox_read_evidence": "无。没有任何会话被读取，coverage 为空，没有新消息入库（messages 仍为 140）。",
+    "open_question": "AdsPower 内该 Profile 的浏览器能否访问 Facebook 尚缺证据：本机自身网络正常，但失败发生在供应商浏览器进程内，属于环境未验证项，不是产品代码结论。",
+    "next_diagnostic_if_authorized": "一次有边界的只读连通性探针：打开 8 号 Profile，仅访问 about:blank 与 https://www.facebook.com/，记录导航结果与最终 URL（不进入任何会话、不读消息、不发送），随后按原受管流程关闭并核对关闭证明。用于区分“会话失效/需要人工登录”与“浏览器网络路径不可达”。",
+    "state_after": {
+      "runtime_id": "1be7237d-94b8-42b3-8934-868d5634ecd4",
+      "open_commands": 0,
+      "monitors": "37 个采集监控全部 PAUSED；8/10 号收件监控 PAUSED 且无在途任务",
+      "live_sending_enabled": false,
+      "business_rows": {"messages": 140, "customers": 98, "acquisition_leads": 57}
+    },
+    "re_run_requires": "用户新的明确授权；并在重跑前先完成上面的连通性探针，避免再消耗一次窗口。"
+  },
+  "authorized_connectivity_probe": {
+    "authorization": "用户在会话中选择“授权做这个探针（推荐）”",
+    "approved_at": "2026-09-16T04:28:37.368Z",
+    "plan": ".kff/connectivity-probe-053-plan.json",
+    "record": ".kff/connectivity-probe-053.json",
+    "screenshot": ".kff/connectivity-probe-053.png（仅保存在私有目录）",
+    "started_at": "2026-09-16T04:28:39.056Z",
+    "finished_at": "2026-09-16T04:28:52.897Z",
+    "profile": "8 (k1gvdtft)",
+    "result": "closure_confirmed=true，after_status=Inactive；没有进入会话、没有读取消息、提交 0",
+    "navigations": {
+      "about:blank": "ok（74 毫秒）",
+      "https://www.facebook.com/": "失败：net::ERR_PROXY_CONNECTION_FAILED（2051 毫秒）"
+    },
+    "root_cause_of_attempt_2": "8 号 AdsPower Profile 的浏览器走自身配置的代理，而该代理当前不可连接，所以 facebook.com 完全打不开。这正好解释第 2 次窗口的 IDENTITY_NAVIGATION_FAILED（facebook.com/me/ 导航立刻抛错、不是超时）。",
+    "not_a_product_defect": "本机自身网络正常，失败发生在供应商浏览器进程的代理路径内；与 0.1.53 的只读路径、身份判断和调度逻辑无关。",
+    "remaining_unknown": "代理服务器地址与账号口令没有记录（只读列举接口未返回代理字段），需要操作员在 AdsPower 内查看 8 号 Profile 的代理配置。",
+    "next_step": "由操作员在 AdsPower 里确认/更换 8 号（必要时 10 号）Profile 的代理，确认浏览器能打开 facebook.com 后再申请窗口授权。",
+    "reprobe_after_operator_action": {
+      "authorization": "用户回复“授权”",
+      "approved_at": "2026-09-16T04:29:59.428Z",
+      "record": ".kff/connectivity-probe-053.json（attempt 2 结果，已覆盖同一路径）",
+      "started_at": "2026-09-16T04:30:00.382Z",
+      "finished_at": "2026-09-16T04:30:12.402Z",
+      "result": "仍然 net::ERR_PROXY_CONNECTION_FAILED；closure_confirmed=true、after_status=Inactive；未读消息、未发送"
+    },
+    "proxy_diagnostics": {
+      "profile_8_config": "user_proxy_config：proxy_soft=other、proxy_type=socks5、proxy_host 为 IPv4（只记录摘要）、proxy_port=10907、无账号口令",
+      "profile_10_config": "同主机、socks5、端口 10920；9 号 10919（9 号保持停用）",
+      "local_tcp_probe": "127.0.0.1:10907 / 10919 / 10920 全部 ECONNREFUSED（1 毫秒内立即拒绝，说明本机没有进程在监听这些端口）；10809 / 7890 / 7897 / 1080 同样拒绝",
+      "only_reachable_port": "127.0.0.1:10808 可连接（Windows 系统代理 ProxyEnable=1 指向它，会话环境变量 HTTPS_PROXY 也是它）",
+      "conclusion": "AdsPower Profile 配置的 SOCKS5 代理端口在本机没有任何监听进程，浏览器因此无法建立代理隧道，Facebook 完全打不开。既不是产品代码问题，也不是账号状态问题。",
+      "not_verified": "Chromium 实际使用的是 Profile 的 socks5 配置还是继承的 Windows 系统代理，未取得直接证据；两种情况下当前都不可用（10907 无监听；10808 的 HTTP 代理也未在 Profile 路径上生效）。",
+      "needed_from_operator": "启动/恢复 Profile 配置所指向的本地代理客户端，使其监听对应端口（并确认 8 号、10 号各自端口都可用）。这一步会修改本机代理软件状态，属于用户保留确认的操作；操作员处理后可让我用同一个探针复验。"
+    },
+    "reprobe_after_operator_fix": {
+      "authorization": "用户回复“好了”（操作员已处理代理）",
+      "approved_at": "2026-09-16T05:03:41.317Z",
+      "started_at": "2026-09-16T05:03:45.637Z",
+      "attempt": 3,
+      "navigations": {
+        "about:blank": "ok（62 毫秒）",
+        "https://www.facebook.com/": "ok，HTTP 200，最终 URL https://www.facebook.com/，标题 Facebook（7787 毫秒）"
+      },
+      "runtime": {"language": "en-US", "timezone": "Asia/Singapore", "online": true},
+      "account_visible_in_private_screenshot": "8 号环境显示已登录 XiangHuan Master（与绑定身份 61589894042400 的显示名一致）；截图仅保存在 .kff 私有目录，不复制到仓库或聊天",
+      "closure": "closure_confirmed=true，after_status=Inactive",
+      "platform_submissions": 0,
+      "messages_read": 0,
+      "result": "环境已恢复可达，可以先跑只读窗口"
+    }
+  },
+  "authorized_window_attempt_3": {
+    "authorization": "用户选择“授权跑这次只读窗口（推荐）”",
+    "approved_at": "2026-09-16T05:04:50.522Z",
+    "plan": ".kff/matrix-window-053-plan.json",
+    "record": ".kff/matrix-window-053.json",
+    "entrypoint_sha256": "086d0ae3efc4b6f73ddced505bf860c009d8b983ee4d3c1e7f3756daec89d692",
+    "started_at": "2026-09-16T05:05:00.663Z",
+    "finished_at": "2026-09-16T05:07:20.024Z",
+    "elapsed_seconds": 143.361,
+    "result": "CLOSED_WITH_FINDINGS / RUN_SAFETY_FAILURE",
+    "what_worked": {
+      "account_8_public_search": "执行成功并正常关闭（命令 c052905c…，05:05:00 领取、05:06:02 关闭）。扫描 PARTIAL / MAX_PAGES，读到一个 Reel 来源，返回 3 条、去重后 3 条、提交 1 页。",
+      "automatic_source_continuation": "系统按原规则自动派生了『8号八字搜索 · 评论接续』监控（目标 https://www.facebook.com/reel/3444005145770677/）",
+      "new_lead": "新增 1 条 NEW 线索（score 50，monitor 409c649d…），来自公开搜索来源内容，不是新咨询评论、也不是新客户"
+    },
+    "what_failed": {
+      "account_8_inbox_read": "命令 9f20ac1b…（05:06:03 领取、05:07:04 关闭）返回 BLOCKED / EXECUTOR_ERROR，窗口按运行安全规则立即停止；10 号搜索与两条收件命令在派发前取消（STOP_REQUESTED），没有到达平台。",
+      "error_detail_lost": "EXECUTOR_ERROR 表示抛出的不是 AppError。当时 Agent 的阻塞报告只记录步骤，真实异常内容没有进入数据库，因此本条命令的确切原因缺失。这是本轮新发现的留证缺口。"
+    },
+    "closure_proof": "三条已领取命令都有本地 Guardian 与数据库一致的关闭证明（4b6972c3…、fd5d0eea…、24f300ad…）。",
+    "platform_submissions": 0,
+    "profiles_after": "两个 Profile 均 Inactive",
+    "inbox_coverage": "threads_attempted=0、threads_read=0、threads_skipped=0、threads_failed=0；没有任何会话被读取，messages 仍为 140",
+    "run_safety_decision": "本次窗口仍沿用既有约定『首个运行安全异常停止整个窗口』。按用户补充指令，只有已识别的局部会话异常才记录后继续；一个未知类别异常不在 LOCAL_THREAD_CODES 白名单内，所以停止是符合约定的行为。",
+    "fix_added_after_this_attempt": {
+      "file": "packages/adapters/src/facebook-browser-inbox.ts",
+      "change": "blockedDiagnostic()：阻塞报告现在带上 error_kind（错误类名或已有错误码）与 error_message（截断到 180 字符的事实型描述），不再只有步骤。",
+      "contract": "packages/contracts/src/index.ts 的 report diagnostic 增加可选 error_kind / error_message，向后兼容。",
+      "validation": "契约 194/194、Inbox 目录浏览器回归 26/26 均通过（schema 变更后重跑）。",
+      "not_yet_installed": "该修复尚未重新打包安装到运行中的 Agent；下一次真实读取前必须重打包、安装、刷新能力证据，否则异常原因仍会丢失。"
+    },
+    "state_after": {
+      "runtime_id": "1be7237d-94b8-42b3-8934-868d5634ecd4",
+      "open_commands": 0,
+      "monitors": "全部 PAUSED",
+      "live_sending_enabled": false
+    }
+  },
+  "authorized_inbox_diagnostic": {
+    "authorization": "用户选择“授权收件专项诊断（推荐）”",
+    "approved_at": "2026-09-16T05:25:11.186Z",
+    "plan": ".kff/inbox-diagnostic-053-plan.json",
+    "record": ".kff/inbox-diagnostic-053.json",
+    "entrypoint_sha256": "0c9eebb3850f209e70c719724ec96a62415a0e36dca057b2c0cad4dde7839244",
+    "scope": "每个账号 1 轮收件（最多 3 个会话、25 条消息），不搜索、不发送",
+    "started_at": "2026-09-16T05:25:19.200Z",
+    "finished_at": "2026-09-16T05:40:23.126Z",
+    "elapsed_seconds": 903.926,
+    "runner_stop_reason": "OBSERVATION_LIMIT（观察器自身的缺陷：它只检查预先记录的任务列表，而任务是在循环开始后才创建的，所以没认出这两次执行）",
+    "what_actually_ran": {
+      "account_8": "任务 e6da4370…，05:25:20 领取、05:26:37 关闭，结果 BLOCKED / EXECUTOR_ERROR",
+      "account_10": "任务 3097580d…，05:26:39 领取、05:27:21 关闭，结果 BLOCKED / EXECUTOR_ERROR",
+      "note": "两次都是失败关闭，没有 page_committed 事件，因此没有读取、没有入库"
+    },
+    "decisive_finding": {
+      "source": "kff.diagnostic_bundles（action.reported 旁边落库的 D0 诊断包）",
+      "step": "facebook-inbox-identity-after",
+      "meaning": "失败发生在“收件读完之后再核对操作账号身份”这一步，不是收件读取本身；读取阶段没有留下失败痕迹，也没有提交任何页面。",
+      "both_accounts_same_step": true,
+      "interpretation": "8 号与 10 号在同一阶段失败，指向环境/浏览器连接层面的问题（读完之后浏览器与目标页不可用），而不是某一个账号或某一个会话的问题；也**不是** 0.1.53 只读路径或会话身份判断的缺陷。",
+      "treated_as": "运行安全异常，按约定停止，没有把它当成会话级局部异常继续。"
+    },
+    "diagnostic_gap_found_and_fixed": {
+      "gap": "第一次补的 error_kind/error_message 只放进了 action report，而报告本身不落库（action.reported 只记 outcome/error_code/evidence_kind），所以仍然看不到原因。",
+      "fix": "packages/core/src/index.ts 的 buildDiagnostic() 现在把 error_kind 与截断后的 error_message 一起写进 kff.diagnostic_bundles（允许清单内，仍不含消息正文、DOM、截图、Cookie）。",
+      "validation": "typecheck 通过；契约 194/194 通过；Agent 重新打包为 kff-agent-0.1.53-win32-x64-09426d5344c9 并安装；能力证据已刷新到当前实现摘要；运行 ID a7d7a836-12b2-4d7f-85ee-3210dcf66311，adapter_match=true。"
+    },
+    "operator_visible_side_effects": {
+      "manual_probe": "为定位“为什么没有任务”，做过一次单发 SCAN 本地探针。它在自己的进程里缺少运行时开关变量，于是在 enqueue 阶段被拒（LIVE_DISABLED），事务整体回滚：没有留下任务、run、action 或 job。探针只在监控行留下一个 last_error_code=LIVE_DISABLED 标记，已按最小范围清空（其它字段未改）。",
+      "why_it_matters": "该探针没有打开账号、没有触发任何平台动作；记录在此是为了不隐藏操作痕迹。"
+    },
+    "state_after": "运行中、未关闭命令 0、在途收件 0、监控全部 PAUSED、两个 Profile Inactive、真实发送关闭；messages 140、customers 98、acquisition_leads 58（+1 来自第 3 次窗口的 8 号搜索）"
+  },
+  "root_cause_found_and_fixed": {
+    "found_at": "2026-09-16T05:49:00.277Z",
+    "source": "kff.diagnostic_bundles（收件诊断第 2 次，8 号动作 ee33393f…，耗时 72060 毫秒）",
+    "error_kind": "ZodError",
+    "error_message": "discovery.threads[0]：读到的会话必须保留输入框或只读原因证据",
+    "explanation": "会话其实已经读到了（读到消息、读完才去做账号身份复核），但报告在 browserInboxPage.parse() 被 0.1.53 自己新增的契约拒绝：已接受输入框这条路径上，resolveThreadComposer 成功时把 surface 置成了 null，于是读到的会话既没有 composer_surface 也没有 read_only_reason。拒绝发生在 parse 阶段，被 executor 归类为 EXECUTOR_ERROR，因此读到的内容被丢弃、没有入库，看起来像“收件又崩了”。",
+    "scope": "这条路径在改动前完全相同，所以 0.1.51 窗口的收件失败也包含同一个原因；不是平台异常，也不是账号或会话问题。",
+    "fix": [
+      "packages/adapters/src/facebook-browser-inbox.ts：resolveThreadComposer 现在无条件返回事实型 surface（成功时不再置 null），已读会话因此始终带输入框证据",
+      "packages/adapters/src/facebook-browser-inbox.ts：discovery.threads.push 与 discovery.observed 统一使用同一个 evidence 值，结构上不可能再漏",
+      "tests/browser/fixtures/facebook-inbox-directory.spec.ts：新增回归用例『every read conversation carries the evidence its window contract requires』，对已接受输入框和只读两条路径都把结果送进 browserInboxPage.parse，未修前会红"
+    ],
+    "validation": {
+      "browser_inbox_directory_regression": "27/27 通过（含新回归用例）",
+      "contracts": "194/194 通过",
+      "typecheck": "通过",
+      "build": "通过",
+      "agent": "重新打包安装为 kff-agent-0.1.53-win32-x64-7b5073d59dc3；能力证据已刷新；运行 ID 05aab051-c9ec-498f-8ccd-2bd9f9fee23e，adapter_match=true"
+    },
+    "note": "第 3 次窗口与两次收件诊断合计 3 次真实读取尝试，读到的内容都因为这一处证据缺失被丢弃；没有任何会话内容进入数据库，也没有任何发送。"
+  },
+  "authorized_window_attempt_4": {
+    "authorization": "用户选择“授权跑完整只读窗口（推荐）”",
+    "approved_at": "2026-09-16T05:58:27.135Z",
+    "plan": ".kff/matrix-window-053-plan.json",
+    "record": ".kff/matrix-window-053.json",
+    "entrypoint_sha256": "086d0ae3efc4b6f73ddced505bf860c009d8b983ee4d3c1e7f3756daec89d692",
+    "started_at": "2026-09-16T05:58:38.449Z",
+    "finished_at": "2026-09-16T06:29:49.299Z",
+    "elapsed_seconds": 1870.85,
+    "result": "CLOSED_WITH_FINDINGS / RUN_SAFETY_FAILURE（异常出现在最后一次计划动作，见下）",
+    "reading": {
+      "threads_attempted": 5,
+      "threads_read": 5,
+      "threads_skipped": 0,
+      "threads_failed": 0,
+      "coverage_ratio": 1.0,
+      "fully_read": true,
+      "pages": [
+        {"account": 8, "visible_threads": 3, "unparsed_rows": 0, "read": 3, "skipped": 0, "observed": ["THREAD_COMPOSER_ABSENT"]},
+        {"account": 10, "visible_threads": 2, "unparsed_rows": 0, "read": 2, "skipped": 0, "observed": []}
+      ]
+    },
+    "commands": "8 条已领取命令：6 条 VERIFIED_SUCCEEDED（两号各一轮收件、两号各一轮搜索、两轮自动派生的评论接续）；第 7 条 8 号第 2 轮搜索 BLOCKED / SOURCE_WINDOW_ENDED；第 8 条在派发后取消（STOP_REQUESTED）。",
+    "inbox_ingest": {
+      "account_8": "checkpoint stored=0、duplicates=10（本次可见消息全部已存在）",
+      "account_10": "checkpoint stored=1、duplicates=8；该条经 storeFacebookInboxEvent 判定为自有回执，未产生新的 messages 行",
+      "messages_total_after": 140,
+      "note": "本次窗口没有新的客户来信需要入库，因此总数不变；读取覆盖与去重均正常。"
+    },
+    "search": "两轮搜索各读到来源并派生评论接续（scans 6 次）；leads 仍为 3 条 NEW（与窗口前相比只增加来源候选）。",
+    "closure_and_identity": {
+      "closures": 8,
+      "local_database_match": true,
+      "serialized": true,
+      "identity_matches": true,
+      "platform_submissions": 0
+    },
+    "the_one_anomaly": {
+      "code": "SOURCE_WINDOW_ENDED",
+      "action": "8 号第 2 轮「八字」搜索",
+      "at": "2026-09-16T06:28:40Z",
+      "meaning": "第 1 轮自动派生的评论接续来源已经过了 1 小时来源有效期，第 2 轮搜索触发了既有来源窗口结束的安全拦截。这是既有规则按设计工作，不是收件读取缺陷，也没有造成任何错误入库。",
+      "window_behaviour": "窗口在最后一次计划动作上报出该异常后立即停止（符合『运行安全异常停止』约定）；8 号第 2 轮收件此前已成功完成，因此 Inbox 两轮覆盖已经取得。"
+    },
+    "environment": {"profiles_after": "两个 Profile Inactive；环境 IDLE", "live_sending_enabled": false, "account9_enabled": false},
+    "conclusion": "0.1.53 的 Inbox 只读路径在真实账号上按设计工作：读到 5 个会话、覆盖率 1.0、跳过与失败均为 0，其中 8 号至少 1 个会话是通过『观察不到输入框』的只读路径读到的（discovery.observed=THREAD_COMPOSER_ABSENT），身份与关闭证明齐全，提交 0。"
+  }
+}

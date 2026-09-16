@@ -1,0 +1,208 @@
+{
+  "at": "2026-09-14T13:54:38.015Z",
+  "purpose": "Observe the original comment-entry click and sidebar only; no collection projection, no sends, no click retries.",
+  "original_failed_action": "139e1122-32f5-4888-a96c-20a8416e7d8d",
+  "events": [
+    {
+      "phase": "before_click",
+      "trusted": true,
+      "at": "2026-09-14T13:54:54.016Z",
+      "path": "/reel/2163157911082094",
+      "focused": true,
+      "visibility": "visible",
+      "ready": "interactive",
+      "sidebar_count": 0,
+      "dialog_count": 0,
+      "comment_articles": 0,
+      "buttons": [
+        {
+          "expanded": "false",
+          "pressed": null,
+          "x": 489.88751220703125,
+          "y": 308,
+          "width": 48,
+          "height": 65,
+          "hit": true
+        },
+        {
+          "expanded": "false",
+          "pressed": null,
+          "x": 489.88751220703125,
+          "y": 762,
+          "width": 48,
+          "height": 65,
+          "hit": false
+        }
+      ]
+    },
+    {
+      "phase": "after_click",
+      "delay_ms": 0,
+      "at": "2026-09-14T13:54:54.450Z",
+      "path": "/reel/2163157911082094",
+      "focused": true,
+      "visibility": "visible",
+      "ready": "interactive",
+      "sidebar_count": 0,
+      "dialog_count": 0,
+      "comment_articles": 0,
+      "buttons": [
+        {
+          "expanded": "true",
+          "pressed": null,
+          "x": 256.76251220703125,
+          "y": 135,
+          "width": 48,
+          "height": 65,
+          "hit": true
+        },
+        {
+          "expanded": "true",
+          "pressed": null,
+          "x": 256.76251220703125,
+          "y": 390,
+          "width": 48,
+          "height": 65,
+          "hit": false
+        }
+      ]
+    },
+    {
+      "phase": "after_click",
+      "delay_ms": 500,
+      "at": "2026-09-14T13:54:54.529Z",
+      "path": "/reel/2163157911082094",
+      "focused": true,
+      "visibility": "visible",
+      "ready": "interactive",
+      "sidebar_count": 0,
+      "dialog_count": 0,
+      "comment_articles": 0,
+      "buttons": [
+        {
+          "expanded": "true",
+          "pressed": null,
+          "x": 254.21250915527344,
+          "y": 135,
+          "width": 48,
+          "height": 65,
+          "hit": true
+        },
+        {
+          "expanded": "true",
+          "pressed": null,
+          "x": 254.21250915527344,
+          "y": 390,
+          "width": 48,
+          "height": 65,
+          "hit": false
+        }
+      ]
+    },
+    {
+      "phase": "after_click",
+      "delay_ms": 2000,
+      "at": "2026-09-14T13:54:56.042Z",
+      "path": "/reel/2163157911082094",
+      "focused": true,
+      "visibility": "visible",
+      "ready": "interactive",
+      "sidebar_count": 0,
+      "dialog_count": 0,
+      "comment_articles": 0,
+      "buttons": [
+        {
+          "expanded": "true",
+          "pressed": null,
+          "x": 253.91250610351562,
+          "y": 135,
+          "width": 48,
+          "height": 65,
+          "hit": true
+        },
+        {
+          "expanded": "true",
+          "pressed": null,
+          "x": 253.91250610351562,
+          "y": 390,
+          "width": 48,
+          "height": 65,
+          "hit": false
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "at": "2026-09-14T13:54:50.565Z",
+      "step": "navigate"
+    },
+    {
+      "at": "2026-09-14T13:54:52.748Z",
+      "step": "wait-comments"
+    },
+    {
+      "at": "2026-09-14T13:54:52.749Z",
+      "step": "wait-comment-entry"
+    },
+    {
+      "at": "2026-09-14T13:54:53.307Z",
+      "step": "locate-comment-entry"
+    },
+    {
+      "at": "2026-09-14T13:54:53.739Z",
+      "step": "click-comment-entry"
+    },
+    {
+      "at": "2026-09-14T13:54:54.255Z",
+      "step": "wait-sidebar"
+    }
+  ],
+  "sends": 0,
+  "identity": {
+    "method": "facebook-profile-dom-v1",
+    "authenticated": true,
+    "operating_identity_id": "61594402378582",
+    "account_type": "profile",
+    "display_name": "白青天",
+    "observed_at": "2026-09-14T13:54:50.562Z",
+    "source_url": "https://www.facebook.com/profile.php?id=61594402378582"
+  },
+  "read_stop": {
+    "name": "TimeoutError",
+    "code": null,
+    "message": "locator.waitFor: Timeout 20000ms exceeded."
+  },
+  "final_frame": {
+    "at": "2026-09-14T13:55:14.270Z",
+    "path": "/reel/2163157911082094",
+    "focused": true,
+    "visibility": "visible",
+    "ready": "complete",
+    "sidebar_count": 0,
+    "dialog_count": 0,
+    "comment_articles": 4,
+    "buttons": [
+      {
+        "expanded": "true",
+        "pressed": null,
+        "x": 253.91250610351562,
+        "y": 135,
+        "width": 48,
+        "height": 65,
+        "hit": true
+      },
+      {
+        "expanded": "true",
+        "pressed": null,
+        "x": 253.91250610351562,
+        "y": 390,
+        "width": 48,
+        "height": 65,
+        "hit": false
+      }
+    ]
+  },
+  "profile_after": "Inactive",
+  "finished_at": "2026-09-14T13:55:15.341Z"
+}

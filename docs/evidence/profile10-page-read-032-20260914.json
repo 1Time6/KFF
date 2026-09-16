@@ -1,0 +1,356 @@
+{
+  "source_guard_diagnostic": {
+    "started_at": "2026-09-14T09:32:27.552Z",
+    "request_id": "46384c3a-ee17-4f52-bc4e-a555bc4a862a",
+    "profile_id": "k1gx1n1s",
+    "source": "https://www.facebook.com/61594197356279/",
+    "source_navigations": 1,
+    "submissions": 0,
+    "collection_runs_created": 0,
+    "purpose": "One read-only diagnosis of the original facebook-page-read-scope timeout, held by the original environment command",
+    "command_id": "b28fd220-a88c-462b-bf00-0f065fdeb724",
+    "identity": {
+      "method": "facebook-profile-dom-v1",
+      "authenticated": true,
+      "operating_identity_id": "61594402378582",
+      "account_type": "profile",
+      "display_name": "白青天",
+      "observed_at": "2026-09-14T09:32:48.615Z",
+      "source_url": "https://www.facebook.com/profile.php?id=61594402378582"
+    },
+    "home_identity_link": true,
+    "http_status": 200,
+    "guard_steps": [
+      "source-address",
+      "source-modern-verified"
+    ],
+    "source_guard_passed": true,
+    "markers": {
+      "viewport": {
+        "width": 786,
+        "height": 506,
+        "visibility": "visible"
+      },
+      "tabs": [
+        {
+          "tag": "A",
+          "role": "tab",
+          "text": "全部",
+          "label": null,
+          "rendered": true,
+          "css_visibility": "visible",
+          "hidden_ancestor": false,
+          "href": "/profile.php?id=61594197356279"
+        },
+        {
+          "tag": "A",
+          "role": "tab",
+          "text": "简介",
+          "label": null,
+          "rendered": true,
+          "css_visibility": "visible",
+          "hidden_ancestor": false,
+          "href": "https://www.facebook.com/profile.php?id=61594197356279&sk=about"
+        },
+        {
+          "tag": "A",
+          "role": "tab",
+          "text": "Reels",
+          "label": null,
+          "rendered": true,
+          "css_visibility": "visible",
+          "hidden_ancestor": false,
+          "href": "https://www.facebook.com/profile.php?id=61594197356279&sk=reels_tab"
+        },
+        {
+          "tag": "A",
+          "role": "tab",
+          "text": "照片",
+          "label": null,
+          "rendered": true,
+          "css_visibility": "visible",
+          "hidden_ancestor": false,
+          "href": "https://www.facebook.com/profile.php?id=61594197356279&sk=photos"
+        },
+        {
+          "tag": "A",
+          "role": "tab",
+          "text": "粉丝",
+          "label": null,
+          "rendered": true,
+          "css_visibility": "visible",
+          "hidden_ancestor": false,
+          "href": "https://www.facebook.com/profile.php?id=61594197356279&sk=followers"
+        }
+      ],
+      "reviews": [
+        {
+          "tag": "DIV",
+          "role": "button",
+          "text": "尚无评分（0 次点评）",
+          "label": null,
+          "rendered": true,
+          "css_visibility": "visible",
+          "hidden_ancestor": false,
+          "href": null
+        }
+      ],
+      "header_followers": [
+        {
+          "tag": "A",
+          "role": "link",
+          "text": "7 位粉丝",
+          "label": null,
+          "rendered": true,
+          "css_visibility": "visible",
+          "hidden_ancestor": false,
+          "href": "https://www.facebook.com/profile.php?id=61594197356279&sk=followers"
+        }
+      ]
+    },
+    "observed_at": "2026-09-14T09:32:51.185Z",
+    "cleanup_stop_requested_at": "2026-09-14T09:32:51.189Z",
+    "command": {
+      "id": "b28fd220-a88c-462b-bf00-0f065fdeb724",
+      "state": "CLOSED",
+      "closed_at": "2026-09-14T09:32:53.624Z",
+      "result": {
+        "outcome": "CLOSED",
+        "context_closed": true,
+        "browser_version": "150.0.7871.47"
+      }
+    },
+    "closure_matches": true,
+    "provider_after": "Inactive",
+    "finished_at": "2026-09-14T09:32:54.228Z"
+  },
+  "at": "2026-09-14T09:45:22.206Z",
+  "goal_complete": false,
+  "version": "0.1.32",
+  "source_build_agent_match": true,
+  "read": {
+    "monitor_id": "d30bcd50-5365-42a3-87f2-17cdcb9be43f",
+    "started_at": "2026-09-14T09:44:25.222Z",
+    "source": "https://www.facebook.com/61594197356279/",
+    "platform_sends": 0,
+    "create_id": "80a97f83-d125-4c70-9f06-68a9f3386aee",
+    "request_id": "1351b40c-11e2-40e1-bfa8-0fc9aefda1b0",
+    "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+    "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+    "query_id": "8e28d88f-bfe6-4f2a-a9bc-39261f2db9d7",
+    "run_id": "7c59cf76-86f6-4486-9e7c-08bcd5fa234d",
+    "run": {
+      "id": "7c59cf76-86f6-4486-9e7c-08bcd5fa234d",
+      "state": "FAILED",
+      "returned_count": 0,
+      "unique_count": 0,
+      "committed_pages": 0,
+      "error_code": "SOURCE_UNSUPPORTED",
+      "stop_reason": "SOURCE_UNSUPPORTED"
+    },
+    "commands": [
+      {
+        "id": "291ac9e4-e8aa-4582-84e0-0f6c21298944",
+        "action_id": "a6ffdb1a-78c8-4349-b833-12efdc1d6b1c",
+        "created_at": "2026-09-14T09:44:27.200Z",
+        "quiesced_at": "2026-09-14T09:44:52.241Z",
+        "state": "BLOCKED",
+        "error_code": "SOURCE_UNSUPPORTED",
+        "receipt": null,
+        "implementation_digest": "ee99d17cfffe1670e68177ed3bc17fcf30d45cccb7db13d61ce5d11af374a388"
+      }
+    ],
+    "observations": [],
+    "leads": [],
+    "provider_after": "Inactive",
+    "finished_at": "2026-09-14T09:44:55.946Z",
+    "verified": false
+  },
+  "diagnostics": [
+    {
+      "id": "a9966fda-980e-483c-b1da-d75e7ba8acd0",
+      "manifest": {
+        "step": "facebook-page-read-source-modern-all-tab",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "d6c270a3fde6109ca6aaf4399aa721f3a4b656559bb5cbb4f55c17b2fb6e55d8",
+            "content": {
+              "result_count": 0,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "BLOCKED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "a6ffdb1a-78c8-4349-b833-12efdc1d6b1c",
+        "attempt_id": "6bda6494-a47e-46ca-8349-4ab012c63996",
+        "created_at": "2026-09-14T09:44:52.221Z",
+        "error_code": "SOURCE_UNSUPPORTED",
+        "duration_ms": 22252,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-search-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    }
+  ],
+  "closure": {
+    "proof": {
+      "protocol_version": "kff.guardian-closure.v1",
+      "command_id": "291ac9e4-e8aa-4582-84e0-0f6c21298944",
+      "action_id": "a6ffdb1a-78c8-4349-b833-12efdc1d6b1c",
+      "closed_at": "2026-09-14T09:44:51.955Z",
+      "proof_sha256": "5dc3c890c549306b71f856fa165794c7e0bb9286c3edde9e526bbea46f3e0646"
+    },
+    "matches": true,
+    "acknowledged": true
+  },
+  "marker_diagnostic": {
+    "command": {
+      "id": "83a9f6c3-03d9-409a-8ef4-7aabefedcc1a",
+      "state": "CLOSED",
+      "closed_at": "2026-09-14T09:11:33.121Z",
+      "result": {
+        "outcome": "CLOSED",
+        "context_closed": true,
+        "browser_version": "150.0.7871.47"
+      }
+    },
+    "closure_matches": true,
+    "source_navigations": 1,
+    "submissions": 0,
+    "observed_at": "2026-09-14T09:11:29.005Z",
+    "public_structure": [
+      {
+        "tag": "DIV",
+        "role": "button",
+        "label": null,
+        "text": "EasternWisdom"
+      },
+      {
+        "tag": "DIV",
+        "role": "button",
+        "label": null,
+        "text": "产品/服务"
+      },
+      {
+        "tag": "A",
+        "role": "tab",
+        "label": null,
+        "text": "全部",
+        "pagelet": "ProfileTabs",
+        "href": "/profile.php?id=61594197356279"
+      },
+      {
+        "tag": "A",
+        "role": "tab",
+        "label": null,
+        "text": "简介",
+        "pagelet": "ProfileTabs",
+        "href": "https://www.facebook.com/profile.php?id=61594197356279&sk=about"
+      },
+      {
+        "tag": "A",
+        "role": "tab",
+        "label": null,
+        "text": "Reels",
+        "pagelet": "ProfileTabs",
+        "href": "https://www.facebook.com/profile.php?id=61594197356279&sk=reels_tab"
+      },
+      {
+        "tag": "A",
+        "role": "tab",
+        "label": null,
+        "text": "照片",
+        "pagelet": "ProfileTabs",
+        "href": "https://www.facebook.com/profile.php?id=61594197356279&sk=photos"
+      },
+      {
+        "tag": "A",
+        "role": "tab",
+        "label": null,
+        "text": "粉丝",
+        "pagelet": "ProfileTabs",
+        "href": "https://www.facebook.com/profile.php?id=61594197356279&sk=followers"
+      },
+      {
+        "tag": "DIV",
+        "role": "button",
+        "label": null,
+        "text": "尚无评分（0 次点评）",
+        "pagelet": "ProfileTilesFeed_0"
+      },
+      {
+        "tag": "A",
+        "role": "link",
+        "label": null,
+        "text": "EasternWisdom"
+      },
+      {
+        "tag": "A",
+        "role": "link",
+        "label": null,
+        "text": "EasternWisdom",
+        "pagelet": "TimelineFeedUnit_0"
+      }
+    ]
+  },
+  "runtime": {
+    "runtime_id": "88012444-2376-4e38-87e9-ddb40a7c783a",
+    "live_sending_enabled": false,
+    "open_commands": 0,
+    "monitors": [
+      {
+        "kind": "acquisition",
+        "state": "PAUSED",
+        "count": 13
+      },
+      {
+        "kind": "inbox",
+        "state": "PAUSED",
+        "count": 4
+      }
+    ],
+    "profiles": [
+      {
+        "profile": "k1gvdtft",
+        "status": "Inactive"
+      },
+      {
+        "profile": "k1gx1n1s",
+        "status": "Inactive"
+      }
+    ]
+  },
+  "unchanged_message_history": {
+    "messages": {
+      "count": 128,
+      "digest": "e88da1cc8deba9f88906762e6368b761"
+    },
+    "conversations": {
+      "count": 95,
+      "digest": "ec9b1521a9d672c11d5ef7070059d736"
+    },
+    "whatsapp_referrals": {
+      "count": 13,
+      "digest": "d4e2c7ebe15894e09b9e989c3a2aea12"
+    }
+  },
+  "platform_sends": 0,
+  "coverage": "One existing public Page window only. New-post increment, profile10 Inbox, two-account continuous operation and current WhatsApp sales receipt remain unaccepted."
+}

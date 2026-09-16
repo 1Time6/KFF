@@ -1,0 +1,179 @@
+{
+  "at": "2026-09-14T10:24:03.028Z",
+  "version": "0.1.35",
+  "goal_complete": false,
+  "scope": "Added narrow English seller offer plus contact, or service terms plus sample/booking invitation recognition. Preserves quoted offers and customer questions. Local original-text replay only; future real observation acceptance remains pending.",
+  "replay": {
+    "at": "2026-09-14T10:21:18.126Z",
+    "version": "0.1.35",
+    "platform_requests": 0,
+    "database_writes": 0,
+    "scope": "Local replay of three original stored Page texts; not a new live observation or retroactive evaluation replacement.",
+    "rows": [
+      {
+        "source_object_id": "facebook:post:pfbid022sdGHy9i14MrJE7t8CKuRH2gfgCGPdUaT7PEGEuQWPySBLefiKhkkewbM5nkafE3l",
+        "text_sha256": "372aefd6c42c635fa51739ff8476e63d2df2c40b046e0d02e982bfc4eea1781a",
+        "before": {
+          "matched": [
+            "BaZi"
+          ],
+          "score": 50,
+          "reason": "关键词匹配 1 项。规则评分，不代表购买概率。"
+        },
+        "after": {
+          "matched": [
+            "BaZi"
+          ],
+          "score": 0,
+          "reason": "命中商家自推语句；保留原始观察，不进入新客户候选。规则判断，可人工核对。"
+        }
+      },
+      {
+        "source_object_id": "facebook:post:pfbid02ZyLfFziM7RSEqE6ZkiujsrspKox649JQ7ibQHKdiy7uEuwvLXVhQvbfZRoYmRbKhl",
+        "text_sha256": "1acaa810fe1d2ead599d58670f7b1b2d6853ef1567db5616429f962f5f1cb3a1",
+        "before": {
+          "matched": [
+            "BaZi"
+          ],
+          "score": 50,
+          "reason": "关键词匹配 1 项。规则评分，不代表购买概率。"
+        },
+        "after": {
+          "matched": [
+            "BaZi"
+          ],
+          "score": 0,
+          "reason": "命中商家自推语句；保留原始观察，不进入新客户候选。规则判断，可人工核对。"
+        }
+      },
+      {
+        "source_object_id": "facebook:reel:2163157911082094",
+        "text_sha256": "adb395ea6f452e0faf68a5e6334d29d2555ce4c33ecacca9762710abca6d56dd",
+        "before": {
+          "matched": [
+            "BaZi"
+          ],
+          "score": 50,
+          "reason": "关键词匹配 1 项。规则评分，不代表购买概率。"
+        },
+        "after": {
+          "matched": [
+            "BaZi"
+          ],
+          "score": 0,
+          "reason": "命中商家自推语句；保留原始观察，不进入新客户候选。规则判断，可人工核对。"
+        }
+      }
+    ],
+    "history": {
+      "messages": {
+        "count": 128,
+        "digest": "e88da1cc8deba9f88906762e6368b761"
+      },
+      "conversations": {
+        "count": 95,
+        "digest": "ec9b1521a9d672c11d5ef7070059d736"
+      },
+      "whatsapp_referrals": {
+        "count": 13,
+        "digest": "d4e2c7ebe15894e09b9e989c3a2aea12"
+      },
+      "collection_observations": {
+        "count": 705,
+        "digest": "97d0d17b1feb7aaf438430fe40529b44"
+      },
+      "acquisition_evaluations": {
+        "count": 121,
+        "digest": "93bc65e04cae5f994a95336c8017b666"
+      },
+      "acquisition_leads": {
+        "count": 38,
+        "digest": "b5f1d85f5b239911cb74b76ad196b6f3"
+      }
+    }
+  },
+  "source_build_agent_match": true,
+  "contracts": {
+    "total": 178,
+    "passed": 178,
+    "failed": 0
+  },
+  "checks": [
+    {
+      "name": "typecheck",
+      "exit_code": 0,
+      "ended_at": "2026-09-14T10:20:23.090Z"
+    },
+    {
+      "name": "contracts",
+      "exit_code": 0,
+      "ended_at": "2026-09-14T10:20:56.550Z"
+    },
+    {
+      "name": "build",
+      "exit_code": 0,
+      "ended_at": "2026-09-14T10:20:37.978Z"
+    }
+  ],
+  "lint": {
+    "files": [
+      "packages/core/src/acquisition-scoring.ts",
+      "tests/contracts/acquisition.test.ts"
+    ],
+    "exit_code": 0
+  },
+  "runtime": {
+    "runtime_id": "c92afdf5-9fbe-466a-9ca5-8d2ec3eb1d70",
+    "release_id": "kff-agent-0.1.35-win32-x64-c9b864b5981c",
+    "live_sending_enabled": false,
+    "open_commands": 0,
+    "monitors": [
+      {
+        "kind": "acquisition",
+        "state": "PAUSED",
+        "count": 13
+      },
+      {
+        "kind": "inbox",
+        "state": "PAUSED",
+        "count": 5
+      }
+    ]
+  },
+  "preserved_history": {
+    "messages": {
+      "count": 128,
+      "digest": "e88da1cc8deba9f88906762e6368b761"
+    },
+    "conversations": {
+      "count": 95,
+      "digest": "ec9b1521a9d672c11d5ef7070059d736"
+    },
+    "whatsapp_referrals": {
+      "count": 13,
+      "digest": "d4e2c7ebe15894e09b9e989c3a2aea12"
+    },
+    "collection_observations": {
+      "count": 705,
+      "digest": "97d0d17b1feb7aaf438430fe40529b44"
+    },
+    "acquisition_evaluations": {
+      "count": 121,
+      "digest": "93bc65e04cae5f994a95336c8017b666"
+    },
+    "acquisition_leads": {
+      "count": 38,
+      "digest": "b5f1d85f5b239911cb74b76ad196b6f3"
+    }
+  },
+  "provider_status": {
+    "at": "2026-09-14T10:22:16.948Z",
+    "http_status": 200,
+    "code": -1,
+    "message": "API Key mismatch. Please replace it",
+    "status": null
+  },
+  "platform_requests": 0,
+  "platform_sends": 0,
+  "profile10_read": "Not retried after user reported chat list visible; local AdsPower API Key mismatch blocks access. Current browser state unknown; user window not closed."
+}

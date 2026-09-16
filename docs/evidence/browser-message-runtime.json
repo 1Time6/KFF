@@ -1,0 +1,184 @@
+{
+  "schema_version": "kff.browser-message-checkpoint.v1",
+  "recorded_at": "2026-09-12T18:03:49.897Z",
+  "goal_complete": false,
+  "real_platform_verified": false,
+  "selected_adspower_profile": "k1gvdtft",
+  "selected_ui_sequence": "1876794",
+  "tests": {
+    "integration": {
+      "passed": 67,
+      "failed": 0
+    },
+    "contracts_and_journal": {
+      "passed": 122,
+      "failed": 0
+    },
+    "web": {
+      "startTime": "2026-09-12T18:00:36.444Z",
+      "duration": 25617.844,
+      "expected": 1,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "build": {
+      "exit_code": 0,
+      "ended_at": "2026-09-12T17:59:12.310Z",
+      "source_files": 283
+    },
+    "typecheck": {
+      "exit_code": 0,
+      "ended_at": "2026-09-12T17:55:52.663Z",
+      "source_files": 283
+    },
+    "lint": {
+      "exit_code": 0,
+      "ended_at": "2026-09-12T17:59:18.636Z",
+      "source_files": 283
+    }
+  },
+  "backup": {
+    "recorded_at": "2026-09-12T18:00:07.9642686Z",
+    "backup_path": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\backups\\before-browser-message-20260913-015620",
+    "file_count": 13604,
+    "bytes": 348035813,
+    "all_sha256_match": true,
+    "original_database_stopped": true,
+    "config_backup_matches": true
+  },
+  "runtime": {
+    "web": {
+      "checked_at": "2026-09-12T18:01:01.773Z",
+      "synthetic": true,
+      "real_platform_verified": false,
+      "account_id": "26d4284d-fddc-4cde-878b-e9c16115e5a3",
+      "environment_id": "629545f1-9c90-4ae4-a46a-3d56b08428c1",
+      "conversation_id": "792eabe4-2aa0-4dec-8a3c-a44e4a5d85d6",
+      "monitor_id": "7125fe67-e3d6-4266-8261-738bb0206a01",
+      "action_id": "2603c8ac-f034-4a0f-bbd6-04229de3fda9",
+      "run_id": "3938c818-647d-467f-a85a-07b7ffc91345",
+      "receipt": {
+        "remote_id": "synthetic_2080e6d7-f3a4-46b7-a27b-96778bcbf933",
+        "thread_id": "000777",
+        "observed_at": "2026-09-12T18:01:00.340Z",
+        "content_hash": "98f7c01aea07b1e6875bda527dd7b537ec7c81cbd3853ee4e261a2609d660773",
+        "recipient_id": "999888777666555",
+        "evidence_kind": "synthetic_message",
+        "actual_account_id": "339735372865104355514583829396501154161"
+      },
+      "referral_id": "97e04023-5440-4f0f-8032-4d4f923e4629",
+      "sales_confirmation": "LOCAL_SYNTHETIC_MANUAL",
+      "screenshot": "output/playwright/browser-message.png"
+    },
+    "result": {
+      "state": "VERIFIED_SUCCEEDED",
+      "receipt": {
+        "remote_id": "synthetic_2080e6d7-f3a4-46b7-a27b-96778bcbf933",
+        "thread_id": "000777",
+        "observed_at": "2026-09-12T18:01:00.340Z",
+        "content_hash": "98f7c01aea07b1e6875bda527dd7b537ec7c81cbd3853ee4e261a2609d660773",
+        "recipient_id": "999888777666555",
+        "evidence_kind": "synthetic_message",
+        "actual_account_id": "339735372865104355514583829396501154161"
+      },
+      "referral_state": "CONFIRMED",
+      "sent_at": "2026-09-12T18:01:00.550Z",
+      "confirmed_at": "2026-09-12T18:01:01.452Z",
+      "handling_mode": "HUMAN",
+      "lead_status": "HANDOFF_COMPLETE",
+      "browser_status": "CLOSED"
+    },
+    "counts": {
+      "accounts": 85,
+      "prospects": 46,
+      "migrations": 28,
+      "real_browser_sends": 0,
+      "unclosed_commands": 0,
+      "unfinished_jobs": 0,
+      "selected_profile_database_bindings": 0
+    },
+    "closures": [
+      {
+        "command_id": "0391ac75-0d2c-493f-a7f9-a6609c14d6d5",
+        "action_id": "f1d94406-63a1-4f3d-8717-ef0bfcfad8f9",
+        "capability_key": "kff.fixture.inbox.read.browser",
+        "state": "DONE",
+        "quiesced_at": "2026-09-12T18:00:48.310Z",
+        "proof_matches_database": true,
+        "journal_acknowledged": true,
+        "journal_quiesced": true
+      },
+      {
+        "command_id": "b671240c-4140-4c3e-af9d-8c70ccc3ad46",
+        "action_id": "2603c8ac-f034-4a0f-bbd6-04229de3fda9",
+        "capability_key": "kff.fixture.messenger.reply.browser",
+        "state": "DONE",
+        "quiesced_at": "2026-09-12T18:01:00.595Z",
+        "proof_matches_database": true,
+        "journal_acknowledged": true,
+        "journal_quiesced": true
+      }
+    ],
+    "rls": [
+      {
+        "relname": "browser_inbox_checkpoints",
+        "relrowsecurity": true
+      },
+      {
+        "relname": "browser_inbox_monitors",
+        "relrowsecurity": true
+      },
+      {
+        "relname": "contact_permissions",
+        "relrowsecurity": true
+      },
+      {
+        "relname": "facebook_connections",
+        "relrowsecurity": true
+      },
+      {
+        "relname": "messages",
+        "relrowsecurity": true
+      }
+    ],
+    "trigger": {
+      "prosecdef": false,
+      "proconfig": [
+        "search_path=\"\""
+      ]
+    }
+  },
+  "limitations": [
+    "Only repository-authored local browser pages were used for message execution",
+    "Real Facebook identity and browser message templates remain pending",
+    "Sales confirmation was synthetic/manual and does not prove WhatsApp arrival",
+    "The cold backup files were verified but this specific backup was not restored"
+  ],
+  "source_sha256": {
+    "packages/adapters/src/browser-message.ts": "d7a7fd79374ee59cc5a513b9d6eadab91aad52bbcefb80b203ea0dff719e82ae",
+    "packages/adapters/src/browser-message-fixture.ts": "c7d520bbd8d059bc2adb7bac3b4d76c5bd46a964e2bb0b6271198da734a5c01b",
+    "packages/adapters/src/templates.ts": "c69f72d264bf7a4a29edeebf3153d802109fdf91f65672ab0c57c29479f92641",
+    "packages/contracts/src/browser-inbox.ts": "21361f60927cbd0f74c17a27a71d30f8dafbc78a9370689d145e5f0c759a55bb",
+    "packages/contracts/src/index.ts": "2b2f3e68adf9afcc1171551497d6dd400638c3773f92991c094ec6b2d7df00f2",
+    "packages/contracts/src/lead.ts": "17640c7bcffef4f7b23351fbadc8d945af8db62be16a3dbd559dcf8c1fa7f154",
+    "packages/contracts/src/template.ts": "19fc163e7a1c51fca45bf0a028cc7d9eb7a25a222889b1e0cb08b2381cbec08c",
+    "packages/contracts/src/adjudication.ts": "b90a3ab6e2a1686a25b9c97c111359653d63abc88bce4b0f50380b45b7ffaa61",
+    "packages/core/src/lead-reception.ts": "32851cb62c03e21b4aa2baf81b70837de22845c5414f589b011a4ab3ae5b3e07",
+    "packages/core/src/facebook-inbound.ts": "91bcab5473d8d86adb045e94a95b1d368d505104870c3253c1f10903e9015d6a",
+    "packages/core/src/reception-queue.ts": "eec2fbbea73df8186a3ffccb82143664e44eb741e4054f2324cc0fe984825d35",
+    "packages/core/src/reconciliation.ts": "b4f330be8b3ebb739f1b23b98ad829a32db7a779b4d571a264f7d0a3109ee9f5",
+    "packages/core/src/execution.ts": "d218fbed583bd5f4acf41bf62656cb36d7a1859373927347b129af700ef56911",
+    "packages/core/src/inbox.ts": "3d022495a0477550829d7129f02cfcbbf7dee104a82dc64efb1f97a119ec3a2d",
+    "packages/core/src/adjudication.ts": "82933a2728dd2976469538f4d1f13844e2e7bb2e6e6f21a3c152d05f17d2887d",
+    "apps/agent/src/guardian.ts": "65b1089da648c63d517d7b7d68cb5f2f844c5a0cc25704cf935d60d9d0bdde87",
+    "apps/agent/src/guardian-child.ts": "21b56752f931c469230f7e8d21cbcc1bfc4864b5797c1b8799659c333ce06d8f",
+    "apps/web/components/facebook-setup.tsx": "44d40b042a83125437478828f3dc1fe1cdfd18b7d05458db737fe3dcfc96a277",
+    "apps/web/components/inbox-workbench.tsx": "b4fc721e9fb088e9f6b705a273feb22157e39163487a5ad67ccb2641d1f9cbf6",
+    "apps/web/components/action-adjudication.tsx": "309c30f56b557ebfa6463078b0d7a7ec3b3d21b7e8dfe224e73f7f7900324514",
+    "scripts/fixture-server.ts": "e36f45a73f965f4ef73a0c8e0630f9c8f78a6bb2e7e9932df3c069eb290c4903",
+    "supabase/migrations/20260912172904_browser_message_transport.sql": "cf897abbdf6583236ad79b4e776266b44be1cd147afc692cf1157b858a709930",
+    "tests/integration/browser-message.test.ts": "d57ab6ada4a998ca7a434f0071d8a523f3318df42dd5d1ba0e6d16e0043d6200",
+    "tests/browser/web/browser-message.spec.ts": "0dc1733dedde4a95f16654d031d3f202777e9e8932d22a2990d02ea53cf8defa"
+  }
+}

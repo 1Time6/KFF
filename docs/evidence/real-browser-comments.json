@@ -1,0 +1,588 @@
+{
+  "recorded_at": "2026-09-13T02:50:10.544Z",
+  "kind": "REAL_BROWSER_COMMENTS_AND_WORKER_RECURRENCE",
+  "scope": {
+    "profile_id": "k1gvdtft",
+    "ui_sequence": "1876794",
+    "external_id": "61589894042400",
+    "target": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/",
+    "sort": "NEWEST",
+    "top_level_only": true,
+    "coverage": "BROWSER_VISIBLE_ONLY",
+    "page_size": 5,
+    "max_records_per_scan": 10,
+    "retention_days": 14
+  },
+  "monitor": {
+    "id": "72eceefc-3f5f-4f0a-8953-33c9f309517e",
+    "state": "PAUSED",
+    "version": 3,
+    "scan_number": 2,
+    "interval_minutes": 5,
+    "next_due_at": "2026-09-13T02:48:15.318Z"
+  },
+  "runs": [
+    {
+      "query_id": "6d5c6978-d296-4a18-962f-483ff108d624",
+      "scan_number": 1,
+      "monitor_version": 2,
+      "run_id": "c1fb0f9d-82f4-4b29-8616-dc3eba0c819e",
+      "created_at": "2026-09-13T02:42:23.549Z",
+      "started_at": "2026-09-13T02:42:23.610Z",
+      "finished_at": "2026-09-13T02:43:17.476Z",
+      "state": "PARTIAL",
+      "returned_count": 10,
+      "unique_count": 10,
+      "committed_pages": 2,
+      "stop_reason": "MAX_RECORDS",
+      "error_code": null
+    },
+    {
+      "query_id": "46a38cc4-3564-44ff-9df4-608bd369d2ad",
+      "scan_number": 2,
+      "monitor_version": 2,
+      "run_id": "d76f0a4d-3b68-4dad-8edb-9b9a096bd643",
+      "created_at": "2026-09-13T02:47:23.747Z",
+      "started_at": "2026-09-13T02:47:23.780Z",
+      "finished_at": "2026-09-13T02:48:14.886Z",
+      "state": "PARTIAL",
+      "returned_count": 10,
+      "unique_count": 10,
+      "committed_pages": 2,
+      "stop_reason": "MAX_RECORDS",
+      "error_code": null
+    }
+  ],
+  "controls": [
+    {
+      "created_at": "2026-09-13T02:42:23.054Z",
+      "action": "START",
+      "reason": "通过原 Worker 自然调度两轮五分钟间隔的有界只读采集，随后暂停。"
+    },
+    {
+      "created_at": "2026-09-13T02:48:15.303Z",
+      "action": "PAUSE",
+      "reason": "两轮有界定时核验结束或出现失败，暂停后继续人工检查收据。"
+    }
+  ],
+  "actual_interval_ms": 300198,
+  "manual_scans": 0,
+  "commands": [
+    {
+      "command_id": "bb651c8c-c2f2-4433-9153-04a01f71d441",
+      "query_id": "6d5c6978-d296-4a18-962f-483ff108d624",
+      "page_number": 1,
+      "returned_count": 5,
+      "receipt": {
+        "remote_id": "collection:c1fb0f9d-82f4-4b29-8616-dc3eba0c819e:1",
+        "observed_at": "2026-09-13T02:42:44.197Z",
+        "content_hash": "afca36f75e7ed7218cf0afb788e767969850667681afd48e93a38f22b3d585fe",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61589894042400"
+      },
+      "diagnostic": {
+        "step": "facebook-comments-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "c61c8a0bb53e5a63091bd057ee18e328c58f3c2aefa0f53063207968b052a755",
+            "content": {
+              "result_count": 5,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "5ee16db2-b1af-4928-900b-891ae99c182d",
+        "attempt_id": "458a466c-cd27-43df-a79e-bae3250c01f2",
+        "created_at": "2026-09-13T02:42:50.681Z",
+        "error_code": null,
+        "duration_ms": 24106,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-search-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      },
+      "db_quiesced_at": "2026-09-13T02:42:50.740Z",
+      "local_closed_at": "2026-09-13T02:42:50.315Z",
+      "proof_matches": true,
+      "raw_page_compacted": true
+    },
+    {
+      "command_id": "97b1aba2-92bb-4cb0-bdb6-3ab717bf4a29",
+      "query_id": "6d5c6978-d296-4a18-962f-483ff108d624",
+      "page_number": 2,
+      "returned_count": 5,
+      "receipt": {
+        "remote_id": "collection:c1fb0f9d-82f4-4b29-8616-dc3eba0c819e:2",
+        "observed_at": "2026-09-13T02:43:11.157Z",
+        "content_hash": "a3600c2a5ab6259f5dbf1a418937f18a023528edd66f0630034c862e95168172",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61589894042400"
+      },
+      "diagnostic": {
+        "step": "facebook-comments-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "c61c8a0bb53e5a63091bd057ee18e328c58f3c2aefa0f53063207968b052a755",
+            "content": {
+              "result_count": 5,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "f5cd6e6b-7e81-4a88-ace5-7f5183110bf5",
+        "attempt_id": "f2b0a09b-b9f8-4f5e-99a1-700962cbad17",
+        "created_at": "2026-09-13T02:43:17.539Z",
+        "error_code": null,
+        "duration_ms": 22799,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-search-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      },
+      "db_quiesced_at": "2026-09-13T02:43:17.575Z",
+      "local_closed_at": "2026-09-13T02:43:17.281Z",
+      "proof_matches": true,
+      "raw_page_compacted": true
+    },
+    {
+      "command_id": "a2cfb19a-b5ff-4e74-bb80-37deb1210eab",
+      "query_id": "46a38cc4-3564-44ff-9df4-608bd369d2ad",
+      "page_number": 1,
+      "returned_count": 5,
+      "receipt": {
+        "remote_id": "collection:d76f0a4d-3b68-4dad-8edb-9b9a096bd643:1",
+        "observed_at": "2026-09-13T02:47:44.021Z",
+        "content_hash": "667725d960b09bd3c39f41d51730c5054584f8010e0fabea66e96d4ccf36b845",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61589894042400"
+      },
+      "diagnostic": {
+        "step": "facebook-comments-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "c61c8a0bb53e5a63091bd057ee18e328c58f3c2aefa0f53063207968b052a755",
+            "content": {
+              "result_count": 5,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "8b59cad9-7b07-498b-9549-616f18ad6c3a",
+        "attempt_id": "771c7e28-2b2d-4091-9d5b-4c245809b225",
+        "created_at": "2026-09-13T02:47:48.568Z",
+        "error_code": null,
+        "duration_ms": 20522,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-search-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      },
+      "db_quiesced_at": "2026-09-13T02:47:48.599Z",
+      "local_closed_at": "2026-09-13T02:47:48.338Z",
+      "proof_matches": true,
+      "raw_page_compacted": true
+    },
+    {
+      "command_id": "7a2e2a3c-aaac-4160-ad42-a2eb7e14f31d",
+      "query_id": "46a38cc4-3564-44ff-9df4-608bd369d2ad",
+      "page_number": 2,
+      "returned_count": 5,
+      "receipt": {
+        "remote_id": "collection:d76f0a4d-3b68-4dad-8edb-9b9a096bd643:2",
+        "observed_at": "2026-09-13T02:48:08.730Z",
+        "content_hash": "8803ce5f8d58d42f71a603c2e8ef7eea8cffc159d4330d490e959489b7b72152",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61589894042400"
+      },
+      "diagnostic": {
+        "step": "facebook-comments-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "c61c8a0bb53e5a63091bd057ee18e328c58f3c2aefa0f53063207968b052a755",
+            "content": {
+              "result_count": 5,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "4c0af0fe-7e5b-4290-b1f6-cc2fb2a10c91",
+        "attempt_id": "1c171143-05dd-439f-ba5e-99eb3e056856",
+        "created_at": "2026-09-13T02:48:15.040Z",
+        "error_code": null,
+        "duration_ms": 23525,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-search-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      },
+      "db_quiesced_at": "2026-09-13T02:48:15.074Z",
+      "local_closed_at": "2026-09-13T02:48:14.618Z",
+      "proof_matches": true,
+      "raw_page_compacted": true
+    }
+  ],
+  "observations": [
+    {
+      "scan_number": 1,
+      "source_object_id": "facebook:comment:1039935125404089",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1039935125404089",
+      "observed_at": "2026-09-13T02:42:44.197Z",
+      "message_sha256": "3dc4a2ab759d8fe7d8be96e3d19b61d5cfd83e4666789005cefeada828b7e10a",
+      "author_id_returned": false,
+      "rule_score": 0
+    },
+    {
+      "scan_number": 1,
+      "source_object_id": "facebook:comment:1077076494991097",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1077076494991097",
+      "observed_at": "2026-09-13T02:42:44.197Z",
+      "message_sha256": "d02046551cdf2117a117d30cf1afe10b224520a348b06a23b59dae6c3d1f7a17",
+      "author_id_returned": false,
+      "rule_score": 50
+    },
+    {
+      "scan_number": 1,
+      "source_object_id": "facebook:comment:1217101133887549",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1217101133887549",
+      "observed_at": "2026-09-13T02:43:11.157Z",
+      "message_sha256": "4e3d70613f92a4e0c0ffc9740dc78d6e34eb95eff47a57b16bcfdb6c85d9739d",
+      "author_id_returned": false,
+      "rule_score": 50
+    },
+    {
+      "scan_number": 1,
+      "source_object_id": "facebook:comment:1353993326906858",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1353993326906858",
+      "observed_at": "2026-09-13T02:43:11.157Z",
+      "message_sha256": "7efca54b4e9e86932ae146803f938859946c03fcbafe1458e5e0f66edefc465b",
+      "author_id_returned": false,
+      "rule_score": 50
+    },
+    {
+      "scan_number": 1,
+      "source_object_id": "facebook:comment:1382008900690725",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1382008900690725",
+      "observed_at": "2026-09-13T02:43:11.157Z",
+      "message_sha256": "b8a672f4a81f269d71bfa6b89be8f5929ef9e8d834e142646a87fbea0c75d88e",
+      "author_id_returned": false,
+      "rule_score": 50
+    },
+    {
+      "scan_number": 1,
+      "source_object_id": "facebook:comment:1393237392903595",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1393237392903595",
+      "observed_at": "2026-09-13T02:42:44.197Z",
+      "message_sha256": "b8a672f4a81f269d71bfa6b89be8f5929ef9e8d834e142646a87fbea0c75d88e",
+      "author_id_returned": false,
+      "rule_score": 50
+    },
+    {
+      "scan_number": 1,
+      "source_object_id": "facebook:comment:1581943333556716",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1581943333556716",
+      "observed_at": "2026-09-13T02:42:44.197Z",
+      "message_sha256": "4e3d70613f92a4e0c0ffc9740dc78d6e34eb95eff47a57b16bcfdb6c85d9739d",
+      "author_id_returned": false,
+      "rule_score": 50
+    },
+    {
+      "scan_number": 1,
+      "source_object_id": "facebook:comment:2386091551919086",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=2386091551919086",
+      "observed_at": "2026-09-13T02:43:11.157Z",
+      "message_sha256": "b8a672f4a81f269d71bfa6b89be8f5929ef9e8d834e142646a87fbea0c75d88e",
+      "author_id_returned": false,
+      "rule_score": 50
+    },
+    {
+      "scan_number": 1,
+      "source_object_id": "facebook:comment:27903656085989070",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=27903656085989070",
+      "observed_at": "2026-09-13T02:43:11.157Z",
+      "message_sha256": "4e3d70613f92a4e0c0ffc9740dc78d6e34eb95eff47a57b16bcfdb6c85d9739d",
+      "author_id_returned": true,
+      "rule_score": 50
+    },
+    {
+      "scan_number": 1,
+      "source_object_id": "facebook:comment:899678139871570",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=899678139871570",
+      "observed_at": "2026-09-13T02:42:44.197Z",
+      "message_sha256": "c13a3688bb70bf88375fb2de926b76c4a5b40f77d25f50890f7dccc0389d1d95",
+      "author_id_returned": false,
+      "rule_score": 50
+    },
+    {
+      "scan_number": 2,
+      "source_object_id": "facebook:comment:1039935125404089",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1039935125404089",
+      "observed_at": "2026-09-13T02:47:44.021Z",
+      "message_sha256": "3dc4a2ab759d8fe7d8be96e3d19b61d5cfd83e4666789005cefeada828b7e10a",
+      "author_id_returned": false,
+      "rule_score": 0
+    },
+    {
+      "scan_number": 2,
+      "source_object_id": "facebook:comment:1077076494991097",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1077076494991097",
+      "observed_at": "2026-09-13T02:47:44.021Z",
+      "message_sha256": "d02046551cdf2117a117d30cf1afe10b224520a348b06a23b59dae6c3d1f7a17",
+      "author_id_returned": false,
+      "rule_score": 50
+    },
+    {
+      "scan_number": 2,
+      "source_object_id": "facebook:comment:1217101133887549",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1217101133887549",
+      "observed_at": "2026-09-13T02:48:08.730Z",
+      "message_sha256": "4e3d70613f92a4e0c0ffc9740dc78d6e34eb95eff47a57b16bcfdb6c85d9739d",
+      "author_id_returned": false,
+      "rule_score": 50
+    },
+    {
+      "scan_number": 2,
+      "source_object_id": "facebook:comment:1353993326906858",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1353993326906858",
+      "observed_at": "2026-09-13T02:48:08.730Z",
+      "message_sha256": "7efca54b4e9e86932ae146803f938859946c03fcbafe1458e5e0f66edefc465b",
+      "author_id_returned": false,
+      "rule_score": 50
+    },
+    {
+      "scan_number": 2,
+      "source_object_id": "facebook:comment:1382008900690725",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1382008900690725",
+      "observed_at": "2026-09-13T02:48:08.730Z",
+      "message_sha256": "b8a672f4a81f269d71bfa6b89be8f5929ef9e8d834e142646a87fbea0c75d88e",
+      "author_id_returned": false,
+      "rule_score": 50
+    },
+    {
+      "scan_number": 2,
+      "source_object_id": "facebook:comment:1393237392903595",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1393237392903595",
+      "observed_at": "2026-09-13T02:47:44.021Z",
+      "message_sha256": "b8a672f4a81f269d71bfa6b89be8f5929ef9e8d834e142646a87fbea0c75d88e",
+      "author_id_returned": false,
+      "rule_score": 50
+    },
+    {
+      "scan_number": 2,
+      "source_object_id": "facebook:comment:1581943333556716",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1581943333556716",
+      "observed_at": "2026-09-13T02:47:44.021Z",
+      "message_sha256": "4e3d70613f92a4e0c0ffc9740dc78d6e34eb95eff47a57b16bcfdb6c85d9739d",
+      "author_id_returned": false,
+      "rule_score": 50
+    },
+    {
+      "scan_number": 2,
+      "source_object_id": "facebook:comment:2386091551919086",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=2386091551919086",
+      "observed_at": "2026-09-13T02:48:08.730Z",
+      "message_sha256": "b8a672f4a81f269d71bfa6b89be8f5929ef9e8d834e142646a87fbea0c75d88e",
+      "author_id_returned": false,
+      "rule_score": 50
+    },
+    {
+      "scan_number": 2,
+      "source_object_id": "facebook:comment:27903656085989070",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=27903656085989070",
+      "observed_at": "2026-09-13T02:48:08.730Z",
+      "message_sha256": "4e3d70613f92a4e0c0ffc9740dc78d6e34eb95eff47a57b16bcfdb6c85d9739d",
+      "author_id_returned": true,
+      "rule_score": 50
+    },
+    {
+      "scan_number": 2,
+      "source_object_id": "facebook:comment:899678139871570",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=899678139871570",
+      "observed_at": "2026-09-13T02:47:44.021Z",
+      "message_sha256": "c13a3688bb70bf88375fb2de926b76c4a5b40f77d25f50890f7dccc0389d1d95",
+      "author_id_returned": false,
+      "rule_score": 50
+    }
+  ],
+  "dedup": {
+    "observation_count": 20,
+    "unique_comments": 10,
+    "lead_count": 9,
+    "new_leads_on_repeat": 0,
+    "lead_ids_versions_states_preserved": true,
+    "qualified": 0
+  },
+  "counts": {
+    "accounts": 86,
+    "existing_prospects": 46,
+    "migrations": 29,
+    "unclosed_commands": 0,
+    "active_monitors": 0,
+    "active_environment_commands": 0
+  },
+  "platform_send_actions": 0,
+  "source_hashes": {
+    "packages/adapters/src/facebook.ts": "e1bcdc6768ebab56d07f35b7fdae3ffc1a51383e8b0f8d197ded3e45d538a318",
+    "packages/adapters/src/templates.ts": "10843f427b63f33275a220ed29471d6ea74d08fd3696eacbe0bc2c63c65c20f5",
+    "packages/contracts/src/template.ts": "9cb2b360deb924d9d2edda18a068fc766cc2eb66c0dccbf378ab9ee6588eedbf",
+    "packages/contracts/src/index.ts": "7f5b26888bc149ae1297f4c88559a7924d9e13a01163e8b87b72c5b60b08a0d8",
+    "packages/contracts/src/environment.ts": "2c610f8f0f3a6b95f2a0eb228f5ced74885b8ebde03dc3b087be063b4624b4b0",
+    "packages/adapters/src/browser-profile.ts": "9c5c422bbc87acb3f6553e8bb4e77674e54292ef12629f003a1dd146baa2d530",
+    "packages/core/src/index.ts": "3fa21711993be243ce79ef2569b2699f291001fe09fbfc86aa8527f6ca02d8fc",
+    "packages/contracts/src/collection.ts": "6b083768524915c2e29660c3be8c768d8e6b42ca8d9a38e4a94d5da98b460a1b",
+    "packages/contracts/src/browser-collection.ts": "e1e2e008a12a458090da26b492412cd78f5e90c12a4b67f4079afd42e3c06d6d",
+    "packages/adapters/src/collection-fixture.ts": "ea5a53b50e4ec3e0f28a1f588f77154ebcddcd04a7c9ae5d225b54aa5489c452",
+    "packages/adapters/src/browser-discovery.ts": "ef203337e7991918445ae6b7877ee2fab18cdefc4cf539506aa1ddbe91a8c8e6",
+    "packages/adapters/src/browser-discovery-fixture.ts": "9d88f8d14d9c81f5bfc6b2739ca7fd0e205b3c1be1f1b4f9cf29d3715a6e0906",
+    "apps/agent/src/guardian.ts": "0804a3c4c3691cf4d5da36deeb42352fec0a0a8665e16e32e7c34bb01ab27dbf",
+    "apps/agent/src/guardian-child.ts": "85f7185b3f780d10ea2e7540a10663a90d14b1ef08c49c9de08346ab2a6f759b",
+    "packages/adapters/src/facebook-browser-identity.ts": "0be81bf04bdb290a0f3831f92c9ff8f23bdfdc3227d8ac8e8d09ddfb1a38daee",
+    "packages/adapters/src/facebook-browser-discovery.ts": "4cccc28aebaa7da3330fdfe2bd5f338caf0d30f2cc3d677dd5d51906b7229257",
+    "packages/adapters/src/facebook-search-dom.ts": "ab3799be37c6a085a0971153eae7147b869d5a2f4cc944a7345b27f1ae086912",
+    "packages/adapters/src/facebook-comments-dom.ts": "54cad032db053c9a5f966ab7b43ebd46e0648b142a42f6032e1c4a53ffb50ff3",
+    "packages/adapters/src/facebook-browser-comments.ts": "18fbfe5bead5fba6a9b946c4d9ea563b61643a8f090c1872ce7c355c22a15720",
+    "packages/adapters/src/discovery.ts": "2375e7509a3821a00d8dbf9617f752c29544ba1e1462b4c02ab064699401aac0",
+    "packages/adapters/src/apify.ts": "4867fa8061924667f69540af8fea6737e122bf88bcf76a2862d71eafc808b6af",
+    "packages/adapters/src/apify-connection.ts": "12db9d4462c90e065a05b39b9ca49de60f360e3571c3be1ae02c8fe6d818fc3b",
+    "packages/adapters/src/source-http.ts": "681d45506a9a1f228f6d67a99012bfd9276f2cbacc7dda6b7af90d1b2f07352b",
+    "packages/adapters/src/social-outreach.ts": "cdb45a6045b1f4a019a2348c8a5cac6d7124f5098074a425e44fa17c66eb0451",
+    "packages/contracts/src/acquisition.ts": "2b1dc48780c6adc8dd966acc3eaced73b3c4589faefbca0ac638be183c49258a",
+    "packages/adapters/src/facebook-messenger.ts": "b6a29de8827fd69b784369c2d48db6eed0570f797590ba98b8f67b57bf43c160",
+    "packages/adapters/src/facebook-events.ts": "d9d3e37a065ef1cb674632366abcdaa4846750da5ad80ff77b45af4bbd94a2c9",
+    "packages/contracts/src/lead.ts": "176ae2acc029ceaa296a58da682c90fea5edc04b98e4d90c102f687480fe2ffa"
+  },
+  "final_checks": {
+    "contracts": {
+      "exit_code": 0,
+      "ended_at": "2026-09-13T02:41:29.671Z"
+    },
+    "typecheck": {
+      "exit_code": 0,
+      "ended_at": "2026-09-13T02:41:33.546Z"
+    },
+    "lint": {
+      "exit_code": 0,
+      "ended_at": "2026-09-13T02:39:35.396Z"
+    },
+    "build": {
+      "exit_code": 0,
+      "ended_at": "2026-09-13T02:40:15.394Z"
+    }
+  },
+  "local_tests": {
+    "contracts": 117,
+    "comments_and_search_dom": 12,
+    "original_queue_integration": 4
+  },
+  "scope_backup": {
+    "path": ".kff/changes/facebook-comments-v1/state-before.json",
+    "sha256": "67595266da668613b0fa69b5e1643efa4c99782b4eba27a1fa12191acd4f6eec",
+    "verified": true
+  },
+  "limitations": [
+    "Two scheduled scans during this local runtime, not reboot persistence or unattended long-term acceptance",
+    "Only ten top-level comments from one public post, not all Facebook comments",
+    "Repeated records were unchanged; newly arriving comments and edits require separate live acceptance",
+    "Vanity author names are not converted to numeric IDs or Messenger PSIDs",
+    "Real Messenger incoming, sending and WhatsApp sales acceptance still pending"
+  ],
+  "ui": {
+    "observed_at": "2026-09-13T02:50:45.378Z",
+    "monitor_state": "PAUSED",
+    "visible_scans": 2,
+    "visible_leads": 9,
+    "source_selector_verified": [
+      "COMMENTS",
+      "KEYWORD"
+    ],
+    "screenshots": [
+      {
+        "path": "output/playwright/real-browser-comments-scans.png",
+        "sha256": "ce8010e82b2c46ad2072b31e6486adfcfb7e29acf74c5433452c107b3e0c1cf5",
+        "visually_reviewed": true
+      },
+      {
+        "path": "output/playwright/real-browser-comments-leads.png",
+        "sha256": "b8118bd642428e46b42e7af83d4b4369f3727abe01aac6790aff91544deb1046",
+        "visually_reviewed": true
+      }
+    ]
+  },
+  "final_manual_window": {
+    "checked_at": "2026-09-13T02:52:18.524Z",
+    "provider_status": "Active",
+    "selected_instance_matches": true,
+    "url": "https://www.facebook.com/messages/t/",
+    "snapshot_sha256": "5478bdb5b183a068ba348d3566e198b9e2cf30cfa71c72abda8cb3efbc1a8eba",
+    "empty_chats": true,
+    "pin_prompt": false,
+    "purpose": "User test incoming conversation pending"
+  }
+}

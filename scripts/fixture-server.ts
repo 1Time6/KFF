@@ -1,3 +1,7 @@
+import { browserInboxTask } from '../packages/contracts/src/browser-inbox';
+import { renderBrowserInboxFixture } from '../packages/adapters/src/browser-inbox-fixture';
+import { browserFixtureEvent, browserFixtureHistory, browserMessageFixtureRequest, newBrowserFixtureEvent, renderBrowserMessageFixture, type BrowserFixtureEvent } from '../packages/adapters/src/browser-message-fixture';
+import { browserDiscoveryReadSchema, renderBrowserDiscoveryFixture } from '../packages/adapters/src/browser-discovery-fixture';
 import { createServer } from 'node:http';
 import { randomUUID } from 'node:crypto';
 import { mkdir, readFile, writeFile, rename } from 'node:fs/promises';
@@ -12,16 +16,58 @@ import { collectionSnapshotSchema } from '@kff/contracts';
 import { syntheticCollectionPage } from '../packages/adapters/src/collection-fixture';
 
 interface FixturePost { id: string; account_id: string; recipient_id?:string; action_id: string; body: string; content_hash: string; created_at: string }
-export async function startFixtureServer(port = 4311) {
-  await mkdir(runtimeDir, { recursive: true });
-  const file = path.join(runtimeDir, 'fixture-posts.json');
+export async function startFixtureServer(port = 4311, storageDirectory = runtimeDir) {
+  await mkdir(storageDirectory, { recursive: true });
+  const file = path.join(storageDirectory, 'fixture-posts.json');
   let posts: FixturePost[] = [];
   try { posts = JSON.parse(await readFile(file, 'utf8')) as FixturePost[]; } catch (error) { if (!(error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT')) throw error; }
   let writes = Promise.resolve();
+  const browserFile = path.join(storageDirectory, 'fixture-browser-messages.json');
+  let browserEvents: BrowserFixtureEvent[] = [];
+  try { browserEvents = z.array(browserFixtureEvent).parse(JSON.parse(await readFile(browserFile, 'utf8'))); } catch (error) { if (!(error && typeof error === 'object' && 'code' in error && error.code === 'ENOENT')) throw error; }
+  let browserWrites = Promise.resolve();
   const server = createServer(async (request, response) => {
     const url = new URL(request.url ?? '/', 'http://127.0.0.1:' + port);
     response.setHeader('Cache-Control', 'no-store'); response.setHeader('X-Content-Type-Options', 'nosniff');
     if (url.pathname === '/health') { response.setHeader('Content-Type', 'application/json'); response.end(JSON.stringify({ fixture: true })); return; }
+    if (url.pathname === '/browser-inbox' && request.method === 'GET') {
+      response.setHeader('Content-Type', 'text/html; charset=utf-8');
+      try { const encoded = url.searchParams.get('request') ?? ''; if (encoded.length > 16000) throw new Error('Invalid request'); const input = browserInboxTask.parse(JSON.parse(encoded)); response.end(renderBrowserInboxFixture(input, browserFixtureHistory(input.binding.environment.configuration.operating_identity_id, browserEvents))); }
+      catch { response.statusCode = 409; response.end('Local synthetic Inbox page unavailable'); }
+      return;
+    }
+    if (url.pathname === '/browser-conversation' && request.method === 'GET') {
+      response.setHeader('Content-Type', 'text/html; charset=utf-8');
+      try { const encoded = url.searchParams.get('request') ?? ''; if (encoded.length > 16000) throw new Error('Invalid request'); response.end(renderBrowserMessageFixture(browserMessageFixtureRequest.parse(JSON.parse(encoded)), browserEvents)); }
+      catch { response.statusCode = 409; response.end('Local synthetic conversation unavailable'); }
+      return;
+    }
+    if (['/browser-inbox/events', '/browser-message-send'].includes(url.pathname) && request.method === 'POST') {
+      try {
+        if (!request.headers['content-type']?.startsWith('application/json') || request.headers.origin && request.headers.origin !== 'http://' + request.headers.host) throw new Error('Invalid origin');
+        let buffer = ''; for await (const chunk of request) { buffer += chunk.toString(); if (buffer.length > 16000) throw new Error('Too large'); }
+        const input: unknown = JSON.parse(buffer);
+        const write = browserWrites.then(async () => {
+          const event = newBrowserFixtureEvent(browserEvents, input, url.pathname === '/browser-inbox/events' ? 'INBOUND' : 'OUTBOUND');
+          const next = [...browserEvents, event];
+          await writeFile(browserFile + '.tmp', JSON.stringify(next), { flush: true }); await rename(browserFile + '.tmp', browserFile);
+          browserEvents = next; return event;
+        });
+        browserWrites = write.then(() => {}, () => {});
+        const event = await write; response.setHeader('Content-Type', 'application/json'); response.end(JSON.stringify(event));
+      } catch { response.statusCode = 409; response.end('Local synthetic conversation changed or invalid input'); }
+      return;
+    }
+    if (url.pathname === '/browser-message-receipts' && request.method === 'GET') {
+      response.setHeader('Content-Type', 'application/json');
+      response.end(JSON.stringify(browserEvents.filter(row => row.action_id !== null && row.action_id === url.searchParams.get('action_id') && row.message.direction === 'OUTBOUND').map(row => ({ id: row.message.message_id, account_id: row.account_id, action_id: row.action_id, recipient_id: row.message.peer_id, thread_id: row.message.thread_id, body: row.message.body, content_hash: digest(row.message.body), created_at: row.message.occurred_at })))); return;
+    }
+    if (url.pathname === '/browser-discovery' && request.method === 'GET') {
+      response.setHeader('Content-Type', 'text/html; charset=utf-8');
+      try { const encoded = url.searchParams.get('request') ?? ''; if (encoded.length > 32000) throw new Error('Invalid request'); response.end(renderBrowserDiscoveryFixture(browserDiscoveryReadSchema.parse(JSON.parse(encoded)))); }
+      catch { response.statusCode = 409; response.end('Local synthetic collection page unavailable'); }
+      return;
+    }
     if (url.pathname === '/collection-pages' && request.method === 'GET') {
       response.setHeader('Content-Type', 'application/json');
       try {
@@ -59,7 +105,8 @@ export async function startFixtureServer(port = 4311) {
     response.end('<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>KFF 合成验证页</title></head><body><h1>KFF 合成验证页</h1><p>此页面属于本地软件测试，不是 Facebook。</p>' + (scenario === 'login_expired' ? '<button>登录</button>' : '<div data-testid="account-identity">' + account + '</div><label>发布内容<textarea aria-label="发布内容"></textarea></label><button data-testid="publish">发布</button>' + (scenario === 'duplicate_control' ? '<button data-testid="publish">发布</button>' : '') + '<div id="results"></div>') + '<script>const account=' + JSON.stringify(account) + ';const action=new URL(location.href).searchParams.get("action");document.querySelectorAll("[data-testid=publish]").forEach(button=>button.addEventListener("click",async()=>{const body=document.querySelector("textarea").value;const response=await fetch("/posts"+location.search,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({account_id:account,action_id:action,body})});const post=await response.json();const item=document.createElement("article");item.dataset.testid="published-post";item.dataset.remoteId=post.id;item.dataset.accountId=post.account_id;item.dataset.contentHash=post.content_hash;item.textContent=post.body;document.querySelector("#results").append(item);}));</script></body></html>');
   });
   await new Promise<void>((resolve, reject) => { server.once('error', reject); server.listen(port, '127.0.0.1', resolve); });
-  return { close: () => new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve())) };
+  const address = server.address(); if (!address || typeof address === 'string') throw new Error('Missing fixture address');
+  return { origin: 'http://127.0.0.1:' + address.port, close: () => new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve())) };
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const fixture = await startFixtureServer(); console.log('KFF synthetic browser fixture on 127.0.0.1:4311');

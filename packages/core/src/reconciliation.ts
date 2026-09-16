@@ -15,7 +15,9 @@ export async function recordQuiescence(agent: AgentIdentity, commandId: string, 
     const previous = (await client.query("SELECT details FROM kff.audit_events WHERE event_type='guardian.quiesced' AND object_id=$1", [commandId])).rows[0];
     if (previous) requireCondition(digest(previous.details.proof) === digest(proof), 'IDEMPOTENCY_CONFLICT', '关闭证明与已记录内容不一致', 409);
     else await client.query("INSERT INTO kff.audit_events(organization_id,brand_id,actor_id,event_type,object_id,details) VALUES($1,$2,$3,'guardian.quiesced',$4,$5)", [agent.organization_id, agent.brand_id, agent.id, commandId, { actor_kind: 'agent', proof }]);
-    await client.query('UPDATE kff.agent_commands SET quiesced_at=COALESCE(quiesced_at,now()) WHERE id=$1', [commandId]); return { quiesced: true };
+    await client.query('UPDATE kff.agent_commands SET quiesced_at=COALESCE(quiesced_at,now()) WHERE id=$1', [commandId]);
+    await client.query("UPDATE kff.environments e SET browser_status='CLOSED' FROM kff.tasks t JOIN kff.actions a ON a.task_id=t.id WHERE a.id=$1 AND t.environment_id=e.id AND t.snapshot ? 'browser_environment' AND NOT EXISTS(SELECT 1 FROM kff.resource_leases l WHERE l.resource_type='environment' AND l.resource_id=e.id AND (l.holder_control_id IS NOT NULL OR l.holder_attempt_id IS NOT NULL AND l.holder_attempt_id<>$2))", [row.action_id, row.attempt_id]);
+    return { quiesced: true };
   });
 }
 export async function exportDiagnostic(scope: Scope, bundleId: string) {
@@ -33,20 +35,20 @@ export async function exportDiagnostic(scope: Scope, bundleId: string) {
     return parsed.data;
   });
 }
-const fixturePosts = z.array(z.object({ id: z.string().regex(/^synthetic_[a-f0-9-]{36}$/), account_id: z.string(),recipient_id:z.string().optional(), action_id: z.string().uuid(), body: z.string().max(5000), content_hash: z.string(), created_at: z.string().datetime() }).strict()).max(100);
+const fixturePosts = z.array(z.object({ id: z.string().regex(/^synthetic_[a-f0-9-]{36}$/), account_id: z.string(),recipient_id:z.string().optional(),thread_id:z.string().regex(/^[A-Za-z0-9_:+.@-]{1,160}$/).optional(), action_id: z.string().uuid(), body: z.string().max(5000), content_hash: z.string(), created_at: z.string().datetime() }).strict()).max(100);
 export async function reconcileSynthetic(scope: Scope, runId: string, readPosts?: (actionId: string) => Promise<unknown>) {
   requireAdmin(scope); const detail = await runDetail(scope, runId);
   requireCondition(detail.task.snapshot.is_synthetic, 'PILOT_PERMIT_REQUIRED', '真实结果需使用相应只读许可和远端对象核验', 409);
   requireCondition(detail.run.action_state === 'UNKNOWN_OUTCOME' || detail.run.action_state === 'VERIFIED_SUCCEEDED', 'VERSION_CONFLICT', '当前运行没有待核验的提交', 409);
   const actionId = detail.run.action_id!;
   const source = readPosts ?? (async (id: string) => {
-    const response = await fetch('http://127.0.0.1:4311/posts?action_id=' + encodeURIComponent(id), { redirect: 'error', signal: AbortSignal.timeout(5000) });
+    const response = await fetch('http://127.0.0.1:4311' + (detail.task.snapshot.message?.browser ? '/browser-message-receipts' : '/posts') + '?action_id=' + encodeURIComponent(id), { redirect: 'error', signal: AbortSignal.timeout(5000) });
     requireCondition(response.ok && Number(response.headers.get('content-length') ?? 0) <= 1000000, 'REMOTE_ERROR', '合成记录暂时无法核验', 502);
     const text = await response.text(); requireCondition(text.length <= 1000000, 'REMOTE_ERROR', '合成记录超过读取上限', 502); return JSON.parse(text);
   });
   const posts = fixturePosts.parse(await source(actionId));
   const snapshot = detail.task.snapshot;
-  const matches = posts.filter(post => post.action_id === actionId && post.account_id === snapshot.external_account_id && (!snapshot.message||post.recipient_id===snapshot.message.contact.remote_id) && post.content_hash === snapshot.content_hash && digest(post.body) === snapshot.content_hash);
+  const matches = posts.filter(post => post.action_id === actionId && post.account_id === snapshot.external_account_id && (!snapshot.message || (snapshot.message.browser ? post.recipient_id === snapshot.message.browser.peer_id && post.thread_id === snapshot.message.browser.thread_id : post.recipient_id === snapshot.message.contact.remote_id))&&(!snapshot.outreach||post.recipient_id===snapshot.outreach.author_id) && post.content_hash === snapshot.content_hash && digest(post.body) === snapshot.content_hash);
   return scoped(scope, async client => {
     await client.query('SELECT id FROM kff.runs WHERE id=$1 FOR UPDATE', [runId]);
     const action = (await client.query('SELECT * FROM kff.actions WHERE id=$1 FOR UPDATE', [actionId])).rows[0];
@@ -56,7 +58,7 @@ export async function reconcileSynthetic(scope: Scope, runId: string, readPosts?
       await audit(client, scope, 'action.reconciliation_inconclusive', actionId, { matches: matches.length, observed_count: posts.length });
       return { reconciled: false, reason_code: 'SUBMISSION_UNCERTAIN', message: '证据不足，保留原状态；没有创建新动作' };
     }
-    const receipt = { remote_id: matches[0].id, actual_account_id: snapshot.external_account_id, content_hash: snapshot.content_hash, evidence_kind: snapshot.message?'synthetic_message':'synthetic_dom',...(snapshot.message?{recipient_id:snapshot.message.contact.remote_id}:{}), observed_at: new Date().toISOString() };
+    const receipt = { remote_id: matches[0].id, actual_account_id: snapshot.external_account_id, content_hash: snapshot.content_hash, evidence_kind: (snapshot.message||snapshot.outreach)?'synthetic_message':'synthetic_dom',...(snapshot.outreach?{recipient_id:snapshot.outreach.author_id}:{}),...(snapshot.message ? snapshot.message.browser ? { recipient_id: snapshot.message.browser.peer_id, thread_id: snapshot.message.browser.thread_id } : { recipient_id: snapshot.message.contact.remote_id } : {}), observed_at: new Date().toISOString() };
     await client.query("UPDATE kff.actions SET state='VERIFIED_SUCCEEDED',receipt=$1,error_code=NULL WHERE id=$2", [receipt, actionId]);
     await projectMessageOutcome(client,actionId,snapshot);
     await client.query("UPDATE kff.runs SET status='SUCCEEDED',updated_at=now() WHERE id=$1", [runId]);

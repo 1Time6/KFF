@@ -1,0 +1,61 @@
+{
+  "at": "2026-09-14T12:09:22.461Z",
+  "accepted": false,
+  "work_terminal": true,
+  "tasks": [
+    {
+      "id": "c746f383-de84-4645-a8fc-7fd7632b6dab",
+      "status": "FAILED",
+      "state": "BLOCKED",
+      "error_code": "IDENTITY_UNVERIFIED",
+      "command_id": "c6d73236-09fe-4915-a254-2ae898dbd711",
+      "quiesced_at": "2026-09-14T11:59:57.648Z"
+    },
+    {
+      "id": "69c6b916-3aa1-4865-80a0-7ab2bf061311",
+      "status": "CANCELED",
+      "state": "CANCELED",
+      "error_code": "STOP_REQUESTED",
+      "command_id": null,
+      "quiesced_at": null
+    }
+  ],
+  "open_commands": 0,
+  "original_closed_proof": {
+    "protocol_version": "kff.guardian-closure.v1",
+    "command_id": "c6d73236-09fe-4915-a254-2ae898dbd711",
+    "action_id": "8c0ff637-8fbb-48d4-a849-483dacae7635",
+    "closed_at": "2026-09-14T11:59:57.438Z",
+    "proof_sha256": "98964c4f367cb689edf358a667312cf34e82d042b144425d8748ceb13e34f222"
+  },
+  "local_database_match": true,
+  "observer": {
+    "exit_code": 1,
+    "error": "Observe the recorded original handles; work did not fully close within this observation",
+    "reason": "Observer required two commands but second task was canceled before command creation; no original work remained running."
+  },
+  "failure_step": "facebook-comments-before-profile-type",
+  "profile8_layout": {
+    "id": "61589894042400",
+    "headings": [
+      "XiangHuan Master"
+    ],
+    "own_actions": [
+      "发布快拍编辑个人主页"
+    ],
+    "friends_link": {
+      "tag": "A",
+      "role": "link",
+      "label": "1 位好友",
+      "href": "https://www.facebook.com/profile.php?id=61589894042400&sk=friends"
+    },
+    "alerts": [],
+    "password_visible": false,
+    "closed": true,
+    "profile_after": "Inactive"
+  },
+  "platform_sends": 0,
+  "public_items_stored": 0,
+  "account10_read": false,
+  "continuous_pair_accepted": false
+}

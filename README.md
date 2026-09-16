@@ -1,5 +1,9 @@
 # KFF 运营工作台
 
+当前实施目标：**AdsPower 本地矩阵执行、持续主动发现与 Inbox → WhatsApp 闭环**。环境配置、受控登录/检查/停止、持久 Profile 与恢复机制见 [浏览器环境](docs/api/browser-environments.md)；分阶段进度见 [本地矩阵工作卡](docs/tasks/local-matrix.md)。真实平台闭环尚待验收。
+
+2026-09-12 新增 **主动获客与自动执行**：`/acquisition` 提供 FB/IG 关键词监控、评论采集、线索池和自动动作。当前用户尚无外部数据源，本地合成链路与真实来源合同分开验收；接入所需账号、服务、凭据及操作步骤见 [接入说明](docs/api/acquisition.md)，当前范围见 [ADR-021](docs/decisions/021-acquisition-automation.md) 和 [完成度](docs/acquisition-readiness.md)。真实采集与发送默认关闭。
+
 第一阶段当前目标是 **Facebook → 客户与私信 → 基础自动接待 / 人工接管 → WhatsApp 引流及结果记录**，见 [ADR-020](docs/decisions/020-facebook-whatsapp-priority.md)。KFF 独立拥有客户、身份、聊天和执行数据；商品、订单、支付、退款代码冻结保留，后续销售由现有团队在 WhatsApp 完成。原始规划保留为历史任务索引，不覆盖当前优先级。
 
 本地闭环、规则预演、可配置模型接口、可靠人工回复、品牌/账号 WhatsApp、客户标签/意向、统计与日志已经实现；真实 Facebook 和真实模型效果仍待外部验证。当前 40 项状态及证据见 [本轮审计](docs/kff-lead-generation-status.md)。
@@ -64,6 +68,10 @@ pnpm build
 终端进程回执异常时，可使用 `node scripts/run-check.mjs <typecheck|lint|unit|contracts|integration|fixtures|web|build|production>`。真实进程退出码、时间及日志保存在 `.kff/checks`。生产冒烟检查要求先完成 `build`。
 
 生产构建放在 `apps/web/.next-production`，与开发缓存分开。`pnpm start` 启动生产 Web；生产数据库、身份服务、独立 Worker/Agent 和部署验收均需按规划配置，目前未部署。
+
+独立 Windows Agent 可用 `pnpm agent:package` 生成包含 Node 和执行依赖的 ZIP。程序与配对、浏览器目录和回执日志分开保存；解压启动及恢复步骤见 [Agent 交付](docs/api/agent-delivery.md)。该包不包含控制端和数据库，也不代替真实平台账号验收。
+
+已有本机冷备份的恢复升级可运行 `pnpm db:verify-backup .kff/backups/备份目录`，当前只覆盖第27→28条迁移。命令始终创建独立数据库副本，验证失败回滚、正式迁移与重复执行；说明见 [数据库恢复](docs/api/database-recovery.md)。
 
 ## 实施记录
 

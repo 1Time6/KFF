@@ -1,0 +1,28 @@
+{
+  "at": "2026-09-14T16:34:32.766Z",
+  "source": "user_report",
+  "device": "iPhone",
+  "facebook_app": {
+    "opens_whatsapp": true,
+    "opens_target_chat": false,
+    "number_link_and_business_short_link": "same reported behavior"
+  },
+  "messenger_app": {
+    "number_link_opens_target_chat": true,
+    "business_short_link_opens_target_chat": true
+  },
+  "external_browser": {
+    "number_link_opens_target_chat": true
+  },
+  "phone": "8618730936793",
+  "number_link": "https://wa.me/8618730936793",
+  "user_posted_short_link": "https://wa.me/message/JD6UETU6CBGTF1",
+  "short_link_destination_independently_verified": false,
+  "configuration_changed": false,
+  "public_comment_to_messenger_then_whatsapp": "Existing intended handoff route; user confirmed Messenger can open the target chat",
+  "facebook_app_direct_open_fixed": false,
+  "official_references": [
+    "https://faq.whatsapp.com/5913398998672934",
+    "https://faq.whatsapp.com/502291734918768"
+  ]
+}

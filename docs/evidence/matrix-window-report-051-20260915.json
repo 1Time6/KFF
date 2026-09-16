@@ -1,0 +1,401 @@
+{
+  "schema": "kff.matrix-window-report.v1",
+  "generated_at": "2026-09-15T08:19:24.880Z",
+  "plan": {
+    "from": "2026-09-15T05:20:34.425Z",
+    "to": "2026-09-15T05:23:51.444Z",
+    "synthetic": false,
+    "targets": [
+      {
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+        "minimum_public_scans": 2,
+        "minimum_inbox_cycles": 2
+      },
+      {
+        "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+        "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+        "minimum_public_scans": 2,
+        "minimum_inbox_cycles": 2
+      }
+    ]
+  },
+  "read_only": true,
+  "record_review": "INCOMPLETE",
+  "problems": [
+    "PUBLIC_SCANS_SHORT:51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "INBOX_CYCLES_SHORT:51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "PUBLIC_SCANS_SHORT:20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+    "INBOX_CYCLES_SHORT:20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+    "SCAN_FAILED_OR_UNFINISHED",
+    "ACTION_FAILED_UNDISPATCHED_OR_UNCLOSED",
+    "INBOX_PARTIAL_COVERAGE"
+  ],
+  "bindings": [
+    {
+      "id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "external_id": "61594402378582",
+      "is_synthetic": false,
+      "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+      "agent_id": "66666666-6666-4666-8666-666666666666",
+      "state": "IDLE",
+      "browser_status": "CLOSED"
+    },
+    {
+      "id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "external_id": "61589894042400",
+      "is_synthetic": false,
+      "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+      "agent_id": "66666666-6666-4666-8666-666666666666",
+      "state": "IDLE",
+      "browser_status": "CLOSED"
+    }
+  ],
+  "scans": [
+    {
+      "id": "7c3c17b3-eaef-48d3-8951-8676029d9f5e",
+      "monitor_id": "b70092f3-d9a1-46e4-8c12-4526c639b7fe",
+      "query_id": "715f02e6-edfe-4938-a7f1-9f83acca259e",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "monitor_version": 2,
+      "run_id": "1f33a081-4a9a-424c-bccc-c07fb5e8acb9",
+      "state": "PARTIAL",
+      "error_code": null,
+      "stop_reason": "MAX_PAGES",
+      "returned_count": 1,
+      "unique_count": 1,
+      "created_at": "2026-09-15T05:20:34.801Z",
+      "started_at": "2026-09-15T05:20:34.852Z",
+      "finished_at": "2026-09-15T05:21:31.417Z"
+    },
+    {
+      "id": "6bcda88c-6e64-4a02-a854-b54be70cfe1e",
+      "monitor_id": "f4e16af5-9eda-41a3-b5cd-02d7e56d19e2",
+      "query_id": "aad9f58e-fa94-4857-b643-07202a7712cb",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "monitor_version": 2,
+      "run_id": "8710cac2-0cbd-45f7-9107-c75edfda341e",
+      "state": "PARTIAL",
+      "error_code": null,
+      "stop_reason": "MAX_PAGES",
+      "returned_count": 4,
+      "unique_count": 4,
+      "created_at": "2026-09-15T05:20:35.808Z",
+      "started_at": "2026-09-15T05:20:35.840Z",
+      "finished_at": "2026-09-15T05:22:23.488Z"
+    },
+    {
+      "id": "cf248a8c-afab-4f7e-84ab-45c19f41dad3",
+      "monitor_id": "652eb649-038d-4568-bc91-83e0db080870",
+      "query_id": "309c3da2-9e5c-41c4-99d5-23b4012ccfd5",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "monitor_version": 1,
+      "run_id": "7f728bae-e539-4f15-80c0-5d6d46ff81f9",
+      "state": "CANCELED",
+      "error_code": null,
+      "stop_reason": "MONITOR_PAUSED",
+      "returned_count": 0,
+      "unique_count": 0,
+      "created_at": "2026-09-15T05:22:24.033Z",
+      "started_at": "2026-09-15T05:22:24.047Z",
+      "finished_at": "2026-09-15T05:23:45.742Z"
+    }
+  ],
+  "actions": [
+    {
+      "task_id": "0e27b31a-150f-4a55-aac2-34f379748618",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+      "status": "SUCCEEDED",
+      "expected_identity": "61589894042400",
+      "capability": "facebook.discovery.read.browser",
+      "query_id": "715f02e6-edfe-4938-a7f1-9f83acca259e",
+      "inbox_monitor_id": null,
+      "action_id": "882268fd-e6c3-4f5d-b302-05cc598c64e4",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "created_at": "2026-09-15T05:20:34.852Z",
+      "command_id": "24471931-6337-4c15-b994-1b1073a4db31",
+      "queued_at": "2026-09-15T05:20:35.212Z",
+      "claimed_at": "2026-09-15T05:20:35.556Z",
+      "quiesced_at": "2026-09-15T05:21:31.537Z",
+      "actual_identity": "61589894042400",
+      "receipt_at": "2026-09-15T05:21:24.897Z",
+      "queue_seconds": "0.344092",
+      "execution_seconds": "55.981646",
+      "closure_recorded": true
+    },
+    {
+      "task_id": "d59d35ec-e61c-4f8a-a834-5256c6eb8ba4",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+      "status": "SUCCEEDED",
+      "expected_identity": "61589894042400",
+      "capability": "facebook.inbox.read.browser",
+      "query_id": null,
+      "inbox_monitor_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "action_id": "57c95d06-e1cd-4246-b51b-d3acd8ecd745",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "created_at": "2026-09-15T05:20:35.178Z",
+      "command_id": "9dd7831f-4126-42cb-bea3-2186c3831601",
+      "queued_at": "2026-09-15T05:22:24.188Z",
+      "claimed_at": "2026-09-15T05:22:24.826Z",
+      "quiesced_at": "2026-09-15T05:23:44.893Z",
+      "actual_identity": "61589894042400",
+      "receipt_at": "2026-09-15T05:23:40.408Z",
+      "queue_seconds": "0.638223",
+      "execution_seconds": "80.067092",
+      "closure_recorded": true
+    },
+    {
+      "task_id": "df152110-0e64-49b5-ab00-e70082c98116",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+      "status": "SUCCEEDED",
+      "expected_identity": "61594402378582",
+      "capability": "facebook.discovery.read.browser",
+      "query_id": "aad9f58e-fa94-4857-b643-07202a7712cb",
+      "inbox_monitor_id": null,
+      "action_id": "19ed1d1d-0a0c-48f7-be2a-828b345e1f40",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "created_at": "2026-09-15T05:20:35.840Z",
+      "command_id": "cf53e76a-f24e-4b38-aa10-4587a454aedc",
+      "queued_at": "2026-09-15T05:21:32.049Z",
+      "claimed_at": "2026-09-15T05:21:32.717Z",
+      "quiesced_at": "2026-09-15T05:22:23.576Z",
+      "actual_identity": "61594402378582",
+      "receipt_at": "2026-09-15T05:22:15.464Z",
+      "queue_seconds": "0.668025",
+      "execution_seconds": "50.859816",
+      "closure_recorded": true
+    },
+    {
+      "task_id": "cbeae8b0-16bb-49f8-95f5-ee826792535f",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+      "status": "CANCELED",
+      "expected_identity": "61594402378582",
+      "capability": "facebook.inbox.read.browser",
+      "query_id": null,
+      "inbox_monitor_id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+      "action_id": "a1bad437-a91a-48e3-b1ba-e30ec07eadec",
+      "state": "CANCELED",
+      "error_code": "STOP_REQUESTED",
+      "created_at": "2026-09-15T05:20:36.158Z",
+      "command_id": null,
+      "queued_at": null,
+      "claimed_at": null,
+      "quiesced_at": null,
+      "actual_identity": null,
+      "receipt_at": null,
+      "queue_seconds": null,
+      "execution_seconds": null,
+      "closure_recorded": false
+    },
+    {
+      "task_id": "6dcd5238-ed8f-437c-9e71-6b958c99679d",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+      "status": "CANCELED",
+      "expected_identity": "61594402378582",
+      "capability": "facebook.discovery.read.browser",
+      "query_id": "309c3da2-9e5c-41c4-99d5-23b4012ccfd5",
+      "inbox_monitor_id": null,
+      "action_id": "1e5f756c-ed69-45c2-badc-03a238b8af43",
+      "state": "CANCELED",
+      "error_code": "STOP_REQUESTED",
+      "created_at": "2026-09-15T05:22:24.047Z",
+      "command_id": null,
+      "queued_at": null,
+      "claimed_at": null,
+      "quiesced_at": null,
+      "actual_identity": null,
+      "receipt_at": null,
+      "queue_seconds": null,
+      "execution_seconds": null,
+      "closure_recorded": false
+    }
+  ],
+  "inbox": [
+    {
+      "task_id": "d59d35ec-e61c-4f8a-a834-5256c6eb8ba4",
+      "monitor_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "cycle_id": "6462ea05-25da-4eea-8d00-d8a5433ac424",
+      "stored": 0,
+      "duplicates": 8,
+      "observed_at": "2026-09-15T05:23:40.408Z",
+      "next_cursor": null
+    }
+  ],
+  "inbox_notes": [
+    {
+      "id": "568735cc-4b57-4588-b5c8-7d98894b2e15",
+      "object_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "event_type": "browser_inbox.controlled",
+      "created_at": "2026-09-15T05:20:34.460Z",
+      "task_id": null,
+      "reason": null,
+      "skipped": null,
+      "unparsed_rows": null,
+      "window_limited": null
+    },
+    {
+      "id": "ae898d4f-f4fd-495d-bfb1-a7edabb1e21b",
+      "object_id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+      "event_type": "browser_inbox.controlled",
+      "created_at": "2026-09-15T05:20:34.497Z",
+      "task_id": null,
+      "reason": null,
+      "skipped": null,
+      "unparsed_rows": null,
+      "window_limited": null
+    },
+    {
+      "id": "63e4861e-a299-40c6-80c4-b05eefa7ad9b",
+      "object_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "event_type": "browser_inbox.page_queued",
+      "created_at": "2026-09-15T05:20:35.178Z",
+      "task_id": "d59d35ec-e61c-4f8a-a834-5256c6eb8ba4",
+      "reason": null,
+      "skipped": null,
+      "unparsed_rows": null,
+      "window_limited": null
+    },
+    {
+      "id": "21d919ef-0d48-4863-9556-4f2340f684d1",
+      "object_id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+      "event_type": "browser_inbox.page_queued",
+      "created_at": "2026-09-15T05:20:36.158Z",
+      "task_id": "cbeae8b0-16bb-49f8-95f5-ee826792535f",
+      "reason": null,
+      "skipped": null,
+      "unparsed_rows": null,
+      "window_limited": null
+    },
+    {
+      "id": "8cddd847-2572-49f0-8554-a841661181a4",
+      "object_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "event_type": "browser_inbox.page_committed",
+      "created_at": "2026-09-15T05:23:44.818Z",
+      "task_id": "d59d35ec-e61c-4f8a-a834-5256c6eb8ba4",
+      "reason": null,
+      "skipped": [
+        {
+          "reason": "THREAD_WINDOW_UNAVAILABLE",
+          "failure": {
+            "code": "TIMEOUT",
+            "stage": "facebook-inbox-directory-composer"
+          },
+          "thread_id": "2079341482680484"
+        }
+      ],
+      "unparsed_rows": 0,
+      "window_limited": true
+    },
+    {
+      "id": "0e7a930b-8654-4bd2-aa15-8228fa842451",
+      "object_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "event_type": "browser_inbox.controlled",
+      "created_at": "2026-09-15T05:23:45.745Z",
+      "task_id": null,
+      "reason": null,
+      "skipped": null,
+      "unparsed_rows": null,
+      "window_limited": null
+    },
+    {
+      "id": "7e166e42-cb61-436e-ba21-d14fcf3d7ab8",
+      "object_id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+      "event_type": "browser_inbox.controlled",
+      "created_at": "2026-09-15T05:23:45.759Z",
+      "task_id": null,
+      "reason": null,
+      "skipped": null,
+      "unparsed_rows": null,
+      "window_limited": null
+    },
+    {
+      "id": "3a910646-d6b8-46e9-aadf-60950ea72b08",
+      "object_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "event_type": "browser_inbox.configured",
+      "created_at": "2026-09-15T05:23:51.388Z",
+      "task_id": null,
+      "reason": null,
+      "skipped": null,
+      "unparsed_rows": null,
+      "window_limited": null
+    },
+    {
+      "id": "42dcdba6-2cee-4343-8839-a8e19ccebe09",
+      "object_id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+      "event_type": "browser_inbox.configured",
+      "created_at": "2026-09-15T05:23:51.420Z",
+      "task_id": null,
+      "reason": null,
+      "skipped": null,
+      "unparsed_rows": null,
+      "window_limited": null
+    }
+  ],
+  "leads": [
+    {
+      "id": "536878c2-36ac-4b6f-90e3-99819b5866f2",
+      "monitor_id": "f4e16af5-9eda-41a3-b5cd-02d7e56d19e2",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "state": "NEW",
+      "score": 50,
+      "first_seen_at": "2026-09-15T05:22:24.093Z",
+      "version": 1,
+      "source_object_id": "facebook:post:pfbid0k5N1jCoMrWSe8SuuJRPM1YqL6XcRntCcZMZeEi3RwUzbAwbuDjYFGUwjfFtkbYUAl",
+      "explicit_author_id": null
+    },
+    {
+      "id": "219a2269-c97d-424b-8d27-8e1df87d1bc2",
+      "monitor_id": "f4e16af5-9eda-41a3-b5cd-02d7e56d19e2",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "state": "NEW",
+      "score": 50,
+      "first_seen_at": "2026-09-15T05:22:24.093Z",
+      "version": 1,
+      "source_object_id": "facebook:post:pfbid0Sm4qTUFtZx313RRUqZoKCbXHiynFP7pwFUUEaSNM4iStGowVaQqcz8HjrMB1Dzirl",
+      "explicit_author_id": null
+    },
+    {
+      "id": "4755fa32-d266-4837-8916-131372570185",
+      "monitor_id": "f4e16af5-9eda-41a3-b5cd-02d7e56d19e2",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "state": "NEW",
+      "score": 50,
+      "first_seen_at": "2026-09-15T05:22:24.093Z",
+      "version": 1,
+      "source_object_id": "facebook:reel:2879225589112910",
+      "explicit_author_id": "61593806893026"
+    },
+    {
+      "id": "4967eb1c-8910-410b-baf2-a5029f1f1e4a",
+      "monitor_id": "f4e16af5-9eda-41a3-b5cd-02d7e56d19e2",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "state": "NEW",
+      "score": 50,
+      "first_seen_at": "2026-09-15T05:22:24.093Z",
+      "version": 1,
+      "source_object_id": "facebook:reel:1782066549596350",
+      "explicit_author_id": "61554912537538"
+    }
+  ],
+  "counts": {
+    "lead_records": 4,
+    "qualified_records": 0,
+    "inbox_stored": 0,
+    "inbox_duplicates": 8
+  },
+  "evidence_limits": [
+    "Counts do not establish uninterrupted scheduled observation, provider window ownership, or capacity guarantees.",
+    "Lead records are not unique customers; scores are not purchase probabilities.",
+    "No natural lead to WhatsApp attribution is inferred from unrelated Inbox or C test records.",
+    "Review original timing, skips, command journal and guardian file proofs before accepting a real window."
+  ]
+}

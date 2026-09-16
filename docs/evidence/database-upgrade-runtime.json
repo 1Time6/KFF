@@ -1,0 +1,440 @@
+{
+  "schema_version": "kff.database-upgrade-checkpoint.v1",
+  "recorded_at": "2026-09-12T18:48:24.144Z",
+  "goal_complete": false,
+  "real_platform_verified": false,
+  "private_report": {
+    "path": ".kff/checks/backup-upgrade-567a7f4d-af8f-4d40-800a-81b072186b5f.json",
+    "sha256": "c6f4ca4233457a61a99b47fa4f7e299d1b9ff3859506535971039b1d57dfba69"
+  },
+  "backup": {
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\backups\\before-browser-message-20260913-015620",
+    "files": 13604,
+    "original_and_copy_sha256_verified": true
+  },
+  "restore": {
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\restore-checks\\567a7f4d-af8f-4d40-800a-81b072186b5f\\postgres",
+    "port": 53618,
+    "closed": true
+  },
+  "migration_checks": {
+    "failed_upgrade": {
+      "exit_code": 1,
+      "division_by_zero": true,
+      "changed_migration_rejected": false,
+      "original_data_unchanged": true,
+      "history_unchanged": true,
+      "new_column_rolled_back": true
+    },
+    "upgrade": {
+      "exit_code": 0,
+      "from_migrations": 27,
+      "to_migrations": 28,
+      "pending": [
+        "20260912172904_browser_message_transport.sql"
+      ],
+      "old_data_tables": 91,
+      "old_data_unchanged": true,
+      "transport": {
+        "connections": 21,
+        "api_default": 21
+      },
+      "migration_history": [
+        {
+          "version": "20260911164326_g1_execution_core.sql",
+          "sha256": "31e4c9a6aec219e52fe94ef5a4f97b58ac3bbe714bd782952fb038e368e20fdf",
+          "applied_at": "2026-09-11T16:56:50.279Z"
+        },
+        {
+          "version": "20260911173241_g1_permits_reconciliation.sql",
+          "sha256": "65baeb55d96885097f66cb02e1103c301859a1d3705dee89ac9e8b8b2852cfa7",
+          "applied_at": "2026-09-11T17:37:24.615Z"
+        },
+        {
+          "version": "20260911175249_g1_capability_evidence.sql",
+          "sha256": "9848c682c137b1229b778ac76743f1489d3b6494b340902c7ea72ea504d6e137",
+          "applied_at": "2026-09-11T17:55:35.838Z"
+        },
+        {
+          "version": "20260911175746_g1_agent_slot_guard.sql",
+          "sha256": "8dfa4ad3152c2ea892d84bae4f317f600a2a44670f3d27102df9d451691abe8b",
+          "applied_at": "2026-09-11T17:59:16.669Z"
+        },
+        {
+          "version": "20260911181005_g1_stop_and_agent_management.sql",
+          "sha256": "75d4fcdc89804d6c81bcc742bbed6385480e22e2ffef4c245ae4535ebef1d852",
+          "applied_at": "2026-09-11T18:14:33.494Z"
+        },
+        {
+          "version": "20260911185039_g1_contact_eligibility.sql",
+          "sha256": "6c7c535b5ca366e309194c479b9eb55ae052a62b6b302c92a9fdf9ca01943e67",
+          "applied_at": "2026-09-11T19:01:23.349Z"
+        },
+        {
+          "version": "20260911190913_g2_cost_ledger.sql",
+          "sha256": "6cd7bc467e812fd34f06a5f464297b0a47d160a9c54653b83f68f294b39c9250",
+          "applied_at": "2026-09-11T19:20:02.046Z"
+        },
+        {
+          "version": "20260911194100_g1_action_adjudication.sql",
+          "sha256": "bddbe2459ab599bf153169732f7d7fc0288b10de3ee0086e25287fba331ceb8d",
+          "applied_at": "2026-09-11T19:44:49.549Z"
+        },
+        {
+          "version": "20260911200056_g2_template_versions.sql",
+          "sha256": "d9e9a3255befaf672d004ef6ed4f9c7acb1e3250ab231fba0a41ae7593832ba8",
+          "applied_at": "2026-09-11T20:07:11.106Z"
+        },
+        {
+          "version": "20260911203355_g2_collection_checkpoints.sql",
+          "sha256": "e50ecaec7ba71c9d42c6b768be4f8318fdc2d1130fbb83168ccaeedfcb612971",
+          "applied_at": "2026-09-11T21:19:17.752Z"
+        },
+        {
+          "version": "20260911213439_g2_import_export.sql",
+          "sha256": "5892855457aa149ae4bda86ce2fbc914b9ef57339002bc3eb82ec3e4624f6694",
+          "applied_at": "2026-09-11T21:49:30.147Z"
+        },
+        {
+          "version": "20260911221017_g2_target_snapshots.sql",
+          "sha256": "469d9cee9651ae58189b472b4bcce8376d4d6a41ba65dca46a0c62ac46b20094",
+          "applied_at": "2026-09-11T22:27:59.410Z"
+        },
+        {
+          "version": "20260911224129_g2_schedule_rules.sql",
+          "sha256": "80472fe3800f47f481a4a87336af2fc08816e8d3119a673ecef3649dc51cdc5c",
+          "applied_at": "2026-09-11T22:54:51.236Z"
+        },
+        {
+          "version": "20260911235946_g3_owned_inbound.sql",
+          "sha256": "7a42460c74c036c412c49f176c2ee2e45b2534be1b22f131f4c9b28044113d7e",
+          "applied_at": "2026-09-12T00:22:03.095Z"
+        },
+        {
+          "version": "20260912003348_g3_owned_order_snapshots.sql",
+          "sha256": "6f221bafa308142d98229c118786fb350eb013bc559297c95ffd501a741d58a9",
+          "applied_at": "2026-09-12T00:49:01.768Z"
+        },
+        {
+          "version": "20260912012250_g3_stripe_payments.sql",
+          "sha256": "1a5eb9581e56305b83e77248a3ccb880c699377e61133856aaa33b4e6c922f51",
+          "applied_at": "2026-09-12T01:49:59.881Z"
+        },
+        {
+          "version": "20260912022322_g3_stripe_refunds.sql",
+          "sha256": "c825921f1d2245bcbd8436f19cca514b9de0873f4fabc7b7479b37955846d836",
+          "applied_at": "2026-09-12T02:56:12.423Z"
+        },
+        {
+          "version": "20260912031707_facebook_lead_inbound.sql",
+          "sha256": "2ab43f08e524ab4491e40268fe902f6799fed9e92045838b6ae3302e7ba323a1",
+          "applied_at": "2026-09-12T03:28:02.660Z"
+        },
+        {
+          "version": "20260912032804_lead_reception_execution.sql",
+          "sha256": "0eda8ff7981d347dfa2f18995bc17bd9e76730dc1bbd05c183e4c161983b3419",
+          "applied_at": "2026-09-12T03:46:24.714Z"
+        },
+        {
+          "version": "20260912034626_lead_automation_rules.sql",
+          "sha256": "b0782dcc35933a6c81ed0e5d8f9223f14ac5d82febec8b0c74bab6125d9d4519",
+          "applied_at": "2026-09-12T04:25:26.622Z"
+        },
+        {
+          "version": "20260912040653_lead_metrics_and_ingress_limits.sql",
+          "sha256": "f9e66056af83f088bf4ae11cafdeeb640275cb496fff5359f45346b3ef493e85",
+          "applied_at": "2026-09-12T04:25:26.622Z"
+        },
+        {
+          "version": "20260912061549_acquisition_automation.sql",
+          "sha256": "30bb59db47f02f6438b190eec0b018308a1f8df777fee636d121f255fe7cb004",
+          "applied_at": "2026-09-12T06:42:15.843Z"
+        },
+        {
+          "version": "20260912121030_acquisition_external_sources.sql",
+          "sha256": "996f832948fe362f1e2ee44b48b941b6427eef6b66766c90df5ca32f282a1d47",
+          "applied_at": "2026-09-12T12:21:58.428Z"
+        },
+        {
+          "version": "20260912131442_browser_environment_runtime.sql",
+          "sha256": "97f662ac88d021d9e736e60da02f0f194762896f23cf48498be5075b71f62a8d",
+          "applied_at": "2026-09-12T13:40:26.655Z"
+        },
+        {
+          "version": "20260912151353_browser_collection_tasks.sql",
+          "sha256": "cb00e00594f83f8ff40e60df59ceabfa89e652e46b8d1c446164467ec43ee516",
+          "applied_at": "2026-09-12T15:47:58.914Z"
+        },
+        {
+          "version": "20260912162852_browser_inbox_identity.sql",
+          "sha256": "d6fba06d09a6f8c50ca4974dc0a505a82bb94bceae9d223fc7953a8256076bfc",
+          "applied_at": "2026-09-12T16:43:25.051Z"
+        },
+        {
+          "version": "20260912164913_browser_inbox_polling.sql",
+          "sha256": "8004bcb8eaed618b41bb9913a40f9d2ca7d565253996efa273c5aa3f8e8cad69",
+          "applied_at": "2026-09-12T17:16:59.788Z"
+        },
+        {
+          "version": "20260912172904_browser_message_transport.sql",
+          "sha256": "cf897abbdf6583236ad79b4e776266b44be1cd147afc692cf1157b858a709930",
+          "applied_at": "2026-09-12T18:46:46.021Z"
+        }
+      ],
+      "compared_table_names": [
+        "accounts",
+        "acquisition_action_links",
+        "acquisition_evaluations",
+        "acquisition_imports",
+        "acquisition_leads",
+        "acquisition_monitors",
+        "acquisition_prospects",
+        "acquisition_scans",
+        "acquisition_sources",
+        "acquisition_suppressions",
+        "action_adjudications",
+        "action_attempts",
+        "actions",
+        "adapter_artifacts",
+        "agent_commands",
+        "agents",
+        "approval_decisions",
+        "audit_events",
+        "brands",
+        "browser_inbox_checkpoints",
+        "browser_inbox_monitors",
+        "capabilities",
+        "capability_checks",
+        "collection_events",
+        "collection_objects",
+        "collection_observations",
+        "collection_pages",
+        "collection_queries",
+        "collection_results",
+        "collection_runs",
+        "commerce_currencies",
+        "contact_permissions",
+        "contact_targets",
+        "content_versions",
+        "conversations",
+        "cost_budgets",
+        "cost_entries",
+        "cost_reservations",
+        "customer_events",
+        "customer_identities",
+        "customers",
+        "diagnostic_bundles",
+        "dispute_balance_entries",
+        "environment_commands",
+        "environments",
+        "facebook_connections",
+        "financial_adjustments",
+        "financial_observations",
+        "import_confirmations",
+        "import_files",
+        "import_previews",
+        "inbound_events",
+        "jobs",
+        "local_users",
+        "memberships",
+        "messages",
+        "order_events",
+        "order_previews",
+        "orders",
+        "organization_memberships",
+        "organizations",
+        "payment_checkouts",
+        "pilot_permits",
+        "pilot_reservations",
+        "product_versions",
+        "products",
+        "refund_ledgers",
+        "refund_postings",
+        "refund_requests",
+        "resource_leases",
+        "runs",
+        "schedule_occurrences",
+        "schedule_previews",
+        "schedule_versions",
+        "schedules",
+        "sessions",
+        "site_channels",
+        "stripe_connections",
+        "stripe_disputes",
+        "stripe_events",
+        "stripe_refunds",
+        "target_previews",
+        "target_snapshots",
+        "tasks",
+        "template_events",
+        "template_previews",
+        "template_versions",
+        "verified_payments",
+        "visitor_sessions",
+        "whatsapp_destinations",
+        "whatsapp_referrals"
+      ],
+      "before_sha256": "6469dd73cdd13c40503e2c92eddd6431b7f91770971fbff8acff3b1cd97113b5",
+      "after_sha256": "6469dd73cdd13c40503e2c92eddd6431b7f91770971fbff8acff3b1cd97113b5"
+    },
+    "repeat": {
+      "exit_code": 0,
+      "history_and_data_unchanged": true
+    },
+    "changed_applied_migration": {
+      "exit_code": 1,
+      "division_by_zero": false,
+      "changed_migration_rejected": true,
+      "history_and_data_unchanged": true
+    },
+    "security": [
+      {
+        "relname": "accounts",
+        "relrowsecurity": true
+      },
+      {
+        "relname": "acquisition_prospects",
+        "relrowsecurity": true
+      },
+      {
+        "relname": "browser_inbox_checkpoints",
+        "relrowsecurity": true
+      },
+      {
+        "relname": "browser_inbox_monitors",
+        "relrowsecurity": true
+      },
+      {
+        "relname": "facebook_connections",
+        "relrowsecurity": true
+      },
+      {
+        "relname": "messages",
+        "relrowsecurity": true
+      }
+    ],
+    "trigger": {
+      "prosecdef": false,
+      "proconfig": [
+        "search_path=\"\""
+      ]
+    }
+  },
+  "main_selected_data": {
+    "before": [
+      {
+        "table": "accounts",
+        "rows": 85,
+        "md5": "7cb47cd94712df103ce4887e452a0151"
+      },
+      {
+        "table": "acquisition_prospects",
+        "rows": 46,
+        "md5": "2928067d3a59dacd2bf01be535f01be7"
+      },
+      {
+        "table": "customers",
+        "rows": 92,
+        "md5": "7a309430bcf4a3e1dc79745ef5ecf36e"
+      },
+      {
+        "table": "conversations",
+        "rows": 92,
+        "md5": "27a1bd82d28fc64e43215f406b5efac3"
+      },
+      {
+        "table": "messages",
+        "rows": 119,
+        "md5": "19eedf702d83c146adfea7af2c5f691e"
+      },
+      {
+        "table": "whatsapp_referrals",
+        "rows": 10,
+        "md5": "62981b556087294aabe8847c5a8f597c"
+      }
+    ],
+    "after": [
+      {
+        "table": "accounts",
+        "rows": 85,
+        "md5": "7cb47cd94712df103ce4887e452a0151"
+      },
+      {
+        "table": "acquisition_prospects",
+        "rows": 46,
+        "md5": "2928067d3a59dacd2bf01be535f01be7"
+      },
+      {
+        "table": "customers",
+        "rows": 92,
+        "md5": "7a309430bcf4a3e1dc79745ef5ecf36e"
+      },
+      {
+        "table": "conversations",
+        "rows": 92,
+        "md5": "27a1bd82d28fc64e43215f406b5efac3"
+      },
+      {
+        "table": "messages",
+        "rows": 119,
+        "md5": "19eedf702d83c146adfea7af2c5f691e"
+      },
+      {
+        "table": "whatsapp_referrals",
+        "rows": 10,
+        "md5": "62981b556087294aabe8847c5a8f597c"
+      }
+    ],
+    "unchanged": true
+  },
+  "checks": {
+    "typecheck": {
+      "exit_code": 0,
+      "ended_at": "2026-09-12T18:47:19.795Z",
+      "source_files": 287
+    },
+    "lint": {
+      "exit_code": 0,
+      "ended_at": "2026-09-12T18:47:09.194Z",
+      "source_files": 287
+    }
+  },
+  "source_sha256": {
+    "scripts/verify-backup.ts": "0c9eefe6e2cf9f58c9e26951fb8533d8862b7bd61692bd81590d5d6a7604ce10",
+    "scripts/migrate.ts": "2059f5344b143a73b0567d5cc40b46f881b69b7a71435a15b7c0335189413467",
+    "supabase/migrations/20260911164326_g1_execution_core.sql": "31e4c9a6aec219e52fe94ef5a4f97b58ac3bbe714bd782952fb038e368e20fdf",
+    "supabase/migrations/20260911173241_g1_permits_reconciliation.sql": "65baeb55d96885097f66cb02e1103c301859a1d3705dee89ac9e8b8b2852cfa7",
+    "supabase/migrations/20260911175249_g1_capability_evidence.sql": "9848c682c137b1229b778ac76743f1489d3b6494b340902c7ea72ea504d6e137",
+    "supabase/migrations/20260911175746_g1_agent_slot_guard.sql": "8dfa4ad3152c2ea892d84bae4f317f600a2a44670f3d27102df9d451691abe8b",
+    "supabase/migrations/20260911181005_g1_stop_and_agent_management.sql": "75d4fcdc89804d6c81bcc742bbed6385480e22e2ffef4c245ae4535ebef1d852",
+    "supabase/migrations/20260911185039_g1_contact_eligibility.sql": "6c7c535b5ca366e309194c479b9eb55ae052a62b6b302c92a9fdf9ca01943e67",
+    "supabase/migrations/20260911190913_g2_cost_ledger.sql": "6cd7bc467e812fd34f06a5f464297b0a47d160a9c54653b83f68f294b39c9250",
+    "supabase/migrations/20260911194100_g1_action_adjudication.sql": "bddbe2459ab599bf153169732f7d7fc0288b10de3ee0086e25287fba331ceb8d",
+    "supabase/migrations/20260911200056_g2_template_versions.sql": "d9e9a3255befaf672d004ef6ed4f9c7acb1e3250ab231fba0a41ae7593832ba8",
+    "supabase/migrations/20260911203355_g2_collection_checkpoints.sql": "e50ecaec7ba71c9d42c6b768be4f8318fdc2d1130fbb83168ccaeedfcb612971",
+    "supabase/migrations/20260911213439_g2_import_export.sql": "5892855457aa149ae4bda86ce2fbc914b9ef57339002bc3eb82ec3e4624f6694",
+    "supabase/migrations/20260911221017_g2_target_snapshots.sql": "469d9cee9651ae58189b472b4bcce8376d4d6a41ba65dca46a0c62ac46b20094",
+    "supabase/migrations/20260911224129_g2_schedule_rules.sql": "80472fe3800f47f481a4a87336af2fc08816e8d3119a673ecef3649dc51cdc5c",
+    "supabase/migrations/20260911235946_g3_owned_inbound.sql": "7a42460c74c036c412c49f176c2ee2e45b2534be1b22f131f4c9b28044113d7e",
+    "supabase/migrations/20260912003348_g3_owned_order_snapshots.sql": "6f221bafa308142d98229c118786fb350eb013bc559297c95ffd501a741d58a9",
+    "supabase/migrations/20260912012250_g3_stripe_payments.sql": "1a5eb9581e56305b83e77248a3ccb880c699377e61133856aaa33b4e6c922f51",
+    "supabase/migrations/20260912022322_g3_stripe_refunds.sql": "c825921f1d2245bcbd8436f19cca514b9de0873f4fabc7b7479b37955846d836",
+    "supabase/migrations/20260912031707_facebook_lead_inbound.sql": "2ab43f08e524ab4491e40268fe902f6799fed9e92045838b6ae3302e7ba323a1",
+    "supabase/migrations/20260912032804_lead_reception_execution.sql": "0eda8ff7981d347dfa2f18995bc17bd9e76730dc1bbd05c183e4c161983b3419",
+    "supabase/migrations/20260912034626_lead_automation_rules.sql": "b0782dcc35933a6c81ed0e5d8f9223f14ac5d82febec8b0c74bab6125d9d4519",
+    "supabase/migrations/20260912040653_lead_metrics_and_ingress_limits.sql": "f9e66056af83f088bf4ae11cafdeeb640275cb496fff5359f45346b3ef493e85",
+    "supabase/migrations/20260912061549_acquisition_automation.sql": "30bb59db47f02f6438b190eec0b018308a1f8df777fee636d121f255fe7cb004",
+    "supabase/migrations/20260912121030_acquisition_external_sources.sql": "996f832948fe362f1e2ee44b48b941b6427eef6b66766c90df5ca32f282a1d47",
+    "supabase/migrations/20260912131442_browser_environment_runtime.sql": "97f662ac88d021d9e736e60da02f0f194762896f23cf48498be5075b71f62a8d",
+    "supabase/migrations/20260912151353_browser_collection_tasks.sql": "cb00e00594f83f8ff40e60df59ceabfa89e652e46b8d1c446164467ec43ee516",
+    "supabase/migrations/20260912162852_browser_inbox_identity.sql": "c11bc96974d0bf1b2d76fc649c509c49da838597a4920a704e0f04cde45fb777",
+    "supabase/migrations/20260912164913_browser_inbox_polling.sql": "8004bcb8eaed618b41bb9913a40f9d2ca7d565253996efa273c5aa3f8e8cad69",
+    "supabase/migrations/20260912172904_browser_message_transport.sql": "cf897abbdf6583236ad79b4e776266b44be1cd147afc692cf1157b858a709930"
+  },
+  "limitations": [
+    "The real stored backup was restored to a separate directory/port on the same Windows host",
+    "Only migration 27 to 28 was upgraded, including an injected SQL failure and unchanged reruns",
+    "Agent cross-version journal compatibility and clean-machine full installation are not established",
+    "Real Facebook identity, browser templates, messages and WhatsApp arrival remain unverified"
+  ]
+}

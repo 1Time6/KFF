@@ -1,0 +1,401 @@
+{
+  "started_at": "2026-09-14T16:59:34.357Z",
+  "keyword": "bazi",
+  "platform_sends": 0,
+  "manual_scans": 0,
+  "author_created_test_content": false,
+  "latest_scope": "用户要求冻结已通过的 Messenger/C 接待链，只推进真实关键词自动发现；第一条非人工制造的新潜客进入 lead 后优先 V1 交接并停止非必要开发。",
+  "status": "AUTOMATIC_READ_COMPLETE",
+  "runtime_id": "5b38befe-7245-45c0-b5db-e12ea223e00f",
+  "baseline_lead_ids": [
+    "b63c4585-bcea-4e62-bf0d-abb73cf6fe8e",
+    "f2572483-6a84-4486-8eee-ee3b51f18153",
+    "62743d3c-2081-4f8c-9062-5f3837a2b5b0",
+    "3e7d3a09-f8f0-4297-a3e6-2887a0eb44bf",
+    "8bce7a29-d230-4f04-a031-14a0fd1e7f2b",
+    "38764407-f780-4a83-8f39-53ca545ad165",
+    "059c04ae-bc08-4ef2-ba0e-7b44acf8229e",
+    "1cafb118-0f01-40a7-a2c9-00ccab0bc7cb",
+    "945ccf1a-dd2b-4bec-a246-c726549a292b",
+    "735cd202-2685-4a29-8945-7663b2ddfcde",
+    "accbd154-a469-44c5-862f-4046677af630",
+    "644dde49-1c2e-47bd-9be5-69ec66a09d23",
+    "e0c3324e-e9f1-47b9-b966-4770d4fb74ef",
+    "a0690603-1ada-4aaf-b8a7-16138697a883",
+    "5e04890e-7814-4856-be55-5d177fa126cf",
+    "81d21971-e353-45de-a216-3c66061fbcc8",
+    "b65bb311-96d8-463a-bb8f-d87e65eeda79",
+    "ce0e4cb7-b690-4bc6-858b-63f51b15fd46",
+    "252a4db7-0cc5-4155-ba7b-bb7606fa9292",
+    "35542a0f-c2c9-4566-b22d-9a689f09f8de",
+    "3efc8312-4c08-49f6-9dc4-91e29daa5365",
+    "5d2a85ff-c908-4480-ae27-9397ed9011c7",
+    "63cb8fc6-5f49-485d-b405-131e12339f0e",
+    "894075c7-d00d-44e0-a242-05e32934a92d",
+    "61c54a55-7f54-4d26-a369-c6121ddefb9e",
+    "19eb0c88-2002-40fd-acad-6040b684cd54",
+    "288caeca-c517-4d76-9411-f7ea80710333",
+    "445ae4fc-0df1-40ef-81ad-136f06aabd92",
+    "67a18414-e51d-4e98-bdc9-cfbed548f69f",
+    "d593af5c-9826-444d-b3e6-61da1e45fb34",
+    "5d0744dc-46aa-482d-903c-3119c459b18f",
+    "37f7d85e-2f7c-4059-ab67-f3633b22a358",
+    "d9843787-0e20-4b68-aa0c-a8e88ce3cfd4",
+    "1c43f70e-e89c-43e9-b49a-0a8feb4207f2",
+    "a501f766-4b75-4f59-b944-c1579a121ee4",
+    "b8ed2ad3-61ab-4ecc-bebe-39a2d86dd29c",
+    "dec6b356-fe22-46b2-99ca-c6e9b5ab7ddd",
+    "bd7d506e-a852-4834-85f1-f963533a7eec",
+    "275b70d9-f67f-45a3-b231-8c3b66be0edd",
+    "f0fb7c53-76fa-4c16-b61f-ea8725821562"
+  ],
+  "baseline_source_ids": [
+    "facebook:comment:1382008900690725",
+    "facebook:post:pfbid02TPyhwWpT5x5xcTqsWda8ZjSbzuZCBZKBupUtubQjrr4Jw9tJnshM6iCkuULfMRbXl",
+    "00025",
+    "00000",
+    "facebook:comment:899678139871570",
+    "156469192459477633815711109783104159488_2",
+    "00023",
+    "199744314471809879741051834906773920364_4",
+    "116626378047931884670285795419281253202_4",
+    "facebook:comment:2386091551919086",
+    "00032",
+    "00029",
+    "00012",
+    "00030",
+    "facebook:comment:1039935125404089",
+    "199744314471809879741051834906773920364_2",
+    "00011",
+    "00018",
+    "9007199254740993123456789",
+    "00026",
+    "facebook:reel:2163157911082094",
+    "facebook:post:pfbid02inLKQH7pxELb9D9HusD6XkVf1VcQmS8Qrw5AmL7wKgAwuxoTaDPV6euTCrWnPja7l",
+    "00014",
+    "116626378047931884670285795419281253202_1",
+    "facebook:post:pfbid036uDymnMGfrYY8M7akRKHBej8nh9D1n5szzWnXigv2XnexW3u64wnqWbSvXQ7uS5Gl",
+    "156469192459477633815711109783104159488_1",
+    "00024",
+    "facebook:post:pfbid02ZyLfFziM7RSEqE6ZkiujsrspKox649JQ7ibQHKdiy7uEuwvLXVhQvbfZRoYmRbKhl",
+    "00003",
+    "00001",
+    "facebook:post:pfbid0eXxUhWyXpjtSd4dcmRJjJM8qFFyKDeEZYPmsWKzhYsoHVGPrk3srMM6erNw9D7Qpl",
+    "facebook:reel:1419888406765492",
+    "00013",
+    "156469192459477633815711109783104159488_4",
+    "duplicate",
+    "00027",
+    "9007199254740993123456790",
+    "00004",
+    "facebook:reel:1809956393694426",
+    "facebook:reel:1098432833113428",
+    "facebook:comment:1353993326906858",
+    "00005",
+    "00031",
+    "00010",
+    "00009",
+    "00007",
+    "00015",
+    "facebook:reel:1815660013151689",
+    "00021",
+    "facebook:post:pfbid022sdGHy9i14MrJE7t8CKuRH2gfgCGPdUaT7PEGEuQWPySBLefiKhkkewbM5nkafE3l",
+    "311849710373835193294296754455192102202_2",
+    "00028",
+    "facebook:comment:27903656085989070",
+    "facebook:comment:1077076494991097",
+    "facebook:comment:1393237392903595",
+    "00019",
+    "311849710373835193294296754455192102202_4",
+    "facebook:reel:2319710731766760",
+    "facebook:post:pfbid0UpeftT8hmyP9u3CAG1LVQsuMwVikLRUTuGLHp4whoXcjmkSakSp943pcRewn8FXSl",
+    "facebook:comment:4652715068308205",
+    "facebook:post:pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl",
+    "00006",
+    "00016",
+    "facebook:post:pfbid0SfPQgTjQcdQpyvbCRtdw4xB8VVaW7d7BfP9sFDGGC4eTvBnCHFqbD66Am1hQJWyPl",
+    "116626378047931884670285795419281253202_3",
+    "facebook:reel:1611645807171944",
+    "199744314471809879741051834906773920364_3",
+    "199744314471809879741051834906773920364_1",
+    "311849710373835193294296754455192102202_1",
+    "116626378047931884670285795419281253202_2",
+    "00002",
+    "facebook:comment:1798186518043775",
+    "311849710373835193294296754455192102202_3",
+    "00022",
+    "facebook:comment:4486227441644316",
+    "00020",
+    "facebook:post:pfbid032dKT7S2AnpRfz8ksSNXBMQNehy4n6hpP2pWbnhsngTBZYsXJDy1qeDRJubjqsTwPl",
+    "facebook:comment:1217101133887549",
+    "00008",
+    "facebook:reel:4019385248369368",
+    "facebook:comment:4028276564148800",
+    "000123456789012345678901234567890",
+    "facebook:post:pfbid02DwLweqyR6nUHySLTTNfYrdm2mzCsXmt9A5yiPprhNZhUVSxF5wscUsMQqn2wq3A8l",
+    "156469192459477633815711109783104159488_3",
+    "facebook:comment:1581943333556716",
+    "00017"
+  ],
+  "monitor_request_id": "448c2dfb-84ef-47fb-bed9-c517b4d8f7d9",
+  "start_request_id": "68de0ae9-dfd1-4f58-bdc0-1e9591882216",
+  "pause_request_id": "736c953b-3faf-4a2f-8363-3f1df88cb6c3",
+  "keyword_source": {
+    "query_id": "80f80e70-3df7-479a-af27-1180f1208706",
+    "observation": {
+      "id": "6b491fa6-211b-4e66-9b4b-73a91a593397",
+      "source_url": "https://www.facebook.com/reel/1419888406765492/",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "Ein einziger Satz, den Du seit 30 Jahren glaubst, kann dafür sorgen, dass Du Dein ganzes BaZi Potenzial nicht lebst.\n„Sei vernünftig.“\n„Mach erst mal was Sicheres.“\n„Damit kann man doch kein Geld verdienen.“\n„Du musst Dich mehr anstrengen.“\nUnd irgendwann hältst Du diese Sätze für Deine eigene Wahrheit. \nIn meinem BaZi & Human Design Reading schauen wir deshalb nicht nur darauf, was in Deinem BaZi steckt. Wir schauen auch darauf, warum Du genau das vielleicht bisher nicht leben konntest. \nWelche alten Glaubenssätze stehen zwischen Dir und Deinem Potenzial? Wo arbeitest Du gegen Deine eigene Struktur? Und was darf endlich weg, damit Du das, was schwarz auf weiß in Deinem BaZi steht, auch auf die Straße bringst?\nDenn Dein Potenzial zu kennen ist das eine. Dich endlich zu trauen, es zu leben, ist der verdammt wichtige Teil\n Kommentiere mit „BAZI“ und ich schicke Dir alle Informationen zu Deinem persönlichen 90-minütigen BaZi & Human Design Reading mit mir."
+        },
+        "author_id": {
+          "kind": "NOT_RETURNED"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月14日周一20:11"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "run_id": "5bea897d-a4d0-4e83-b4c9-c9f566b2a3b8"
+    }
+  },
+  "monitor": {
+    "id": "a29f4a18-46df-4206-b429-de04225797f6",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "request_id": "448c2dfb-84ef-47fb-bed9-c517b4d8f7d9",
+    "request_hash": "5b6f919183a0ba2aea198371b7d20b41cb72601d7c309363f9989e3adbe95d11",
+    "title": "V1 · 自动发现帖下的自然 BaZi 咨询",
+    "config": {
+      "title": "V1 · 自动发现帖下的自然 BaZi 咨询",
+      "discovery": {
+        "target": "https://www.facebook.com/reel/1419888406765492/",
+        "browser": {
+          "template": "facebook-comments-dom-v1",
+          "comment_order": "NEWEST",
+          "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042"
+        },
+        "keywords": [
+          "bazi"
+        ],
+        "platform": "facebook",
+        "provider": "LOCAL_BROWSER",
+        "strategy": "COMMENTS",
+        "exclusions": [
+          "KFF-0914",
+          "KFF-0913"
+        ],
+        "processing_basis": "从原 Worker 自动 bazi reading 搜索结果中的公开 BaZi 讨论帖派生来源，读取真实自然咨询评论并进入原 lead；非用户提供的测试帖子，不发布或回复任何评论，不重做 C 接待验收。"
+      },
+      "max_pages": 1,
+      "page_size": 10,
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "request_id": "448c2dfb-84ef-47fb-bed9-c517b4d8f7d9",
+      "max_records": 10,
+      "retention_days": 14,
+      "interval_minutes": 60
+    },
+    "state": "PAUSED",
+    "version": 1,
+    "interval_minutes": 60,
+    "next_due_at": "2026-09-14T16:59:34.579Z",
+    "scan_number": 0,
+    "automation": null,
+    "created_by": "33333333-3333-4333-8333-333333333333",
+    "created_at": "2026-09-14T16:59:34.579Z"
+  },
+  "started_monitor": {
+    "id": "a29f4a18-46df-4206-b429-de04225797f6",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "request_id": "448c2dfb-84ef-47fb-bed9-c517b4d8f7d9",
+    "request_hash": "5b6f919183a0ba2aea198371b7d20b41cb72601d7c309363f9989e3adbe95d11",
+    "title": "V1 · 自动发现帖下的自然 BaZi 咨询",
+    "config": {
+      "title": "V1 · 自动发现帖下的自然 BaZi 咨询",
+      "discovery": {
+        "target": "https://www.facebook.com/reel/1419888406765492/",
+        "browser": {
+          "template": "facebook-comments-dom-v1",
+          "comment_order": "NEWEST",
+          "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042"
+        },
+        "keywords": [
+          "bazi"
+        ],
+        "platform": "facebook",
+        "provider": "LOCAL_BROWSER",
+        "strategy": "COMMENTS",
+        "exclusions": [
+          "KFF-0914",
+          "KFF-0913"
+        ],
+        "processing_basis": "从原 Worker 自动 bazi reading 搜索结果中的公开 BaZi 讨论帖派生来源，读取真实自然咨询评论并进入原 lead；非用户提供的测试帖子，不发布或回复任何评论，不重做 C 接待验收。"
+      },
+      "max_pages": 1,
+      "page_size": 10,
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "request_id": "448c2dfb-84ef-47fb-bed9-c517b4d8f7d9",
+      "max_records": 10,
+      "retention_days": 14,
+      "interval_minutes": 60
+    },
+    "state": "ACTIVE",
+    "version": 2,
+    "interval_minutes": 60,
+    "next_due_at": "2026-09-14T16:59:34.667Z",
+    "scan_number": 0,
+    "automation": null,
+    "created_by": "33333333-3333-4333-8333-333333333333",
+    "created_at": "2026-09-14T16:59:34.579Z"
+  },
+  "scans": [
+    {
+      "query_id": "5a791254-513a-4bdb-b666-85a32c105419",
+      "scan_number": 1,
+      "run_id": "645cf235-439a-441c-a711-7d8845d476ad",
+      "state": "COMPLETED",
+      "returned_count": 0,
+      "unique_count": 0,
+      "committed_pages": 1,
+      "stop_reason": "SOURCE_EXHAUSTED",
+      "error_code": null,
+      "finished_at": "2026-09-14T17:00:06.207Z"
+    }
+  ],
+  "commands": [
+    {
+      "command_id": "9c2b099a-e819-4075-be8a-9eb8a6ae8d53",
+      "action_id": "fce00af3-84c1-4222-a954-0920e8010df8",
+      "claimed_at": "2026-09-14T16:59:37.002Z",
+      "quiesced_at": "2026-09-14T17:00:06.279Z",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "receipt": {
+        "remote_id": "collection:645cf235-439a-441c-a711-7d8845d476ad:1",
+        "observed_at": "2026-09-14T16:59:59.225Z",
+        "content_hash": "d07556d49c07446558b3d45230e5878047b74b5b4a3285041c01f45d5e574531",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61589894042400"
+      },
+      "task_id": "87691af4-a888-42d9-a12a-a8fec67252b7"
+    }
+  ],
+  "paused_monitor": {
+    "id": "a29f4a18-46df-4206-b429-de04225797f6",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "request_id": "448c2dfb-84ef-47fb-bed9-c517b4d8f7d9",
+    "request_hash": "5b6f919183a0ba2aea198371b7d20b41cb72601d7c309363f9989e3adbe95d11",
+    "title": "V1 · 自动发现帖下的自然 BaZi 咨询",
+    "config": {
+      "title": "V1 · 自动发现帖下的自然 BaZi 咨询",
+      "discovery": {
+        "target": "https://www.facebook.com/reel/1419888406765492/",
+        "browser": {
+          "template": "facebook-comments-dom-v1",
+          "comment_order": "NEWEST",
+          "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042"
+        },
+        "keywords": [
+          "bazi"
+        ],
+        "platform": "facebook",
+        "provider": "LOCAL_BROWSER",
+        "strategy": "COMMENTS",
+        "exclusions": [
+          "KFF-0914",
+          "KFF-0913"
+        ],
+        "processing_basis": "从原 Worker 自动 bazi reading 搜索结果中的公开 BaZi 讨论帖派生来源，读取真实自然咨询评论并进入原 lead；非用户提供的测试帖子，不发布或回复任何评论，不重做 C 接待验收。"
+      },
+      "max_pages": 1,
+      "page_size": 10,
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "request_id": "448c2dfb-84ef-47fb-bed9-c517b4d8f7d9",
+      "max_records": 10,
+      "retention_days": 14,
+      "interval_minutes": 60
+    },
+    "state": "PAUSED",
+    "version": 3,
+    "interval_minutes": 60,
+    "next_due_at": "2026-09-14T17:00:06.996Z",
+    "scan_number": 1,
+    "automation": null,
+    "created_by": "33333333-3333-4333-8333-333333333333",
+    "created_at": "2026-09-14T16:59:34.579Z"
+  },
+  "closures": [
+    {
+      "command_id": "9c2b099a-e819-4075-be8a-9eb8a6ae8d53",
+      "local_database_match": true,
+      "proof": {
+        "action_id": "fce00af3-84c1-4222-a954-0920e8010df8",
+        "closed_at": "2026-09-14T17:00:06.052Z",
+        "command_id": "9c2b099a-e819-4075-be8a-9eb8a6ae8d53",
+        "proof_sha256": "e501a36c4c8451472ade211a933e5fa690020ddfdfd5a0fd040c970dfad853c5",
+        "protocol_version": "kff.guardian-closure.v1"
+      }
+    }
+  ],
+  "leads": [],
+  "observations": [],
+  "new_source_leads": [],
+  "diagnostics": [
+    {
+      "action_id": "fce00af3-84c1-4222-a954-0920e8010df8",
+      "manifest": {
+        "step": "facebook-comments-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "d6c270a3fde6109ca6aaf4399aa721f3a4b656559bb5cbb4f55c17b2fb6e55d8",
+            "content": {
+              "result_count": 0,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "fce00af3-84c1-4222-a954-0920e8010df8",
+        "attempt_id": "7e7fd05c-34cb-4bf0-ae7e-eb14afb4a37d",
+        "created_at": "2026-09-14T17:00:06.261Z",
+        "error_code": null,
+        "duration_ms": 27612,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-search-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    }
+  ],
+  "profile_after": "Inactive",
+  "finished_at": "2026-09-14T17:00:08.537Z"
+}

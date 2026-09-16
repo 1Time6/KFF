@@ -1,0 +1,134 @@
+{
+  "recorded_at": "2026-09-13T13:51:56.207Z",
+  "scope": "User-selected AdsPower environment 9 normal reopen and original installed Agent identity CHECK",
+  "selected": {
+    "profile_id": "k1gw2kh9",
+    "ui_sequence": "9",
+    "profile_name": "客户-32857-A",
+    "external_id": "61594334430750",
+    "display_name": "郑成功"
+  },
+  "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+  "environment_id": "bd009fb1-2f65-448e-8536-440225d913d9",
+  "agent_id": "66666666-6666-4666-8666-666666666666",
+  "release": "kff-agent-0.1.7-win32-x64-fd5401aa9462",
+  "release_of_existing_window": {
+    "released_at": "2026-09-13T13:36:16.431Z",
+    "profile_id": "k1gw2kh9",
+    "ui_sequence": "9",
+    "profile_name": "客户-32857-A",
+    "provider_after": "Inactive",
+    "method": "AdsPower normal stop with exact observed endpoint guard",
+    "scope": "User-selected KFF integration CHECK",
+    "ui_observed_at": "2026-09-13T13:35:15.027Z",
+    "unsaved_editors": false,
+    "force_kill": false
+  },
+  "command": {
+    "recorded_at": "2026-09-13T13:37:12.648Z",
+    "ui_sequence": "9",
+    "profile_id": "k1gw2kh9",
+    "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+    "environment_id": "bd009fb1-2f65-448e-8536-440225d913d9",
+    "command_id": "a3c1d9f8-e5e2-42a0-b81d-410d532efc75",
+    "snapshot_hash": "60a91b0dcd500a119ce11ee67a52cb63a576f18b0173aaad441a600c7656ba13",
+    "result": {
+      "outcome": "CHECKED",
+      "identity": {
+        "method": "facebook-profile-dom-v1",
+        "source_url": "https://www.facebook.com/profile.php?id=61594334430750",
+        "observed_at": "2026-09-13T13:37:11.241Z",
+        "account_type": "profile",
+        "display_name": "郑成功",
+        "authenticated": true,
+        "operating_identity_id": "61594334430750"
+      },
+      "context_closed": true,
+      "browser_version": "150.0.7871.47"
+    },
+    "db_closed_at": "2026-09-13T13:37:12.402Z",
+    "local_closed_at": "2026-09-13T13:37:12.332Z",
+    "closure_matches": true,
+    "provider_after": "Inactive",
+    "platform_send_actions": 0
+  },
+  "original_queue_verified": true,
+  "independent_bindings": true,
+  "binding_versions": [
+    {
+      "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+      "configuration_version": 2,
+      "configuration_sha256": "a424c5e08278ed986d583dc8e1b541b1bd68ba5f11b33a05ed1649bc39a73513"
+    },
+    {
+      "environment_id": "bd009fb1-2f65-448e-8536-440225d913d9",
+      "configuration_version": 2,
+      "configuration_sha256": "bc2a0919963c415d1a3c89d13a397095d491a0962c735434eaa0237700f3636b"
+    }
+  ],
+  "prior_first_identity_check": {
+    "recorded_at": "2026-09-13T10:14:57.955Z",
+    "ui_sequence": "1876794",
+    "profile_id": "k1gvdtft",
+    "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+    "command_id": "ad49ce6d-ce9d-4e9a-8a54-8a8aa2ef2956",
+    "snapshot_hash": "a31eee7cedb53cda643aca9e1fbc0f9a76ca18c07813c87bed540d81eb21b8e6",
+    "result": {
+      "outcome": "CHECKED",
+      "identity": {
+        "method": "facebook-profile-dom-v1",
+        "source_url": "https://www.facebook.com/profile.php?id=61589894042400",
+        "observed_at": "2026-09-13T10:14:53.105Z",
+        "account_type": "profile",
+        "display_name": "XiangHuan Master",
+        "authenticated": true,
+        "operating_identity_id": "61589894042400"
+      },
+      "context_closed": true,
+      "browser_version": "150.0.7871.47"
+    },
+    "db_closed_at": "2026-09-13T10:14:57.231Z",
+    "local_closed_at": "2026-09-13T10:14:57.076Z",
+    "closure_matches": true,
+    "provider_after": "Inactive",
+    "platform_send_actions": 0
+  },
+  "ui": {
+    "url": "http://127.0.0.1:3000/environments",
+    "rows": {
+      "first": "1876794 · XiangHuan Master\n\nXiangHuan Master\n\n配置 v2 · 空闲\n\t本机开发 Agent\n\nAgent 在线\n\n\tAdsPower · k1gvdtft\n\n已关闭\n\n浏览器 150.0.7871.47\n\n环境检查 2026/9/13 18:14:57\n\n\t登录状态：核验时已登录\n\n操作身份：XiangHuan Master\n\n61589894042400 · 个人账号\n\n核验于 2026/9/13 18:14:53\n\n消息收发与采集按各自动作验收\n\t\n检查浏览器与身份打开登录窗口禁用",
+      "second": "9 · 客户-32857-A · 郑成功\n\n郑成功\n\n配置 v2 · 空闲\n\t本机开发 Agent\n\nAgent 在线\n\n\tAdsPower · k1gw2kh9\n\n已关闭\n\n浏览器 150.0.7871.47\n\n环境检查 2026/9/13 21:37:12\n\n\t登录状态：核验时已登录\n\n操作身份：郑成功\n\n61594334430750 · 个人账号\n\n核验于 2026/9/13 21:37:11\n\n消息收发与采集按各自动作验收\n\t\n检查浏览器与身份打开登录窗口禁用"
+    },
+    "screenshot": "output/playwright/second-profile-agent-checked.png"
+  },
+  "providers": {
+    "first": "Inactive",
+    "second": "Inactive"
+  },
+  "counts": {
+    "accounts": 87,
+    "prospects": 46,
+    "migrations": 31,
+    "unclosed": 0,
+    "active_monitors": 0
+  },
+  "preservation": {
+    "original_leads": 13,
+    "original_messages": 4,
+    "whatsapp_handoff_unchanged": true,
+    "original_immutable_agent_files": 177,
+    "restart_all_original_files": {
+      "checked_at": "2026-09-13T13:33:37.458Z",
+      "preserved_original_files": 179,
+      "changed_files": [],
+      "new_files": []
+    },
+    "before_snapshot_sha256": "84d88219ebd9ec706f806c0c0505628a6c0a43fe44698132ff97606151724e21"
+  },
+  "platform_sends": 0,
+  "limitations": [
+    "Identity CHECK is verified for both selected real accounts; multi-account business reads, inbox routing and recovery require separate evidence",
+    "No additional Facebook or WhatsApp message was sent"
+  ]
+}

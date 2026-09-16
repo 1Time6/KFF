@@ -1,0 +1,59 @@
+{
+  "at": "2026-09-14T10:35:47.579Z",
+  "version": "0.1.35",
+  "goal_complete": false,
+  "manual_reopen": {
+    "observed_at": "2026-09-14T10:31:45.180Z",
+    "profile_id": "k1gx1n1s",
+    "navigations": 0,
+    "platform_sends": 0,
+    "pending": {
+      "commands": 0,
+      "environments": 0
+    },
+    "status": "Active",
+    "pages": [
+      {
+        "origin": "https://www.facebook.com",
+        "path": "/profile.php",
+        "setup_prompt": false,
+        "challenge": false,
+        "chat_list": false,
+        "unsent_edit": false,
+        "dialogs": 0
+      }
+    ]
+  },
+  "direct_read": {
+    "at": "2026-09-14T10:34:12.605Z",
+    "origin": "https://api-global.adspower.net",
+    "path": "/fbcc/local-api/get-user-list",
+    "method": "GET",
+    "platform_requests": 0,
+    "cloud_key_matches_file": true,
+    "http_status": 200,
+    "code": 0
+  },
+  "adspower_local_api_errors": [
+    {
+      "time": "2026-09-14T18:32:00.046",
+      "origin": "https://api-global.adspower.net",
+      "path": "/fbcc/local-api/get-user-list",
+      "message": "read ECONNRESET",
+      "current_key_matches": true
+    },
+    {
+      "time": "2026-09-14T18:34:21.951",
+      "origin": "https://api-global.adspower.net",
+      "path": "/fbcc/local-api/get-user-list",
+      "message": "read ECONNRESET",
+      "current_key_matches": true
+    }
+  ],
+  "pending_original_commands": 0,
+  "platform_sends": 0,
+  "profile10_user_window_preserved": true,
+  "conclusion": "A direct authorized GET to the exact observed AdsPower cloud read endpoint returned HTTP200/code0, while the client local API path continued failing. This narrows the fault to the client request path; the precise transport cause remains unproven.",
+  "next_step": "User normally quits and relaunches AdsPower after saving edits; check its read-only API before queuing another read.",
+  "reference": "https://www.adspower.com/blog/troubleshooting-common-issues-with-adspower-api-a-complete-guide"
+}

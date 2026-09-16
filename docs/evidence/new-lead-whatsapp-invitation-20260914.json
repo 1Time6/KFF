@@ -1,0 +1,148 @@
+{
+  "schema_version": "kff.new-lead-whatsapp-invitation.v1",
+  "recorded_at": "2026-09-14T03:20:29.632Z",
+  "controlled_test": true,
+  "lead_id": "19eb0c88-2002-40fd-acad-6040b684cd54",
+  "comment_id": "4652715068308205",
+  "test_marker": "KFF-0914-A",
+  "authorization": {
+    "recorded_at": "2026-09-14T02:28:35.670Z",
+    "user_text": "可以 以后类似问题全部授权 无需过问",
+    "similar_controlled_test_messages_authorized": true,
+    "max_sends": 1
+  },
+  "sender": {
+    "name": "郑成功",
+    "facebook_id": "61594334430750"
+  },
+  "recipient": {
+    "name": "XiangHuan Master",
+    "facebook_id": "61589894042400"
+  },
+  "body": "你好，可以通过 WhatsApp 联系宸均继续沟通：https://wa.me/8618730936793",
+  "original_failed_attempt": {
+    "task_id": "cb3d8493-73ae-4d3b-b274-f15f4ec4aca0",
+    "action_id": "cd8f6d0d-e7d4-4815-bb4e-c9f11b5626b7",
+    "outcome": "BLOCKED",
+    "submitted": false,
+    "closure_verified": true
+  },
+  "successful_attempt": {
+    "task_id": "27d878b0-3b3f-40a3-b44b-32608143d579",
+    "action_id": "36632772-c900-448f-a854-707c5cb9ec63",
+    "command_id": "5a910ab5-0c78-4112-bc4a-5445e02a814e",
+    "permit_id": "b22b7310-d100-472d-9888-2af6eab24c43",
+    "outcome": "VERIFIED_SUCCEEDED",
+    "attempts": [
+      {
+        "id": "bc091ade-febe-4d3a-a58c-081f9d82d5e4",
+        "attempt_number": 1,
+        "submitted_at": "2026-09-14T03:16:46.210Z",
+        "state": "VERIFIED_SUCCEEDED"
+      }
+    ],
+    "receipt": {
+      "remote_id": "61589894042400@msgr.7505102217959993218",
+      "thread_id": "2079341482680484",
+      "observed_at": "2026-09-14T03:16:52.152Z",
+      "content_hash": "3f322e26b154f43dea706cce1f6ecf289a92c64935441f1a514090458b56507f",
+      "recipient_id": "61589894042400",
+      "evidence_kind": "browser_message",
+      "actual_account_id": "61594334430750"
+    },
+    "closure_verified": true
+  },
+  "recipient_inbox": {
+    "verified": true,
+    "messages": [
+      {
+        "id": "cc05aaff-1546-4055-bbd2-890d26de4929",
+        "conversation_id": "8baadfed-4b4e-47c5-9a01-06b80442b9fa",
+        "sequence": 2,
+        "direction": "INBOUND",
+        "body": "你好，可以通过 WhatsApp 联系宸均继续沟通：https://wa.me/8618730936793",
+        "source": {
+          "ref": null,
+          "kind": "MESSENGER",
+          "ad_id": null,
+          "page_id": "61589894042400",
+          "peer_id": "61594334430750",
+          "source_id": "61594334430750@msgr.7505102217959993218",
+          "thread_id": "2079341482680484",
+          "transport": "BROWSER",
+          "source_url": "https://www.facebook.com/messages/e2ee/t/2079341482680484/",
+          "thread_kind": "UNVERIFIED",
+          "displayed_time": "11:16"
+        },
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "handling_mode": "HUMAN"
+      }
+    ]
+  },
+  "sender_outgoing": [
+    {
+      "id": "140a9775-90e3-49c1-ab80-dd8dc6ac891d",
+      "conversation_id": "79a78ecf-9814-47ab-87ab-25c093ed1306",
+      "sequence": 2,
+      "direction": "OUTBOUND",
+      "body": "你好，可以通过 WhatsApp 联系宸均继续沟通：https://wa.me/8618730936793",
+      "action_id": "36632772-c900-448f-a854-707c5cb9ec63"
+    }
+  ],
+  "referrals": [
+    {
+      "id": "9ece8f0a-58f9-4cca-814a-7d48f08811ce",
+      "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "customer_id": "a20d6e87-3f41-4dd7-9bed-879e43a846e5",
+      "conversation_id": "79a78ecf-9814-47ab-87ab-25c093ed1306",
+      "action_id": "36632772-c900-448f-a854-707c5cb9ec63",
+      "message_id": "140a9775-90e3-49c1-ab80-dd8dc6ac891d",
+      "state": "REFERRED",
+      "version": 2,
+      "destination_snapshot": {
+        "phone": "8618730936793",
+        "template": "你好，可以通过 WhatsApp 联系宸均继续沟通：{whatsapp_url}",
+        "cooldown_hours": 24,
+        "destination_id": "61cef25d-7e01-4800-9c05-e5d46e070927",
+        "destination_version": 1
+      }
+    }
+  ],
+  "original_public_draft": {
+    "id": "5ace8b43-ceac-4669-9293-8d6eb501bab4",
+    "status": "REJECTED"
+  },
+  "whatsapp_sales_receipt_confirmed": false,
+  "next_manual_step": "测试方打开原邀请中的 WhatsApp 链接并向宸均发送 KFF-0914-A；宸均实际收到后确认本条标记。",
+  "runtime": {
+    "state": {
+      "runtime_id": "01721d77-9575-445d-adaa-9b8961286dc7",
+      "pid": 30136,
+      "phase": "RUNNING",
+      "updated_at": "2026-09-14T03:20:28.932Z",
+      "app_origin": "http://127.0.0.1:3000",
+      "release_id": "kff-agent-0.1.20-win32-x64-d37cd1633b26",
+      "database_owned": false,
+      "components": {
+        "database": {
+          "pid": null,
+          "state": "CONNECTED"
+        },
+        "web": {
+          "pid": 32652,
+          "state": "RUNNING"
+        },
+        "worker": {
+          "pid": 13988,
+          "state": "RUNNING"
+        },
+        "agent": {
+          "pid": 13928,
+          "state": "RUNNING"
+        }
+      }
+    },
+    "live_sending_enabled": false
+  },
+  "goal_complete": false
+}

@@ -1,0 +1,87 @@
+{
+  "at": "2026-09-14T13:34:30.438Z",
+  "request_id": "94c00168-928a-4b42-be9f-e56ca6e3ba10",
+  "conversation_id": "441006a5-8821-4923-99bb-df3c98bc6ac0",
+  "platform_sends": 0,
+  "scope": "Original Worker draft generation for the already received controlled test acknowledgement; not a new public customer or a sent reply.",
+  "model": "deepseek-flash",
+  "runtime_before": {
+    "runtime_id": "486be535-0a95-4621-afb4-b07dedc331dd",
+    "pid": 23824,
+    "phase": "RUNNING",
+    "updated_at": "2026-09-14T13:34:29.366Z",
+    "app_origin": "http://127.0.0.1:3000",
+    "release_id": "kff-agent-0.1.40-win32-x64-9b2cb5bf1053",
+    "database_owned": false,
+    "components": {
+      "database": {
+        "pid": null,
+        "state": "CONNECTED"
+      },
+      "web": {
+        "pid": 24980,
+        "state": "RUNNING"
+      },
+      "worker": {
+        "pid": 22904,
+        "state": "RUNNING"
+      },
+      "agent": {
+        "pid": 25860,
+        "state": "RUNNING"
+      }
+    }
+  },
+  "before": {
+    "id": "441006a5-8821-4923-99bb-df3c98bc6ac0",
+    "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "handling_mode": "HUMAN",
+    "control_version": 3,
+    "last_sequence": 3,
+    "last_inbound_sequence": 3,
+    "last_answered_sequence": 0
+  },
+  "tasks_before": [],
+  "request": {
+    "job_id": "d894c108-24af-45c8-983d-44ef69f5173e",
+    "status": "DRAFT_QUEUED",
+    "expires_at": "2026-09-14T13:54:31.046Z"
+  },
+  "job": {
+    "id": "d894c108-24af-45c8-983d-44ef69f5173e",
+    "state": "DONE",
+    "attempts": 1,
+    "error_code": null,
+    "result": {
+      "model": "OPENAI_COMPATIBLE",
+      "status": "DRAFT_READY",
+      "decision": {
+        "tags": [
+          "test-marker",
+          "unclear"
+        ],
+        "reply": "",
+        "action": "HANDOFF",
+        "intent": "OTHER",
+        "reason": "Conversation appears to contain internal/test markers rather than a genuine customer inquiry; escalate for operator review.",
+        "confidence": 0.8,
+        "intent_level": "UNKNOWN",
+        "valid_inquiry": false
+      },
+      "expires_at": "2026-09-14T13:54:31.046Z",
+      "generated_at": "2026-09-14T13:34:32.378Z"
+    }
+  },
+  "after": {
+    "id": "441006a5-8821-4923-99bb-df3c98bc6ac0",
+    "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "handling_mode": "HUMAN",
+    "control_version": 3,
+    "last_sequence": 3,
+    "last_inbound_sequence": 3,
+    "last_answered_sequence": 0
+  },
+  "tasks_after": [],
+  "accepted": true,
+  "finished_at": "2026-09-14T13:34:33.149Z"
+}

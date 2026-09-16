@@ -1,0 +1,64 @@
+{
+  "recorded_at": "2026-09-12T08:38:46.125Z",
+  "kind": "LOCAL_SYNTHETIC_RUNTIME",
+  "real_calls": 0,
+  "actions": [
+    {
+      "run_id": "6a7995f8-4dc0-4cda-8f96-51d26ac03264",
+      "action_id": "c888f44a-56b8-4ef4-a922-0976d7e52f0b",
+      "state": "VERIFIED_SUCCEEDED",
+      "receipt": {
+        "remote_id": "synthetic_9937f114-e904-4f3a-a3bb-58056f087b2e",
+        "observed_at": "2026-09-12T08:25:32.486Z",
+        "content_hash": "99209e1063172afcb0a78c39fcd84bfc61b15ae3eb18b367c8883ddb2795716f",
+        "recipient_id": "900101",
+        "evidence_kind": "synthetic_message",
+        "actual_account_id": "311849710373835193294296754455192102202"
+      },
+      "is_synthetic": "true",
+      "platform": "facebook",
+      "action_kind": "PRIVATE_REPLY",
+      "expected_author": "900101",
+      "snapshot_hash": "8fd6335e5759283594e3f9927ff536ed539ef0a42d38425d8d730d261b976310",
+      "attempts": 1
+    },
+    {
+      "run_id": "c46ec719-c767-4727-984f-cb84d48472b9",
+      "action_id": "a1c92323-a9f3-44c8-befe-e45203da2e91",
+      "state": "VERIFIED_SUCCEEDED",
+      "receipt": {
+        "remote_id": "synthetic_3f436ab8-0bee-4681-974e-11b4e2587428",
+        "observed_at": "2026-09-12T08:25:37.501Z",
+        "content_hash": "99209e1063172afcb0a78c39fcd84bfc61b15ae3eb18b367c8883ddb2795716f",
+        "recipient_id": "900103",
+        "evidence_kind": "synthetic_message",
+        "actual_account_id": "311849710373835193294296754455192102202"
+      },
+      "is_synthetic": "true",
+      "platform": "facebook",
+      "action_kind": "PRIVATE_REPLY",
+      "expected_author": "900103",
+      "snapshot_hash": "75a224ce56702d0e36b9ff3a7777f7c607936a1dab4cebc1bcb3ef0e48bd7362",
+      "attempts": 1
+    },
+    {
+      "run_id": "21b0f9dc-5b35-4792-ac17-b9f61217ef90",
+      "action_id": "1cdda09b-217e-49e8-a19c-0f37ef55c579",
+      "state": "VERIFIED_SUCCEEDED",
+      "receipt": {
+        "remote_id": "synthetic_16646441-a731-4793-8483-df3a910ec59b",
+        "observed_at": "2026-09-12T08:38:23.417Z",
+        "content_hash": "9d350b8ef10607b16265daa59808add76880bdd4745144a2fc585fb170fcf23d",
+        "recipient_id": "900101",
+        "evidence_kind": "synthetic_message",
+        "actual_account_id": "116626378047931884670285795419281253202"
+      },
+      "is_synthetic": "true",
+      "platform": "instagram",
+      "action_kind": "COMMENT_REPLY",
+      "expected_author": "900101",
+      "snapshot_hash": "bf15a8f8f99d42ba2282e505b52c2fb56d5612981a648cbb93e7f6744a9e78de",
+      "attempts": 1
+    }
+  ]
+}

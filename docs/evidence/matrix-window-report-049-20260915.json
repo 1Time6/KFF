@@ -1,0 +1,271 @@
+{
+  "schema": "kff.matrix-window-report.v1",
+  "generated_at": "2026-09-15T04:49:41.443Z",
+  "plan": {
+    "from": "2026-09-15T04:21:05.613Z",
+    "to": "2026-09-15T04:24:34.737Z",
+    "synthetic": false,
+    "targets": [
+      {
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+        "minimum_public_scans": 1,
+        "minimum_inbox_cycles": 0
+      },
+      {
+        "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+        "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+        "minimum_public_scans": 1,
+        "minimum_inbox_cycles": 0
+      }
+    ]
+  },
+  "read_only": true,
+  "record_review": "RECORDS_MATCH_COUNTS",
+  "problems": [],
+  "bindings": [
+    {
+      "id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "external_id": "61589894042400",
+      "is_synthetic": false,
+      "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+      "agent_id": "66666666-6666-4666-8666-666666666666",
+      "state": "IDLE",
+      "browser_status": "CLOSED"
+    },
+    {
+      "id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "external_id": "61594402378582",
+      "is_synthetic": false,
+      "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+      "agent_id": "66666666-6666-4666-8666-666666666666",
+      "state": "IDLE",
+      "browser_status": "CLOSED"
+    }
+  ],
+  "scans": [
+    {
+      "id": "a6377a8d-174d-4205-9773-009f026844fa",
+      "monitor_id": "ac956f97-bfa6-41fa-8205-c6b2158db5e6",
+      "query_id": "dbd0cff2-709c-4c95-8b72-ba478b011e36",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "monitor_version": 2,
+      "run_id": "75e62b97-410a-4aec-a6d6-ed3679d0ad94",
+      "state": "PARTIAL",
+      "error_code": null,
+      "stop_reason": "MAX_PAGES",
+      "returned_count": 1,
+      "unique_count": 1,
+      "created_at": "2026-09-15T04:21:06.076Z",
+      "started_at": "2026-09-15T04:21:06.155Z",
+      "finished_at": "2026-09-15T04:22:10.160Z"
+    },
+    {
+      "id": "baa0f76f-8084-403c-868b-121ebb100464",
+      "monitor_id": "6a2e923d-ceb1-4cb5-a604-e6fb85a352d6",
+      "query_id": "4884f673-c839-49f9-b816-fdbf8b04eedf",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "monitor_version": 2,
+      "run_id": "21eca8c8-d5c8-4d7d-a20a-6c792e96a9e0",
+      "state": "PARTIAL",
+      "error_code": null,
+      "stop_reason": "MAX_PAGES",
+      "returned_count": 7,
+      "unique_count": 7,
+      "created_at": "2026-09-15T04:22:43.076Z",
+      "started_at": "2026-09-15T04:22:43.093Z",
+      "finished_at": "2026-09-15T04:23:53.975Z"
+    },
+    {
+      "id": "506032a7-26e1-4e58-81e4-186f65527879",
+      "monitor_id": "a9537074-6977-45e7-b4ad-264aa74424a1",
+      "query_id": "a85b2721-a687-40dd-b117-36f8110e81cc",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "monitor_version": 1,
+      "run_id": "3f112b1c-e393-400d-a63b-724a7974a86f",
+      "state": "COMPLETED",
+      "error_code": null,
+      "stop_reason": "SOURCE_EXHAUSTED",
+      "returned_count": 3,
+      "unique_count": 3,
+      "created_at": "2026-09-15T04:23:54.308Z",
+      "started_at": "2026-09-15T04:23:54.320Z",
+      "finished_at": "2026-09-15T04:24:28.232Z"
+    }
+  ],
+  "actions": [
+    {
+      "task_id": "c9d9b6ef-3f04-420b-a99f-87f259c5a625",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+      "status": "SUCCEEDED",
+      "expected_identity": "61589894042400",
+      "capability": "facebook.discovery.read.browser",
+      "query_id": "dbd0cff2-709c-4c95-8b72-ba478b011e36",
+      "inbox_monitor_id": null,
+      "action_id": "b1ce86c1-d3b1-4e3a-b49e-45c9a3e92e59",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "created_at": "2026-09-15T04:21:06.155Z",
+      "command_id": "22969eea-b709-4fae-9d0a-135b5293f787",
+      "queued_at": "2026-09-15T04:21:07.223Z",
+      "claimed_at": "2026-09-15T04:21:07.506Z",
+      "quiesced_at": "2026-09-15T04:22:10.296Z",
+      "actual_identity": "61589894042400",
+      "receipt_at": "2026-09-15T04:22:01.029Z",
+      "queue_seconds": "0.282789",
+      "execution_seconds": "62.789716",
+      "closure_recorded": true
+    },
+    {
+      "task_id": "1b51b49d-da9b-4b73-96b7-c076475437cf",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+      "status": "SUCCEEDED",
+      "expected_identity": "61594402378582",
+      "capability": "facebook.discovery.read.browser",
+      "query_id": "4884f673-c839-49f9-b816-fdbf8b04eedf",
+      "inbox_monitor_id": null,
+      "action_id": "5ddb2569-6f78-4f64-a4c0-8c9bd5f55abd",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "created_at": "2026-09-15T04:22:43.093Z",
+      "command_id": "4f13f61a-d83f-47d4-b2b9-bc7ac789f926",
+      "queued_at": "2026-09-15T04:22:43.872Z",
+      "claimed_at": "2026-09-15T04:22:44.939Z",
+      "quiesced_at": "2026-09-15T04:23:54.041Z",
+      "actual_identity": "61594402378582",
+      "receipt_at": "2026-09-15T04:23:42.981Z",
+      "queue_seconds": "1.066304",
+      "execution_seconds": "69.102251",
+      "closure_recorded": true
+    },
+    {
+      "task_id": "f96049fd-f1c4-42fa-bac1-76af246c6281",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+      "status": "SUCCEEDED",
+      "expected_identity": "61594402378582",
+      "capability": "facebook.discovery.read.browser",
+      "query_id": "a85b2721-a687-40dd-b117-36f8110e81cc",
+      "inbox_monitor_id": null,
+      "action_id": "42a1bf17-1cbf-45d0-aef2-df87fe1c428a",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "created_at": "2026-09-15T04:23:54.320Z",
+      "command_id": "ad073fb4-8d34-4a59-9daa-fe97167cc2b1",
+      "queued_at": "2026-09-15T04:23:54.612Z",
+      "claimed_at": "2026-09-15T04:23:55.214Z",
+      "quiesced_at": "2026-09-15T04:24:28.278Z",
+      "actual_identity": "61594402378582",
+      "receipt_at": "2026-09-15T04:24:21.328Z",
+      "queue_seconds": "0.602125",
+      "execution_seconds": "33.064378",
+      "closure_recorded": true
+    }
+  ],
+  "inbox": [],
+  "inbox_notes": [],
+  "leads": [
+    {
+      "id": "beee5bec-9e8e-48c0-b5b7-8cc3db505af3",
+      "monitor_id": "6a2e923d-ceb1-4cb5-a604-e6fb85a352d6",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "state": "NEW",
+      "score": 75,
+      "first_seen_at": "2026-09-15T04:23:54.358Z",
+      "version": 1,
+      "source_object_id": "facebook:post:pfbid0Ygrq6EXKEbYHjSpNrhNJ81h93d7fDt5hNij3f12y8upE9L5kKuoKsX6szEZmxQMsl",
+      "explicit_author_id": null
+    },
+    {
+      "id": "49aa853f-612e-4019-84bc-e96412fa5738",
+      "monitor_id": "6a2e923d-ceb1-4cb5-a604-e6fb85a352d6",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "state": "NEW",
+      "score": 50,
+      "first_seen_at": "2026-09-15T04:23:54.358Z",
+      "version": 1,
+      "source_object_id": "facebook:reel:1782066549596350",
+      "explicit_author_id": "61554912537538"
+    },
+    {
+      "id": "ff6eba64-0f0d-401d-93ba-2d34ece10973",
+      "monitor_id": "6a2e923d-ceb1-4cb5-a604-e6fb85a352d6",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "state": "NEW",
+      "score": 50,
+      "first_seen_at": "2026-09-15T04:23:54.358Z",
+      "version": 1,
+      "source_object_id": "facebook:post:pfbid036TTAJRWfFk2m5nhEijsLdhibBLkdXAd6vA69XVaraqENZGa5Qcj2ZeJJAXheeRjcl",
+      "explicit_author_id": null
+    },
+    {
+      "id": "39416c25-8502-4acd-8501-caff37fc6a92",
+      "monitor_id": "6a2e923d-ceb1-4cb5-a604-e6fb85a352d6",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "state": "NEW",
+      "score": 50,
+      "first_seen_at": "2026-09-15T04:23:54.358Z",
+      "version": 1,
+      "source_object_id": "facebook:post:pfbid0Sm4qTUFtZx313RRUqZoKCbXHiynFP7pwFUUEaSNM4iStGowVaQqcz8HjrMB1Dzirl",
+      "explicit_author_id": null
+    },
+    {
+      "id": "4adb4a2d-1230-4cfb-933c-838671af2e7e",
+      "monitor_id": "6a2e923d-ceb1-4cb5-a604-e6fb85a352d6",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "state": "NEW",
+      "score": 50,
+      "first_seen_at": "2026-09-15T04:23:54.358Z",
+      "version": 1,
+      "source_object_id": "facebook:reel:3444005145770677",
+      "explicit_author_id": "61593806893026"
+    },
+    {
+      "id": "e1cbdd2b-6627-4f07-8bdc-748fbd0ad68c",
+      "monitor_id": "6a2e923d-ceb1-4cb5-a604-e6fb85a352d6",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "state": "NEW",
+      "score": 50,
+      "first_seen_at": "2026-09-15T04:23:54.358Z",
+      "version": 1,
+      "source_object_id": "facebook:post:pfbid0k5N1jCoMrWSe8SuuJRPM1YqL6XcRntCcZMZeEi3RwUzbAwbuDjYFGUwjfFtkbYUAl",
+      "explicit_author_id": null
+    },
+    {
+      "id": "58cbc14e-6c57-424c-98bf-724a4424eb89",
+      "monitor_id": "6a2e923d-ceb1-4cb5-a604-e6fb85a352d6",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "state": "NEW",
+      "score": 50,
+      "first_seen_at": "2026-09-15T04:23:54.358Z",
+      "version": 1,
+      "source_object_id": "facebook:reel:1368671042091738",
+      "explicit_author_id": null
+    },
+    {
+      "id": "6cc91a4d-72e7-48fb-b965-d497dc003344",
+      "monitor_id": "a9537074-6977-45e7-b4ad-264aa74424a1",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "state": "DISMISSED",
+      "score": 50,
+      "first_seen_at": "2026-09-15T04:24:28.593Z",
+      "version": 2,
+      "source_object_id": "facebook:comment:1657954529083963",
+      "explicit_author_id": "61554912537538"
+    }
+  ],
+  "counts": {
+    "lead_records": 8,
+    "qualified_records": 0,
+    "inbox_stored": 0,
+    "inbox_duplicates": 0
+  },
+  "evidence_limits": [
+    "Counts do not establish uninterrupted scheduled observation, provider window ownership, or capacity guarantees.",
+    "Lead records are not unique customers; scores are not purchase probabilities.",
+    "No natural lead to WhatsApp attribution is inferred from unrelated Inbox or C test records.",
+    "Review original timing, skips, command journal and guardian file proofs before accepting a real window."
+  ]
+}

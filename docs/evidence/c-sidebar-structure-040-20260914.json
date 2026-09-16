@@ -1,0 +1,479 @@
+{
+  "at": "2026-09-14T13:56:23.808Z",
+  "purpose": "Observe the original comment-entry click and sidebar only; no collection projection, no sends, no click retries.",
+  "original_failed_action": "139e1122-32f5-4888-a96c-20a8416e7d8d",
+  "events": [
+    {
+      "phase": "before_click",
+      "trusted": true,
+      "at": "2026-09-14T13:56:39.148Z",
+      "path": "/reel/2163157911082094",
+      "focused": true,
+      "visibility": "visible",
+      "ready": "complete",
+      "sidebar_count": 0,
+      "dialog_count": 0,
+      "comment_articles": 0,
+      "buttons": [
+        {
+          "expanded": "false",
+          "pressed": null,
+          "x": 489.88751220703125,
+          "y": 308,
+          "width": 48,
+          "height": 65,
+          "hit": true
+        },
+        {
+          "expanded": "false",
+          "pressed": null,
+          "x": 658.2000122070312,
+          "y": 688.5,
+          "width": 48,
+          "height": 65,
+          "hit": false
+        }
+      ]
+    },
+    {
+      "phase": "after_click",
+      "delay_ms": 0,
+      "at": "2026-09-14T13:56:39.835Z",
+      "path": "/reel/2163157911082094",
+      "focused": true,
+      "visibility": "visible",
+      "ready": "complete",
+      "sidebar_count": 0,
+      "dialog_count": 0,
+      "comment_articles": 0,
+      "buttons": [
+        {
+          "expanded": "true",
+          "pressed": null,
+          "x": 253.91250610351562,
+          "y": 135,
+          "width": 48,
+          "height": 65,
+          "hit": true
+        },
+        {
+          "expanded": "true",
+          "pressed": null,
+          "x": 438.9750061035156,
+          "y": 390,
+          "width": 48,
+          "height": 65,
+          "hit": false
+        }
+      ]
+    },
+    {
+      "phase": "after_click",
+      "delay_ms": 500,
+      "at": "2026-09-14T13:56:39.912Z",
+      "path": "/reel/2163157911082094",
+      "focused": true,
+      "visibility": "visible",
+      "ready": "complete",
+      "sidebar_count": 0,
+      "dialog_count": 0,
+      "comment_articles": 0,
+      "buttons": [
+        {
+          "expanded": "true",
+          "pressed": null,
+          "x": 253.91250610351562,
+          "y": 135,
+          "width": 48,
+          "height": 65,
+          "hit": true
+        },
+        {
+          "expanded": "true",
+          "pressed": null,
+          "x": 438.9750061035156,
+          "y": 390,
+          "width": 48,
+          "height": 65,
+          "hit": false
+        }
+      ]
+    },
+    {
+      "phase": "after_click",
+      "delay_ms": 2000,
+      "at": "2026-09-14T13:56:41.189Z",
+      "path": "/reel/2163157911082094",
+      "focused": true,
+      "visibility": "visible",
+      "ready": "complete",
+      "sidebar_count": 0,
+      "dialog_count": 0,
+      "comment_articles": 4,
+      "buttons": [
+        {
+          "expanded": "true",
+          "pressed": null,
+          "x": 253.91250610351562,
+          "y": 135,
+          "width": 48,
+          "height": 65,
+          "hit": true
+        },
+        {
+          "expanded": "true",
+          "pressed": null,
+          "x": 438.9750061035156,
+          "y": 390,
+          "width": 48,
+          "height": 65,
+          "hit": false
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "at": "2026-09-14T13:56:34.860Z",
+      "step": "navigate"
+    },
+    {
+      "at": "2026-09-14T13:56:36.531Z",
+      "step": "wait-comments"
+    },
+    {
+      "at": "2026-09-14T13:56:36.533Z",
+      "step": "wait-comment-entry"
+    },
+    {
+      "at": "2026-09-14T13:56:38.640Z",
+      "step": "locate-comment-entry"
+    },
+    {
+      "at": "2026-09-14T13:56:38.839Z",
+      "step": "click-comment-entry"
+    },
+    {
+      "at": "2026-09-14T13:56:39.517Z",
+      "step": "wait-sidebar"
+    }
+  ],
+  "sends": 0,
+  "identity": {
+    "method": "facebook-profile-dom-v1",
+    "authenticated": true,
+    "operating_identity_id": "61594402378582",
+    "account_type": "profile",
+    "display_name": "白青天",
+    "observed_at": "2026-09-14T13:56:34.857Z",
+    "source_url": "https://www.facebook.com/profile.php?id=61594402378582"
+  },
+  "read_stop": {
+    "name": "Error",
+    "code": null,
+    "message": "DIAGNOSTIC_ENTRY_CLICKED_STOP"
+  },
+  "final_frame": {
+    "at": "2026-09-14T13:56:40.771Z",
+    "path": "/reel/2163157911082094",
+    "focused": true,
+    "visibility": "visible",
+    "ready": "complete",
+    "sidebar_count": 0,
+    "dialog_count": 0,
+    "comment_articles": 4,
+    "buttons": [
+      {
+        "expanded": "true",
+        "pressed": null,
+        "x": 253.91250610351562,
+        "y": 135,
+        "width": 48,
+        "height": 65,
+        "hit": true
+      },
+      {
+        "expanded": "true",
+        "pressed": null,
+        "x": 438.9750061035156,
+        "y": 390,
+        "width": 48,
+        "height": 65,
+        "hit": false
+      }
+    ]
+  },
+  "structure": {
+    "viewport": {
+      "width": 790,
+      "height": 510
+    },
+    "ancestor_chains": [
+      [
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 1,
+          "heading_texts": [],
+          "public_labels": [],
+          "sort_controls": []
+        },
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 1,
+          "heading_texts": [],
+          "public_labels": [],
+          "sort_controls": []
+        },
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 1,
+          "heading_texts": [],
+          "public_labels": [],
+          "sort_controls": []
+        },
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 1,
+          "heading_texts": [],
+          "public_labels": [],
+          "sort_controls": []
+        },
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 1,
+          "heading_texts": [],
+          "public_labels": [],
+          "sort_controls": []
+        },
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 4,
+          "heading_texts": [
+            "评论"
+          ],
+          "public_labels": [],
+          "sort_controls": [
+            "最相关"
+          ]
+        },
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 4,
+          "heading_texts": [
+            "评论"
+          ],
+          "public_labels": [],
+          "sort_controls": [
+            "最相关"
+          ]
+        },
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 4,
+          "heading_texts": [
+            "评论"
+          ],
+          "public_labels": [],
+          "sort_controls": [
+            "最相关"
+          ]
+        },
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 4,
+          "heading_texts": [
+            "评论"
+          ],
+          "public_labels": [],
+          "sort_controls": [
+            "最相关"
+          ]
+        },
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 4,
+          "heading_texts": [
+            "EasternWisdom",
+            "评论"
+          ],
+          "public_labels": [],
+          "sort_controls": [
+            "最相关"
+          ]
+        }
+      ],
+      [
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 1,
+          "heading_texts": [],
+          "public_labels": [],
+          "sort_controls": []
+        },
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 1,
+          "heading_texts": [],
+          "public_labels": [],
+          "sort_controls": []
+        },
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 1,
+          "heading_texts": [],
+          "public_labels": [],
+          "sort_controls": []
+        },
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 1,
+          "heading_texts": [],
+          "public_labels": [],
+          "sort_controls": []
+        },
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 1,
+          "heading_texts": [],
+          "public_labels": [],
+          "sort_controls": []
+        },
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 4,
+          "heading_texts": [
+            "评论"
+          ],
+          "public_labels": [],
+          "sort_controls": [
+            "最相关"
+          ]
+        },
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 4,
+          "heading_texts": [
+            "评论"
+          ],
+          "public_labels": [],
+          "sort_controls": [
+            "最相关"
+          ]
+        },
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 4,
+          "heading_texts": [
+            "评论"
+          ],
+          "public_labels": [],
+          "sort_controls": [
+            "最相关"
+          ]
+        },
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 4,
+          "heading_texts": [
+            "评论"
+          ],
+          "public_labels": [],
+          "sort_controls": [
+            "最相关"
+          ]
+        },
+        {
+          "tag": "DIV",
+          "role": null,
+          "label": null,
+          "id": "",
+          "article_count": 4,
+          "heading_texts": [
+            "EasternWisdom",
+            "评论"
+          ],
+          "public_labels": [],
+          "sort_controls": [
+            "最相关"
+          ]
+        }
+      ]
+    ],
+    "main_roles": {
+      "link": 16,
+      "combobox": 1,
+      "navigation": 2,
+      "none": 42,
+      "button": 55,
+      "img": 8,
+      "main": 1,
+      "group": 2,
+      "presentation": 5,
+      "slider": 2,
+      "status": 20,
+      "article": 4,
+      "table": 1,
+      "textbox": 1
+    }
+  },
+  "public_snapshot": "- banner:\n  - link \"Facebook\":\n    - /url: /\n    - img\n  - combobox \"搜索 Facebook\"\n  - navigation \"Facebook\":\n    - list:\n      - listitem:\n        - link \"首页\":\n          - /url: /\n          - img\n      - listitem:\n        - link \"好友\":\n          - /url: /friends/\n          - img\n      - listitem:\n        - link \"小组\":\n          - /url: /groups/\n          - img\n  - navigation \"账户控制选项和设置\":\n    - button \"Facebook 菜单\"\n    - button \"Messenger\"\n    - button \"通知\"\n    - button \"你的个人主页\":\n      - img \"你的个人主页\"\n- main:\n  - group \"Video player\":\n    - button \"取消静音\" [pressed]:\n      - img \"取消静音\"\n    - button \"搜索 Reels\"\n  - slider \"Change Position\"\n  - button \"赞\": \"1\"\n  - button \"留下心情\"\n  - button \"评论\" [expanded]: \"6\"\n  - button \"分享\"\n  - button \"菜单\" [expanded]\n  - group \"Video player\":\n    - button \"取消静音\" [pressed]:\n      - img \"取消静音\"\n    - button \"搜索 Reels\"\n  - slider \"Change Position\"\n  - button \"赞\": 3.3 万\n  - button \"留下心情\"\n  - button \"评论\" [expanded]: \"215\"\n  - button \"分享\": \"714\"\n  - button \"菜单\" [expanded]\n  - status \"正在加载...\"\n  - status \"正在加载...\"\n  - status \"正在加载...\"\n  - status \"正在加载...\"\n  - status \"正在加载...\"\n  - status \"正在加载...\"\n  - status \"正在加载...\"\n  - status \"正在加载...\"\n  - status \"正在加载...\"\n  - status \"正在加载...\"\n  - status \"正在加载...\"\n  - status \"正在加载...\"\n  - status \"正在加载...\"\n  - status \"正在加载...\"\n  - status \"正在加载...\"\n  - status \"正在加载...\"\n  - status \"正在加载...\"\n  - status \"正在加载...\"\n  - status \"正在加载...\"\n  - status \"正在加载...\"\n  - button \"调整大小\"\n  - button \"上一条快拍\" [disabled]\n  - button \"下一条快拍\"\n- link \"查看所有者个人主页\":\n  - /url: /profile.php?id=61594197356279&sk=reels_tab\n  - img \"头像\"\n- heading \"查看所有者个人主页\" [level=2]:\n  - link \"查看所有者个人主页\":\n    - /url: /profile.php?id=61594197356279&sk=reels_tab&__tn__=-]\n    - text: EasternWisdom\n- button \"分享对象： 公开\"\n- button \"关注EasternWisdom\": 关注\n- button \"AI 内容\"\n- button \"EasternWisdom · 原声\"\n- text: 新加入 BaZi 的人？从这里开始。✨…\n- button \"展开\"\n- button \"隐藏翻译\"\n- separator\n- button \"最相关\"\n- heading \"评论\" [level=2]\n- article \"评论者：XiangHuan Master13小时前\":\n  - link \"XiangHuan Master\":\n    - /url: https://www.facebook.com/profile.php?id=61589894042400&comment_id=Y29tbWVudDoxMjIwOTk1OTY3Nzk0NzMyNDVfNDY1MjcxNTA2ODMwODIwNQ%3D%3D&__tn__=R\n  - link \"2026年9月13日周日17:11\":\n    - /url: https://www.facebook.com/reel/2163157911082094/?comment_id=4652715068308205&__tn__=R\n    - text: 13小时\n  - text: KFF-0914-A 我想了解咨询流程\n  - button \"隐藏或举报此项\"\n  - button \"赞\":\n    - img \"赞\"\n  - button \"留下心情\"\n  - button \"踩评论\"\n  - listitem:\n    - button \"回复\"\n- article \"评论者：Chirag Gosai3天前\":\n  - link \"Chirag Gosai\":\n    - /url: https://www.facebook.com/profile.php?id=61578850341360&comment_id=Y29tbWVudDoxMjIwOTk1OTY3Nzk0NzMyNDVfNDQ4NjIyNzQ0MTY0NDMxNg%3D%3D&__tn__=R\n  - link \"2026年9月11日周五03:13\":\n    - /url: https://www.facebook.com/reel/2163157911082094/?comment_id=4486227441644316&__tn__=R\n    - text: 3天\n  - text: 怎么测算啊\n  - button \"隐藏或举报此项\"\n  - button \"赞\":\n    - img \"赞\"\n  - button \"留下心情\"\n  - button \"踩评论\"\n  - listitem:\n    - button \"回复\"\n- article \"评论者：Mangleswari Nag3天前\":\n  - link \"Mangleswari Nag\":\n    - /url: https://www.facebook.com/profile.php?id=100090732198621&comment_id=Y29tbWVudDoxMjIwOTk1OTY3Nzk0NzMyNDVfNDAyODI3NjU2NDE0ODgwMA%3D%3D&__tn__=R\n  - link \"2026年9月11日周五03:15\":\n    - /url: https://www.facebook.com/reel/2163157911082094/?comment_id=4028276564148800&__tn__=R\n    - text: 3天\n  - text: 怎么联系你\n  - button \"隐藏或举报此项\"\n  - button \"赞\":\n    - img \"赞\"\n  - button \"留下心情\"\n  - button \"踩评论\"\n  - listitem:\n    - button \"回复\"\n- article \"评论者：郑一哲16分钟前\":\n  - link \"郑一哲\":\n    - /url: https://www.facebook.com/profile.php?id=100050174601107&comment_id=Y29tbWVudDoxMjIwOTk1OTY3Nzk0NzMyNDVfMTc5ODE4NjUxODA0Mzc3NQ%3D%3D&__tn__=R\n  - link \"2026年9月14日周一06:39\":\n    - /url: https://www.facebook.com/reel/2163157911082094/?comment_id=1798186518043775&__tn__=R\n    - text: 16分钟\n  - text: KFF-0914-C 我想了解咨询流程\n  - button \"隐藏或举报此项\"\n  - button \"赞\":\n    - img \"赞\"\n  - button \"留下心情\"\n  - button \"踩评论\"\n  - listitem:\n    - button \"回复\"\n- table:\n  - button \"可用声音，切换个人主页\"\n  - textbox \"写评论…\":\n    - paragraph\n  - list:\n    - listitem:\n      - button \"用虚拟形象贴图评论\"\n    - listitem:\n      - button \"插入表情\"\n    - listitem:\n      - button \"附加照片或视频\"\n    - listitem:\n      - button \"用动图评论\"\n    - listitem:\n      - button \"用贴图评论\"\n  - button \"发布评论\" [disabled]\n- link \"关闭查看工具并返回动态\":\n  - /url: /\n- link \"Reels\":\n  - /url: /reel/",
+  "profile_after": "Inactive",
+  "finished_at": "2026-09-14T13:56:43.567Z"
+}

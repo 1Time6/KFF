@@ -4,11 +4,13 @@ import { fileURLToPath } from 'node:url';
 import type { AgentCommand } from '@kff/contracts';
 import { AppError } from '@kff/core';
 import { readClosure, type GuardianClosure } from './guardian-protocol';
+import { browserProviderEnvironment } from './browser-provider-configuration';
 
-export function runGuardian(command: AgentCommand, runtime: string, nonce: string, hooks: { beforeSubmit(): Promise<void>; signal: AbortSignal; onSpawn?(pid: number): void; onContextOpened?(): void }): Promise<GuardianClosure> {
+export function runGuardian(command: AgentCommand, runtime: string, nonce: string, hooks: { beforeSubmit(): Promise<void>; signal: AbortSignal; onSpawn?(pid: number): void; onContextOpened?(): void | Promise<void> }): Promise<GuardianClosure> {
   return new Promise((resolve, reject) => {
     // The child receives no controller token or database credentials. It cannot grant itself submission authority.
-    const env = { NODE_ENV: process.env.NODE_ENV ?? 'development', ...Object.fromEntries(Object.entries(process.env).filter(([key]) => /^(PATH|Path|SystemRoot|SYSTEMROOT|COMSPEC|ComSpec|TEMP|TMP|USERPROFILE|LOCALAPPDATA|APPDATA|PLAYWRIGHT_BROWSERS_PATH|KFF_ENABLE_LIVE|KFF_FACEBOOK_GRAPH_VERSION)$/.test(key) || /^FACEBOOK_[A-Z0-9_]+$/.test(key))) };
+    const env = { NODE_ENV: process.env.NODE_ENV ?? 'development', ...Object.fromEntries(Object.entries(process.env).filter(([key]) => /^(PATH|Path|SystemRoot|SYSTEMROOT|COMSPEC|ComSpec|TEMP|TMP|USERPROFILE|LOCALAPPDATA|APPDATA|PLAYWRIGHT_BROWSERS_PATH|KFF_BROWSER_MESSAGE_FIXTURE_ORIGIN|KFF_BROWSER_INBOX_FIXTURE_ORIGIN|KFF_BROWSER_COLLECTION_FIXTURE_ORIGIN|KFF_ENABLE_LIVE|KFF_ENABLE_DISCOVERY|KFF_ENABLE_BROWSER_INBOX|KFF_FACEBOOK_GRAPH_VERSION|KFF_ADSPOWER_ORIGIN|KFF_ADSPOWER_API_KEY)$/.test(key) || /^(FACEBOOK|INSTAGRAM)_[A-Z0-9_]+$/.test(key) || /^KFF_BROWSER_PROXY_[A-Z0-9_]+$/.test(key))) };
+    if (command.snapshot.browser_environment) Object.assign(env, browserProviderEnvironment(path.resolve(process.env.KFF_ROOT ?? process.cwd())));
     // Windows must let the guardian survive its parent long enough to close the browser and persist proof.
     const child = spawn(process.execPath, ['--import', 'tsx', fileURLToPath(new URL('./guardian-child.ts', import.meta.url))], { cwd: process.cwd(), env, windowsHide: true, detached: process.platform === 'win32', stdio: ['ignore', 'ignore', 'ignore', 'ipc'] });
     let started = false; let submitted = false;
@@ -20,7 +22,7 @@ export function runGuardian(command: AgentCommand, runtime: string, nonce: strin
       if (!message || typeof message !== 'object' || !('type' in message)) return;
       if (message.type === 'ready' && !started) {
         started = true;
-        try { hooks.onSpawn?.(child.pid!); send({ type: 'start', command, runtime: path.resolve(runtime), nonce }); if (hooks.signal.aborted) stop(); }
+        try { hooks.onSpawn?.(child.pid!); send({ type: 'start', command, runtime: path.resolve(runtime), profile_root: path.resolve(process.env.KFF_ROOT ?? process.cwd(), '.kff/browser-environments'), nonce }); if (hooks.signal.aborted) stop(); }
         catch (error) { child.disconnect(); reject(error); }
       }
       if (message.type === 'before-submit') {
@@ -29,7 +31,7 @@ export function runGuardian(command: AgentCommand, runtime: string, nonce: strin
         try { await hooks.beforeSubmit(); if (hooks.signal.aborted) stop(); else send({ type: 'submit-granted' }); }
         catch (error) { send({ type: 'submit-rejected', code: error instanceof AppError ? error.code : 'CONTROL_UNAVAILABLE' }); }
       }
-      if (message.type === 'context-opened') hooks.onContextOpened?.();
+      if (message.type === 'context-opened') { try { await hooks.onContextOpened?.(); } catch { stop(); } }
     });
     child.once('error', error => { clearInterval(keepalive); hooks.signal.removeEventListener('abort', stop); reject(error); });
     child.once('exit', () => {

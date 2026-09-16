@@ -1,0 +1,783 @@
+{
+  "schema_version": "kff.two-account-inbox-soak.v1",
+  "recorded_at": "2026-09-14T03:50:32.436Z",
+  "goal_complete": false,
+  "plan": {
+    "duration_limit_seconds": 1200,
+    "interval_seconds": 300,
+    "max_cycles_per_account": 4,
+    "max_threads": 3,
+    "max_messages_per_cycle": 25,
+    "original_agent_slots": 1,
+    "platform_sends": 0,
+    "stop_on_first_failure": true
+  },
+  "started_at": "2026-09-14T03:29:31.514Z",
+  "finished_at": "2026-09-14T03:48:52.540Z",
+  "elapsed_seconds": 1161.026,
+  "stop_reason": "FOUR_CYCLES_EACH",
+  "accepted": true,
+  "release_id": "kff-agent-0.1.20-win32-x64-d37cd1633b26",
+  "original_runtime_id": "01721d77-9575-445d-adaa-9b8961286dc7",
+  "accounts": [
+    {
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "facebook_id": "61589894042400",
+      "profile_id": "k1gvdtft",
+      "cycles": 4,
+      "successful": 4,
+      "reads": [
+        {
+          "command_id": "707751d3-1095-4ce4-ae02-8e0968872db5",
+          "action_id": "5b31a9c7-2ef8-4cd3-a60a-ef4674e682fa",
+          "task_id": "832a231f-5cff-4de3-92f1-589e663825e2",
+          "claimed_at": "2026-09-14T03:29:32.437Z",
+          "closed_at": "2026-09-14T03:30:37.252Z",
+          "duration_seconds": 64.82,
+          "seconds_since_previous_close": null,
+          "checkpoint": {
+            "task_id": "832a231f-5cff-4de3-92f1-589e663825e2",
+            "stored": 0,
+            "duplicates": 5,
+            "observed_at": "2026-09-14T03:30:30.394Z"
+          },
+          "discovery": {
+            "skipped": [
+              {
+                "reason": "THREAD_WINDOW_UNAVAILABLE",
+                "thread_id": "2079341482680484"
+              }
+            ],
+            "threads": [
+              {
+                "peer_id": "100050174601107",
+                "thread_id": "27724009533944398",
+                "display_name": "郑一哲"
+              }
+            ],
+            "strategy": "RECENT_ACCEPTED",
+            "empty_list": false,
+            "unparsed_rows": 0,
+            "window_limited": true,
+            "visible_threads": 2
+          }
+        },
+        {
+          "command_id": "d9ef214f-32b7-468a-a5c9-f6a4f11f3c52",
+          "action_id": "7660f811-203f-4c14-a394-650f2b9e3b69",
+          "task_id": "f5c76f1a-e65a-488b-80e1-66f88e5b1d9a",
+          "claimed_at": "2026-09-14T03:35:38.737Z",
+          "closed_at": "2026-09-14T03:36:26.527Z",
+          "duration_seconds": 47.79,
+          "seconds_since_previous_close": 301.49,
+          "checkpoint": {
+            "task_id": "f5c76f1a-e65a-488b-80e1-66f88e5b1d9a",
+            "stored": 0,
+            "duplicates": 7,
+            "observed_at": "2026-09-14T03:36:21.680Z"
+          },
+          "discovery": {
+            "skipped": [],
+            "threads": [
+              {
+                "peer_id": "61594334430750",
+                "thread_id": "2079341482680484",
+                "display_name": "郑成功"
+              },
+              {
+                "peer_id": "100050174601107",
+                "thread_id": "27724009533944398",
+                "display_name": "郑一哲"
+              }
+            ],
+            "strategy": "RECENT_ACCEPTED",
+            "empty_list": false,
+            "unparsed_rows": 0,
+            "window_limited": false,
+            "visible_threads": 2
+          }
+        },
+        {
+          "command_id": "f019f7df-53d3-476d-bc2b-c350bc0c5d11",
+          "action_id": "3e31863d-91d7-4b6b-9b57-24010a914878",
+          "task_id": "2ca73bdd-614a-4475-b3e0-cb170290b6dc",
+          "claimed_at": "2026-09-14T03:41:26.916Z",
+          "closed_at": "2026-09-14T03:42:18.637Z",
+          "duration_seconds": 51.72,
+          "seconds_since_previous_close": 300.39,
+          "checkpoint": {
+            "task_id": "2ca73bdd-614a-4475-b3e0-cb170290b6dc",
+            "stored": 0,
+            "duplicates": 7,
+            "observed_at": "2026-09-14T03:42:12.859Z"
+          },
+          "discovery": {
+            "skipped": [],
+            "threads": [
+              {
+                "peer_id": "61594334430750",
+                "thread_id": "2079341482680484",
+                "display_name": "郑成功"
+              },
+              {
+                "peer_id": "100050174601107",
+                "thread_id": "27724009533944398",
+                "display_name": "郑一哲"
+              }
+            ],
+            "strategy": "RECENT_ACCEPTED",
+            "empty_list": false,
+            "unparsed_rows": 0,
+            "window_limited": false,
+            "visible_threads": 2
+          }
+        },
+        {
+          "command_id": "e5075eb7-dd11-42b5-be2f-88e361771ac0",
+          "action_id": "b9e0352c-30ad-41e1-a9d8-d3516afcc17d",
+          "task_id": "6360bd96-1fce-4289-ab9d-c3fd04097eaf",
+          "claimed_at": "2026-09-14T03:47:20.273Z",
+          "closed_at": "2026-09-14T03:48:12.135Z",
+          "duration_seconds": 51.86,
+          "seconds_since_previous_close": 301.64,
+          "checkpoint": {
+            "task_id": "6360bd96-1fce-4289-ab9d-c3fd04097eaf",
+            "stored": 0,
+            "duplicates": 7,
+            "observed_at": "2026-09-14T03:48:06.321Z"
+          },
+          "discovery": {
+            "skipped": [],
+            "threads": [
+              {
+                "peer_id": "61594334430750",
+                "thread_id": "2079341482680484",
+                "display_name": "郑成功"
+              },
+              {
+                "peer_id": "100050174601107",
+                "thread_id": "27724009533944398",
+                "display_name": "郑一哲"
+              }
+            ],
+            "strategy": "RECENT_ACCEPTED",
+            "empty_list": false,
+            "unparsed_rows": 0,
+            "window_limited": false,
+            "visible_threads": 2
+          }
+        }
+      ]
+    },
+    {
+      "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "facebook_id": "61594334430750",
+      "profile_id": "k1gw2kh9",
+      "cycles": 4,
+      "successful": 4,
+      "reads": [
+        {
+          "command_id": "17010646-db91-40f8-b085-fa9ddfa08a7c",
+          "action_id": "5c8480d4-a051-44c8-bcaa-f15493b28dea",
+          "task_id": "f49a7ba5-9e2c-4a51-a3e9-1b5816e4d5af",
+          "claimed_at": "2026-09-14T03:30:39.407Z",
+          "closed_at": "2026-09-14T03:31:13.936Z",
+          "duration_seconds": 34.53,
+          "seconds_since_previous_close": null,
+          "checkpoint": {
+            "task_id": "f49a7ba5-9e2c-4a51-a3e9-1b5816e4d5af",
+            "stored": 0,
+            "duplicates": 2,
+            "observed_at": "2026-09-14T03:31:10.146Z"
+          },
+          "discovery": {
+            "skipped": [],
+            "threads": [
+              {
+                "peer_id": "61589894042400",
+                "thread_id": "2079341482680484",
+                "display_name": "XiangHuan Master"
+              }
+            ],
+            "strategy": "RECENT_ACCEPTED",
+            "empty_list": false,
+            "unparsed_rows": 0,
+            "window_limited": false,
+            "visible_threads": 1
+          }
+        },
+        {
+          "command_id": "42fcb74c-a5e8-458b-be92-00bb637e6398",
+          "action_id": "d19360c0-8c10-47b9-afda-239fdb490b4b",
+          "task_id": "9951eea8-2918-4c78-a93d-cb297a24c6e8",
+          "claimed_at": "2026-09-14T03:36:28.709Z",
+          "closed_at": "2026-09-14T03:37:02.181Z",
+          "duration_seconds": 33.47,
+          "seconds_since_previous_close": 314.77,
+          "checkpoint": {
+            "task_id": "9951eea8-2918-4c78-a93d-cb297a24c6e8",
+            "stored": 0,
+            "duplicates": 2,
+            "observed_at": "2026-09-14T03:36:58.781Z"
+          },
+          "discovery": {
+            "skipped": [],
+            "threads": [
+              {
+                "peer_id": "61589894042400",
+                "thread_id": "2079341482680484",
+                "display_name": "XiangHuan Master"
+              }
+            ],
+            "strategy": "RECENT_ACCEPTED",
+            "empty_list": false,
+            "unparsed_rows": 0,
+            "window_limited": false,
+            "visible_threads": 1
+          }
+        },
+        {
+          "command_id": "8b423b22-c062-4489-812f-eab8f6872828",
+          "action_id": "c880cf2b-b810-4923-b7d2-b438214261cc",
+          "task_id": "038fe843-a2a2-40e0-86f2-bcff1d9456fe",
+          "claimed_at": "2026-09-14T03:42:19.761Z",
+          "closed_at": "2026-09-14T03:42:53.467Z",
+          "duration_seconds": 33.71,
+          "seconds_since_previous_close": 317.58,
+          "checkpoint": {
+            "task_id": "038fe843-a2a2-40e0-86f2-bcff1d9456fe",
+            "stored": 0,
+            "duplicates": 2,
+            "observed_at": "2026-09-14T03:42:49.989Z"
+          },
+          "discovery": {
+            "skipped": [],
+            "threads": [
+              {
+                "peer_id": "61589894042400",
+                "thread_id": "2079341482680484",
+                "display_name": "XiangHuan Master"
+              }
+            ],
+            "strategy": "RECENT_ACCEPTED",
+            "empty_list": false,
+            "unparsed_rows": 0,
+            "window_limited": false,
+            "visible_threads": 1
+          }
+        },
+        {
+          "command_id": "e1012769-2809-4dbf-9a08-123ab9dd4cc0",
+          "action_id": "57a2985c-a638-462d-9bf8-c50ac94a7315",
+          "task_id": "736f3f3d-9473-49ea-9d2c-43461616d036",
+          "claimed_at": "2026-09-14T03:48:13.255Z",
+          "closed_at": "2026-09-14T03:48:45.772Z",
+          "duration_seconds": 32.52,
+          "seconds_since_previous_close": 319.79,
+          "checkpoint": {
+            "task_id": "736f3f3d-9473-49ea-9d2c-43461616d036",
+            "stored": 0,
+            "duplicates": 2,
+            "observed_at": "2026-09-14T03:48:42.314Z"
+          },
+          "discovery": {
+            "skipped": [],
+            "threads": [
+              {
+                "peer_id": "61589894042400",
+                "thread_id": "2079341482680484",
+                "display_name": "XiangHuan Master"
+              }
+            ],
+            "strategy": "RECENT_ACCEPTED",
+            "empty_list": false,
+            "unparsed_rows": 0,
+            "window_limited": false,
+            "visible_threads": 1
+          }
+        }
+      ]
+    }
+  ],
+  "closed_command_count": 8,
+  "all_commands_in_observation_window": [
+    {
+      "id": "707751d3-1095-4ce4-ae02-8e0968872db5",
+      "claimed_at": "2026-09-14T03:29:32.437Z",
+      "quiesced_at": "2026-09-14T03:30:37.252Z",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "capability_key": "facebook.inbox.read.browser",
+      "state": "VERIFIED_SUCCEEDED"
+    },
+    {
+      "id": "17010646-db91-40f8-b085-fa9ddfa08a7c",
+      "claimed_at": "2026-09-14T03:30:39.407Z",
+      "quiesced_at": "2026-09-14T03:31:13.936Z",
+      "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "capability_key": "facebook.inbox.read.browser",
+      "state": "VERIFIED_SUCCEEDED"
+    },
+    {
+      "id": "d9ef214f-32b7-468a-a5c9-f6a4f11f3c52",
+      "claimed_at": "2026-09-14T03:35:38.737Z",
+      "quiesced_at": "2026-09-14T03:36:26.527Z",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "capability_key": "facebook.inbox.read.browser",
+      "state": "VERIFIED_SUCCEEDED"
+    },
+    {
+      "id": "42fcb74c-a5e8-458b-be92-00bb637e6398",
+      "claimed_at": "2026-09-14T03:36:28.709Z",
+      "quiesced_at": "2026-09-14T03:37:02.181Z",
+      "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "capability_key": "facebook.inbox.read.browser",
+      "state": "VERIFIED_SUCCEEDED"
+    },
+    {
+      "id": "f019f7df-53d3-476d-bc2b-c350bc0c5d11",
+      "claimed_at": "2026-09-14T03:41:26.916Z",
+      "quiesced_at": "2026-09-14T03:42:18.637Z",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "capability_key": "facebook.inbox.read.browser",
+      "state": "VERIFIED_SUCCEEDED"
+    },
+    {
+      "id": "8b423b22-c062-4489-812f-eab8f6872828",
+      "claimed_at": "2026-09-14T03:42:19.761Z",
+      "quiesced_at": "2026-09-14T03:42:53.467Z",
+      "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "capability_key": "facebook.inbox.read.browser",
+      "state": "VERIFIED_SUCCEEDED"
+    },
+    {
+      "id": "b13c9710-292d-4b42-b771-0afac699015f",
+      "claimed_at": "2026-09-14T03:43:48.053Z",
+      "quiesced_at": "2026-09-14T03:44:18.885Z",
+      "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "capability_key": "facebook.discovery.read.browser",
+      "state": "VERIFIED_SUCCEEDED"
+    },
+    {
+      "id": "e5075eb7-dd11-42b5-be2f-88e361771ac0",
+      "claimed_at": "2026-09-14T03:47:20.273Z",
+      "quiesced_at": "2026-09-14T03:48:12.135Z",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "capability_key": "facebook.inbox.read.browser",
+      "state": "VERIFIED_SUCCEEDED"
+    },
+    {
+      "id": "e1012769-2809-4dbf-9a08-123ab9dd4cc0",
+      "claimed_at": "2026-09-14T03:48:13.255Z",
+      "quiesced_at": "2026-09-14T03:48:45.772Z",
+      "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "capability_key": "facebook.inbox.read.browser",
+      "state": "VERIFIED_SUCCEEDED"
+    }
+  ],
+  "all_commands_serialized": true,
+  "identity_matches": true,
+  "closure_proofs_verified": true,
+  "platform_submissions": 0,
+  "profiles_after": [
+    {
+      "id": "k1gvdtft",
+      "status": "Inactive"
+    },
+    {
+      "id": "k1gw2kh9",
+      "status": "Inactive"
+    }
+  ],
+  "monitors_after": [
+    {
+      "id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "state": "PAUSED",
+      "version": 27,
+      "current_task_id": null,
+      "scan_requested": false,
+      "last_error_code": null,
+      "interval_seconds": 300
+    },
+    {
+      "id": "149da22d-2ea8-49b1-accd-0ea2f4fc845f",
+      "state": "PAUSED",
+      "version": 12,
+      "current_task_id": null,
+      "scan_requested": false,
+      "last_error_code": null,
+      "interval_seconds": 300
+    }
+  ],
+  "diagnostics": [
+    {
+      "action_id": "5b31a9c7-2ef8-4cd3-a60a-ef4674e682fa",
+      "manifest": {
+        "step": "facebook-inbox-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "c61c8a0bb53e5a63091bd057ee18e328c58f3c2aefa0f53063207968b052a755",
+            "content": {
+              "result_count": 5,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "5b31a9c7-2ef8-4cd3-a60a-ef4674e682fa",
+        "attempt_id": "7569220b-3c79-4772-8c9b-b6e8a9be0036",
+        "created_at": "2026-09-14T03:30:37.238Z",
+        "error_code": null,
+        "duration_ms": 62981,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-inbox-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    },
+    {
+      "action_id": "5c8480d4-a051-44c8-bcaa-f15493b28dea",
+      "manifest": {
+        "step": "facebook-inbox-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "463b3e06875eb13ff26f25bb77e690958684f9a3fc59e65ead69fbb822866584",
+            "content": {
+              "result_count": 2,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "5c8480d4-a051-44c8-bcaa-f15493b28dea",
+        "attempt_id": "71ae7417-88de-4f48-af31-5dcfaaf53d72",
+        "created_at": "2026-09-14T03:31:13.921Z",
+        "error_code": null,
+        "duration_ms": 32981,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-inbox-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    },
+    {
+      "action_id": "7660f811-203f-4c14-a394-650f2b9e3b69",
+      "manifest": {
+        "step": "facebook-inbox-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "6909f7e0176b2e63a5a5ab9c2c38d98606561b61994b2d595746432ece3f779c",
+            "content": {
+              "result_count": 7,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "7660f811-203f-4c14-a394-650f2b9e3b69",
+        "attempt_id": "4b7965a9-39a2-480f-a128-aee724c2ccb5",
+        "created_at": "2026-09-14T03:36:26.508Z",
+        "error_code": null,
+        "duration_ms": 45945,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-inbox-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    },
+    {
+      "action_id": "d19360c0-8c10-47b9-afda-239fdb490b4b",
+      "manifest": {
+        "step": "facebook-inbox-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "463b3e06875eb13ff26f25bb77e690958684f9a3fc59e65ead69fbb822866584",
+            "content": {
+              "result_count": 2,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "d19360c0-8c10-47b9-afda-239fdb490b4b",
+        "attempt_id": "1a9d4908-7ac9-4022-ae02-c257d6a6efd2",
+        "created_at": "2026-09-14T03:37:02.165Z",
+        "error_code": null,
+        "duration_ms": 31793,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-inbox-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    },
+    {
+      "action_id": "3e31863d-91d7-4b6b-9b57-24010a914878",
+      "manifest": {
+        "step": "facebook-inbox-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "6909f7e0176b2e63a5a5ab9c2c38d98606561b61994b2d595746432ece3f779c",
+            "content": {
+              "result_count": 7,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "3e31863d-91d7-4b6b-9b57-24010a914878",
+        "attempt_id": "86ec7c72-9a58-439a-95bc-e941dcbed484",
+        "created_at": "2026-09-14T03:42:18.623Z",
+        "error_code": null,
+        "duration_ms": 49804,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-inbox-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    },
+    {
+      "action_id": "c880cf2b-b810-4923-b7d2-b438214261cc",
+      "manifest": {
+        "step": "facebook-inbox-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "463b3e06875eb13ff26f25bb77e690958684f9a3fc59e65ead69fbb822866584",
+            "content": {
+              "result_count": 2,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "c880cf2b-b810-4923-b7d2-b438214261cc",
+        "attempt_id": "feeedfe6-0af9-44cc-a2f4-8f4b3cbd79a5",
+        "created_at": "2026-09-14T03:42:53.455Z",
+        "error_code": null,
+        "duration_ms": 31838,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-inbox-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    },
+    {
+      "action_id": "b9e0352c-30ad-41e1-a9d8-d3516afcc17d",
+      "manifest": {
+        "step": "facebook-inbox-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "6909f7e0176b2e63a5a5ab9c2c38d98606561b61994b2d595746432ece3f779c",
+            "content": {
+              "result_count": 7,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "b9e0352c-30ad-41e1-a9d8-d3516afcc17d",
+        "attempt_id": "3690e5c6-abc6-425a-ac85-beb6462d2f42",
+        "created_at": "2026-09-14T03:48:12.117Z",
+        "error_code": null,
+        "duration_ms": 49957,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-inbox-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    },
+    {
+      "action_id": "57a2985c-a638-462d-9bf8-c50ac94a7315",
+      "manifest": {
+        "step": "facebook-inbox-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "463b3e06875eb13ff26f25bb77e690958684f9a3fc59e65ead69fbb822866584",
+            "content": {
+              "result_count": 2,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "57a2985c-a638-462d-9bf8-c50ac94a7315",
+        "attempt_id": "676aa6bc-8e6f-4ff3-86f9-65582a5f7a9e",
+        "created_at": "2026-09-14T03:48:45.753Z",
+        "error_code": null,
+        "duration_ms": 30873,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-inbox-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    }
+  ],
+  "limits": [
+    "Two real accounts on one original Agent execution slot; maximum four Inbox cycles each and a twenty-minute observation limit",
+    "Each next poll is scheduled 300 seconds after the previous accepted page; execution and queue time add to start-to-start interval",
+    "Visible accepted threads only, at most three threads and twenty-five messages per account per cycle; not full-history coverage",
+    "Repeated reads with no newly arriving message; earlier separate new-message and invitation evidence remains distinct",
+    "One bounded original public-source read may use the same queue during an idle interval; it is listed separately",
+    "Not a claim about more accounts, continuous public discovery, all-day availability, OS reboot, or clean-machine delivery",
+    "The first account skipped test thread 2079341482680484 in cycle one with THREAD_WINDOW_UNAVAILABLE; cycles two through four read it. This is an unresolved reliability observation, not a fully complete Inbox soak."
+  ],
+  "bounded_repeated_reads_verified": true,
+  "all_selected_threads_read_each_cycle": false,
+  "complete_cycle_count": 7,
+  "partial_cycle_count": 1,
+  "partial_cycles": [
+    {
+      "stored": 0,
+      "task_id": "832a231f-5cff-4de3-92f1-589e663825e2",
+      "has_more": false,
+      "discovery": {
+        "skipped": [
+          {
+            "reason": "THREAD_WINDOW_UNAVAILABLE",
+            "thread_id": "2079341482680484"
+          }
+        ],
+        "threads": [
+          {
+            "peer_id": "100050174601107",
+            "thread_id": "27724009533944398",
+            "display_name": "郑一哲"
+          }
+        ],
+        "strategy": "RECENT_ACCEPTED",
+        "empty_list": false,
+        "unparsed_rows": 0,
+        "window_limited": true,
+        "visible_threads": 2
+      },
+      "duplicates": 5
+    }
+  ],
+  "acceptance_scope": "Original autonomous scheduling, exact account identity, serial execution, closure and deduplication; not a guarantee of complete per-cycle Inbox coverage"
+}

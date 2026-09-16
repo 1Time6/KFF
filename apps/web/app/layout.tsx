@@ -6,5 +6,6 @@ import './schedules.css';
 import './inbox.css';
 import './orders.css';
 import './lead.css';
+import './acquisition.css';
 export const metadata: Metadata = { title: 'KFF · 运营工作台', description: '账号、环境与可靠执行工作台' };
 export default function Layout({ children }: { children: React.ReactNode }) { return <html lang="zh-CN"><body>{children}</body></html>; }

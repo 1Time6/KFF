@@ -1,0 +1,188 @@
+{
+  "checked_at": "2026-09-15T04:08:29.242Z",
+  "version": "0.1.49",
+  "scope": "Server Agent slot remains occupied until original command closure",
+  "root_observation": {
+    "action_id": "0300548d-1f2b-493e-914c-9d75fac5544d",
+    "command_id": "f6b68e7c-c386-46d5-b24f-fb1addf8de2e",
+    "premature_unclaimed_command_id": "2f81971c-eb16-49b3-a816-fe2fa1cae106",
+    "original_outcome": {
+      "state": "NEEDS_HUMAN",
+      "error_code": "LEASE_EXPIRED"
+    }
+  },
+  "changed_entrypoints": [
+    "dispatchOne",
+    "claimCommand",
+    "claimEnvironmentCommand"
+  ],
+  "new_migrations": 0,
+  "validation": {
+    "checks": {
+      "typecheck": {
+        "exit_code": 0,
+        "checked_at": "2026-09-15T04:01:55.598Z",
+        "runtime_sources_current": true
+      },
+      "lint": {
+        "exit_code": 0,
+        "checked_at": "2026-09-15T04:01:45.288Z",
+        "runtime_sources_current": true
+      },
+      "contracts": {
+        "exit_code": 0,
+        "checked_at": "2026-09-15T03:53:30.600Z",
+        "runtime_sources_current": true
+      },
+      "build": {
+        "exit_code": 0,
+        "checked_at": "2026-09-15T03:53:22.435Z",
+        "runtime_sources_current": true
+      }
+    },
+    "contracts_passed": 186,
+    "integration_passed_unique": 87,
+    "core_report": ".kff/closure-gate-integration-049.json",
+    "workflow_report": ".kff/closure-workflow-before-fixture-update-049.json",
+    "corrected_collection_report": ".kff/closure-collection-retest-049.json",
+    "initial_workflow_failures": "Two collection test harnesses omitted closure acknowledgement; corrected using actual Guardian proofs for browser runs and explicit synthetic proofs for contract-only reads",
+    "process_evidence": ".kff/checks/browser-matrix-process-evidence.json"
+  },
+  "runtime": {
+    "runtime_id": "23d75944-bbed-4b2a-951a-58771e705ad8",
+    "pid": 11720,
+    "phase": "RUNNING",
+    "updated_at": "2026-09-15T04:08:27.405Z",
+    "app_origin": "http://127.0.0.1:3000",
+    "release_id": "kff-agent-0.1.49-win32-x64-9516fdd2ba00",
+    "database_owned": false,
+    "components": {
+      "database": {
+        "pid": null,
+        "state": "CONNECTED"
+      },
+      "web": {
+        "pid": 19692,
+        "state": "RUNNING"
+      },
+      "worker": {
+        "pid": 16596,
+        "state": "RUNNING"
+      },
+      "agent": {
+        "pid": 30424,
+        "state": "RUNNING"
+      }
+    }
+  },
+  "health": {
+    "status": "ok",
+    "protocol": "kff.api.v1",
+    "runtime_id": "23d75944-bbed-4b2a-951a-58771e705ad8"
+  },
+  "configuration": {
+    "discovery_enabled": true,
+    "browser_inbox_enabled": true,
+    "live_sending_enabled": false
+  },
+  "accounts": [
+    {
+      "id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "display_name": "白青天",
+      "outbound_paused": false,
+      "environment_state": "IDLE",
+      "browser_status": "CLOSED",
+      "auto_reply": false
+    },
+    {
+      "id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "display_name": "XiangHuan Master",
+      "outbound_paused": false,
+      "environment_state": "IDLE",
+      "browser_status": "CLOSED",
+      "auto_reply": false
+    },
+    {
+      "id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "display_name": "郑成功",
+      "outbound_paused": true,
+      "environment_state": "DISABLED",
+      "browser_status": "CLOSED",
+      "auto_reply": false
+    }
+  ],
+  "data": {
+    "at": "2026-09-15T04:08:22.167Z",
+    "open_commands": 0,
+    "monitors": [
+      {
+        "state": "PAUSED",
+        "count": 32
+      }
+    ],
+    "tables": {
+      "acquisition_leads": {
+        "count": 45,
+        "sha256": "a8ed2871a135d85c67f5c516359eb450a662dcf3100655c98664126fdb805323"
+      },
+      "messages": {
+        "count": 140,
+        "sha256": "2640e219d9380b32f868eb4bc87659db851bb9e5eaefd985117a69c3e55ca29c"
+      },
+      "whatsapp_referrals": {
+        "count": 16,
+        "sha256": "a414fb7d35f54cce6aedd25a4ac3a2451826de86730b2e75a2f06ee68a3db5f5"
+      },
+      "customers": {
+        "count": 98,
+        "sha256": "e496d36a67c5c34c88e39e8ffbc322b2348255f261b91af2d14eb75573938019"
+      },
+      "accounts": {
+        "count": 88,
+        "sha256": "fa305e29027e42fd1866b5137fc2e7b95ca43aa94f6353a26d29a4c60a4e645f"
+      },
+      "acquisition_scans": {
+        "count": 74,
+        "sha256": "26b0c13fd18502f6af1eb2c00f19d7a9385b8386277d4cd32f0a8abbf84d7d39"
+      },
+      "acquisition_evaluations": {
+        "count": 152,
+        "sha256": "b680aa3d8390aad90fc8dc65fbe5e4cf76cf70c7aa28411467c1cfb72dfd350b"
+      }
+    },
+    "business_rows_preserved": true
+  },
+  "release": {
+    "controller": {
+      "release_id": "kff-controller-0.1.49-win32-x64-b248a40aa1a9",
+      "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.49-win32-x64-b248a40aa1a9",
+      "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.49-win32-x64-b248a40aa1a9.zip",
+      "archive_sha256": "2dab356ec638a70682c82ba4634eeebd315b7fab9232367a1997382a84466647",
+      "files": 24096,
+      "uncompressed_bytes": 829608442,
+      "dependency_packages": 155,
+      "contains_runtime_data": false,
+      "live_config_values_scanned": 6
+    },
+    "agent": {
+      "release_id": "kff-agent-0.1.49-win32-x64-9516fdd2ba00",
+      "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.49-win32-x64-9516fdd2ba00",
+      "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.49-win32-x64-9516fdd2ba00.zip",
+      "archive_sha256": "4d5b10c2387a7e5215f9c346fa83ae84e9ee88dc32d068929faa0139211e2f91",
+      "files": 1348,
+      "dependencies": 23,
+      "contains_pairing_or_browser_data": false
+    },
+    "installed_agent": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.49-win32-x64-9516fdd2ba00"
+  },
+  "platform_actions_this_update": 0,
+  "new_live_window_opened": false,
+  "full_goal_complete": false,
+  "remaining": [
+    "Natural new comment capture from automatically selected source",
+    "Same natural customer to confirmed WhatsApp arrival",
+    "Newly published Page increment",
+    "Complete bounded two-account window",
+    "Other clean Windows PC and system reboot"
+  ]
+}

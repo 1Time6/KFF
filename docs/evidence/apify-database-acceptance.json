@@ -1,0 +1,76 @@
+{
+  "checked_at": "2026-09-12T12:25:21.446Z",
+  "database": "local PostgreSQL on 127.0.0.1:55432",
+  "brand_id": "22222222-2222-4222-8222-222222222222",
+  "source_id": "0dc32500-8d16-4a0f-a6e8-94cf40a15676",
+  "totals": {
+    "posts": 22,
+    "comments": 24,
+    "profiles": 19,
+    "qualified": 0
+  },
+  "batches": [
+    {
+      "id": "09df395f-ca30-476a-8fa5-821b90b42bd7",
+      "provider_run_id": "xSq8Gaz0XgBBAyNGd",
+      "kind": "FACEBOOK_POSTS",
+      "returned_count": 22,
+      "unique_count": 22,
+      "usage_usd": "0.08804999999999999"
+    },
+    {
+      "id": "c873845d-dc8f-4b52-bf66-ea07d5478686",
+      "provider_run_id": "ZxnnQh3oOIpUQWpov",
+      "kind": "FACEBOOK_COMMENTS",
+      "returned_count": 24,
+      "unique_count": 24,
+      "usage_usd": "0.061"
+    }
+  ],
+  "repeated_import_reused": true,
+  "platform_account_count_unchanged": true,
+  "live_enabled": false,
+  "security": [
+    {
+      "relname": "acquisition_imports",
+      "relrowsecurity": true,
+      "app_read": true,
+      "app_insert": true
+    },
+    {
+      "relname": "acquisition_prospects",
+      "relrowsecurity": true,
+      "app_read": true,
+      "app_insert": true
+    },
+    {
+      "relname": "acquisition_sources",
+      "relrowsecurity": true,
+      "app_read": true,
+      "app_insert": true
+    }
+  ],
+  "backup": ".kff/backups/before-external-sources-20260912-2019",
+  "credentials_included": false,
+  "final_checked_at": "2026-09-12T12:33:55.136Z",
+  "database_restart_verified": {
+    "restarted_at": "2026-09-12T12:31:15.331Z",
+    "saved_before_restart": 46
+  },
+  "post_restart_api_totals": {
+    "posts": 22,
+    "comments": 24,
+    "profiles": 19,
+    "qualified": 0
+  },
+  "client_chunks_checked": 110,
+  "credential_leaks": 0,
+  "validation": {
+    "database_tests": 14,
+    "new_dataset_contract_tests": 5,
+    "typecheck": "PASSED",
+    "lint": "PASSED",
+    "build": "PASSED",
+    "browser": "Chrome real workspace, totals and keyword filter verified"
+  }
+}

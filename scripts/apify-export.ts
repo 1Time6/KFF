@@ -1,0 +1,34 @@
+import {mkdir,readFile,writeFile} from 'node:fs/promises';
+import {randomUUID} from 'node:crypto';
+import path from 'node:path';
+import {stringify} from 'csv-stringify/sync';
+import {collectionSnapshotSchema} from '@kff/contracts';
+import {projectRoot} from '@kff/database';
+import {readApifyComments} from '../packages/adapters/src/apify';
+
+const [searchLabel,commentLabel]=process.argv.slice(2);
+if(!searchLabel||!commentLabel||![searchLabel,commentLabel].every(v=>/^[a-z0-9-]{1,80}$/.test(v)))throw new Error('Usage: apify-export.ts <search-label> <comments-label>');
+const runDir=path.join(projectRoot,'.kff/apify-runs');
+const load=async(name:string)=>JSON.parse(await readFile(path.join(runDir,name+'.json'),'utf8'));
+const search=await load(searchLabel),comments=await load(commentLabel);
+if(search.run.status!=='SUCCEEDED'||comments.run.status!=='SUCCEEDED')throw new Error('Successful run receipts required');
+const posts=await load(searchLabel+'.items') as Array<{url:string;postId:string;postText:string;timestamp:number;commentsCount:number;author:{id:string;name:string}}>;
+const rawComments=await load(commentLabel+'.items') as Array<{commentId:string;text:string;date:string;profileId:string;profileName:string;commentUrl:string;inputUrl:string;author?:{url?:string}}>;
+const sourcePosts=posts.filter(p=>comments.input.startUrls.some((s:{url:string})=>s.url===p.url));
+const publisherIds=[...new Set(sourcePosts.map(p=>String(p.author.id)))];
+if(sourcePosts.length!==comments.input.startUrls.length||publisherIds.length!==1||!/^\d+$/.test(publisherIds[0]))throw new Error('Export requires the selected public posts to have one verified publisher');
+// Exercise the real read adapter without inventing a local registered platform account or writing database rows.
+const snapshot=collectionSnapshotSchema.parse({schema_version:'kff.collection.v1',title:search.input.query,source_key:'social.discovery',source_version:'social-discovery-v1',source_type:'SOCIAL_DISCOVERY',account_id:randomUUID(),account_version:1,external_account_id:publisherIds[0],targets:[publisherIds[0]],fields:['message','author_id','reaction_count','comment_count','created_time'],purpose:'lead_discovery',allowed_purposes:['lead_discovery'],mode:'CONTROLLED_PILOT',incremental_rule:'append_observations',max_records:100,max_pages:2,page_size:50,retention_days:14,display_timezone:'Asia/Shanghai',scenario:'normal',discovery:{platform:'facebook',strategy:'COMMENTS',provider:'DATA_PROVIDER',keywords:[search.input.query],exclusions:[],target:'apify-run:'+comments.run.id,processing_basis:'User requested a bounded public keyword and comment sample; review only; no outreach.'}});
+const page=await readApifyComments({query_id:randomUUID(),snapshot,cursor:null,limit:50});
+if(page.next_cursor!==null||page.rows.length!==rawComments.length||new Set(page.rows.map(r=>r.source_object_id)).size!==rawComments.length)throw new Error('Live adapter result differs from the downloaded sample');
+const out=path.join(projectRoot,'.kff/acquisition',searchLabel);await mkdir(out,{recursive:true});
+const csv=(records:unknown[])=>'\uFEFF'+stringify(records,{header:true,escape_formulas:true});
+const uniquePosts=[...new Map(posts.map(p=>[String(p.postId||p.url),p])).values()];
+const uniqueComments=[...new Map(rawComments.map(c=>[c.commentId,c])).values()];
+await writeFile(path.join(out,'posts.csv'),csv(uniquePosts.map(p=>({'搜索关键词':search.input.query,'帖子ID':p.postId,'原帖链接':p.url,'发布时间UTC':new Date(p.timestamp).toISOString(),'发布者':p.author.name,'原帖内容':p.postText,'平台显示评论数':p.commentsCount,'搜索Run':search.run.id}))),{mode:0o600});
+await writeFile(path.join(out,'comments.csv'),csv(uniqueComments.map(c=>({'搜索关键词':search.input.query,'评论ID':c.commentId,'原帖链接':c.inputUrl,'评论链接':c.commentUrl,'公开昵称':c.profileName,'公开资料链接':c.author?.url??'','评论时间UTC':c.date,'评论原文':c.text,'初筛标记':/^pm$/i.test(c.text.trim())?'请求原商家私信；待筛选':c.text.includes('预约')?'向原商家预约；待筛选':c.text.includes('了解')?'向原商家咨询；待筛选':'询问原商家地址；待筛选','可直接私信':'否；未取得可用于发送的身份与授权','评论Run':comments.run.id}))),{mode:0o600});
+const counts={posts:uniquePosts.length,source_posts:sourcePosts.length,comments:uniqueComments.length,distinct_provider_profiles:new Set(uniqueComments.map(c=>c.profileId)).size,pm_comments:uniqueComments.filter(c=>/^pm$/i.test(c.text.trim())).length,numeric_author_ids:page.rows.filter(r=>r.fields.author_id?.kind==='VALUE').length};
+const evidence={checked_at:new Date().toISOString(),keyword:search.input.query,search_run_id:search.run.id,comments_run_id:comments.run.id,counts,run_charge_usd:Number((search.run.usageTotalUsd+comments.run.usageTotalUsd).toFixed(6)),live_adapter_read:'PASSED',kff_database_rows_written:0,outbound_messages_sent:0,coverage:'PROVIDER_RESULTS_ONLY',result_path:out,remaining_gap:'No real platform account is registered in the local KFF workspace; samples remain separate from synthetic records. Keyword match in parent posts does not imply literal keyword match in comments.'};
+await writeFile(path.join(out,'summary.json'),JSON.stringify(evidence,null,2)+'\n');
+await writeFile(path.join(projectRoot,'docs/evidence/apify-bazi-sample.json'),JSON.stringify(evidence,null,2)+'\n');
+console.log(JSON.stringify(evidence,null,2));

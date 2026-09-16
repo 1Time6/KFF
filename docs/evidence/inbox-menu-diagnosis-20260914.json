@@ -1,0 +1,83 @@
+{
+  "schema_version": "kff.inbox-menu-diagnosis.v1",
+  "recorded_at": "2026-09-14T04:38:09.924Z",
+  "source_release": "0.1.22",
+  "goal_complete": false,
+  "platform_sends": 0,
+  "cycles": [
+    {
+      "cycle": 1,
+      "started_at": "2026-09-14T04:32:41.935Z",
+      "finished_at": "2026-09-14T04:33:38.827Z",
+      "identity_before": "61589894042400",
+      "identity_after": "61589894042400",
+      "threads": [
+        {
+          "thread_id": "2079341482680484",
+          "peer_id": "61594334430750",
+          "display_name": "郑成功"
+        },
+        {
+          "thread_id": "27724009533944398",
+          "peer_id": "100050174601107",
+          "display_name": "郑一哲"
+        }
+      ],
+      "skipped": [],
+      "message_count": 7,
+      "diagnostics": [],
+      "closed": true
+    },
+    {
+      "cycle": 2,
+      "started_at": "2026-09-14T04:33:40.489Z",
+      "finished_at": "2026-09-14T04:34:36.355Z",
+      "identity_before": "61589894042400",
+      "identity_after": "61589894042400",
+      "threads": [
+        {
+          "thread_id": "2079341482680484",
+          "peer_id": "61594334430750",
+          "display_name": "郑成功"
+        },
+        {
+          "thread_id": "27724009533944398",
+          "peer_id": "100050174601107",
+          "display_name": "郑一哲"
+        }
+      ],
+      "skipped": [],
+      "message_count": 7,
+      "diagnostics": [],
+      "closed": true
+    },
+    {
+      "cycle": 3,
+      "started_at": "2026-09-14T04:34:37.999Z",
+      "finished_at": "2026-09-14T04:35:27.730Z",
+      "identity_before": "61589894042400",
+      "identity_after": "61589894042400",
+      "threads": [
+        {
+          "thread_id": "2079341482680484",
+          "peer_id": "61594334430750",
+          "display_name": "郑成功"
+        },
+        {
+          "thread_id": "27724009533944398",
+          "peer_id": "100050174601107",
+          "display_name": "郑一哲"
+        }
+      ],
+      "skipped": [],
+      "message_count": 7,
+      "diagnostics": [],
+      "closed": true
+    }
+  ],
+  "profile_after": "Inactive",
+  "reproduced": false,
+  "additional_menu_clicks": 0,
+  "product_fix_applied": false,
+  "scope": "Three read-only cold-profile diagnostics completed the first account visible directory; no ingestion or sending. Prior one-cycle omission remains unresolved; this is not full continuous Inbox acceptance."
+}

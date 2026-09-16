@@ -1,0 +1,179 @@
+{
+  "schema_version": "kff.inbox-image-readiness.v1",
+  "recorded_at": "2026-09-14T03:20:29.625Z",
+  "release": {
+    "version": "0.1.20",
+    "release_id": "kff-agent-0.1.20-win32-x64-d37cd1633b26",
+    "archive_sha256": "1b4e55c1ad9cfd5fd9a28cd576cd613f13c52f8ed281bba7f0b9b8e1bb364a4a",
+    "installed_files_verified": 1348
+  },
+  "changes": [
+    "Record verified photo-only messages as a presence marker; do not read image contents; retain human handling and exclude attachment triggers from draft generation",
+    "Wait for complete message rendering and an unobstructed avatar before the same strict sender checks",
+    "Allow explicitly configured live sending through the existing local runtime; original task and one-action permission checks remain"
+  ],
+  "local_validation": {
+    "contracts": {
+      "passed": 162,
+      "failed": 0
+    },
+    "typecheck_exit": 0,
+    "build_exit": 0,
+    "rendered_dom_cases": 17,
+    "integration": {
+      "browser_message": 10,
+      "reception_drafts": 10,
+      "real_browser_inbox": 8,
+      "note": "The first Inbox integration run had one fixture-wide permission-count assertion failure; scoped assertion rerun passed all 8. No production database reset."
+    }
+  },
+  "original_reads": {
+    "baseline": {
+      "started_at": "2026-09-14T03:09:05.456Z",
+      "finished_at": "2026-09-14T03:10:52.709Z",
+      "accepted": false,
+      "commands": [
+        {
+          "id": "f9e9cb20-ccae-4404-939f-b5e8a3cfd311",
+          "action_id": "d7167a08-4d79-4dd2-b53e-3aef68d4b09b",
+          "quiesced_at": "2026-09-14T03:10:03.900Z",
+          "state": "VERIFIED_SUCCEEDED",
+          "error_code": null,
+          "task_id": "45d8362c-7e0e-435f-a544-c73391837a53",
+          "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+          "monitor_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb"
+        },
+        {
+          "id": "353990e9-8050-4533-9c22-7e459f160bed",
+          "action_id": "b47fe968-8650-4342-af0d-09de1cc53ba9",
+          "quiesced_at": "2026-09-14T03:10:48.298Z",
+          "state": "BLOCKED",
+          "error_code": "INBOX_WINDOW_UNAVAILABLE",
+          "task_id": "7de17d28-4635-4ed6-8d3e-ef0b038b873d",
+          "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+          "monitor_id": "149da22d-2ea8-49b1-accd-0ea2f4fc845f"
+        }
+      ],
+      "checkpoints": [
+        {
+          "task_id": "45d8362c-7e0e-435f-a544-c73391837a53",
+          "stored": 1,
+          "duplicates": 4,
+          "page_sha256": "36b32fc393ad06e27aa5e6166316077b9e377481ec9403181e4bbbfdc293d76a",
+          "observed_at": "2026-09-14T03:09:58.161Z"
+        }
+      ],
+      "profiles_after": [
+        {
+          "id": "k1gvdtft",
+          "status": "Inactive"
+        },
+        {
+          "id": "k1gw2kh9",
+          "status": "Inactive"
+        }
+      ],
+      "closures_verified": true
+    },
+    "sender_retry": {
+      "started_at": "2026-09-14T03:14:21.431Z",
+      "finished_at": "2026-09-14T03:15:21.188Z",
+      "accepted": true,
+      "commands": [
+        {
+          "id": "228d3b23-7fc0-4e30-9ab1-38e9ba80cf46",
+          "action_id": "25adc367-1f7d-43c6-990d-6817bd97dc31",
+          "quiesced_at": "2026-09-14T03:15:16.938Z",
+          "state": "VERIFIED_SUCCEEDED",
+          "error_code": null,
+          "task_id": "075f15f6-7250-4c99-af43-0f30714280e1",
+          "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+          "monitor_id": "149da22d-2ea8-49b1-accd-0ea2f4fc845f"
+        }
+      ],
+      "checkpoints": [
+        {
+          "task_id": "075f15f6-7250-4c99-af43-0f30714280e1",
+          "stored": 0,
+          "duplicates": 1,
+          "page_sha256": "c8a58301ce82aee7fff92bbb54425a997f317a6b3bd0926db0d48e023d8c76e6",
+          "observed_at": "2026-09-14T03:15:06.056Z"
+        }
+      ],
+      "profiles_after": [
+        {
+          "id": "k1gvdtft",
+          "status": "Inactive"
+        },
+        {
+          "id": "k1gw2kh9",
+          "status": "Inactive"
+        }
+      ],
+      "closures_verified": true
+    },
+    "after_send": {
+      "started_at": "2026-09-14T03:18:18.212Z",
+      "finished_at": "2026-09-14T03:20:12.711Z",
+      "accepted": true,
+      "commands": [
+        {
+          "id": "74636de2-e666-45ad-af11-e2f9854802c6",
+          "action_id": "9ef1b4b4-883d-499e-a99a-7253b7be6092",
+          "quiesced_at": "2026-09-14T03:19:28.473Z",
+          "state": "VERIFIED_SUCCEEDED",
+          "error_code": null,
+          "task_id": "972767fb-db5e-4615-b158-af6b7a977f13",
+          "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+          "monitor_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb"
+        },
+        {
+          "id": "5b7a09c7-5545-4a63-99e2-51267631a592",
+          "action_id": "a0c205e1-ca33-467d-a75e-d0d09d21ba8b",
+          "quiesced_at": "2026-09-14T03:20:09.165Z",
+          "state": "VERIFIED_SUCCEEDED",
+          "error_code": null,
+          "task_id": "439308c6-81ba-4fc8-b4b7-466cb1487cf0",
+          "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+          "monitor_id": "149da22d-2ea8-49b1-accd-0ea2f4fc845f"
+        }
+      ],
+      "checkpoints": [
+        {
+          "task_id": "439308c6-81ba-4fc8-b4b7-466cb1487cf0",
+          "stored": 1,
+          "duplicates": 1,
+          "page_sha256": "a2d7593bd6350cf544180bc7f5e29194d1c2f1982792c3f3da11f80b5515a457",
+          "observed_at": "2026-09-14T03:20:04.096Z"
+        },
+        {
+          "task_id": "972767fb-db5e-4615-b158-af6b7a977f13",
+          "stored": 2,
+          "duplicates": 5,
+          "page_sha256": "5acbbfba0fb612cc4ec38c9adf6191f67ee9f113135b334550ebef1a6a7046fc",
+          "observed_at": "2026-09-14T03:19:18.795Z"
+        }
+      ],
+      "profiles_after": [
+        {
+          "id": "k1gvdtft",
+          "status": "Inactive"
+        },
+        {
+          "id": "k1gw2kh9",
+          "status": "Inactive"
+        }
+      ],
+      "closures_verified": true
+    }
+  },
+  "remaining_issue": "One 0.1.20 sender directory read and one independent diagnostic timed out opening the avatar menu. A subsequent independent read and the bounded original retry passed. This remains a reliability observation, not continuous-operation acceptance.",
+  "photo_marker": {
+    "body": "[图片附件，内容未读取]",
+    "direction": "EXTERNAL_OUTBOUND",
+    "has_attachment": true,
+    "handling_mode": "HUMAN"
+  },
+  "platform_send_count": 1,
+  "goal_complete": false
+}

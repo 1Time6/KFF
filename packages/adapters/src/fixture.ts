@@ -3,6 +3,7 @@ import { mkdir } from 'node:fs/promises';
 import type { AgentCommand, ActionReport } from '@kff/contracts';
 import { AppError, digest, isWrite, profilePath, requireCondition, validateTargetUrl } from '@kff/core';
 import { assertTemplateSnapshot } from './templates';
+import { openManagedBrowser } from './browser-profile';
 
 export interface ExecutorHooks { beforeSubmit(): Promise<void>; assertControlled(): void; onContext(context: BrowserContext | null): void }
 export async function executeFixture(command: AgentCommand, root: string, hooks: ExecutorHooks, fixtureOrigin = 'http://127.0.0.1:4311'): Promise<Omit<ActionReport, 'event_id' | 'command_id'>> {
@@ -10,7 +11,8 @@ export async function executeFixture(command: AgentCommand, root: string, hooks:
   requireCondition(digest(command.snapshot) === command.snapshot_hash, 'APPROVAL_STALE', '任务快照不一致');
   assertTemplateSnapshot(command.snapshot);
   const directory = profilePath(root, command.snapshot.profile_key); await mkdir(directory, { recursive: true });
-  const context = await chromium.launchPersistentContext(directory, { headless: true, serviceWorkers: 'block', args: ['--disable-background-networking'], viewport: { width: 1100, height: 760 } });
+  const managed = command.snapshot.browser_environment ? await openManagedBrowser(root, command.snapshot.browser_environment, true) : undefined;
+  const context = managed?.context ?? await chromium.launchPersistentContext(directory, { headless: true, serviceWorkers: 'block', args: ['--disable-background-networking'], viewport: { width: 1100, height: 760 } });
   hooks.onContext(context);
   let submitted = false;
   let step = 'prepare';
@@ -45,5 +47,5 @@ export async function executeFixture(command: AgentCommand, root: string, hooks:
   } catch (error) {
     const code = error instanceof AppError ? error.code : 'EXECUTOR_ERROR';
     return { outcome: submitted ? 'UNKNOWN_OUTCOME' : code === 'STOP_REQUESTED' ? 'CANCELED' : code === 'NEEDS_HUMAN' ? 'NEEDS_HUMAN' : 'BLOCKED', error_code: code, diagnostic: diagnostic(step) };
-  } finally { await context.close(); hooks.onContext(null); }
+  } finally { if (managed) await managed.close(); else await context.close(); hooks.onContext(null); }
 }

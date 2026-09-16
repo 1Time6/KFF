@@ -1,0 +1,24 @@
+import {randomUUID} from 'node:crypto';
+import {it,expect} from 'vitest';
+import {agentCommandSchema,taskSnapshotSchema,templateManifestSchema} from '@kff/contracts';
+import {digest} from '@kff/core';
+import {fixedPageManifest} from '../../packages/adapters/src/templates';
+import {executeFacebookBrowserMessage} from '../../packages/adapters/src/facebook-browser-message';
+
+function snapshot(){
+  const account=randomUUID(),environment=randomUUID(),agent=randomUUID(),profile=randomUUID(),organization=randomUUID(),brand=randomUUID(),manifest=fixedPageManifest('facebook.messenger.reply.browser');
+  return {account_id:account,external_account_id:'123',account_version:1,credential_ref:null,environment_id:environment,environment_version:2,profile_key:profile,agent_id:agent,capability_id:randomUUID(),capability_key:'facebook.messenger.reply.browser',capability_revision:2,adapter_version:'facebook-browser-messenger-v1',implementation_digest:'a'.repeat(64),platform_api_version:null,body:'Contract reply',content_hash:digest('Contract reply'),mode:'CONTROLLED_PILOT',fixture_scenario:'normal',is_synthetic:false,template:{version_id:randomUUID(),version_number:1,manifest_hash:digest(manifest),manifest},browser_environment:{account_id:account,environment_id:environment,agent_id:agent,organization_id:organization,brand_id:brand,profile_key:profile,configuration_version:2,platform:'facebook',account_type:'profile',is_synthetic:false,configuration:{driver:'adspower',provider_profile_id:'contract-only',login_account_id:'123',operating_identity_id:'123',locale:'zh-CN',timezone_id:'Asia/Shanghai',proxy_ref:null}},message:{conversation_id:randomUUID(),trigger_message_id:randomUUID(),trigger_sequence:1,control_version:1,actor_kind:'HUMAN',actor_id:randomUUID(),connection_version:1,contact:{target_id:randomUUID(),permission_id:randomUUID(),purpose:'customer_service',account_id:account,channel:'facebook_browser_messenger',remote_id:'456',target_version:1,policy_hash:'b'.repeat(64)},browser:{thread_id:'456',peer_id:'789',display_name:'合同客户',trigger_remote_message_id:'789@msgr.1',last_seen_message_id:'789@msgr.1',trigger_content_hash:digest('Contract incoming'),source_url:'https://www.facebook.com/messages/e2ee/t/456/'},stop_epochs:{organization:0,brand:0,account:0,agent:0},referral:null}};
+}
+it('requires a real AdsPower personal profile, human pilot and explicit message context',()=>{
+  const s=snapshot();expect(taskSnapshotSchema.safeParse(s).success).toBe(true);
+  for(const patch of [{mode:'PRODUCTION'},{is_synthetic:true},{credential_ref:'TOKEN'},{platform_api_version:'v25.0'},{fixture_scenario:'lost_after_submit'},{message:{...s.message,actor_kind:'AI'}},{message:{...s.message,browser:{...s.message.browser,display_name:undefined}}},{message:{...s.message,browser:{...s.message.browser,trigger_content_hash:undefined}}},{browser_environment:{...s.browser_environment,account_type:'page'}},{message:{...s.message,contact:{...s.message.contact,channel:'facebook_messenger'}}}])expect(taskSnapshotSchema.safeParse({...s,...patch}).success).toBe(false);
+});
+it('keeps the fixed template on one submission and the exact browser adapter',()=>{
+  const manifest=fixedPageManifest('facebook.messenger.reply.browser');
+  expect(manifest).toMatchObject({engine:'fixed-browser-message-v1',adapter_version:'facebook-browser-messenger-v1',automatic_write_retry:false,success_evidence:'message_acceptance'});
+  for(const patch of [{automatic_write_retry:true},{adapter_version:'facebook-messenger-v1'},{steps:['validate_input','submit_once','submit_once']},{input:{body_required:false,max_body_length:2000}}])expect(templateManifestSchema.safeParse({...manifest,...patch}).success).toBe(false);
+});
+it('refuses a real executor call before opening any provider when live sending is disabled',async()=>{
+  const s=taskSnapshotSchema.parse(snapshot()),command=agentCommandSchema.parse({protocol_version:'kff.agent.v1',id:randomUUID(),action_id:randomUUID(),attempt_id:randomUUID(),run_id:randomUUID(),organization_id:s.browser_environment!.organization_id,brand_id:s.browser_environment!.brand_id,agent_id:s.agent_id,snapshot:s,snapshot_hash:digest(s),leases:[{resource_type:'account',resource_id:s.account_id,token:'1'},{resource_type:'environment',resource_id:s.environment_id,token:'1'}],expires_at:new Date(Date.now()+60000).toISOString()});
+  const previous=process.env.KFF_ENABLE_LIVE;process.env.KFF_ENABLE_LIVE='false';try{await expect(executeFacebookBrowserMessage(command,'unused-contract-root',{assertControlled(){},beforeSubmit:async()=>{throw new Error('Unexpected submission');},onContext(){throw new Error('Unexpected browser');}})).rejects.toMatchObject({code:'LIVE_DISABLED'});}finally{if(previous===undefined)delete process.env.KFF_ENABLE_LIVE;else process.env.KFF_ENABLE_LIVE=previous;}
+});

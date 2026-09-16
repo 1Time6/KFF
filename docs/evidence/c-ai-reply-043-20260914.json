@@ -1,0 +1,142 @@
+{
+  "created_at": "2026-09-14T15:32:20.957Z",
+  "conversation_id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+  "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+  "body": "感谢您的咨询。我们的咨询流程是先确认您想探讨的一个问题，再通过官方预约表提交必要的出生信息。请问您目前想了解的是感情、事业还是人生方向方面的疑问？",
+  "draft_job_id": "4afdaaba-f1d3-4354-a274-4effa0f7cf16",
+  "authorization": "用户持续授权同类受控单条测试，无需再问；用户确认C作者郑一哲由其控制，并已发私信且接受聊天。本次向该C会话发送经审核的DeepSeek咨询流程草稿，不含其他联系人。",
+  "max_sends": 1,
+  "platform_sends": 1,
+  "before": {
+    "conversation": {
+      "id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+      "organization_id": "11111111-1111-4111-8111-111111111111",
+      "brand_id": "22222222-2222-4222-8222-222222222222",
+      "customer_id": "e7ddc7f2-bb3b-41c0-9a08-9bd17ec682f2",
+      "identity_id": "a053edb4-c7e5-4a95-bd3f-59fa62bfe5fe",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "channel_id": null,
+      "last_sequence": 1,
+      "last_message_at": "2026-09-14T15:29:20.853Z",
+      "reply_window_expires_at": null,
+      "created_at": "2026-09-14T15:29:20.803Z",
+      "channel_kind": "FACEBOOK_BROWSER_MESSENGER",
+      "handling_mode": "HUMAN",
+      "control_version": 1,
+      "last_inbound_sequence": 1,
+      "last_outbound_at": null,
+      "last_answered_sequence": 0
+    },
+    "trigger": {
+      "id": "f232db4d-9c02-46d1-b903-33254e01de93",
+      "organization_id": "11111111-1111-4111-8111-111111111111",
+      "brand_id": "22222222-2222-4222-8222-222222222222",
+      "conversation_id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+      "inbound_event_id": "9c226d4d-cf4a-4f75-ad17-bb2eaabb319b",
+      "sequence": 1,
+      "direction": "INBOUND",
+      "body": "KFF-0914-C 我想了解咨询流程，需要提供哪些资料？",
+      "client_display_name": "郑一哲",
+      "received_at": "2026-09-14T15:29:20.853Z",
+      "client_sent_at": null,
+      "contact_permission_id": null,
+      "message_kind": "MESSAGE",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "100050174601107",
+        "source_id": "100050174601107@msgr.7505283981980540236",
+        "thread_id": "1790718235683346",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/1790718235683346/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "08:19"
+      },
+      "action_id": null,
+      "actor_kind": "CUSTOMER"
+    }
+  },
+  "expires_at": "2026-09-14T16:02:21.156Z",
+  "permission_id": "41dfba78-9682-4a1d-9bf1-a6e2e2288bf0",
+  "task_id": "9331c163-fe44-4d0e-8a9c-ebfc377a0a5e",
+  "status": "AI_REPLY_VERIFIED",
+  "permit_id": "5c01631f-9db9-4ef7-b1cf-59a80e7e0cb5",
+  "snapshot_hash": "ddd9c29989844975508343dcac98f0ccf1cbb9d0761e1dfd9829c16f15e18238",
+  "prepared_at": "2026-09-14T15:32:21.457Z",
+  "run_id": "ff4ecc5e-30d8-4548-8ac9-4a42540e0955",
+  "actions": [
+    {
+      "action_id": "4c774407-f52f-4255-9041-92de1ded026a",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "receipt": {
+        "remote_id": "100050174601107@msgr.7505287682298342954",
+        "thread_id": "1790718235683346",
+        "observed_at": "2026-09-14T15:33:51.952Z",
+        "content_hash": "ba0b4582d04e77d01f07179b17406ec53bb3d6ef224be6239a14bc238ec51ac2",
+        "recipient_id": "100050174601107",
+        "evidence_kind": "browser_message",
+        "actual_account_id": "61594402378582"
+      },
+      "command_id": "14d4a449-ab00-44e1-a855-5a8043617d14",
+      "claimed_at": "2026-09-14T15:33:24.607Z",
+      "quiesced_at": "2026-09-14T15:33:53.302Z"
+    }
+  ],
+  "closure": {
+    "proof": {
+      "action_id": "4c774407-f52f-4255-9041-92de1ded026a",
+      "closed_at": "2026-09-14T15:33:53.019Z",
+      "command_id": "14d4a449-ab00-44e1-a855-5a8043617d14",
+      "proof_sha256": "32ff67b15107495f91b2ba86461c86dc2f485f1bba0354b700d8595aa41203b4",
+      "protocol_version": "kff.guardian-closure.v1"
+    },
+    "local_database_match": true
+  },
+  "attempts": [
+    {
+      "id": "da7c147c-c381-4687-a693-2556cafbee6b",
+      "attempt_number": 1,
+      "submitted_at": "2026-09-14T15:33:44.661Z",
+      "state": "VERIFIED_SUCCEEDED"
+    }
+  ],
+  "diagnostics": [
+    {
+      "action_id": "4c774407-f52f-4255-9041-92de1ded026a",
+      "manifest": {
+        "step": "facebook-message-verified",
+        "files": [],
+        "level": "D0",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "4c774407-f52f-4255-9041-92de1ded026a",
+        "attempt_id": "da7c147c-c381-4687-a693-2556cafbee6b",
+        "created_at": "2026-09-14T15:33:53.284Z",
+        "error_code": null,
+        "duration_ms": 26833,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-browser-messenger-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": "本驱动未取得可安全导出的现场，保留 D0",
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    }
+  ],
+  "profile_after": "Inactive",
+  "accepted": true,
+  "finished_at": "2026-09-14T15:33:54.396Z"
+}

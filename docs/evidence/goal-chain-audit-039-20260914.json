@@ -1,0 +1,110 @@
+{
+  "at": "2026-09-14T12:58:48.499Z",
+  "historical_A": {
+    "lead": {
+      "id": "19eb0c88-2002-40fd-acad-6040b684cd54",
+      "state": "QUALIFIED",
+      "version": 3,
+      "object_id": "2dc37a1b-46c6-4b31-a15a-4ba049feace0",
+      "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "source_url": "https://www.facebook.com/reel/2163157911082094/?comment_id=4652715068308205",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "KFF-0914-A 我想了解咨询流程"
+        },
+        "author_id": {
+          "kind": "VALUE",
+          "value": "61589894042400"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月13日周日20:11"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "observed_at": "2026-09-14T02:04:21.148Z"
+    },
+    "public_action": {
+      "task_id": "d63a4ba9-c0f5-4acd-b837-27aa84855a09",
+      "lead_id": "19eb0c88-2002-40fd-acad-6040b684cd54",
+      "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "author_id": "61589894042400",
+      "source_object_id": "facebook:comment:4652715068308205",
+      "action_kind": "COMMENT_REPLY",
+      "status": "SUCCEEDED",
+      "action_id": "f4af4933-f165-40b2-a7d1-9b7fa1742566",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "receipt": {
+        "parent_id": "4652715068308205",
+        "remote_id": "1414402634235090",
+        "source_url": "https://www.facebook.com/reel/2163157911082094/?comment_id=4652715068308205&reply_comment_id=1414402634235090",
+        "observed_at": "2026-09-14T04:26:55.412Z",
+        "content_hash": "989f6cd388bc7086494f3a523e986441ccff7601f68c4515ea059e1d20b716bc",
+        "recipient_id": "61589894042400",
+        "evidence_kind": "browser_comment",
+        "actual_account_id": "61594334430750"
+      }
+    },
+    "referral": {
+      "id": "9ece8f0a-58f9-4cca-814a-7d48f08811ce",
+      "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "conversation_id": "79a78ecf-9814-47ab-87ab-25c093ed1306",
+      "action_id": "36632772-c900-448f-a854-707c5cb9ec63",
+      "message_id": "140a9775-90e3-49c1-ab80-dd8dc6ac891d",
+      "destination_id": "61cef25d-7e01-4800-9c05-e5d46e070927",
+      "state": "REFERRED",
+      "version": 2,
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594334430750",
+        "peer_id": "61589894042400",
+        "source_id": "61589894042400@msgr.7505071649019619421",
+        "thread_id": "2079341482680484",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/2079341482680484/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "21:15"
+      },
+      "sent_at": "2026-09-14T03:16:54.593Z",
+      "confirmed_at": null
+    },
+    "invitation_before_public_reply": true,
+    "account_retired": true,
+    "causal_public_to_whatsapp_acceptance": false
+  },
+  "current_B": {
+    "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+    "conversation": {
+      "id": "82307e44-911c-49db-ab82-878d8dfde1f5",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "handling_mode": "HUMAN",
+      "control_version": 4,
+      "last_sequence": 3,
+      "last_answered_sequence": 2
+    },
+    "controlled_reply_and_recipient_receipt": true,
+    "evidence": "docs/evidence/profile10-reply-to-profile8-039-20260914.json",
+    "referrals": [],
+    "is_new_public_lead": false,
+    "real_ai_used": false
+  },
+  "remaining": [
+    "A single current public-lead-to-response-to-sales demonstration without substituting historical account9 or the controlled B Inbox test",
+    "New specified Page content increment",
+    "Sustained account8/account10 operation; the 038 scheduled window stopped on its first failure",
+    "User-confirmed business content and real AI model service",
+    "Confirmed WhatsApp destination and actual receipt for the current lead; user said not ready",
+    "Capacity and clean-device/OS restart acceptance"
+  ],
+  "full_goal_complete": false,
+  "database_mutations_by_audit": 0
+}

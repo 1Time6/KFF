@@ -1,0 +1,215 @@
+{
+  "at": "2026-09-14T10:02:20.405Z",
+  "version": "0.1.34",
+  "goal_complete": false,
+  "real_page_read_accepted": false,
+  "real_platform_runs_on_034": 0,
+  "latest_real_read": "docs/evidence/profile10-page-read-033-20260914.json",
+  "previous_real_failures": [
+    "docs/evidence/profile10-page-read-031-20260914.json",
+    "docs/evidence/profile10-page-read-032-20260914.json"
+  ],
+  "live_probe": {
+    "command_id": "b28fd220-a88c-462b-bf00-0f065fdeb724",
+    "source_guard_passed": true,
+    "closure_matches": true,
+    "markers": {
+      "viewport": {
+        "width": 786,
+        "height": 506,
+        "visibility": "visible"
+      },
+      "tabs": [
+        {
+          "tag": "A",
+          "role": "tab",
+          "text": "全部",
+          "label": null,
+          "rendered": true,
+          "css_visibility": "visible",
+          "hidden_ancestor": false,
+          "href": "/profile.php?id=61594197356279"
+        },
+        {
+          "tag": "A",
+          "role": "tab",
+          "text": "简介",
+          "label": null,
+          "rendered": true,
+          "css_visibility": "visible",
+          "hidden_ancestor": false,
+          "href": "https://www.facebook.com/profile.php?id=61594197356279&sk=about"
+        },
+        {
+          "tag": "A",
+          "role": "tab",
+          "text": "Reels",
+          "label": null,
+          "rendered": true,
+          "css_visibility": "visible",
+          "hidden_ancestor": false,
+          "href": "https://www.facebook.com/profile.php?id=61594197356279&sk=reels_tab"
+        },
+        {
+          "tag": "A",
+          "role": "tab",
+          "text": "照片",
+          "label": null,
+          "rendered": true,
+          "css_visibility": "visible",
+          "hidden_ancestor": false,
+          "href": "https://www.facebook.com/profile.php?id=61594197356279&sk=photos"
+        },
+        {
+          "tag": "A",
+          "role": "tab",
+          "text": "粉丝",
+          "label": null,
+          "rendered": true,
+          "css_visibility": "visible",
+          "hidden_ancestor": false,
+          "href": "https://www.facebook.com/profile.php?id=61594197356279&sk=followers"
+        }
+      ],
+      "reviews": [
+        {
+          "tag": "DIV",
+          "role": "button",
+          "text": "尚无评分（0 次点评）",
+          "label": null,
+          "rendered": true,
+          "css_visibility": "visible",
+          "hidden_ancestor": false,
+          "href": null
+        }
+      ],
+      "header_followers": [
+        {
+          "tag": "A",
+          "role": "link",
+          "text": "7 位粉丝",
+          "label": null,
+          "rendered": true,
+          "css_visibility": "visible",
+          "hidden_ancestor": false,
+          "href": "https://www.facebook.com/profile.php?id=61594197356279&sk=followers"
+        }
+      ]
+    }
+  },
+  "local_reproduction": {
+    "at": "2026-09-14T09:54:24.938Z",
+    "platform_calls": 0,
+    "navigations": 1,
+    "steps": [
+      "navigate",
+      "scope",
+      "page-type-ready",
+      "source-address",
+      "source-modern-verified",
+      "posts-heading",
+      "wait-content",
+      "scope",
+      "source-address",
+      "source-modern-cover-category-review-tile"
+    ],
+    "error": {
+      "code": "SOURCE_UNSUPPORTED",
+      "message": "当前页面未明确显示唯一公共主页身份"
+    },
+    "limitation": "Local reproduction of header collapse after scroll. Does not establish which phase failed in the original real command."
+  },
+  "local_checks": {
+    "fixtures": {
+      "startTime": "2026-09-14T09:55:16.865Z",
+      "duration": 9750.663999999999,
+      "expected": 9,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "contracts": {
+      "passed": 168,
+      "failed": 0
+    },
+    "typecheck": 0,
+    "build": 0
+  },
+  "source_build_agent_match": true,
+  "runtime": {
+    "id": "e359a1d4-461b-4d9a-9b24-acbb595100df",
+    "phase": "RUNNING",
+    "live_sending_enabled": false,
+    "open_commands": 0,
+    "monitors": [
+      {
+        "kind": "acquisition",
+        "state": "PAUSED",
+        "count": 13
+      },
+      {
+        "kind": "inbox",
+        "state": "PAUSED",
+        "count": 4
+      }
+    ],
+    "profiles": [
+      {
+        "profile": "k1gvdtft",
+        "status": "Inactive"
+      },
+      {
+        "profile": "k1gx1n1s",
+        "status": "Inactive"
+      }
+    ],
+    "retired": {
+      "state": "DISABLED",
+      "configuration_version": 3,
+      "outbound_paused": true
+    }
+  },
+  "history_unchanged": true,
+  "history": {
+    "messages": {
+      "count": 128,
+      "digest": "e88da1cc8deba9f88906762e6368b761"
+    },
+    "conversations": {
+      "count": 95,
+      "digest": "ec9b1521a9d672c11d5ef7070059d736"
+    },
+    "whatsapp_referrals": {
+      "count": 13,
+      "digest": "d4e2c7ebe15894e09b9e989c3a2aea12"
+    },
+    "acquisition_leads": {
+      "count": 35,
+      "digest": "d8a653c2d7e0ff33795b2848b1c8a5ea"
+    }
+  },
+  "agent": {
+    "release_id": "kff-agent-0.1.34-win32-x64-5606ad221e46",
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.34-win32-x64-5606ad221e46",
+    "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.34-win32-x64-5606ad221e46.zip",
+    "archive_sha256": "b926c49709d31afb07df4837b91d0a73eb1b565bf2c22165c32383646eb63f7d",
+    "files": 1348,
+    "dependencies": 23,
+    "contains_pairing_or_browser_data": false
+  },
+  "controller": {
+    "release_id": "kff-controller-0.1.34-win32-x64-2e4bdf1031e6",
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.34-win32-x64-2e4bdf1031e6",
+    "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.34-win32-x64-2e4bdf1031e6.zip",
+    "archive_sha256": "301702e7f973d7372ba103613620b472cf7071e3d870b0cad5af31180a90e3f0",
+    "files": 24092,
+    "uncompressed_bytes": 829491351,
+    "dependency_packages": 155,
+    "contains_runtime_data": false,
+    "live_config_values_scanned": 6
+  },
+  "archive_sha256_verified": true,
+  "platform_sends": 0,
+  "scope": "Verify native Page identity before scrolling, retain exact publisher address and unique main throughout scrolling, validate public post author and permalink for every row, and retain original operating-account checks before/after discovery. The local header-collapse reproduction does not prove the phase of the earlier real failure.",
+  "remaining": "Original-queue acceptance for 0.1.34, real new-post increment, profile10 Inbox, two-account continuous run, true AI/business review, current WhatsApp sales receipt, clean-machine and OS-reboot acceptance remain outstanding."
+}

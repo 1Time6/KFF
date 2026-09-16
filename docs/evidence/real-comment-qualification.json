@@ -1,0 +1,163 @@
+{
+  "recorded_at": "2026-09-13T03:35:37.95Z",
+  "kind": "REAL_PUBLIC_COMMENT_QUALIFICATION",
+  "monitor_id": "72eceefc-3f5f-4f0a-8953-33c9f309517e",
+  "profile_id": "k1gvdtft",
+  "ui_sequence": "1876794",
+  "review_basis": "Current application pilot limits interactions to seven days. Independently read the original visible comment dates; do not equate collection time with publication time or infer ongoing demand.",
+  "reviewed": 9,
+  "dismissed_from_current_candidates": 9,
+  "qualified": 0,
+  "platform_sends": 0,
+  "source_records_preserved": true,
+  "review_audits": 9,
+  "decisions": [
+    {
+      "lead_id": "252a4db7-0cc5-4155-ba7b-bb7606fa9292",
+      "expected_version": 1,
+      "request_id": "99bef2b3-e267-4d7b-ad3d-50fdeea132b9",
+      "state": "DISMISSED",
+      "reason": "本轮筛选排除：原评论显示 2026年7月31日周五11:39（6周前），明显超过系统当前7日互动试验窗口；仅保留为历史采集样本，不认定仍有咨询需求。原始数据保留。",
+      "source_object_id": "facebook:comment:1393237392903595",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1393237392903595",
+      "published_time_label": "2026年7月31日周五11:39",
+      "minimum_calendar_age_days": 42,
+      "observed_at": "2026-09-13T03:33:26.148Z",
+      "message_sha256": "78f4626dbe97b494df14cdf65ac35d70685a02cf60e1190efac1d50938ab1bd4"
+    },
+    {
+      "lead_id": "35542a0f-c2c9-4566-b22d-9a689f09f8de",
+      "expected_version": 1,
+      "request_id": "2669ca42-b4ce-4c20-a8e1-b3fcdbb4b95d",
+      "state": "DISMISSED",
+      "reason": "本轮筛选排除：原评论显示 2026年7月30日周四15:19（6周前），明显超过系统当前7日互动试验窗口；仅保留为历史采集样本，不认定仍有咨询需求。原始数据保留。",
+      "source_object_id": "facebook:comment:899678139871570",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=899678139871570",
+      "published_time_label": "2026年7月30日周四15:19",
+      "minimum_calendar_age_days": 43,
+      "observed_at": "2026-09-13T03:35:00.334Z",
+      "message_sha256": "6b987654a41163849bd70f7354ec7a205cea30d282c0e84be1cfe8a0e3927c78"
+    },
+    {
+      "lead_id": "3efc8312-4c08-49f6-9dc4-91e29daa5365",
+      "expected_version": 1,
+      "request_id": "9638283d-7ab3-45d8-bc19-f47ec8bde53a",
+      "state": "DISMISSED",
+      "reason": "本轮筛选排除：原评论显示 2026年7月30日周四17:24（6周前），明显超过系统当前7日互动试验窗口；仅保留为历史采集样本，不认定仍有咨询需求。原始数据保留。",
+      "source_object_id": "facebook:comment:1581943333556716",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1581943333556716",
+      "published_time_label": "2026年7月30日周四17:24",
+      "minimum_calendar_age_days": 43,
+      "observed_at": "2026-09-13T03:33:48.997Z",
+      "message_sha256": "96f2f0811df88d8fc36bba1ebfe4e4841ce71b1e26c4ac0b77c860f26a37a763"
+    },
+    {
+      "lead_id": "5d2a85ff-c908-4480-ae27-9397ed9011c7",
+      "expected_version": 1,
+      "request_id": "f9613be3-f15e-4fb1-a800-1371cc0d4ab4",
+      "state": "DISMISSED",
+      "reason": "本轮筛选排除：原评论显示 2026年7月30日周四15:26（6周前），明显超过系统当前7日互动试验窗口；仅保留为历史采集样本，不认定仍有咨询需求。原始数据保留。",
+      "source_object_id": "facebook:comment:1077076494991097",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1077076494991097",
+      "published_time_label": "2026年7月30日周四15:26",
+      "minimum_calendar_age_days": 43,
+      "observed_at": "2026-09-13T03:31:49.792Z",
+      "message_sha256": "a3b4e27996963aed6dc7cda77f7e6a01642cae4c0349bd1175019fc5e57dfd4e"
+    },
+    {
+      "lead_id": "63cb8fc6-5f49-485d-b405-131e12339f0e",
+      "expected_version": 1,
+      "request_id": "701b4456-0e7e-4e3b-9cf9-6f8758b26490",
+      "state": "DISMISSED",
+      "reason": "本轮筛选排除：原评论显示 2026年7月30日周四14:58（6周前），明显超过系统当前7日互动试验窗口；仅保留为历史采集样本，不认定仍有咨询需求。原始数据保留。",
+      "source_object_id": "facebook:comment:27903656085989070",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=27903656085989070",
+      "published_time_label": "2026年7月30日周四14:58",
+      "minimum_calendar_age_days": 43,
+      "observed_at": "2026-09-13T03:34:37.583Z",
+      "message_sha256": "96f2f0811df88d8fc36bba1ebfe4e4841ce71b1e26c4ac0b77c860f26a37a763"
+    },
+    {
+      "lead_id": "81d21971-e353-45de-a216-3c66061fbcc8",
+      "expected_version": 1,
+      "request_id": "5dc9bbdf-ff04-4d63-9496-34e28779881b",
+      "state": "DISMISSED",
+      "reason": "本轮筛选排除：原评论显示 2026年7月30日周四14:44（6周前），明显超过系统当前7日互动试验窗口；仅保留为历史采集样本，不认定仍有咨询需求。原始数据保留。",
+      "source_object_id": "facebook:comment:1217101133887549",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1217101133887549",
+      "published_time_label": "2026年7月30日周四14:44",
+      "minimum_calendar_age_days": 43,
+      "observed_at": "2026-09-13T03:32:15.84Z",
+      "message_sha256": "96f2f0811df88d8fc36bba1ebfe4e4841ce71b1e26c4ac0b77c860f26a37a763"
+    },
+    {
+      "lead_id": "894075c7-d00d-44e0-a242-05e32934a92d",
+      "expected_version": 1,
+      "request_id": "a7a61975-8fae-4a8b-b064-18c13edc5eef",
+      "state": "DISMISSED",
+      "reason": "本轮筛选排除：原评论显示 2026年7月30日周四14:36（6周前），明显超过系统当前7日互动试验窗口；仅保留为历史采集样本，不认定仍有咨询需求。原始数据保留。",
+      "source_object_id": "facebook:comment:1382008900690725",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1382008900690725",
+      "published_time_label": "2026年7月30日周四14:36",
+      "minimum_calendar_age_days": 43,
+      "observed_at": "2026-09-13T03:33:04.089Z",
+      "message_sha256": "78f4626dbe97b494df14cdf65ac35d70685a02cf60e1190efac1d50938ab1bd4"
+    },
+    {
+      "lead_id": "b65bb311-96d8-463a-bb8f-d87e65eeda79",
+      "expected_version": 1,
+      "request_id": "2e772cca-087a-46c1-905e-20090329408c",
+      "state": "DISMISSED",
+      "reason": "本轮筛选排除：原评论显示 2026年7月30日周四14:50（6周前），明显超过系统当前7日互动试验窗口；仅保留为历史采集样本，不认定仍有咨询需求。原始数据保留。",
+      "source_object_id": "facebook:comment:1353993326906858",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=1353993326906858",
+      "published_time_label": "2026年7月30日周四14:50",
+      "minimum_calendar_age_days": 43,
+      "observed_at": "2026-09-13T03:32:38.873Z",
+      "message_sha256": "05fcbdc2aa33af3ce7c55deb53bf61caa960901b7f4bf26f03024fb716932f42"
+    },
+    {
+      "lead_id": "ce0e4cb7-b690-4bc6-858b-63f51b15fd46",
+      "expected_version": 1,
+      "request_id": "ad2a0603-14ed-4810-898d-bf6a53dd6139",
+      "state": "DISMISSED",
+      "reason": "本轮筛选排除：原评论显示 2026年7月30日周四14:35（6周前），明显超过系统当前7日互动试验窗口；仅保留为历史采集样本，不认定仍有咨询需求。原始数据保留。",
+      "source_object_id": "facebook:comment:2386091551919086",
+      "source_url": "https://www.facebook.com/qixiglobalecobotanic/posts/pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl/?comment_id=2386091551919086",
+      "published_time_label": "2026年7月30日周四14:35",
+      "minimum_calendar_age_days": 43,
+      "observed_at": "2026-09-13T03:34:11.202Z",
+      "message_sha256": "78f4626dbe97b494df14cdf65ac35d70685a02cf60e1190efac1d50938ab1bd4"
+    }
+  ],
+  "counts": {
+    "outreach_tasks": 3,
+    "unclosed_commands": 0,
+    "suppressions": 0,
+    "accounts": 86,
+    "existing_prospects": 46,
+    "migrations": 29
+  },
+  "backup": {
+    "path": ".kff/changes/real-comment-qualification-20260913/before.json",
+    "sha256": "1d8c3060d62572bb048302030fc1b2ec04095b456b51ab9b8505a6ad1fa63d9d",
+    "copy_verified": true
+  },
+  "observation_evidence_sha256": "b3f1f457cb97b14e57499064c8b51f48d3f20d27bc6418efe7e350f77070d2bb",
+  "limitations": [
+    "Displayed publication labels retain their original text; no timezone or exact-second timestamp was invented",
+    "A keyword match and a historical consultation do not prove a current customer or Messenger contact",
+    "DISMISSED is a reversible review decision for these source comments, not an opt-out or author-wide suppression",
+    "Real browser reply execution, Messenger incoming, and WhatsApp handoff remain unverified"
+  ],
+  "ui": {
+    "css_file": "apps/web/app/acquisition.css",
+    "checked_at": "2026-09-13T03:41:17.5698216Z",
+    "screenshot_sha256": "2bfa40fa6d606ef0e9d1d9343bc1ed625114aa364c9f8c97a1b98e1e15029b6e",
+    "dismissed_rows": 9,
+    "all_reasons_wrap_without_overflow": true,
+    "screenshot": "output/playwright/real-comment-qualification.png",
+    "css_sha256": "eba275b7d3e982611b1946dd42fcf5aa74eece685d2958712f8f23b78bc3fffd",
+    "reviewed_rows": 9
+  }
+}

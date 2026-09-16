@@ -1,0 +1,44 @@
+import { test, expect } from '@playwright/test';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { randomUUID } from 'node:crypto';
+
+test('the Inbox browser channel sends an invitation through the running Agent and records the sales confirmation separately', async ({ page }) => {
+  test.setTimeout(150000); const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
+  await page.route('**/*', route => new URL(route.request().url()).origin === 'http://127.0.0.1:3000' ? route.continue() : route.abort());
+  await page.goto('/inbox'); const config = JSON.parse(readFileSync('.kff/local-config.json', 'utf8'));
+  await page.getByLabel('密码', { exact: true }).fill(config.operator_password); await page.getByRole('button', { name: '进入工作台' }).click();
+  await expect(page.getByRole('heading', { name: '最近会话' })).toBeVisible();
+  const workspace = await (await page.request.get('/api/workspace')).json(), agent = workspace.agents.find((row: { is_online: boolean; status: string }) => row.is_online && row.status === 'ONLINE'); expect(agent).toBeTruthy();
+  const headers = { Origin: 'http://127.0.0.1:3000' }, accountRemote = BigInt('0x' + randomUUID().replaceAll('-', '')).toString();
+  const created = await page.request.post('/api/facebook/fixtures', { headers, data: { request_id: randomUUID(), name: '浏览器接待闭环验证', page_id: accountRemote, agent_id: agent.id } }); expect(created.ok()).toBe(true); const fixture = await created.json();
+  const env = await page.request.post('/api/environments/' + fixture.environment_id + '/configuration', { headers, data: { expected_version: 1, configuration: { driver: 'native', provider_profile_id: null, login_account_id: '800001', operating_identity_id: accountRemote, locale: 'en-US', timezone_id: 'UTC', proxy_ref: null } } }); expect(env.ok()).toBe(true);
+  await page.reload(); await page.locator('summary').filter({ hasText: 'Facebook 账号与接待' }).click(); await page.getByLabel('选择 Facebook 账号').selectOption(fixture.account_id);
+  const reception = page.getByRole('form', { name: 'Facebook 接待配置' }); await reception.getByLabel('回复渠道').selectOption('BROWSER');
+  await reception.getByRole('button', { name: '保存 Facebook 接待配置' }).click();
+  await expect.poll(async () => (await (await page.request.get('/api/facebook')).json()).connections.find((row: { account_id: string }) => row.account_id === fixture.account_id)?.transport).toBe('BROWSER');
+  await expect(page.getByRole('form', { name: '模拟 Facebook 客户' })).toHaveCount(0);
+  const incoming = await fetch('http://127.0.0.1:4311/browser-inbox/events', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ account_id: accountRemote, thread_id: '000777', peer_id: '999888777666555', body: 'I would like to arrange a consultation with your team.', display_name: 'Local browser reception customer' }) }); expect(incoming.ok).toBe(true);
+  const incomingEvent = await incoming.json();
+  const monitorResponse = await page.request.post('/api/browser-inbox/monitors', { headers, data: { request_id: randomUUID(), environment_id: fixture.environment_id, expected_version: 0, page_size: 50, interval_seconds: 10, raw_retention_hours: 1 } }); expect(monitorResponse.ok()).toBe(true); const monitor = await monitorResponse.json();
+  const scan = await page.request.post('/api/browser-inbox/monitors/' + monitor.id + '/control', { headers, data: { request_id: randomUUID(), expected_version: monitor.version, action: 'SCAN' } }); expect(scan.ok()).toBe(true);
+  await expect.poll(async () => { const state = await (await page.request.get('/api/browser-inbox')).json(), row = state.monitors.find((m: { id: string }) => m.id === monitor.id); return Boolean(row?.last_polled_at && !row.current_task_id && !row.scan_requested); }, { timeout: 60000 }).toBe(true);
+  const inbox = await (await page.request.get('/api/inbox')).json(), conversations = inbox.conversations.filter((row: { account_id: string }) => row.account_id === fixture.account_id); expect(conversations).toHaveLength(2);
+  let conversationId = '';
+  for (const row of conversations) { const detail = await (await page.request.get('/api/conversations/' + row.id)).json(); if (detail.messages.some((m: { body: string }) => m.body === incomingEvent.message.body)) conversationId = row.id; }
+  expect(conversationId).toBeTruthy();
+  const destination = await page.request.post('/api/whatsapp', { headers, data: { request_id: randomUUID(), account_id: fixture.account_id, expected_version: 0, name: '本地销售移交验证', phone: '15550009999', state: 'ACTIVE', template: 'Please contact our team: {whatsapp_url}', cooldown_hours: 24 } }); expect(destination.ok()).toBe(true);
+  await page.goto('/inbox?conversation=' + conversationId); await expect(page.getByRole('form', { name: '人工回复' })).toBeVisible();
+  await page.getByLabel('使用本账号的 WhatsApp 引流话术').check(); await page.getByRole('button', { name: '接管并发送回复' }).click();
+  await expect(page.getByRole('status')).toContainText('人工回复已入队');
+  await expect.poll(async () => (await (await page.request.get('/api/conversations/' + conversationId + '/reception')).json()).referrals[0]?.state, { timeout: 60000 }).toBe('REFERRED');
+  await expect(page.getByRole('list', { name: '已保存的客户消息' })).toContainText('Please contact our team: https://wa.me/15550009999');
+  const beforeConfirmation = await (await page.request.get('/api/conversations/' + conversationId + '/reception')).json(), sent = beforeConfirmation.replies[0];
+  expect(beforeConfirmation.referrals[0].state).toBe('REFERRED');
+  const remote = await (await fetch('http://127.0.0.1:4311/browser-message-receipts?action_id=' + sent.id)).json(); expect(remote).toHaveLength(1); expect(remote[0]).toMatchObject({ account_id: accountRemote, thread_id: '000777', recipient_id: '999888777666555' });
+  const sales = page.getByRole('form', { name: '记录 WhatsApp 客户结果' }); await sales.getByLabel('核实依据').fill('本地合成销售确认，用于验证状态区分，并非真实 WhatsApp 联系'); await sales.getByRole('button', { name: '保存引流结果' }).click();
+  await expect.poll(async () => (await (await page.request.get('/api/conversations/' + conversationId)).json()).conversation.lead_status).toBe('HANDOFF_COMPLETE');
+  await expect.poll(async () => (await (await page.request.get('/api/browser-environments')).json()).find((row: { id: string }) => row.id === fixture.environment_id).browser_status).toBe('CLOSED');
+  const detail = await (await page.request.get('/api/runs/' + sent.run_id)).json(); expect(detail.run.action_state).toBe('VERIFIED_SUCCEEDED');
+  expect(errors).toEqual([]); await page.screenshot({ path: 'output/playwright/browser-message.png' });
+  writeFileSync('.kff/browser-message-web-evidence.json', JSON.stringify({ checked_at: new Date().toISOString(), synthetic: true, real_platform_verified: false, ...fixture, conversation_id: conversationId, monitor_id: monitor.id, action_id: sent.id, run_id: sent.run_id, receipt: detail.run.receipt, referral_id: beforeConfirmation.referrals[0].id, sales_confirmation: 'LOCAL_SYNTHETIC_MANUAL', screenshot: 'output/playwright/browser-message.png' }, null, 2));
+});

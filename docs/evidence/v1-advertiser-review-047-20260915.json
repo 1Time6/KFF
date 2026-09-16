@@ -1,0 +1,43 @@
+{
+  "at": "2026-09-14T16:55:08.437Z",
+  "before": {
+    "id": "275b70d9-f67f-45a3-b231-8c3b66be0edd",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "monitor_id": "f0f24cd4-e7bd-4d80-8787-de9df30a132c",
+    "object_id": "926141eb-82c5-4963-b9f9-779ab63ff2f0",
+    "observation_id": "736247ba-7ad7-4211-8155-4a64edd429e4",
+    "version": 1,
+    "state": "NEW",
+    "score": 50,
+    "matched_keywords": [
+      "bazi reading"
+    ],
+    "reason": "关键词匹配 1 项。规则评分，不代表购买概率。",
+    "automation_error": null,
+    "next_action_at": "2026-09-14T16:53:56.620Z",
+    "first_seen_at": "2026-09-14T16:53:56.620Z",
+    "last_seen_at": "2026-09-14T16:53:56.620Z"
+  },
+  "reason": "原文为 FengShuiMasterLiang 介绍已服务客户，并邀请联系其购买 Bazi Reading、择日和取名等服务，属于同行自推，不作为本次新客户潜客验收。保留自然来源和自动入库证据，不修改规则模块。",
+  "platform_sends": 0,
+  "after": {
+    "id": "275b70d9-f67f-45a3-b231-8c3b66be0edd",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "monitor_id": "f0f24cd4-e7bd-4d80-8787-de9df30a132c",
+    "object_id": "926141eb-82c5-4963-b9f9-779ab63ff2f0",
+    "observation_id": "736247ba-7ad7-4211-8155-4a64edd429e4",
+    "version": 2,
+    "state": "DISMISSED",
+    "score": 50,
+    "matched_keywords": [
+      "bazi reading"
+    ],
+    "reason": "原文为 FengShuiMasterLiang 介绍已服务客户，并邀请联系其购买 Bazi Reading、择日和取名等服务，属于同行自推，不作为本次新客户潜客验收。保留自然来源和自动入库证据，不修改规则模块。",
+    "automation_error": null,
+    "next_action_at": "2026-09-14T16:55:08.474Z",
+    "first_seen_at": "2026-09-14T16:53:56.620Z",
+    "last_seen_at": "2026-09-14T16:53:56.620Z"
+  }
+}

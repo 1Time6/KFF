@@ -1,0 +1,295 @@
+{
+  "schema": "kff.matrix-window-report.v1",
+  "generated_at": "2026-09-15T03:13:49.853Z",
+  "plan": {
+    "from": "2026-09-15T03:09:52.420Z",
+    "to": "2026-09-15T03:11:20.791Z",
+    "synthetic": false,
+    "targets": [
+      {
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+        "minimum_public_scans": 2,
+        "minimum_inbox_cycles": 2
+      },
+      {
+        "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+        "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+        "minimum_public_scans": 2,
+        "minimum_inbox_cycles": 2
+      }
+    ]
+  },
+  "read_only": true,
+  "record_review": "INCOMPLETE",
+  "problems": [
+    "PUBLIC_SCANS_SHORT:51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "INBOX_CYCLES_SHORT:51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "PUBLIC_SCANS_SHORT:20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+    "INBOX_CYCLES_SHORT:20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+    "SCAN_FAILED_OR_UNFINISHED",
+    "ACTION_FAILED_UNDISPATCHED_OR_UNCLOSED",
+    "INBOX_PARTIAL_COVERAGE"
+  ],
+  "bindings": [
+    {
+      "id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "external_id": "61589894042400",
+      "is_synthetic": false,
+      "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+      "agent_id": "66666666-6666-4666-8666-666666666666",
+      "state": "IDLE",
+      "browser_status": "CLOSED"
+    },
+    {
+      "id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "external_id": "61594402378582",
+      "is_synthetic": false,
+      "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+      "agent_id": "66666666-6666-4666-8666-666666666666",
+      "state": "IDLE",
+      "browser_status": "CLOSED"
+    }
+  ],
+  "scans": [
+    {
+      "id": "911e427b-76e0-4d5d-a4f2-fc5ab381a68d",
+      "monitor_id": "0ba89798-d362-4cbb-9016-14730718ee0b",
+      "query_id": "fafe8f8d-ead1-4a45-91ea-1da308cd3433",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "monitor_version": 2,
+      "run_id": "766af139-4516-4cd9-9273-0ed90d7915d8",
+      "state": "CANCELED",
+      "error_code": null,
+      "stop_reason": "MONITOR_PAUSED",
+      "returned_count": 0,
+      "unique_count": 0,
+      "created_at": "2026-09-15T03:09:53.048Z",
+      "started_at": "2026-09-15T03:09:53.093Z",
+      "finished_at": "2026-09-15T03:11:17.584Z"
+    },
+    {
+      "id": "2c501bd1-d2e2-433e-afce-61b3560cdab6",
+      "monitor_id": "f68a84c1-a113-43c0-aabb-cbe1d2549e97",
+      "query_id": "85c28c4c-0b76-4c92-8024-026cab1d45a7",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "monitor_version": 2,
+      "run_id": "3e7fc2be-eeb2-46dd-8802-d8184789a116",
+      "state": "CANCELED",
+      "error_code": null,
+      "stop_reason": "MONITOR_PAUSED",
+      "returned_count": 0,
+      "unique_count": 0,
+      "created_at": "2026-09-15T03:09:54.050Z",
+      "started_at": "2026-09-15T03:09:54.066Z",
+      "finished_at": "2026-09-15T03:11:17.629Z"
+    }
+  ],
+  "actions": [
+    {
+      "task_id": "07f16150-a93c-4090-b87d-348e3b59c830",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+      "status": "SUCCEEDED",
+      "expected_identity": "61589894042400",
+      "capability": "facebook.inbox.read.browser",
+      "query_id": null,
+      "inbox_monitor_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "action_id": "92b88db2-f26a-4879-bff3-e83b59bd5a8c",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "created_at": "2026-09-15T03:09:52.880Z",
+      "command_id": "5634fbf7-e680-4382-b5e5-6f816bb0cf68",
+      "queued_at": "2026-09-15T03:09:53.061Z",
+      "claimed_at": "2026-09-15T03:09:53.747Z",
+      "quiesced_at": "2026-09-15T03:11:17.052Z",
+      "actual_identity": "61589894042400",
+      "receipt_at": "2026-09-15T03:11:01.395Z",
+      "queue_seconds": "0.686006",
+      "execution_seconds": "83.304675",
+      "closure_recorded": true
+    },
+    {
+      "task_id": "7a25a4ae-0f6e-47c3-aa7b-30d4960a711e",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+      "status": "CANCELED",
+      "expected_identity": "61589894042400",
+      "capability": "facebook.discovery.read.browser",
+      "query_id": "fafe8f8d-ead1-4a45-91ea-1da308cd3433",
+      "inbox_monitor_id": null,
+      "action_id": "efc2c69f-cfb3-4542-83a3-2c9465e43c09",
+      "state": "CANCELED",
+      "error_code": "STOP_REQUESTED",
+      "created_at": "2026-09-15T03:09:53.093Z",
+      "command_id": null,
+      "queued_at": null,
+      "claimed_at": null,
+      "quiesced_at": null,
+      "actual_identity": null,
+      "receipt_at": null,
+      "queue_seconds": null,
+      "execution_seconds": null,
+      "closure_recorded": false
+    },
+    {
+      "task_id": "d7409c06-d48e-41b5-b131-b9f8caa95d25",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+      "status": "CANCELED",
+      "expected_identity": "61594402378582",
+      "capability": "facebook.inbox.read.browser",
+      "query_id": null,
+      "inbox_monitor_id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+      "action_id": "8ebff670-2b2b-48e8-b0da-899ee927d2e8",
+      "state": "CANCELED",
+      "error_code": "STOP_REQUESTED",
+      "created_at": "2026-09-15T03:09:54.004Z",
+      "command_id": null,
+      "queued_at": null,
+      "claimed_at": null,
+      "quiesced_at": null,
+      "actual_identity": null,
+      "receipt_at": null,
+      "queue_seconds": null,
+      "execution_seconds": null,
+      "closure_recorded": false
+    },
+    {
+      "task_id": "0380c2e5-49e5-4bcc-8fce-68e6f22175c5",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+      "status": "CANCELED",
+      "expected_identity": "61594402378582",
+      "capability": "facebook.discovery.read.browser",
+      "query_id": "85c28c4c-0b76-4c92-8024-026cab1d45a7",
+      "inbox_monitor_id": null,
+      "action_id": "82ac2566-1667-4cca-95e6-f2d9307f6580",
+      "state": "CANCELED",
+      "error_code": "STOP_REQUESTED",
+      "created_at": "2026-09-15T03:09:54.066Z",
+      "command_id": null,
+      "queued_at": null,
+      "claimed_at": null,
+      "quiesced_at": null,
+      "actual_identity": null,
+      "receipt_at": null,
+      "queue_seconds": null,
+      "execution_seconds": null,
+      "closure_recorded": false
+    }
+  ],
+  "inbox": [
+    {
+      "task_id": "07f16150-a93c-4090-b87d-348e3b59c830",
+      "monitor_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "cycle_id": "6031f1fb-d8ab-4c4f-812c-67a0fe6571b0",
+      "stored": 0,
+      "duplicates": 8,
+      "observed_at": "2026-09-15T03:11:01.395Z",
+      "next_cursor": null
+    }
+  ],
+  "inbox_notes": [
+    {
+      "id": "13e6b5ed-fea0-4ebc-a87b-18f6d5375248",
+      "object_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "event_type": "browser_inbox.controlled",
+      "created_at": "2026-09-15T03:09:52.457Z",
+      "task_id": null,
+      "reason": null,
+      "skipped": null,
+      "unparsed_rows": null,
+      "window_limited": null
+    },
+    {
+      "id": "a5212927-3da6-4777-8046-d437b5946216",
+      "object_id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+      "event_type": "browser_inbox.controlled",
+      "created_at": "2026-09-15T03:09:52.495Z",
+      "task_id": null,
+      "reason": null,
+      "skipped": null,
+      "unparsed_rows": null,
+      "window_limited": null
+    },
+    {
+      "id": "f13b49de-742d-42c3-9771-404cc3eb449f",
+      "object_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "event_type": "browser_inbox.page_queued",
+      "created_at": "2026-09-15T03:09:52.880Z",
+      "task_id": "07f16150-a93c-4090-b87d-348e3b59c830",
+      "reason": null,
+      "skipped": null,
+      "unparsed_rows": null,
+      "window_limited": null
+    },
+    {
+      "id": "81d20587-5973-491d-a89b-bed6167ba43a",
+      "object_id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+      "event_type": "browser_inbox.page_queued",
+      "created_at": "2026-09-15T03:09:54.004Z",
+      "task_id": "d7409c06-d48e-41b5-b131-b9f8caa95d25",
+      "reason": null,
+      "skipped": null,
+      "unparsed_rows": null,
+      "window_limited": null
+    },
+    {
+      "id": "2f8619d0-af3a-485d-b6c4-b5b6b70c0bc1",
+      "object_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "event_type": "browser_inbox.page_committed",
+      "created_at": "2026-09-15T03:11:16.844Z",
+      "task_id": "07f16150-a93c-4090-b87d-348e3b59c830",
+      "reason": null,
+      "skipped": [
+        {
+          "reason": "THREAD_IDENTITY_UNVERIFIED",
+          "failure": {
+            "code": "THREAD_IDENTITY_UNVERIFIED",
+            "stage": "facebook-inbox-directory-identity"
+          },
+          "thread_id": "2079341482680484"
+        }
+      ],
+      "unparsed_rows": 0,
+      "window_limited": true
+    },
+    {
+      "id": "9725ae41-1f73-49b7-8c48-e0ff0748ed11",
+      "object_id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+      "event_type": "browser_inbox.controlled",
+      "created_at": "2026-09-15T03:11:17.636Z",
+      "task_id": null,
+      "reason": null,
+      "skipped": null,
+      "unparsed_rows": null,
+      "window_limited": null
+    },
+    {
+      "id": "c3517dfc-4486-404e-83ef-01399903485e",
+      "object_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "event_type": "browser_inbox.controlled",
+      "created_at": "2026-09-15T03:11:17.670Z",
+      "task_id": null,
+      "reason": null,
+      "skipped": null,
+      "unparsed_rows": null,
+      "window_limited": null
+    }
+  ],
+  "leads": [],
+  "counts": {
+    "lead_records": 0,
+    "qualified_records": 0,
+    "inbox_stored": 0,
+    "inbox_duplicates": 8
+  },
+  "evidence_limits": [
+    "Counts do not establish uninterrupted scheduled observation, provider window ownership, or capacity guarantees.",
+    "Lead records are not unique customers; scores are not purchase probabilities.",
+    "No natural lead to WhatsApp attribution is inferred from unrelated Inbox or C test records.",
+    "Review original timing, skips, command journal and guardian file proofs before accepting a real window."
+  ]
+}

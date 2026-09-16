@@ -1,0 +1,170 @@
+{
+  "created_at": "2026-09-14T15:52:48.027Z",
+  "conversation_id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+  "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+  "ai_reply_task_id": "9331c163-fe44-4d0e-8a9c-ebfc377a0a5e",
+  "phone": "8618730936793",
+  "body": "号码更正：上一条邀请中的号码有误。如需继续咨询，可以通过 WhatsApp 联系接待人员：https://wa.me/8618730936793",
+  "authorization": "用户本轮明确要求：你重新发 我发错手机号了 +86 18730936793。只由10号向郑一哲的同一C会话更正上一条错误号码，按原更正接口关联原邀请，限一次发送。",
+  "max_sends": 1,
+  "platform_sends": 0,
+  "corrects_referral_id": "6fcc254c-92cb-499c-b264-6d0fa43d281c",
+  "before": {
+    "conversation": {
+      "id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+      "organization_id": "11111111-1111-4111-8111-111111111111",
+      "brand_id": "22222222-2222-4222-8222-222222222222",
+      "customer_id": "e7ddc7f2-bb3b-41c0-9a08-9bd17ec682f2",
+      "identity_id": "a053edb4-c7e5-4a95-bd3f-59fa62bfe5fe",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "channel_id": null,
+      "last_sequence": 3,
+      "last_message_at": "2026-09-14T15:35:48.730Z",
+      "reply_window_expires_at": null,
+      "created_at": "2026-09-14T15:29:20.803Z",
+      "channel_kind": "FACEBOOK_BROWSER_MESSENGER",
+      "handling_mode": "HUMAN",
+      "control_version": 3,
+      "last_inbound_sequence": 1,
+      "last_outbound_at": "2026-09-14T15:35:48.730Z",
+      "last_answered_sequence": 1
+    },
+    "trigger": {
+      "id": "f232db4d-9c02-46d1-b903-33254e01de93",
+      "organization_id": "11111111-1111-4111-8111-111111111111",
+      "brand_id": "22222222-2222-4222-8222-222222222222",
+      "conversation_id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+      "inbound_event_id": "9c226d4d-cf4a-4f75-ad17-bb2eaabb319b",
+      "sequence": 1,
+      "direction": "INBOUND",
+      "body": "KFF-0914-C 我想了解咨询流程，需要提供哪些资料？",
+      "client_display_name": "郑一哲",
+      "received_at": "2026-09-14T15:29:20.853Z",
+      "client_sent_at": null,
+      "contact_permission_id": null,
+      "message_kind": "MESSAGE",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594402378582",
+        "peer_id": "100050174601107",
+        "source_id": "100050174601107@msgr.7505283981980540236",
+        "thread_id": "1790718235683346",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/1790718235683346/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "08:19"
+      },
+      "action_id": null,
+      "actor_kind": "CUSTOMER"
+    },
+    "destination": {
+      "id": "c9776ea9-040f-459f-bb33-6a75c03f8f32",
+      "organization_id": "11111111-1111-4111-8111-111111111111",
+      "brand_id": "22222222-2222-4222-8222-222222222222",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "name": "EasternWisdom 咨询接待",
+      "phone": "8618730936793",
+      "state": "ACTIVE",
+      "version": 2,
+      "template": "如需继续咨询，可以通过 WhatsApp 联系接待人员：{whatsapp_url}",
+      "cooldown_hours": 24,
+      "created_at": "2026-09-14T13:13:11.506Z"
+    }
+  },
+  "expires_at": "2026-09-14T16:22:48.286Z",
+  "destination_id": "c9776ea9-040f-459f-bb33-6a75c03f8f32",
+  "permission_id": "ac5d6461-5e1a-4f60-9fa9-f8da8e937def",
+  "task_id": "4f1bd861-7379-4144-ba4f-a50b69271c62",
+  "status": "CLOSED_WITH_FINDINGS",
+  "permit_id": "06941a67-8e55-41cc-9af3-587bb57c8a62",
+  "snapshot_hash": "1d3d28d3a650d3d39f269d95c9042c4eaa0bdcc92ed206a309bade87e43b1dd8",
+  "prepared_at": "2026-09-14T15:52:48.496Z",
+  "run_id": "0f247698-c1eb-4f6d-a190-2ce899408634",
+  "actions": [
+    {
+      "action_id": "aaa55969-5d35-4aa6-b059-4cb26f63c9ba",
+      "state": "BLOCKED",
+      "error_code": "INBOX_SOURCE_MISMATCH",
+      "receipt": null,
+      "command_id": "438aed4f-17d9-471c-95bb-936db3fecb57",
+      "claimed_at": "2026-09-14T15:54:02.922Z",
+      "quiesced_at": "2026-09-14T15:54:26.147Z"
+    }
+  ],
+  "closure": {
+    "proof": {
+      "action_id": "aaa55969-5d35-4aa6-b059-4cb26f63c9ba",
+      "closed_at": "2026-09-14T15:54:25.890Z",
+      "command_id": "438aed4f-17d9-471c-95bb-936db3fecb57",
+      "proof_sha256": "7ae1a115d54f8fcf2a5f98eade718da2d4e8c3ec113541d539f25970130ab2d0",
+      "protocol_version": "kff.guardian-closure.v1"
+    },
+    "local_database_match": true
+  },
+  "attempts": [
+    {
+      "id": "2ba3ce3e-c575-439a-9002-39225b874a79",
+      "attempt_number": 1,
+      "submitted_at": null,
+      "state": "BLOCKED"
+    }
+  ],
+  "diagnostics": [
+    {
+      "action_id": "aaa55969-5d35-4aa6-b059-4cb26f63c9ba",
+      "manifest": {
+        "step": "facebook-inbox-parse",
+        "files": [],
+        "level": "D0",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "BLOCKED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "aaa55969-5d35-4aa6-b059-4cb26f63c9ba",
+        "attempt_id": "2ba3ce3e-c575-439a-9002-39225b874a79",
+        "created_at": "2026-09-14T15:54:26.111Z",
+        "error_code": "INBOX_SOURCE_MISMATCH",
+        "duration_ms": 21076,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-browser-messenger-v1",
+        "browser_version": null,
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": "本驱动未取得可安全导出的现场，保留 D0",
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    }
+  ],
+  "profile_after": "Inactive",
+  "accepted": false,
+  "referrals": [
+    {
+      "id": "8205f517-2ead-48e8-8376-eb4c6d065766",
+      "conversation_id": "ffbec2bf-1bb7-4ca7-9a3d-60699319b3ad",
+      "state": "FAILED",
+      "version": 2,
+      "action_id": "aaa55969-5d35-4aa6-b059-4cb26f63c9ba",
+      "destination_snapshot": {
+        "phone": "8618730936793",
+        "template": "如需继续咨询，可以通过 WhatsApp 联系接待人员：{whatsapp_url}",
+        "cooldown_hours": 24,
+        "destination_id": "c9776ea9-040f-459f-bb33-6a75c03f8f32",
+        "destination_version": 2,
+        "corrects_referral_id": "6fcc254c-92cb-499c-b264-6d0fa43d281c"
+      },
+      "sent_at": null,
+      "confirmed_at": null
+    }
+  ],
+  "correction_audit": [],
+  "finished_at": "2026-09-14T15:54:26.284Z"
+}

@@ -1,0 +1,118 @@
+{
+  "at": "2026-09-14T10:17:46.396Z",
+  "version": "0.1.34",
+  "goal_complete": false,
+  "platform_sends": 0,
+  "attempts": [
+    {
+      "file": ".kff/profile10-inbox-directory-034-20260914.json",
+      "started_at": "2026-09-14T10:07:54.281Z",
+      "finished_at": "2026-09-14T10:08:27.130Z",
+      "monitor_id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+      "monitor_version": 2,
+      "commands": [
+        {
+          "id": "74cafdc7-f4de-4f5e-8d5f-a372e38370be",
+          "action_id": "da8161ed-4bc5-4666-92c6-21e5d6b02280",
+          "created_at": "2026-09-14T10:07:55.440Z",
+          "quiesced_at": "2026-09-14T10:08:24.062Z",
+          "state": "BLOCKED",
+          "error_code": "MESSENGER_SETUP_REQUIRED",
+          "receipt": null,
+          "task_id": "38057b64-bf50-45b6-a5aa-06a4ee686667",
+          "implementation_digest": "000f84be9f4ea37f5397209269e7f3cdfd270c62160ddbfde702b365aea0643a"
+        }
+      ],
+      "closure": {
+        "protocol_version": "kff.guardian-closure.v1",
+        "command_id": "74cafdc7-f4de-4f5e-8d5f-a372e38370be",
+        "action_id": "da8161ed-4bc5-4666-92c6-21e5d6b02280",
+        "closed_at": "2026-09-14T10:08:23.837Z",
+        "proof_sha256": "8e0758b3e9fd120488563b6bd8ce50940399315f208715882fa0464f6440ef39",
+        "local_and_database_match": true
+      },
+      "status": "INBOX_READ_BLOCKED",
+      "accepted": false,
+      "checkpoints": [],
+      "existing_inbox_unchanged": true,
+      "profile_after": "Inactive"
+    },
+    {
+      "file": ".kff/profile10-inbox-postsetup-034-20260914.json",
+      "started_at": "2026-09-14T10:15:51.828Z",
+      "finished_at": "2026-09-14T10:16:22.346Z",
+      "monitor_id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+      "monitor_version": 3,
+      "commands": [
+        {
+          "id": "ebc150aa-9700-4423-ae93-36fcd9cb49c3",
+          "action_id": "006532ae-e463-4ac1-a80c-3a43e039c8ba",
+          "created_at": "2026-09-14T10:15:52.877Z",
+          "quiesced_at": "2026-09-14T10:16:18.907Z",
+          "state": "BLOCKED",
+          "error_code": "MESSENGER_SETUP_REQUIRED",
+          "receipt": null,
+          "task_id": "2ae7a406-c46d-43b0-be32-241a9e38ec52",
+          "implementation_digest": "000f84be9f4ea37f5397209269e7f3cdfd270c62160ddbfde702b365aea0643a"
+        }
+      ],
+      "closure": {
+        "protocol_version": "kff.guardian-closure.v1",
+        "command_id": "ebc150aa-9700-4423-ae93-36fcd9cb49c3",
+        "action_id": "006532ae-e463-4ac1-a80c-3a43e039c8ba",
+        "closed_at": "2026-09-14T10:16:18.714Z",
+        "proof_sha256": "d79e6944341218e48c1cfdbd14300ba7474a2d6be1dbbdc71746b4d3307892fc",
+        "local_and_database_match": true
+      },
+      "status": "INBOX_READ_BLOCKED",
+      "accepted": false,
+      "checkpoints": [],
+      "existing_inbox_unchanged": true,
+      "profile_after": "Inactive"
+    }
+  ],
+  "user_report": "PIN setup completed; subsequent original scan still observed a visible setup/restore dialog heading. No PIN collected.",
+  "next_step": "User unlocks Facebook /messages/ in profile10; verify visible chat list before another original scan.",
+  "public_page_result": "Original 0.1.34 single bounded read stored 3 old Page posts. All 3 keyword candidates were reviewed DISMISSED as seller brochures. New-post increment not accepted.",
+  "leads": [
+    {
+      "id": "a501f766-4b75-4f59-b944-c1579a121ee4",
+      "state": "DISMISSED",
+      "version": 2,
+      "score": 50,
+      "reason": "本次指定测试主页的商家服务介绍及预约说明，不是客户需求；原文与原评分保留供核对。"
+    },
+    {
+      "id": "b8ed2ad3-61ab-4ecc-bebe-39a2d86dd29c",
+      "state": "DISMISSED",
+      "version": 2,
+      "score": 50,
+      "reason": "本次指定测试主页的商家服务介绍及预约说明，不是客户需求；原文与原评分保留供核对。"
+    },
+    {
+      "id": "dec6b356-fe22-46b2-99ca-c6e9b5ab7ddd",
+      "state": "DISMISSED",
+      "version": 2,
+      "score": 50,
+      "reason": "本次指定测试主页的商家服务介绍及预约说明，不是客户需求；原文与原评分保留供核对。"
+    }
+  ],
+  "runtime": {
+    "phase": "RUNNING",
+    "runtime_id": "e359a1d4-461b-4d9a-9b24-acbb595100df",
+    "live_sending_enabled": false,
+    "open_commands": 0,
+    "monitors": [
+      {
+        "kind": "acquisition",
+        "state": "PAUSED",
+        "count": 13
+      },
+      {
+        "kind": "inbox",
+        "state": "PAUSED",
+        "count": 5
+      }
+    ]
+  }
+}

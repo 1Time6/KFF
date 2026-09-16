@@ -1,0 +1,49 @@
+{
+  "at": "2026-09-14T12:31:24.921Z",
+  "original_command": "10cb32e8-dce7-4956-a034-3b4b3f0e8b67",
+  "identity": {
+    "method": "facebook-profile-dom-v1",
+    "authenticated": true,
+    "operating_identity_id": "61589894042400",
+    "account_type": "profile",
+    "display_name": "XiangHuan Master",
+    "observed_at": "2026-09-14T12:28:39.037Z",
+    "source_url": "https://www.facebook.com/profile.php?id=61589894042400"
+  },
+  "observed_source": "https://www.facebook.com/reel/2163157911082094",
+  "source_matches": true,
+  "viewport": {
+    "width": 786,
+    "height": 506
+  },
+  "comment_controls": [
+    {
+      "label": "评论",
+      "text": "5",
+      "in_viewport": true,
+      "x": 486.76251220703125,
+      "y": 239,
+      "width": 48,
+      "height": 65
+    },
+    {
+      "label": "评论",
+      "text": "1.8 万",
+      "in_viewport": false,
+      "x": 486.76251220703125,
+      "y": 689,
+      "width": 48,
+      "height": 65
+    }
+  ],
+  "sidebar_regions": 0,
+  "alerts": [],
+  "password_visible": false,
+  "platform_sends": 0,
+  "comment_clicks": 0,
+  "closed": true,
+  "profile_after": "Inactive",
+  "diagnostic_limitation": "Only initial structure captured. Diagnostic helper stopped because its URL equality check rejected an omitted trailing slash; the production source guard already normalizes this. No delayed sample, comment click, or original collection retry was performed.",
+  "cause_of_original_timeout": "UNDETERMINED",
+  "original_timeout_repaired": false
+}

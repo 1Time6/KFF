@@ -1,0 +1,115 @@
+{
+  "schema_version": "kff.collection-journal-retention.v1",
+  "recorded_at": "2026-09-12T16:22:23.593Z",
+  "goal_complete": false,
+  "real_platform_verified": false,
+  "scope": "Agent action journal and guardian closure files for browser collection pages",
+  "behavior": {
+    "query_expiry_pinned": true,
+    "raw_event_replay_before_expiry": true,
+    "local_cleanup_before_controller_heartbeat": true,
+    "raw_page_removed_after_report_and_quiescence": true,
+    "expiry_failure_contains_no_page": true,
+    "reconnect_resolves_original_command_first": true,
+    "original_closure_hash_preserved": true,
+    "missing_or_mismatched_proof_blocks_claims": true,
+    "partial_temporary_file_removed_without_promoting_to_proof": true,
+    "crash_after_journal_intent_recovers": true
+  },
+  "checks": {
+    "unit_contract": {
+      "passed": 12,
+      "failed": 0
+    },
+    "process_recovery_batch": {
+      "passed": 8,
+      "failed": 0,
+      "duration_ms": 99759.987
+    },
+    "final_collection_process_after_temp_cleanup": {
+      "passed": 2,
+      "failed": 0,
+      "duration_ms": 12584.485
+    },
+    "isolated_browser_collection_regression": {
+      "passed": 10,
+      "failed": 0,
+      "run_before_final_tempfile_cleanup": true
+    },
+    "web_worker_agent_browser_collection": {
+      "passed": 1,
+      "failed": 0,
+      "duration_ms": 25370.471,
+      "synthetic_only": true
+    },
+    "typecheck": {
+      "passed": true,
+      "finished_at": "2026-09-12T16:21:25.234Z",
+      "source_files": 264
+    },
+    "targeted_eslint": true
+  },
+  "local_runtime": {
+    "checked_at": "2026-09-12T16:21:03.658Z",
+    "journal_entries": 150,
+    "unclosed": 0,
+    "raw_collection_reports": 0,
+    "redacted_entries": 4,
+    "proofs": [
+      {
+        "command_id": "a5d961c5-b169-4df8-be23-84a09c7a1a4e",
+        "reason": "DELIVERED",
+        "proof_matches_controller": true,
+        "raw_page_absent": true
+      },
+      {
+        "command_id": "142bddb8-bd29-40b2-8e6b-9ec392b02a75",
+        "reason": "DELIVERED",
+        "proof_matches_controller": true,
+        "raw_page_absent": true
+      },
+      {
+        "command_id": "7fc1bd25-fddc-4f3a-941b-7df72c9139b1",
+        "reason": "DELIVERED",
+        "proof_matches_controller": true,
+        "raw_page_absent": true
+      },
+      {
+        "command_id": "3af5e0ec-7840-4be5-b40b-e097c15c313d",
+        "reason": "DELIVERED",
+        "proof_matches_controller": true,
+        "raw_page_absent": true
+      }
+    ],
+    "pinned_expiry_tasks": 2,
+    "expiry_matches_query": true,
+    "counts": {
+      "accounts": 82,
+      "prospects": 46,
+      "migrations": 25,
+      "active_collections": 0
+    }
+  },
+  "limitations": [
+    "No real platform account identity or collection template accepted",
+    "Agent must be running or restart for local retention maintenance; cleanup occurs on its next local cycle",
+    "Browser profile cache and external backups are outside this journal cleanup scope",
+    "Older Agent versions without the compact-closure reader cannot recover compacted records",
+    "Browser Inbox, WhatsApp sales acknowledgement and two-account platform trial remain incomplete"
+  ],
+  "source_hashes": {
+    "apps/agent/src/main.ts": "796129a183f377287128529f6ad546b246a908274de4483540efd002b31d824c",
+    "apps/agent/src/action-journal.ts": "d00710b8baa7e2d2d2a70d8a38a858ef4e8be433da8bd7d5f269f75df9a9755a",
+    "apps/agent/src/guardian-protocol.ts": "a5131ead29bb9e51eec1f6e8a77e348ee6e3f8f0cf7b949b100e7dd9ceaf8040",
+    "apps/agent/src/guardian-child.ts": "82d1405af81a0dd79581ebe32429283c0a8754c289f398033de56cf7cff10528",
+    "packages/contracts/src/browser-collection.ts": "e1e2e008a12a458090da26b492412cd78f5e90c12a4b67f4079afd42e3c06d6d",
+    "packages/core/src/browser-collections.ts": "3b0e88e78dfb0bcbf42f108eb89c0b6ae0521df30bc21f7e0d414c33fbd72dc6",
+    "packages/adapters/src/browser-discovery.ts": "fcab2f5be9a187db3c79ac96cb45f9f4e19319c7be21404ed9f2f27b8846c3ef",
+    "tests/unit/action-journal.test.ts": "a6d2f0bd4a5af9ce0e8701b51ebe46a90a2dd950b1842d65cac972b38cd68d9b",
+    "tests/helpers/collection-journal.ts": "5b7144c2f48a6104937f142bd617e5e78a698dd72e99467dc940f5035cb2f4b5",
+    "tests/browser/fixtures/collection-journal.spec.ts": "57bf7b833757fd7b8151588ecd05f00e68fe5c570bbac7ca50aa709618a051ac",
+    "tests/browser/fixtures/agent-recovery.spec.ts": "925a68bc03b615aa7aeaa872016ca40b54a8b6a9ad3c84e0982e97646fa7ced2",
+    "tests/integration/browser-collections.test.ts": "5f51e65bdf99c545320307693236d9999309da57833e988c98e98847feba451b",
+    "tests/browser/web/browser-collection.spec.ts": "24ec51b1763a7148d9760bff91d9c2738d1cc9cca91d735579b3f396b12b2151"
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "schema_version": "kff.adspower-selection-checkpoint.v1",
+  "recorded_at": "2026-09-12T15:59:12.897Z",
+  "selected_by_user": "1876794",
+  "profile_id": "k1gvdtft",
+  "profile_name": "sjpdl-SG",
+  "api_serial_number": "8",
+  "provider": "AdsPower",
+  "client_version": "8.6.3",
+  "patch_version": "2.8.8.7",
+  "mapping_evidence": "Visible native UI row 1876794 / 8 / k1gvdtft / sjpdl-SG matched the Local API list",
+  "observed_profile_count": 8,
+  "previous_selected_profile": "k1giuoa4",
+  "previous_ui_sequence": "195",
+  "profile_configuration_changes": 0,
+  "kernel_version": "150.0.7871.47",
+  "api_lifecycle": {
+    "started_at": "2026-09-12T15:51:45.348Z",
+    "finished_at": "2026-09-12T15:51:52.476Z",
+    "profile_endpoint_matched": true,
+    "cdp_connected": true,
+    "language": "en-US",
+    "timezone": "Asia/Singapore",
+    "after_status": "Inactive",
+    "closure_confirmed": true
+  },
+  "facebook_readonly": {
+    "url": "https://www.facebook.com/",
+    "page_title": "Facebook",
+    "observed_at": "2026-09-12T15:54:32.704Z",
+    "reachable": true,
+    "visible_state": "Log into Facebook, email and password inputs, Log In button",
+    "authenticated_identity_verified": false,
+    "platform_writes": 0,
+    "closure_observation_timeout": true,
+    "subsequent_status": "Inactive",
+    "subsequent_status_at": "2026-09-12T15:56:30.179Z"
+  },
+  "next_step": "A real personal account is bound and its visible operating identity has passed the actual Agent check. The selected browser is reopened for a user-supplied incoming test conversation; message and discovery adapters still require real acceptance.",
+  "goal_complete": false,
+  "latest_login_recheck": {
+    "observed_at": "2026-09-13T00:30:52.090Z",
+    "profile_id": "k1gvdtft",
+    "facebook_state": "AUTHENTICATED",
+    "real_identity_verified": true,
+    "display_name": "XiangHuan Master",
+    "operating_identity_id": "61589894042400",
+    "account_type": "profile",
+    "primary_login_account_separately_verified": false,
+    "visible_signals": [
+      "Home self link with numeric ID",
+      "Own profile editor and Friends tab",
+      "Messenger profile menu name",
+      "PIN code created notification"
+    ],
+    "messenger_pin_prompt_cleared": true,
+    "visible_chat_list_empty": true,
+    "platform_write_actions": 0,
+    "after_status": "Active",
+    "cli_detached": true
+  },
+  "latest_mapping_recheck": {
+    "observed_at": "2026-09-12T17:40:55.850Z",
+    "api_available": true,
+    "profile_id": "k1gvdtft",
+    "serial_number": "8",
+    "name": "sjpdl-SG",
+    "operation": "read_only_profile_list",
+    "profile_opened": false
+  },
+  "latest_status_recheck": {
+    "observed_at": "2026-09-13T02:20:15.953Z",
+    "profile_id": "k1gvdtft",
+    "status": "Active",
+    "operation": "manual_messenger_after_real_collection",
+    "instance_matched": true,
+    "cli_detached": true,
+    "visible_chat_count": 0,
+    "pin_prompt_present": false
+  },
+  "latest_completed_readonly_check": {
+    "observed_at": "2026-09-12T18:50:20.453Z",
+    "profile_id": "k1gvdtft",
+    "facebook_state": "LOGIN_REQUIRED",
+    "closure_confirmed_at": "2026-09-12T18:50:30.498Z",
+    "after_status": "Inactive"
+  },
+  "saved_login_availability": {
+    "checked_at": "2026-09-12T18:49:38.1161981Z",
+    "username_field_present": true,
+    "password_field_present": true,
+    "username_configured": false,
+    "password_configured": false,
+    "credential_values_recorded": false
+  },
+  "manual_login_handoff": {
+    "started_at": "2026-09-12T18:51:51.1709768Z",
+    "checked_at": "2026-09-12T18:52:06.0544997Z",
+    "profile_id": "k1gvdtft",
+    "ui_sequence": "1876794",
+    "provider_status": "Active",
+    "visible_window": true,
+    "instance_matched": true,
+    "cli_detached": true,
+    "purpose": "User login and Messenger PIN completed; continue selected-profile integration"
+  },
+  "latest_agent_identity_check": {
+    "recorded_at": "2026-09-13T00:40:47.155Z",
+    "ui_sequence": "1876794",
+    "profile_id": "k1gvdtft",
+    "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+    "command_id": "03175d78-4554-4d79-b992-80adaf298e0e",
+    "snapshot_hash": "a31eee7cedb53cda643aca9e1fbc0f9a76ca18c07813c87bed540d81eb21b8e6",
+    "result": {
+      "outcome": "CHECKED",
+      "identity": {
+        "method": "facebook-profile-dom-v1",
+        "source_url": "https://www.facebook.com/profile.php?id=61589894042400",
+        "observed_at": "2026-09-13T00:40:44.843Z",
+        "account_type": "profile",
+        "display_name": "XiangHuan Master",
+        "authenticated": true,
+        "operating_identity_id": "61589894042400"
+      },
+      "context_closed": true,
+      "browser_version": "150.0.7871.47"
+    },
+    "db_closed_at": "2026-09-13T00:40:46.197Z",
+    "local_closed_at": "2026-09-13T00:40:46.014Z",
+    "closure_matches": true,
+    "provider_after": "Inactive",
+    "platform_send_actions": 0
+  },
+  "latest_manual_window": {
+    "checked_at": "2026-09-13T02:52:18.524Z",
+    "provider_status": "Active",
+    "selected_instance_matches": true,
+    "url": "https://www.facebook.com/messages/t/",
+    "snapshot_sha256": "5478bdb5b183a068ba348d3566e198b9e2cf30cfa71c72abda8cb3efbc1a8eba",
+    "empty_chats": true,
+    "pin_prompt": false,
+    "purpose": "User test incoming conversation pending"
+  }
+}

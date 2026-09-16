@@ -1,0 +1,29 @@
+{
+  "at": "2026-09-14T10:39:45.0832868Z",
+  "version": "0.1.35",
+  "goal_complete": false,
+  "previous_turn_classification": "PROGRESS: deployed screening fix; isolated AdsPower request-path failure",
+  "restart_confirmed_by_user": true,
+  "processes": [
+    {
+      "Id": 19396,
+      "StartTime": "2026-09-14T18:36:46.2666583+08:00"
+    },
+    {
+      "Id": 31332,
+      "StartTime": "2026-09-14T18:36:46.8105336+08:00"
+    }
+  ],
+  "current_api_result": {
+    "at": "2026-09-14T10:37:36.412Z",
+    "http_status": 200,
+    "code": -1,
+    "message": "API Key mismatch. Please replace it",
+    "status": null
+  },
+  "key_file_last_write_utc": "2026-09-14T10:25:26.8997622Z",
+  "environment_override_present": false,
+  "platform_requests": 0,
+  "platform_sends": 0,
+  "next_step": "Copy the currently displayed AdsPower API key to the local key file without resetting it; verify local authentication before any queued browser task."
+}

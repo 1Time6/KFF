@@ -1,0 +1,137 @@
+{
+  "started_at": "2026-09-14T16:19:11.399Z",
+  "platform_sends": 0,
+  "imports": 0,
+  "steps": [
+    "facebook-inbox-directory-load",
+    "facebook-inbox-directory-thread",
+    "facebook-inbox-directory-identity",
+    "facebook-inbox-directory-composer",
+    "facebook-inbox-load",
+    "facebook-inbox-wait-content",
+    "facebook-inbox-parse",
+    "facebook-inbox-peer",
+    "facebook-inbox-peer-hit-target",
+    "facebook-inbox-peer-menu",
+    "facebook-inbox-recheck"
+  ],
+  "frames": [
+    {
+      "at": "2026-09-14T16:19:28.439Z",
+      "kind": "directory",
+      "result": {
+        "rows": [],
+        "invalid": 1,
+        "ready": false,
+        "empty": false
+      }
+    },
+    {
+      "at": "2026-09-14T16:19:28.996Z",
+      "kind": "directory",
+      "result": {
+        "rows": [],
+        "invalid": 1,
+        "ready": false,
+        "empty": false
+      }
+    },
+    {
+      "at": "2026-09-14T16:19:29.596Z",
+      "kind": "directory",
+      "result": {
+        "rows": [],
+        "invalid": 1,
+        "ready": false,
+        "empty": false
+      }
+    },
+    {
+      "at": "2026-09-14T16:19:30.214Z",
+      "kind": "directory",
+      "result": {
+        "rows": [],
+        "invalid": 1,
+        "ready": false,
+        "empty": false
+      }
+    },
+    {
+      "at": "2026-09-14T16:19:30.980Z",
+      "kind": "directory",
+      "result": {
+        "rows": [
+          {
+            "thread_id": "1790718235683346",
+            "display_name": "郑一哲",
+            "source_url": "https://www.facebook.com/messages/e2ee/t/1790718235683346/"
+          },
+          {
+            "thread_id": "2234491403949554",
+            "display_name": "XiangHuan Master",
+            "source_url": "https://www.facebook.com/messages/e2ee/t/2234491403949554/"
+          }
+        ],
+        "invalid": 0,
+        "ready": true,
+        "empty": false
+      }
+    }
+  ],
+  "runtime_id": "7c643f09-e619-4a48-89b5-0bbaf95da2b7",
+  "monitor": {
+    "id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+    "version": 19
+  },
+  "identity_before": {
+    "method": "facebook-profile-dom-v1",
+    "authenticated": true,
+    "operating_identity_id": "61594402378582",
+    "account_type": "profile",
+    "display_name": "白青天",
+    "observed_at": "2026-09-14T16:19:24.839Z",
+    "source_url": "https://www.facebook.com/profile.php?id=61594402378582"
+  },
+  "header_sample": {
+    "url": "https://www.facebook.com/messages/e2ee/t/1790718235683346/",
+    "mains": [
+      {
+        "headings": [
+          {
+            "text": "与郑一哲的对话",
+            "tag": "H3",
+            "parent_tag": "DIV",
+            "parent_role": null
+          },
+          {
+            "text": "郑一哲",
+            "tag": "H3",
+            "parent_tag": "DIV",
+            "parent_role": null
+          },
+          {
+            "text": "消息",
+            "tag": "H3",
+            "parent_tag": "DIV",
+            "parent_role": null
+          },
+          {
+            "text": "撰写",
+            "tag": "H3",
+            "parent_tag": "DIV",
+            "parent_role": "region"
+          }
+        ],
+        "links": []
+      }
+    ]
+  },
+  "header_result": null,
+  "error": {
+    "name": "AppError",
+    "message": "当前窗口没有可核实的已接受会话；需要人工查看，不认定没有消息",
+    "code": "INBOX_WINDOW_UNAVAILABLE"
+  },
+  "profile_after": "Inactive",
+  "finished_at": "2026-09-14T16:19:42.763Z"
+}

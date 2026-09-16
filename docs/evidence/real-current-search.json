@@ -1,0 +1,349 @@
+{
+  "recorded_at": "2026-09-13T12:07:01.581Z",
+  "scope": "Recent public Facebook search, original displayed publication time, original Agent ingestion and manual promotion review",
+  "install": {
+    "release_directory": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.7-win32-x64-fd5401aa9462",
+    "installed_at": "2026-09-13T11:59:06.7499653Z",
+    "package": {
+      "release_id": "kff-agent-0.1.7-win32-x64-fd5401aa9462",
+      "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.7-win32-x64-fd5401aa9462",
+      "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.7-win32-x64-fd5401aa9462.zip",
+      "archive_sha256": "7460b6b6eed860068cca99b89a828d38d496508dc48daa699abbfdfe8293a4d2",
+      "files": 1344,
+      "dependencies": 23,
+      "contains_pairing_or_browser_data": false
+    }
+  },
+  "runtime": {
+    "runtime_id": "1f2704d0-9a34-4a8f-9fe3-cffa0a19e0e5",
+    "pid": 25104,
+    "phase": "RUNNING",
+    "updated_at": "2026-09-13T12:07:01.081Z",
+    "app_origin": "http://127.0.0.1:3000",
+    "release_id": "kff-agent-0.1.7-win32-x64-fd5401aa9462",
+    "database_owned": true,
+    "components": {
+      "database": {
+        "pid": 8532,
+        "state": "CONNECTED"
+      },
+      "web": {
+        "pid": 31960,
+        "state": "RUNNING"
+      },
+      "worker": {
+        "pid": 32136,
+        "state": "RUNNING"
+      },
+      "agent": {
+        "pid": 19208,
+        "state": "RUNNING"
+      }
+    }
+  },
+  "health": {
+    "status": "ok",
+    "protocol": "kff.api.v1",
+    "runtime_id": "1f2704d0-9a34-4a8f-9fe3-cffa0a19e0e5"
+  },
+  "monitor": {
+    "id": "6045f65a-d8d3-4b92-ba39-9140b31bd336",
+    "state": "PAUSED",
+    "scan_number": 2,
+    "max_age_days": 7
+  },
+  "runs": [
+    {
+      "scan_number": 1,
+      "query_id": "892f1865-0f9e-4ef2-93f8-202c0a5b5f5f",
+      "run_id": "1c39e77f-5b1f-488d-b720-30a17806b9ab",
+      "state": "FAILED",
+      "returned_count": 0,
+      "unique_count": 0,
+      "committed_pages": 0,
+      "stop_reason": "SOURCE_WINDOW_ENDED",
+      "error_code": "SOURCE_WINDOW_ENDED",
+      "finished_at": "2026-09-13T11:45:23.596Z"
+    },
+    {
+      "scan_number": 2,
+      "query_id": "cc467c71-5954-4223-9f1d-49b202a79bb0",
+      "run_id": "17990913-a1be-42be-b227-0c27b9f21bec",
+      "state": "PARTIAL",
+      "returned_count": 1,
+      "unique_count": 1,
+      "committed_pages": 1,
+      "stop_reason": "SOURCE_WINDOW_ENDED",
+      "error_code": "SOURCE_WINDOW_ENDED",
+      "finished_at": "2026-09-13T12:01:41.039Z"
+    }
+  ],
+  "proofs": [
+    {
+      "command_id": "beb1f5a9-8707-40d7-9d0b-5a509df769ec",
+      "action_id": "c38590c0-d37a-45fd-8843-6db8c8eed263",
+      "query_id": "892f1865-0f9e-4ef2-93f8-202c0a5b5f5f",
+      "page_number": 1,
+      "outcome": "BLOCKED",
+      "error_code": "SOURCE_WINDOW_ENDED",
+      "page_hash": null,
+      "db_quiesced_at": "2026-09-13T11:45:23.682Z",
+      "local_closed_at": "2026-09-13T11:45:23.493Z",
+      "closure_matches": true,
+      "raw_report_compacted": true
+    },
+    {
+      "command_id": "639bef2d-ce77-4f23-a995-293c51c86d12",
+      "action_id": "4d55fe36-457d-433b-99de-a8d327c587f8",
+      "query_id": "cc467c71-5954-4223-9f1d-49b202a79bb0",
+      "page_number": 1,
+      "outcome": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "page_hash": "8923bed31673a423774ded89d3b8ecd4d64d7f83b3bac649c48b6d0208561156",
+      "db_quiesced_at": "2026-09-13T12:01:06.589Z",
+      "local_closed_at": "2026-09-13T12:01:06.338Z",
+      "closure_matches": true,
+      "raw_report_compacted": true
+    },
+    {
+      "command_id": "24b2fddd-6a02-4abb-97da-a5716e44e335",
+      "action_id": "e31809bb-1533-4cd1-92a5-d91a01d0d645",
+      "query_id": "cc467c71-5954-4223-9f1d-49b202a79bb0",
+      "page_number": 2,
+      "outcome": "BLOCKED",
+      "error_code": "SOURCE_WINDOW_ENDED",
+      "page_hash": null,
+      "db_quiesced_at": "2026-09-13T12:01:41.116Z",
+      "local_closed_at": "2026-09-13T12:01:40.919Z",
+      "closure_matches": true,
+      "raw_report_compacted": true
+    }
+  ],
+  "observation": {
+    "observation_id": "00f66caa-cbf4-4edf-943a-d8693c3fd9ed",
+    "source_object_id": "facebook:reel:4019385248369368",
+    "source_url": "https://www.facebook.com/reel/4019385248369368/",
+    "observed_at": "2026-09-13T12:00:57.517Z",
+    "original_score": 75,
+    "original_reason": "关键词匹配 1 项；含明确咨询词。规则评分，不代表购买概率。",
+    "lead_id": "61c54a55-7f54-4d26-a369-c6121ddefb9e",
+    "lead_state": "DISMISSED",
+    "review_reason": "来源正文明确推销自有及合作课程，属于商家推广；未发现作者提出个人咨询需求，排除客户候选。",
+    "lead_version": 2,
+    "message_sha256": "253cc03aecb3fdb7265c8caf05e5379bce0304e6bf9e3894668e207a6a64020e",
+    "source_time": {
+      "kind": "DISPLAYED_TIME",
+      "value": "2026年9月13日周日10:01"
+    },
+    "age": "RECENT",
+    "independent_dom_matches": true
+  },
+  "review": {
+    "reviewed_at": "2026-09-13T12:03:31.928Z",
+    "request_id": "01fc8b7a-e7ef-45ba-9893-c774041dbb36",
+    "backup": ".kff/changes/current-search-20260913/review-before.json",
+    "backup_sha256": "d0fc6c4d8869c8168996e3c8f84186e5c1c6695250f4a27be069cd3119300954",
+    "independent_dom_matches": true,
+    "decision": {
+      "id": "61c54a55-7f54-4d26-a369-c6121ddefb9e",
+      "organization_id": "11111111-1111-4111-8111-111111111111",
+      "brand_id": "22222222-2222-4222-8222-222222222222",
+      "monitor_id": "6045f65a-d8d3-4b92-ba39-9140b31bd336",
+      "object_id": "d13f896f-2b11-49b2-8772-2bdec0d484f8",
+      "observation_id": "00f66caa-cbf4-4edf-943a-d8693c3fd9ed",
+      "version": 2,
+      "state": "DISMISSED",
+      "score": 75,
+      "matched_keywords": [
+        "八字"
+      ],
+      "reason": "来源正文明确推销自有及合作课程，属于商家推广；未发现作者提出个人咨询需求，排除客户候选。",
+      "automation_error": null,
+      "next_action_at": "2026-09-13T12:03:31.921Z",
+      "first_seen_at": "2026-09-13T12:01:06.711Z",
+      "last_seen_at": "2026-09-13T12:01:06.711Z"
+    }
+  },
+  "checks": {
+    "typecheck": {
+      "exit_code": 0,
+      "ended_at": "2026-09-13T11:57:58.721Z"
+    },
+    "contracts": {
+      "exit_code": 0,
+      "ended_at": "2026-09-13T11:58:44.600Z"
+    },
+    "build": {
+      "exit_code": 0,
+      "ended_at": "2026-09-13T11:57:44.590Z"
+    }
+  },
+  "contract_tests_passed": 129,
+  "owned_dom": {
+    "kind": "OWNED_DOM_ONLY_NOT_PLATFORM_EVIDENCE",
+    "passed": 8,
+    "results": [
+      {
+        "name": "unique hover full date",
+        "passed": true
+      },
+      {
+        "name": "no tooltip retains relative label",
+        "passed": true
+      },
+      {
+        "name": "pre-existing tooltip is not source evidence",
+        "passed": true
+      },
+      {
+        "name": "duplicate source links cannot bind tooltip",
+        "passed": true
+      },
+      {
+        "name": "hidden date does not conflict",
+        "passed": true
+      },
+      {
+        "name": "nested time does not replace parent",
+        "passed": true
+      },
+      {
+        "name": "conflicting source time labels stay unknown",
+        "passed": true
+      },
+      {
+        "name": "nested public icon does not authorize parent",
+        "passed": true
+      }
+    ]
+  },
+  "ui": {
+    "checked_at": "2026-09-13T12:04:49.213Z",
+    "query_title": "1876794 · 八字 · 近期公开内容核对 #2",
+    "records": 1,
+    "source_links": 1,
+    "displayed_time": "2026年9月13日周日10:01",
+    "partial_result": true,
+    "screenshot": "output/playwright/current-search-record.png"
+  },
+  "render_trace": {
+    "url": "https://www.facebook.com/search/top/?q=%E5%85%AB%E5%AD%97&filters=eyJyZWNlbnRfcG9zdHM6MCI6IntcIm5hbWVcIjpcInJlY2VudF9wb3N0c1wiLFwiYXJnc1wiOlwiXCJ9In0%3D",
+    "snapshots": [
+      {
+        "elapsed_ms": 1,
+        "recent": true,
+        "bodies": 1,
+        "first_visible": true,
+        "inspection": {
+          "rows": [],
+          "invalid": 0
+        }
+      },
+      {
+        "elapsed_ms": 2061,
+        "recent": true,
+        "bodies": 0,
+        "first_visible": false,
+        "inspection": {
+          "rows": [],
+          "invalid": 0
+        }
+      },
+      {
+        "elapsed_ms": 5119,
+        "recent": true,
+        "bodies": 2,
+        "first_visible": true,
+        "inspection": {
+          "rows": [
+            {
+              "id": "facebook:reel:4019385248369368",
+              "url": "https://www.facebook.com/reel/4019385248369368/",
+              "author_id": null,
+              "message": "#问问Maureen… 展开",
+              "expanded": false,
+              "displayed_time": "9小时"
+            }
+          ],
+          "invalid": 0
+        }
+      },
+      {
+        "elapsed_ms": 10233,
+        "recent": true,
+        "bodies": 2,
+        "first_visible": true,
+        "inspection": {
+          "rows": [
+            {
+              "id": "facebook:reel:4019385248369368",
+              "url": "https://www.facebook.com/reel/4019385248369368/",
+              "author_id": null,
+              "message": "#问问Maureen… 展开",
+              "expanded": false,
+              "displayed_time": "9小时"
+            }
+          ],
+          "invalid": 0
+        }
+      },
+      {
+        "elapsed_ms": 20376,
+        "recent": true,
+        "bodies": 2,
+        "first_visible": true,
+        "inspection": {
+          "rows": [
+            {
+              "id": "facebook:reel:4019385248369368",
+              "url": "https://www.facebook.com/reel/4019385248369368/",
+              "author_id": null,
+              "message": "#问问Maureen… 展开",
+              "expanded": false,
+              "displayed_time": "9小时"
+            }
+          ],
+          "invalid": 0
+        }
+      }
+    ]
+  },
+  "counts": {
+    "accounts": 87,
+    "prospects": 46,
+    "migrations": 31,
+    "unclosed": 0,
+    "active_monitors": 0
+  },
+  "preservation": {
+    "existing_leads": 12,
+    "existing_messages": 4,
+    "whatsapp_handoff_unchanged": true,
+    "original_immutable_agent_files": 174,
+    "original_config_hashes": {
+      ".kff/local-config.json": "25d32f43c8392581b9b36ddde03ab49bf5815f3565d7af23267a6128c8d72010",
+      ".kff/agent-config.json": "b1014168bc32a13309ba4cca7a363f695b23927507e879a8bbb8aa82da3dc706",
+      ".kff/selected-real-profile-binding.json": "cc8c543b3fba7e9417d1cbc7e1b23f02d89c4340154f3d8589c0f78b59308548",
+      ".kff/second-real-profile-binding.json": "14b43c74b13f750f64331502c8d018e4fe500deadb388f86396ad32031063431"
+    },
+    "first_install_all_files": {
+      "checked_at": "2026-09-13T11:41:35.378Z",
+      "preserved_original_files": 176,
+      "changed_files": [],
+      "new_files": []
+    }
+  },
+  "provider": {
+    "first": "Inactive",
+    "second": "Active"
+  },
+  "platform_sends": 0,
+  "new_qualified_customers": 0,
+  "limitations": [
+    "One current promotional post, not a newly arriving customer comment or complete search coverage",
+    "The remaining visible search window ended; the original run remains PARTIAL and both blocked read attempts are retained",
+    "Keyword rules scored promotional wording at 75; the original manual review excluded it, automatic intent qualification still needs improvement",
+    "Unknown timezone preserved; relative or ambiguous date labels remain unknown",
+    "Second real profile original Agent check and controlled new-comment test await user-owned prerequisites"
+  ]
+}

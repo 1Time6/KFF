@@ -1,0 +1,235 @@
+{
+  "at": "2026-09-14T12:58:01.335Z",
+  "version": "0.1.39",
+  "controlled_account10_reply_to_account8_verified": true,
+  "body": "KFF-0914-B：已收到，这是一条接待流程测试回复。",
+  "authorization": {
+    "user_text": "可以 以后类似问题全部授权 无需过问",
+    "basis": "Standing user authorization for comparable controlled single-message tests; user supplied and accepted the account8-to-account10 B inquiry. This is not a new statement of consent from an unrelated customer.",
+    "sender": "客户-32857-B / 白青天",
+    "recipient": "8号 XiangHuan Master",
+    "max_sends": 1,
+    "refer_whatsapp": false
+  },
+  "task_id": "afb3d8b1-2f64-40aa-9d43-cfd8defdfef6",
+  "permit_id": "9afbbfdc-3d55-4b31-bb97-42a9a0f377d7",
+  "send": {
+    "action_id": "c3508c0f-e28b-4186-b2ce-a0115cc77783",
+    "state": "VERIFIED_SUCCEEDED",
+    "error_code": null,
+    "receipt": {
+      "remote_id": "61589894042400@msgr.7505247534420399203",
+      "thread_id": "2234491403949554",
+      "observed_at": "2026-09-14T12:54:18.886Z",
+      "content_hash": "2daa8cb9c8cf9074e0c75239ad99b922f9543db9663f7c0fa6e29cb6f5eeec98",
+      "recipient_id": "61589894042400",
+      "evidence_kind": "browser_message",
+      "actual_account_id": "61594402378582"
+    },
+    "command_id": "32075b36-94ce-4c61-a0de-93343903d414",
+    "claimed_at": "2026-09-14T12:53:55.019Z",
+    "quiesced_at": "2026-09-14T12:54:20.302Z"
+  },
+  "send_attempts": [
+    {
+      "id": "1cce6473-5b98-4f94-b015-dc5ed085ce63",
+      "attempt_number": 1,
+      "submitted_at": "2026-09-14T12:54:12.642Z",
+      "state": "VERIFIED_SUCCEEDED"
+    }
+  ],
+  "send_closure": {
+    "proof": {
+      "protocol_version": "kff.guardian-closure.v1",
+      "command_id": "32075b36-94ce-4c61-a0de-93343903d414",
+      "action_id": "c3508c0f-e28b-4186-b2ce-a0115cc77783",
+      "closed_at": "2026-09-14T12:54:20.000Z",
+      "proof_sha256": "d6b78c19677a589f7f67e51272072877840c866194a27dfad3a68ba1858d9875"
+    },
+    "local_database_match": true
+  },
+  "receiver": {
+    "command": {
+      "id": "ed8a2321-8f99-4646-a693-80c38ca696f0",
+      "action_id": "669c467d-e091-48e6-8642-b5e32a1ebf1d",
+      "created_at": "2026-09-14T12:56:17.487Z",
+      "quiesced_at": "2026-09-14T12:57:07.097Z",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "receipt": {
+        "remote_id": "inbox:6a14ca96-4988-4aa2-a0c7-686fc01c15eb:26",
+        "observed_at": "2026-09-14T12:57:00.084Z",
+        "content_hash": "450138c49754ea55e4d93ce5a27c25943d8305c6406566a14991b0fd59de2770",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61589894042400"
+      },
+      "task_id": "e277aff1-1853-4bca-a039-1d0750eb3ba8",
+      "implementation_digest": "7a84ffc9e35bc0aadf622dcdc17a42933a2c00368967af4cf17c5ddcc86cde17"
+    },
+    "closure": {
+      "protocol_version": "kff.guardian-closure.v1",
+      "command_id": "ed8a2321-8f99-4646-a693-80c38ca696f0",
+      "action_id": "669c467d-e091-48e6-8642-b5e32a1ebf1d",
+      "closed_at": "2026-09-14T12:57:06.635Z",
+      "proof_sha256": "b0b14259714a629b4ab3c2fbc94c1a5e55e7f7144ad8566bf6e3f03a41b63dca",
+      "local_and_database_match": true
+    },
+    "checkpoints": [
+      {
+        "task_id": "e277aff1-1853-4bca-a039-1d0750eb3ba8",
+        "stored": 3,
+        "duplicates": 0,
+        "page_sha256": "450138c49754ea55e4d93ce5a27c25943d8305c6406566a14991b0fd59de2770",
+        "observed_at": "2026-09-14T12:57:00.084Z"
+      }
+    ],
+    "matched_message": {
+      "id": "d2b837ce-e096-44d1-ab6e-5aa20bf124af",
+      "body": "KFF-0914-B：已收到，这是一条接待流程测试回复。",
+      "direction": "INBOUND",
+      "client_sent_at": null,
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61589894042400",
+        "peer_id": "61594402378582",
+        "source_id": "61594402378582@msgr.7505247534420399203",
+        "thread_id": "2234491403949554",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/2234491403949554/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "20:54"
+      },
+      "contact_permission_id": null,
+      "conversation_id": "441006a5-8821-4923-99bb-df3c98bc6ac0"
+    },
+    "new_rows": [
+      {
+        "id": "57a1a85d-9ffa-4c96-97e0-94caabdb3ece",
+        "direction": "EXTERNAL_OUTBOUND",
+        "body": "KFF-0914-B",
+        "source": {
+          "ref": null,
+          "kind": "MESSENGER",
+          "ad_id": null,
+          "page_id": "61589894042400",
+          "peer_id": "61594402378582",
+          "source_id": "61594402378582@msgr.7505218016684724428",
+          "thread_id": "2234491403949554",
+          "transport": "BROWSER",
+          "source_url": "https://www.facebook.com/messages/e2ee/t/2234491403949554/",
+          "thread_kind": "UNVERIFIED",
+          "displayed_time": "18:56"
+        }
+      },
+      {
+        "id": "d2b837ce-e096-44d1-ab6e-5aa20bf124af",
+        "direction": "INBOUND",
+        "body": "KFF-0914-B：已收到，这是一条接待流程测试回复。",
+        "source": {
+          "ref": null,
+          "kind": "MESSENGER",
+          "ad_id": null,
+          "page_id": "61589894042400",
+          "peer_id": "61594402378582",
+          "source_id": "61594402378582@msgr.7505247534420399203",
+          "thread_id": "2234491403949554",
+          "transport": "BROWSER",
+          "source_url": "https://www.facebook.com/messages/e2ee/t/2234491403949554/",
+          "thread_kind": "UNVERIFIED",
+          "displayed_time": "20:54"
+        }
+      },
+      {
+        "id": "f7d667d3-521f-43d4-8383-cac3b20c2d43",
+        "direction": "EXTERNAL_OUTBOUND",
+        "body": "KFF-0914-B 我想了解咨询流程",
+        "source": {
+          "ref": null,
+          "kind": "MESSENGER",
+          "ad_id": null,
+          "page_id": "61589894042400",
+          "peer_id": "61594402378582",
+          "source_id": "61594402378582@msgr.7505218155968561851",
+          "thread_id": "2234491403949554",
+          "transport": "BROWSER",
+          "source_url": "https://www.facebook.com/messages/e2ee/t/2234491403949554/",
+          "thread_kind": "UNVERIFIED",
+          "displayed_time": "18:57"
+        }
+      }
+    ],
+    "discovery": {
+      "skipped": [],
+      "threads": [
+        {
+          "peer_id": "61594402378582",
+          "thread_id": "2234491403949554",
+          "display_name": "白青天"
+        }
+      ],
+      "strategy": "RECENT_ACCEPTED",
+      "empty_list": false,
+      "unparsed_rows": 0,
+      "window_limited": true,
+      "visible_threads": 3
+    }
+  },
+  "outbound_message": {
+    "id": "dc66a31c-e4e2-4860-b6dd-db81561c6957",
+    "conversation_id": "82307e44-911c-49db-ab82-878d8dfde1f5",
+    "sequence": 3,
+    "direction": "OUTBOUND",
+    "body": "KFF-0914-B：已收到，这是一条接待流程测试回复。",
+    "actor_kind": "HUMAN",
+    "action_id": "c3508c0f-e28b-4186-b2ce-a0115cc77783"
+  },
+  "sender_conversation": {
+    "id": "82307e44-911c-49db-ab82-878d8dfde1f5",
+    "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+    "handling_mode": "HUMAN",
+    "control_version": 4,
+    "last_sequence": 3,
+    "last_answered_sequence": 2
+  },
+  "receiver_configuration_restored": {
+    "at": "2026-09-14T12:57:59.869Z",
+    "monitor_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+    "original_version": 31,
+    "read_version": 33,
+    "restored_version": 34,
+    "state": "PAUSED",
+    "discovery": {
+      "strategy": "RECENT_ACCEPTED",
+      "max_threads": 3
+    },
+    "interval_seconds": 300,
+    "page_size": 25,
+    "raw_retention_hours": 1,
+    "configuration_restored": true,
+    "business_data_rollback": false
+  },
+  "existing_receiver_messages_preserved": true,
+  "runtime_id": "ec5d0460-b719-4e68-8630-b7cec44c48a3",
+  "monitors": [
+    {
+      "kind": "public",
+      "state": "PAUSED",
+      "count": 13
+    },
+    {
+      "kind": "inbox",
+      "state": "PAUSED",
+      "count": 5
+    }
+  ],
+  "open_commands": 0,
+  "live_sending_enabled": false,
+  "profile10_after": "Inactive",
+  "profile8_after": "Inactive",
+  "whatsapp_referrals_created": 0,
+  "real_ai_used": false,
+  "full_goal_complete": false,
+  "coverage": "Controlled existing B test conversation: account8 inquiry -> account10 original manual reply -> exact account8 platform receipt. This is not a newly discovered public lead or WhatsApp handoff."
+}

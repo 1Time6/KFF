@@ -1,4 +1,5 @@
 import {z} from 'zod';
+import {browserMessageContext} from './browser-inbox';
 import {contactSelectionSchema} from './contact';
 
 const uuid=z.string().uuid();
@@ -17,11 +18,11 @@ export const facebookEvent=z.object({
   correlation_id:uuid.optional(),
 }).strict().refine(value=>value.page_id===value.source.page_id&&value.source.kind===(value.kind==='COMMENT'?'COMMENT':value.kind==='INTERACTION'?'INTERACTION':'MESSENGER'),'来源与事件不一致');
 export type FacebookEvent=z.infer<typeof facebookEvent>;
-export const facebookConnectionInput=z.object({request_id:uuid,account_id:uuid,environment_id:uuid,expected_version:z.number().int().min(0),state:z.enum(['ACTIVE','PAUSED']),auto_reply:z.boolean(),reply_window_hours:z.number().int().min(1).max(24),policy_ref:z.string().trim().min(5).max(160)}).strict();
+export const facebookConnectionInput=z.object({transport:z.enum(['API','BROWSER']).optional(),request_id:uuid,account_id:uuid,environment_id:uuid,expected_version:z.number().int().min(0),state:z.enum(['ACTIVE','PAUSED']),auto_reply:z.boolean(),reply_window_hours:z.number().int().min(1).max(24),policy_ref:z.string().trim().min(5).max(160)}).strict();
 export const facebookFixtureInput=z.object({request_id:uuid,name:z.string().trim().min(1).max(80),page_id:remote,agent_id:uuid}).strict();
 export const leadUpdateInput=z.object({request_id:uuid,expected_version:z.number().int().positive(),lead_status:leadStatus,tags:z.array(z.string().trim().min(1).max(30)).max(20),intent_level:intentLevel,valid_inquiry:z.boolean(),reason:z.string().trim().min(1).max(500)}).strict();
 export const conversationControlInput=z.object({request_id:uuid,expected_version:z.number().int().positive(),mode:handlingMode,reason:z.string().trim().min(1).max(500)}).strict();
-export interface FacebookConnection {account_id:string;environment_id:string;page_id:string;is_synthetic:boolean;state:'ACTIVE'|'PAUSED';version:number;auto_reply:boolean;reply_window_hours:number;policy_ref:string;display_name:string;reception_policy:Partial<ReceptionPolicy>}
+export interface FacebookConnection {transport?:'API'|'BROWSER';account_id:string;environment_id:string;page_id:string;is_synthetic:boolean;state:'ACTIVE'|'PAUSED';version:number;auto_reply:boolean;reply_window_hours:number;policy_ref:string;display_name:string;reception_policy:Partial<ReceptionPolicy>}
 export const receptionPolicy=z.object({
   provider:z.enum(['LOCAL_RULES','OPENAI_COMPATIBLE']).default('LOCAL_RULES'),business_context:z.string().trim().max(3000).default(''),
   greeting_reply:z.string().trim().min(1).max(1000).default('你好，欢迎咨询。你想了解哪一款产品或服务？'),
@@ -40,12 +41,17 @@ export const receptionDecision=z.object({
 export type ReceptionDecision=z.infer<typeof receptionDecision>;
 export const whatsappDestinationInput=z.object({request_id:uuid,account_id:uuid.nullable(),expected_version:z.number().int().min(0),name:z.string().trim().min(1).max(80),phone:z.string().regex(/^[1-9][0-9]{6,14}$/),state:z.enum(['ACTIVE','PAUSED']),template:z.string().trim().min(1).max(1500).refine(value=>value.includes('{whatsapp_url}'),'话术必须包含 {whatsapp_url}'),cooldown_hours:z.number().int().min(1).max(720)}).strict();
 export interface WhatsappDestination {id:string;account_id:string|null;name:string;phone:string;state:'ACTIVE'|'PAUSED';version:number;template:string;cooldown_hours:number}
-export const replyInput=z.object({request_id:uuid,expected_version:z.number().int().positive(),body:z.string().trim().max(2000),refer_whatsapp:z.boolean(),fixture_scenario:z.enum(['normal','slow','lost_after_submit']).default('normal')}).strict().refine(value=>value.refer_whatsapp||value.body.length>0,'回复内容不能为空');
+export const replyInput=z.object({request_id:uuid,expected_version:z.number().int().positive(),body:z.string().trim().max(2000),refer_whatsapp:z.boolean(),corrects_referral_id:uuid.optional(),draft_job_id:uuid.optional(),contact_permission_id:uuid.optional(),delay_minutes:z.number().int().min(0).max(1440).default(0),fixture_scenario:z.enum(['normal','slow','lost_after_submit','wrong_account','login_expired','duplicate_control']).default('normal')}).strict().refine(value=>value.refer_whatsapp||value.body.length>0,'回复内容不能为空').refine(value=>!value.corrects_referral_id||value.refer_whatsapp,'更正邀请必须指定 WhatsApp 移交');
+export const receptionDraftInput=z.object({request_id:uuid,expected_version:z.number().int().positive()}).strict();
+export const receptionDraftReference=z.object({job_id:uuid,result_hash:z.string().regex(/^[a-f0-9]{64}$/),model:z.string().min(1).max(120),generated_at:z.string().datetime(),expires_at:z.string().datetime()}).strict();
 export const referralResultInput=z.object({request_id:uuid,expected_version:z.number().int().positive(),result:z.enum(['CONFIRMED','DECLINED']),reason:z.string().trim().min(1).max(500)}).strict();
+export const browserConsentInput=z.object({request_id:uuid,expected_version:z.number().int().positive(),consented_at:z.string().datetime(),expires_at:z.string().datetime(),evidence_note:z.string().trim().min(10).max(1000),confirmation:z.literal('CUSTOMER_CONFIRMED_THIS_CONTACT')}).strict().refine(v=>Date.parse(v.expires_at)>Date.parse(v.consented_at)&&Date.parse(v.expires_at)-Date.parse(v.consented_at)<=3600000,'本次同意期限须大于零且不超过一小时');
 export const messageSnapshot=z.object({
+  browser:browserMessageContext.optional(),
+  draft:receptionDraftReference.optional(),
   conversation_id:uuid,trigger_message_id:uuid,trigger_sequence:z.number().int().positive(),control_version:z.number().int().positive(),
   actor_kind:z.enum(['AI','HUMAN']),actor_id:uuid,connection_version:z.number().int().positive(),
   contact:contactSelectionSchema,
   stop_epochs:z.object({organization:z.number().int().min(0),brand:z.number().int().min(0),account:z.number().int().min(0),agent:z.number().int().min(0)}).strict(),
-  referral:z.object({destination_id:uuid,destination_version:z.number().int().positive(),phone:z.string().regex(/^[1-9][0-9]{6,14}$/),template:z.string().max(1500),cooldown_hours:z.number().int().positive()}).strict().nullable(),
+  referral:z.object({destination_id:uuid,destination_version:z.number().int().positive(),phone:z.string().regex(/^[1-9][0-9]{6,14}$/),template:z.string().max(1500),cooldown_hours:z.number().int().positive(),corrects_referral_id:uuid.optional()}).strict().nullable(),
 }).strict();

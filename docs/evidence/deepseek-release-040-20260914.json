@@ -1,0 +1,238 @@
+{
+  "at": "2026-09-14T13:36:44.072Z",
+  "version": "0.1.40",
+  "runtime": {
+    "runtime_id": "486be535-0a95-4621-afb4-b07dedc331dd",
+    "pid": 23824,
+    "phase": "RUNNING",
+    "updated_at": "2026-09-14T13:36:41.853Z",
+    "app_origin": "http://127.0.0.1:3000",
+    "release_id": "kff-agent-0.1.40-win32-x64-9b2cb5bf1053",
+    "database_owned": false,
+    "components": {
+      "database": {
+        "pid": null,
+        "state": "CONNECTED"
+      },
+      "web": {
+        "pid": 24980,
+        "state": "RUNNING"
+      },
+      "worker": {
+        "pid": 22904,
+        "state": "RUNNING"
+      },
+      "agent": {
+        "pid": 25860,
+        "state": "RUNNING"
+      }
+    }
+  },
+  "health": {
+    "status": "ok",
+    "protocol": "kff.api.v1",
+    "runtime_id": "486be535-0a95-4621-afb4-b07dedc331dd"
+  },
+  "live_sending_enabled": false,
+  "monitors": [
+    {
+      "state": "PAUSED",
+      "count": 18
+    }
+  ],
+  "pending_commands": 0,
+  "source_build_match": true,
+  "adapter_digest": "7a84ffc9e35bc0aadf622dcdc17a42933a2c00368967af4cf17c5ddcc86cde17",
+  "installed_adapter_digest": "7a84ffc9e35bc0aadf622dcdc17a42933a2c00368967af4cf17c5ddcc86cde17",
+  "agent": {
+    "release_id": "kff-agent-0.1.40-win32-x64-9b2cb5bf1053",
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.40-win32-x64-9b2cb5bf1053",
+    "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.40-win32-x64-9b2cb5bf1053.zip",
+    "archive_sha256": "c033d09f4f469686dd18b2c714a295b4294d4ff8b412852c3e763edff1466978",
+    "files": 1348,
+    "dependencies": 23,
+    "contains_pairing_or_browser_data": false
+  },
+  "controller": {
+    "release_id": "kff-controller-0.1.40-win32-x64-73d91f9c74db",
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.40-win32-x64-73d91f9c74db",
+    "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.40-win32-x64-73d91f9c74db.zip",
+    "archive_sha256": "7020abedd18a91cb5be0191d32f76673bf042e0ca0c254322314f3160d509cf4",
+    "files": 24092,
+    "uncompressed_bytes": 829504500,
+    "dependency_packages": 155,
+    "contains_runtime_data": false,
+    "live_config_values_scanned": 6
+  },
+  "checks": [
+    {
+      "name": "contracts",
+      "exit_code": 0,
+      "changed_during_check": []
+    },
+    {
+      "name": "typecheck",
+      "exit_code": 0,
+      "changed_during_check": []
+    },
+    {
+      "name": "lint",
+      "exit_code": 0,
+      "changed_during_check": []
+    },
+    {
+      "name": "build",
+      "exit_code": 0,
+      "changed_during_check": []
+    }
+  ],
+  "contract_tests": 179,
+  "provider_test": {
+    "at": "2026-09-14T13:27:31.829Z",
+    "requested_service": "DeepSeek",
+    "requested_model": "DeepSeekV4.1flash",
+    "api_model": "deepseek-flash",
+    "url": "https://api.deepseek.com/chat/completions",
+    "official_model_source": "https://deepseek.com/news/deepseek-v4-1-flash/",
+    "configuration_file": ".kff/reception-ai.env",
+    "secret_logged": false,
+    "platform_sends": 0,
+    "scope": "Provider-only replay of the controlled B inquiry with approved business context; not a newly queued Inbox draft or complete lead handoff.",
+    "provider_requests": 1,
+    "http_status": 200,
+    "response_model": "deepseek-flash",
+    "usage": {
+      "prompt_tokens": 612,
+      "completion_tokens": 139,
+      "total_tokens": 751,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 612
+    },
+    "decision": {
+      "action": "REPLY",
+      "intent": "OTHER",
+      "valid_inquiry": true,
+      "intent_level": "MEDIUM",
+      "confidence": 0.85,
+      "reply": "您好！很高兴您想了解咨询流程。EasternWisdom 提供一对一的英文书面八字解读，围绕您在感情、事业或人生方向上的一个具体问题展开。您可以先告诉我，您最想探讨的是哪方面的问题？以及一些简要的相关背景。个人出生信息会在官方预约表单中填写，不会在公开评论中收集。",
+      "reason": "Customer asks about consultation process; explain approved offering and invite them to share their question and brief context",
+      "tags": [
+        "consultation-process",
+        "bazi-reading"
+      ]
+    },
+    "accepted": true,
+    "finished_at": "2026-09-14T13:27:33.565Z",
+    "business_context_sha256": "5c8b2985320f990850036c3d4a927dea5f1395f6e93017442f945fd3cc15d280"
+  },
+  "inbox_draft_test": {
+    "at": "2026-09-14T13:34:30.438Z",
+    "request_id": "94c00168-928a-4b42-be9f-e56ca6e3ba10",
+    "conversation_id": "441006a5-8821-4923-99bb-df3c98bc6ac0",
+    "platform_sends": 0,
+    "scope": "Original Worker draft generation for the already received controlled test acknowledgement; not a new public customer or a sent reply.",
+    "model": "deepseek-flash",
+    "runtime_before": {
+      "runtime_id": "486be535-0a95-4621-afb4-b07dedc331dd",
+      "pid": 23824,
+      "phase": "RUNNING",
+      "updated_at": "2026-09-14T13:34:29.366Z",
+      "app_origin": "http://127.0.0.1:3000",
+      "release_id": "kff-agent-0.1.40-win32-x64-9b2cb5bf1053",
+      "database_owned": false,
+      "components": {
+        "database": {
+          "pid": null,
+          "state": "CONNECTED"
+        },
+        "web": {
+          "pid": 24980,
+          "state": "RUNNING"
+        },
+        "worker": {
+          "pid": 22904,
+          "state": "RUNNING"
+        },
+        "agent": {
+          "pid": 25860,
+          "state": "RUNNING"
+        }
+      }
+    },
+    "before": {
+      "id": "441006a5-8821-4923-99bb-df3c98bc6ac0",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "handling_mode": "HUMAN",
+      "control_version": 3,
+      "last_sequence": 3,
+      "last_inbound_sequence": 3,
+      "last_answered_sequence": 0
+    },
+    "tasks_before": [],
+    "request": {
+      "job_id": "d894c108-24af-45c8-983d-44ef69f5173e",
+      "status": "DRAFT_QUEUED",
+      "expires_at": "2026-09-14T13:54:31.046Z"
+    },
+    "job": {
+      "id": "d894c108-24af-45c8-983d-44ef69f5173e",
+      "state": "DONE",
+      "attempts": 1,
+      "error_code": null,
+      "result": {
+        "model": "OPENAI_COMPATIBLE",
+        "status": "DRAFT_READY",
+        "decision": {
+          "tags": [
+            "test-marker",
+            "unclear"
+          ],
+          "reply": "",
+          "action": "HANDOFF",
+          "intent": "OTHER",
+          "reason": "Conversation appears to contain internal/test markers rather than a genuine customer inquiry; escalate for operator review.",
+          "confidence": 0.8,
+          "intent_level": "UNKNOWN",
+          "valid_inquiry": false
+        },
+        "expires_at": "2026-09-14T13:54:31.046Z",
+        "generated_at": "2026-09-14T13:34:32.378Z"
+      }
+    },
+    "after": {
+      "id": "441006a5-8821-4923-99bb-df3c98bc6ac0",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "handling_mode": "HUMAN",
+      "control_version": 3,
+      "last_sequence": 3,
+      "last_inbound_sequence": 3,
+      "last_answered_sequence": 0
+    },
+    "tasks_after": [],
+    "accepted": true,
+    "finished_at": "2026-09-14T13:34:33.149Z"
+  },
+  "package_secret_check": {
+    "at": "2026-09-14T13:35:49.497Z",
+    "secret_logged": false,
+    "packages": [
+      {
+        "release_id": "kff-agent-0.1.40-win32-x64-9b2cb5bf1053",
+        "files_scanned": 1349,
+        "contains_deepseek_key": false
+      },
+      {
+        "release_id": "kff-controller-0.1.40-win32-x64-73d91f9c74db",
+        "files_scanned": 24093,
+        "contains_deepseek_key": false
+      }
+    ],
+    "finished_at": "2026-09-14T13:35:52.178Z"
+  },
+  "full_goal_complete": false,
+  "new_public_lead_chain": "WAITING_FOR_NEW_CONTROLLED_C_COMMENT",
+  "whatsapp_receipt_verified": false
+}

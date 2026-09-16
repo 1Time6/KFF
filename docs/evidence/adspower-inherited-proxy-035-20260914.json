@@ -1,0 +1,15 @@
+{
+  "at": "2026-09-14T10:43:27.6829895Z",
+  "pid": 31632,
+  "created": "2026-09-14T18:36:47.65289+08:00",
+  "read_only": true,
+  "selected_network_environment": [
+    {
+      "name": "HTTPS_PROXY",
+      "scheme": "http",
+      "host": "127.0.0.1",
+      "port": 10808,
+      "credentials_present": false
+    }
+  ]
+}

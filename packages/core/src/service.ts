@@ -2,8 +2,12 @@ import { randomUUID } from 'node:crypto';
 import type { PoolClient } from 'pg';
 import { z } from 'zod';
 import { accountInput, environmentInput, taskInput, approvalInput, taskSnapshotSchema, type Account, type Capability, type Environment, type Scope, type Task, type Run, type AdjudicationRecord, type TemplateVersion } from '@kff/contracts';
+import { browserInboxTask, type BrowserInboxTask } from '../../contracts/src/browser-inbox';
+import { browserCollectionTaskSchema, type BrowserCollectionTask } from '../../contracts/src/browser-collection';
 import { scoped } from '@kff/database';
-import { requireCondition, digest, canExecute, isWrite } from './index';
+import { assertEnvironmentSnapshot } from './environments';
+import { browserEnvironmentSnapshot } from '../../contracts/src/environment';
+import { requireCondition, digest, canExecute, executionEnabled, isWrite } from './index';
 import { findPermit, permitMatches, type Permit } from './permits';
 import { ensureBundledTemplates, chooseTemplateVersion, assertCurrentTemplate } from './templates';
 import { validateTemplateInput } from '../../adapters/src/templates';
@@ -30,7 +34,7 @@ export async function workspace(scope: Scope) {
       const capability = capabilities.find(value => value.id === task.capability_id)!;
       const permit = permits.find(value => value.task_id === task.id && permitMatches(value, task.snapshot) && value.reserved_actions < value.max_actions && BigInt(value.reserved_cost_minor) + BigInt(value.per_action_max_minor) <= BigInt(value.max_cost_minor));
       const paused = organization.outbound_paused || brand.outbound_paused || accounts.find(account => account.id === task.account_id)?.outbound_paused;
-      let decision = paused ? { allowed: false, reason_code: 'STOP_REQUESTED' } : canExecute(capability, task.snapshot.mode, process.env.KFF_ENABLE_LIVE === 'true', Boolean(permit));
+      let decision = paused ? { allowed: false, reason_code: 'STOP_REQUESTED' } : canExecute(capability, task.snapshot.mode, executionEnabled(capability.capability_key), Boolean(permit));
       if (decision.allowed && permit) { const budget = budgets.find(value => value.currency === permit.currency); if (!budget || BigInt(budget.available_minor) < BigInt(permit.per_action_max_minor)) decision = { allowed: false, reason_code: budget ? 'BUDGET_EXCEEDED' : 'BUDGET_UNCONFIGURED' }; }
       if (decision.allowed) { const template = templates.find(value => value.id === task.snapshot.template?.version_id); if (!template || template.state !== 'ALLOWED' || template.manifest_hash !== task.snapshot.template?.manifest_hash) decision = { allowed: false, reason_code: 'TEMPLATE_UNAVAILABLE' }; }
       return [task.id, decision];
@@ -46,7 +50,8 @@ export async function createAccount(scope: Scope, input: z.infer<typeof accountI
   return scoped(scope, async client => {
     const id = randomUUID();
     const account = (await client.query<Account>('INSERT INTO kff.accounts(id,organization_id,brand_id,display_name,external_id,platform,account_type,credential_ref) VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *', [id, scope.organization_id, scope.brand_id, value.display_name, value.external_id, value.platform, value.account_type, value.credential_ref ?? null])).rows[0];
-    for (const action of ['read', 'publish']) await client.query("INSERT INTO kff.capabilities(organization_id,brand_id,account_id,capability_key,adapter_version,evidence_state,mode,is_synthetic,description) VALUES($1,$2,$3,$4,'facebook-graph-v1','UNASSESSED','DISABLED',false,$5)", [scope.organization_id, scope.brand_id, id, 'facebook.page.' + action + '.api', action === 'read' ? '读取自有 Facebook 主页；待账号和权限验证' : '发布主页文本并回读远端对象；待真实验证']);
+    for (const action of value.platform==='facebook' && value.account_type==='page'?['read', 'publish']:[]) await client.query("INSERT INTO kff.capabilities(organization_id,brand_id,account_id,capability_key,adapter_version,evidence_state,mode,is_synthetic,description) VALUES($1,$2,$3,$4,'facebook-graph-v1','UNASSESSED','DISABLED',false,$5)", [scope.organization_id, scope.brand_id, id, 'facebook.page.' + action + '.api', action === 'read' ? '读取自有 Facebook 主页；待账号和权限验证' : '发布主页文本并回读远端对象；待真实验证']);
+    if(value.platform==='instagram')await client.query("INSERT INTO kff.capabilities(organization_id,brand_id,account_id,capability_key,adapter_version,evidence_state,mode,is_synthetic,description) VALUES($1,$2,$3,'instagram.account.read.api','instagram-graph-v1','UNASSESSED','DISABLED',false,'Instagram 账号身份核验')",[scope.organization_id,scope.brand_id,id]);
     await ensureBundledTemplates(client, scope);
     await audit(client, scope, 'account.created', id); return account;
   });
@@ -56,14 +61,20 @@ export async function createEnvironment(scope: Scope, input: z.infer<typeof envi
   return scoped(scope, async client => {
     const account = await client.query('SELECT id FROM kff.accounts WHERE id=$1', [value.account_id]);
     const agent = await client.query("SELECT id FROM kff.agents WHERE id=$1 AND status<>'REVOKED'", [value.agent_id]);
-    requireCondition(account.rowCount && agent.rowCount, 'FORBIDDEN_SCOPE', '账号或 Agent 不在当前品牌内', 403);
+    // Report which side actually failed. The old single message blamed the brand for
+    // both cases, which sent users hunting for a scope problem when the real cause was
+    // a revoked Agent still being offered as a choice.
+    requireCondition(account.rowCount, 'FORBIDDEN_SCOPE', '所选账号不存在或不属于当前品牌', 403);
+    requireCondition(agent.rowCount, 'FORBIDDEN_SCOPE', '所选 Agent 已撤销或不属于当前品牌，请改选可用 Agent', 403);
     const row = (await client.query<Environment>('INSERT INTO kff.environments(organization_id,brand_id,name,account_id,agent_id) VALUES($1,$2,$3,$4,$5) RETURNING *', [scope.organization_id, scope.brand_id, value.name, value.account_id, value.agent_id])).rows[0];
     await audit(client, scope, 'environment.created', row.id); return row;
   });
 }
 export async function createTask(scope: Scope, input: z.infer<typeof taskInput>): Promise<Task> {
-  requireWrite(scope); const value = taskInput.parse(input); const requestHash = digest(value);
-  return scoped(scope, async client => {
+  requireWrite(scope); return scoped(scope, client => createTaskInTransaction(client, scope, input));
+}
+export async function createTaskInTransaction(client: PoolClient, scope: Scope, input: z.infer<typeof taskInput>, collection?: BrowserCollectionTask, inbox?: BrowserInboxTask): Promise<Task> {
+  requireWrite(scope); const value = taskInput.parse(input); const page = collection ? browserCollectionTaskSchema.parse(collection) : undefined; const inboxRequest = inbox ? browserInboxTask.parse(inbox) : undefined; const requestHash = digest({ ...value, ...(page ? { collection: page } : {}), ...(inboxRequest ? { inbox: inboxRequest } : {}) });
     await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))', [scope.organization_id + ':' + scope.brand_id + ':' + value.idempotency_key]);
     const existing = (await client.query<Task & { request_hash: string }>('SELECT * FROM kff.tasks WHERE idempotency_key=$1', [value.idempotency_key])).rows[0];
     if (existing) { requireCondition(existing.request_hash === requestHash, 'IDEMPOTENCY_CONFLICT', '同一请求标识不能用于不同内容', 409); return existing; }
@@ -77,12 +88,13 @@ export async function createTask(scope: Scope, input: z.infer<typeof taskInput>)
     const template = await chooseTemplateVersion(client, capability.capability_key, capability.adapter_version, value.template_version_id);
     validateTemplateInput(template.manifest, value.body);
     const contentId = randomUUID(); const contentHash = digest(value.body);
-    const snapshot = taskSnapshotSchema.parse({ account_id: account.id, external_account_id: account.external_id, account_version: account.version, credential_ref: account.credential_ref, environment_id: environment.id, profile_key: environment.profile_key, agent_id: environment.agent_id, capability_id: capability.id, capability_key: capability.capability_key, capability_revision: capability.revision, adapter_version: capability.adapter_version, implementation_digest: capability.implementation_digest ?? null, platform_api_version: account.is_synthetic ? null : process.env.KFF_FACEBOOK_GRAPH_VERSION ?? null, body: value.body, content_hash: contentHash, mode: value.mode, fixture_scenario: value.fixture_scenario, is_synthetic: account.is_synthetic, template });
+    const snapshot = taskSnapshotSchema.parse({ collection: page, inbox: inboxRequest, account_id: account.id, external_account_id: account.external_id, account_version: account.version, credential_ref: account.credential_ref, environment_id: environment.id, environment_version: environment.configuration_version ?? 1, browser_environment: environment.browser_configuration && capability.capability_key.endsWith('.browser') ? browserEnvironmentSnapshot.parse({ environment_id: environment.id, account_id: account.id, agent_id: environment.agent_id, organization_id: scope.organization_id, brand_id: scope.brand_id, profile_key: environment.profile_key, configuration_version: environment.configuration_version, configuration: environment.browser_configuration, ...(account.account_type === 'profile' ? { account_type: 'profile' } : {}), platform: account.platform, is_synthetic: account.is_synthetic }) : undefined, profile_key: environment.profile_key, agent_id: environment.agent_id, capability_id: capability.id, capability_key: capability.capability_key, capability_revision: capability.revision, adapter_version: capability.adapter_version, implementation_digest: capability.implementation_digest ?? null, platform_api_version: account.is_synthetic || ['facebook.discovery.read.browser','facebook.inbox.read.browser'].includes(capability.capability_key) ? null : process.env.KFF_FACEBOOK_GRAPH_VERSION ?? null, body: value.body, content_hash: contentHash, mode: value.mode, fixture_scenario: value.fixture_scenario, is_synthetic: account.is_synthetic, template });
+    if (inboxRequest) requireCondition(digest(inboxRequest.binding.environment) === digest(snapshot.browser_environment), 'VERSION_CONFLICT', '收件环境配置已变化', 409);
+    if (page) requireCondition(digest(page.snapshot) === page.snapshot_hash && digest(page.snapshot.browser_environment) === digest(snapshot.browser_environment), 'VERSION_CONFLICT', '采集环境配置已变化', 409);
     requireCondition(!isWrite(snapshot) || value.body.length > 0, 'INVALID_INPUT', '发布内容不能为空');
     await client.query('INSERT INTO kff.content_versions(id,organization_id,brand_id,body,content_hash,created_by) VALUES($1,$2,$3,$4,$5,$6)', [contentId, scope.organization_id, scope.brand_id, value.body, contentHash, scope.user_id]);
     const task = (await client.query<Task>('INSERT INTO kff.tasks(organization_id,brand_id,title,account_id,environment_id,capability_id,content_version_id,snapshot,snapshot_hash,idempotency_key,request_hash,created_by) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *', [scope.organization_id, scope.brand_id, value.title, account.id, environment.id, capability.id, contentId, snapshot, digest(snapshot), value.idempotency_key, requestHash, scope.user_id])).rows[0];
     await audit(client, scope, 'task.created', task.id, { snapshot_hash: task.snapshot_hash }); return task;
-  });
 }
 export async function approveTask(scope: Scope, taskId: string, input: z.infer<typeof approvalInput>) {
   requireWrite(scope); const value = approvalInput.parse(input);
@@ -111,15 +123,22 @@ export async function enqueueTaskInTransaction(client:PoolClient,scope:Scope,tas
     requireCondition(approval.rowCount, 'APPROVAL_STALE', '缺少当前版本的批准记录', 409);
     const capability = (await client.query<Capability>('SELECT * FROM kff.capabilities WHERE id=$1', [task.capability_id])).rows[0];
     requireCondition(capability.revision === task.snapshot.capability_revision && capability.adapter_version === task.snapshot.adapter_version, 'VERSION_CONFLICT', '能力版本已变化', 409);
+    await assertEnvironmentSnapshot(client, task.snapshot);
     await assertCurrentTemplate(client, task.id, task.snapshot);
     if (task.snapshot.mode === 'CONTROLLED_PILOT') await findPermit(client, task.id, task.snapshot);
-    const decision = canExecute(capability, task.snapshot.mode, process.env.KFF_ENABLE_LIVE === 'true', task.snapshot.mode === 'CONTROLLED_PILOT');
+    const decision = canExecute(capability, task.snapshot.mode, executionEnabled(capability.capability_key), task.snapshot.mode === 'CONTROLLED_PILOT');
     requireCondition(decision.allowed, decision.reason_code, '当前能力尚未满足执行条件；真实测试将在配置账号和许可后进行', 409);
     const pause = (await client.query('SELECT ac.outbound_paused OR b.outbound_paused OR o.outbound_paused AS paused FROM kff.accounts ac JOIN kff.brands b ON b.id=ac.brand_id JOIN kff.organizations o ON o.id=ac.organization_id WHERE ac.id=$1', [task.account_id])).rows[0];
     requireCondition(!pause.paused, 'STOP_REQUESTED', '当前组织、品牌或账号已暂停新动作', 409);
     const run = (await client.query<Run>('INSERT INTO kff.runs(organization_id,brand_id,task_id) VALUES($1,$2,$3) RETURNING *', [scope.organization_id, scope.brand_id, taskId])).rows[0];
     const action = (await client.query('INSERT INTO kff.actions(organization_id,brand_id,run_id,task_id) VALUES($1,$2,$3,$4) RETURNING id', [scope.organization_id, scope.brand_id, run.id, taskId])).rows[0];
-    await client.query('INSERT INTO kff.jobs(organization_id,brand_id,action_id) VALUES($1,$2,$3)', [scope.organization_id, scope.brand_id, action.id]);
+    await client.query('INSERT INTO kff.jobs(organization_id,brand_id,action_id,available_at) VALUES($1,$2,$3,GREATEST(clock_timestamp(),COALESCE($4::timestamptz,clock_timestamp())))', [scope.organization_id, scope.brand_id, action.id,task.snapshot.not_before??null]);
+    const message=task.snapshot.message;
+    if(task.snapshot.mode==='CONTROLLED_PILOT'&&message?.referral){
+      const conversation=(await client.query('SELECT customer_id FROM kff.conversations WHERE id=$1',[message.conversation_id])).rows[0];
+      const trigger=(await client.query('SELECT source FROM kff.messages WHERE id=$1',[message.trigger_message_id])).rows[0];
+      await client.query('INSERT INTO kff.whatsapp_referrals(organization_id,brand_id,account_id,customer_id,conversation_id,action_id,destination_id,destination_snapshot,actor_kind,actor_id,source) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)',[scope.organization_id,scope.brand_id,task.account_id,conversation.customer_id,message.conversation_id,action.id,message.referral.destination_id,message.referral,message.actor_kind,message.actor_id,trigger.source??{}]);
+    }
     await client.query("UPDATE kff.tasks SET status='QUEUED' WHERE id=$1", [taskId]);
     await audit(client, scope, 'run.queued', run.id, { action_id: action.id }); return run;
 }

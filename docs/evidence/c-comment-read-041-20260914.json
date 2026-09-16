@@ -1,0 +1,175 @@
+{
+  "started_at": "2026-09-14T14:24:23.048Z",
+  "platform_sends": 0,
+  "original_scans": 1,
+  "requested_marker": "KFF-0914-C 我想了解咨询流程",
+  "expected_author": "100050174601107",
+  "expected_reader": "61594402378582",
+  "author_confirmation": {
+    "at": "2026-09-14T14:03:15.798Z",
+    "user_question": "C评论作者是郑一哲（ID尾号601107），是否由你控制的账号发布？",
+    "user_answer": "是的",
+    "actual_author": "100050174601107",
+    "actual_author_name": "郑一哲",
+    "comment_id": "1798186518043775",
+    "comment_body": "KFF-0914-C 我想了解咨询流程",
+    "source": "https://www.facebook.com/reel/2163157911082094/",
+    "prior_planned_author": "61589894042400",
+    "basis": "User confirmed actual author ownership; use actual C author for controlled single-message continuation."
+  },
+  "prior_failed_commands": [
+    "12c7a01a-8e95-40d4-a1a6-9bd9cc7c7bfc",
+    "0f05dce2-8fe5-49a8-b0d1-01dae73d1bae"
+  ],
+  "before": {
+    "runtime_id": "837065ef-a51d-4f50-a6a5-d07fefc3ca2a",
+    "existing_monitors": [],
+    "capability": {
+      "id": "041982d9-857f-4a67-b461-c57f30f03164",
+      "organization_id": "11111111-1111-4111-8111-111111111111",
+      "brand_id": "22222222-2222-4222-8222-222222222222",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "capability_key": "facebook.discovery.read.browser",
+      "revision": 1,
+      "adapter_version": "facebook-search-browser-v1",
+      "evidence_state": "IMPLEMENTED_TEST_ONLY",
+      "mode": "CONTROLLED_PILOT",
+      "is_synthetic": false,
+      "description": "读取固定关键词公开内容、指定帖子的可见评论或固定公共主页帖子；仅覆盖当前页面窗口，需先登记代码证据。",
+      "last_verified_at": null,
+      "created_at": "2026-09-14T08:45:23.428Z",
+      "implementation_digest": "6ce163cd5416f87f251cfbb657eb5e394da4f8b554c2a389d2dd94234d911010"
+    }
+  },
+  "monitor": {
+    "id": "833f62a5-0976-4d30-a1d2-cfe759062064",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+    "request_id": "080bc611-69a3-4b05-bc7d-3c3301d75d13",
+    "request_hash": "df980a9939ff7a2259d1413d1ec7cc7393831826e817a4013da45dc1efd152fe",
+    "title": "10号 · 郑一哲 C 新评论",
+    "config": {
+      "title": "10号 · 郑一哲 C 新评论",
+      "discovery": {
+        "target": "https://www.facebook.com/reel/2163157911082094/",
+        "browser": {
+          "template": "facebook-comments-dom-v1",
+          "comment_order": "NEWEST",
+          "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd"
+        },
+        "keywords": [
+          "KFF-0914-C"
+        ],
+        "platform": "facebook",
+        "provider": "LOCAL_BROWSER",
+        "strategy": "COMMENTS",
+        "exclusions": [],
+        "processing_basis": "用户确认已用自己控制的郑一哲（100050174601107）发布 KFF-0914-C 咨询测试评论；仅用10号从指定公开 Reel 读取一页，核对新评论作者及来源供原线索审核，不自动发消息。"
+      },
+      "max_pages": 1,
+      "page_size": 10,
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "request_id": "080bc611-69a3-4b05-bc7d-3c3301d75d13",
+      "max_records": 10,
+      "retention_days": 14,
+      "interval_minutes": 60
+    },
+    "state": "PAUSED",
+    "version": 1,
+    "interval_minutes": 60,
+    "next_due_at": "2026-09-14T14:24:23.503Z",
+    "scan_number": 0,
+    "automation": null,
+    "created_by": "33333333-3333-4333-8333-333333333333",
+    "created_at": "2026-09-14T14:24:23.503Z"
+  },
+  "query": {
+    "id": "9728cd3c-b0de-43a7-bb25-db4db94d7cd4",
+    "run_id": "e368c025-cefe-4442-9cd1-c10deeef9867"
+  },
+  "run": {
+    "id": "e368c025-cefe-4442-9cd1-c10deeef9867",
+    "state": "FAILED",
+    "error_code": "EXECUTOR_ERROR",
+    "stop_reason": "EXECUTOR_ERROR",
+    "returned_count": 0,
+    "unique_count": 0,
+    "committed_pages": 0
+  },
+  "actions": [
+    {
+      "task_id": "0aa2c0f7-e43d-47ad-82e5-46eff09ddcc3",
+      "action_id": "8057ee65-c823-490f-b9e1-315ca04b6029",
+      "state": "BLOCKED",
+      "error_code": "EXECUTOR_ERROR",
+      "receipt": null,
+      "command_id": "facd880c-8558-4f45-8370-50f841dbeb74",
+      "claimed_at": "2026-09-14T14:24:25.005Z",
+      "quiesced_at": "2026-09-14T14:24:45.354Z"
+    }
+  ],
+  "closures": [
+    {
+      "command_id": "facd880c-8558-4f45-8370-50f841dbeb74",
+      "proof": {
+        "action_id": "8057ee65-c823-490f-b9e1-315ca04b6029",
+        "closed_at": "2026-09-14T14:24:45.161Z",
+        "command_id": "facd880c-8558-4f45-8370-50f841dbeb74",
+        "proof_sha256": "f09b30139e354e361f1c24d04717ac5a099d3b7489a30219ccd9366fdb12e40a",
+        "protocol_version": "kff.guardian-closure.v1"
+      },
+      "local_database_match": true
+    }
+  ],
+  "profile_after": "Inactive",
+  "observations": [],
+  "leads": [],
+  "diagnostics": [
+    {
+      "action_id": "8057ee65-c823-490f-b9e1-315ca04b6029",
+      "manifest": {
+        "step": "facebook-comments-read-wait-sidebar",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "d6c270a3fde6109ca6aaf4399aa721f3a4b656559bb5cbb4f55c17b2fb6e55d8",
+            "content": {
+              "result_count": 0,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "BLOCKED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "8057ee65-c823-490f-b9e1-315ca04b6029",
+        "attempt_id": "f037d610-f3a5-421f-ad8f-ba60e71b215e",
+        "created_at": "2026-09-14T14:24:45.329Z",
+        "error_code": "EXECUTOR_ERROR",
+        "duration_ms": 18025,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-search-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    }
+  ],
+  "finished_at": "2026-09-14T14:24:47.426Z",
+  "read_verified": false,
+  "c_matches": [],
+  "new_c_verified": false
+}

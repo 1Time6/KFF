@@ -1,0 +1,600 @@
+{
+  "schema_version": "kff.controlled-public-followup.v1",
+  "recorded_at": "2026-09-14T04:27:34.511Z",
+  "goal_complete": false,
+  "controlled_test": true,
+  "authorization": {
+    "user_text": "可以 以后类似问题全部授权 无需过问",
+    "recorded_at": "2026-09-14T02:28:35.670Z",
+    "scope": "One distinct follow-up under the same controlled test comment, using the standing authorization for similar single-message workflow tests"
+  },
+  "source": {
+    "lead_id": "19eb0c88-2002-40fd-acad-6040b684cd54",
+    "monitor_id": "3ba710a3-f505-4f96-a002-bf29a81e56aa",
+    "comment_id": "4652715068308205",
+    "author_id": "61589894042400",
+    "author_name": "XiangHuan Master",
+    "source_url": "https://www.facebook.com/reel/2163157911082094/",
+    "comment_url": "https://www.facebook.com/reel/2163157911082094/?comment_id=4652715068308205"
+  },
+  "sender": {
+    "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+    "name": "郑成功",
+    "facebook_id": "61594334430750",
+    "environment_id": "bd009fb1-2f65-448e-8536-440225d913d9",
+    "profile_id": "k1gw2kh9"
+  },
+  "body": "KFF-0914-A：测试邀请已发到私信，请查看。",
+  "task_id": "d63a4ba9-c0f5-4acd-b837-27aa84855a09",
+  "action_id": "f4af4933-f165-40b2-a7d1-9b7fa1742566",
+  "command_id": "c25bfb27-2198-4c33-bcd5-de237ca00b88",
+  "permit_id": "50475697-405c-47ed-9291-219ffcc06b3c",
+  "attempts": [
+    {
+      "id": "e5bbe079-8a2d-47c6-aa2f-a1f7be83de72",
+      "attempt_number": 1,
+      "submitted_at": "2026-09-14T04:26:47.694Z",
+      "state": "VERIFIED_SUCCEEDED"
+    }
+  ],
+  "receipt": {
+    "parent_id": "4652715068308205",
+    "remote_id": "1414402634235090",
+    "source_url": "https://www.facebook.com/reel/2163157911082094/?comment_id=4652715068308205&reply_comment_id=1414402634235090",
+    "observed_at": "2026-09-14T04:26:55.412Z",
+    "content_hash": "989f6cd388bc7086494f3a523e986441ccff7601f68c4515ea059e1d20b716bc",
+    "recipient_id": "61589894042400",
+    "evidence_kind": "browser_comment",
+    "actual_account_id": "61594334430750"
+  },
+  "outcome": "VERIFIED_SUCCEEDED",
+  "platform_submissions": 1,
+  "closure_verified": true,
+  "profile_after": "Inactive",
+  "draft_history": [
+    {
+      "id": "d63a4ba9-c0f5-4acd-b837-27aa84855a09",
+      "status": "SUCCEEDED"
+    },
+    {
+      "id": "5ace8b43-ceac-4669-9293-8d6eb501bab4",
+      "status": "REJECTED"
+    },
+    {
+      "id": "45d65e99-39aa-4619-a412-213e973b27a8",
+      "status": "REJECTED"
+    }
+  ],
+  "original_reception": {
+    "conversation_id": "79a78ecf-9814-47ab-87ab-25c093ed1306",
+    "matched_interaction": {
+      "task_id": "d63a4ba9-c0f5-4acd-b837-27aa84855a09",
+      "action_id": "f4af4933-f165-40b2-a7d1-9b7fa1742566",
+      "run_id": "a0e6207b-45b2-4a88-810c-feefc842487a",
+      "lead_id": "19eb0c88-2002-40fd-acad-6040b684cd54",
+      "peer_id": "61589894042400",
+      "first_inbox_at": "2026-09-14T01:48:11.074Z",
+      "source_body": "KFF-0914-A 我想了解咨询流程",
+      "source_url": "https://www.facebook.com/reel/2163157911082094/?comment_id=4652715068308205",
+      "reply_body": "KFF-0914-A：测试邀请已发到私信，请查看。",
+      "reply_url": "https://www.facebook.com/reel/2163157911082094/?comment_id=4652715068308205&reply_comment_id=1414402634235090",
+      "verified_at": "2026-09-14T04:26:55.412Z"
+    },
+    "opposite_account_did_not_match": true
+  },
+  "timing_boundary": "The prior Inbox message preceded this follow-up. A successful follow-up is public execution evidence, not proof that it caused that earlier private message. No second WhatsApp invite is requested.",
+  "whatsapp_sales_confirmation": false,
+  "release": {
+    "release_id": "kff-agent-0.1.22-win32-x64-6fe5b09da408",
+    "archive_sha256": "e002fcee96d4712a51036c42478d9f124946e9029099bed16c904d8a2d2eaff9",
+    "verified_files": 1348
+  },
+  "fix": {
+    "scope_cause": "The real Reel composer sits two wrappers above the target article; the old executor checked only one wrapper",
+    "scope_change": "Check only the first two wrappers and require exactly one target comment and matching composer",
+    "scope_diagnostic": {
+      "started_at": "2026-09-14T04:19:09.040Z",
+      "task_id": "45d65e99-39aa-4619-a412-213e973b27a8",
+      "snapshot_hash": "cc95e203898c3c4fed884b53ec43a10ced98c4778ed8d01c5cb0cfb0d4f0dff4",
+      "purpose": "Use the original public-comment preparer; deliberately throw before submitting; never call the original commit endpoint or publish",
+      "platform_submissions": 0,
+      "commit_hook_reached": false,
+      "closed": true,
+      "result": {
+        "outcome": "BLOCKED",
+        "error_code": "OUTREACH_STALE",
+        "diagnostic": {
+          "step": "facebook-comment-prepare-scope",
+          "error_message": "回复输入框不属于原评论",
+          "details": {
+            "composer_ancestors": [
+              {
+                "depth": 0,
+                "tag": "DIV",
+                "role": "textbox",
+                "articles": 0,
+                "textboxes": 0,
+                "buttons": []
+              },
+              {
+                "depth": 1,
+                "tag": "DIV",
+                "role": null,
+                "articles": 0,
+                "textboxes": 1,
+                "buttons": []
+              },
+              {
+                "depth": 2,
+                "tag": "DIV",
+                "role": null,
+                "articles": 0,
+                "textboxes": 1,
+                "buttons": []
+              },
+              {
+                "depth": 3,
+                "tag": "DIV",
+                "role": null,
+                "articles": 0,
+                "textboxes": 1,
+                "buttons": []
+              },
+              {
+                "depth": 4,
+                "tag": "DIV",
+                "role": null,
+                "articles": 0,
+                "textboxes": 1,
+                "buttons": []
+              },
+              {
+                "depth": 5,
+                "tag": "DIV",
+                "role": null,
+                "articles": 0,
+                "textboxes": 1,
+                "buttons": []
+              },
+              {
+                "depth": 6,
+                "tag": "DIV",
+                "role": null,
+                "articles": 0,
+                "textboxes": 1,
+                "buttons": [
+                  "用虚拟形象贴图评论",
+                  "插入表情",
+                  "附加照片或视频",
+                  "用动图评论",
+                  "用贴图评论",
+                  "发布评论"
+                ]
+              },
+              {
+                "depth": 7,
+                "tag": "FORM",
+                "role": "presentation",
+                "articles": 0,
+                "textboxes": 1,
+                "buttons": [
+                  "用虚拟形象贴图评论",
+                  "插入表情",
+                  "附加照片或视频",
+                  "用动图评论",
+                  "用贴图评论",
+                  "发布评论"
+                ]
+              },
+              {
+                "depth": 8,
+                "tag": "DIV",
+                "role": null,
+                "articles": 0,
+                "textboxes": 1,
+                "buttons": [
+                  "用虚拟形象贴图评论",
+                  "插入表情",
+                  "附加照片或视频",
+                  "用动图评论",
+                  "用贴图评论",
+                  "发布评论"
+                ]
+              },
+              {
+                "depth": 9,
+                "tag": "DIV",
+                "role": null,
+                "articles": 0,
+                "textboxes": 1,
+                "buttons": [
+                  "可用声音，切换个人主页",
+                  "用虚拟形象贴图评论",
+                  "插入表情",
+                  "附加照片或视频",
+                  "用动图评论",
+                  "用贴图评论",
+                  "发布评论"
+                ]
+              }
+            ],
+            "target_parent_counts": [
+              {
+                "depth": 0,
+                "tag": "DIV",
+                "role": "article",
+                "articles": 0,
+                "textboxes": []
+              },
+              {
+                "depth": 1,
+                "tag": "DIV",
+                "role": null,
+                "articles": 1,
+                "textboxes": []
+              },
+              {
+                "depth": 2,
+                "tag": "DIV",
+                "role": null,
+                "articles": 1,
+                "textboxes": [
+                  "回复 XiangHuan Master…"
+                ]
+              },
+              {
+                "depth": 3,
+                "tag": "DIV",
+                "role": null,
+                "articles": 1,
+                "textboxes": [
+                  "回复 XiangHuan Master…"
+                ]
+              },
+              {
+                "depth": 4,
+                "tag": "DIV",
+                "role": null,
+                "articles": 1,
+                "textboxes": [
+                  "回复 XiangHuan Master…"
+                ]
+              },
+              {
+                "depth": 5,
+                "tag": "DIV",
+                "role": null,
+                "articles": 1,
+                "textboxes": [
+                  "回复 XiangHuan Master…"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "profile_after": "Inactive",
+      "accepted": false,
+      "finished_at": "2026-09-14T04:19:39.073Z"
+    },
+    "bounded_scope_preview": {
+      "started_at": "2026-09-14T04:20:11.989Z",
+      "task_id": "45d65e99-39aa-4619-a412-213e973b27a8",
+      "snapshot_hash": "cc95e203898c3c4fed884b53ec43a10ced98c4778ed8d01c5cb0cfb0d4f0dff4",
+      "purpose": "Use the original public-comment preparer; deliberately throw before submitting; never call the original commit endpoint or publish",
+      "platform_submissions": 0,
+      "commit_hook_reached": true,
+      "closed": true,
+      "result": {
+        "outcome": "BLOCKED",
+        "error_code": "PREVIEW_COMPLETE_NO_SUBMIT",
+        "diagnostic": {
+          "step": "facebook-comment-prepare-replies",
+          "error_message": "Stop before any commit intent or submit",
+          "details": {
+            "composer_ancestors": [
+              {
+                "depth": 0,
+                "tag": "DIV",
+                "role": "textbox",
+                "articles": 0,
+                "textboxes": 0,
+                "buttons": []
+              },
+              {
+                "depth": 1,
+                "tag": "DIV",
+                "role": null,
+                "articles": 0,
+                "textboxes": 1,
+                "buttons": []
+              },
+              {
+                "depth": 2,
+                "tag": "DIV",
+                "role": null,
+                "articles": 0,
+                "textboxes": 1,
+                "buttons": []
+              },
+              {
+                "depth": 3,
+                "tag": "DIV",
+                "role": null,
+                "articles": 0,
+                "textboxes": 1,
+                "buttons": []
+              },
+              {
+                "depth": 4,
+                "tag": "DIV",
+                "role": null,
+                "articles": 0,
+                "textboxes": 1,
+                "buttons": []
+              },
+              {
+                "depth": 5,
+                "tag": "DIV",
+                "role": null,
+                "articles": 0,
+                "textboxes": 1,
+                "buttons": []
+              },
+              {
+                "depth": 6,
+                "tag": "DIV",
+                "role": null,
+                "articles": 0,
+                "textboxes": 1,
+                "buttons": [
+                  "用虚拟形象贴图评论",
+                  "插入表情",
+                  "附加照片或视频",
+                  "用动图评论",
+                  "用贴图评论",
+                  "发布评论"
+                ]
+              },
+              {
+                "depth": 7,
+                "tag": "FORM",
+                "role": "presentation",
+                "articles": 0,
+                "textboxes": 1,
+                "buttons": [
+                  "用虚拟形象贴图评论",
+                  "插入表情",
+                  "附加照片或视频",
+                  "用动图评论",
+                  "用贴图评论",
+                  "发布评论"
+                ]
+              },
+              {
+                "depth": 8,
+                "tag": "DIV",
+                "role": null,
+                "articles": 0,
+                "textboxes": 1,
+                "buttons": [
+                  "用虚拟形象贴图评论",
+                  "插入表情",
+                  "附加照片或视频",
+                  "用动图评论",
+                  "用贴图评论",
+                  "发布评论"
+                ]
+              },
+              {
+                "depth": 9,
+                "tag": "DIV",
+                "role": null,
+                "articles": 0,
+                "textboxes": 1,
+                "buttons": [
+                  "可用声音，切换个人主页",
+                  "用虚拟形象贴图评论",
+                  "插入表情",
+                  "附加照片或视频",
+                  "用动图评论",
+                  "用贴图评论",
+                  "发布评论"
+                ]
+              }
+            ],
+            "target_parent_counts": [
+              {
+                "depth": 0,
+                "tag": "DIV",
+                "role": "article",
+                "articles": 0,
+                "textboxes": []
+              },
+              {
+                "depth": 1,
+                "tag": "DIV",
+                "role": null,
+                "articles": 1,
+                "textboxes": []
+              },
+              {
+                "depth": 2,
+                "tag": "DIV",
+                "role": null,
+                "articles": 1,
+                "textboxes": [
+                  "回复 XiangHuan Master…"
+                ]
+              },
+              {
+                "depth": 3,
+                "tag": "DIV",
+                "role": null,
+                "articles": 1,
+                "textboxes": [
+                  "回复 XiangHuan Master…"
+                ]
+              },
+              {
+                "depth": 4,
+                "tag": "DIV",
+                "role": null,
+                "articles": 1,
+                "textboxes": [
+                  "回复 XiangHuan Master…"
+                ]
+              },
+              {
+                "depth": 5,
+                "tag": "DIV",
+                "role": null,
+                "articles": 1,
+                "textboxes": [
+                  "回复 XiangHuan Master…"
+                ]
+              }
+            ],
+            "initial": {
+              "rows": [],
+              "invalid": 0
+            },
+            "current": {
+              "rows": [],
+              "invalid": 0
+            }
+          }
+        }
+      },
+      "profile_after": "Inactive",
+      "accepted": true,
+      "finished_at": "2026-09-14T04:20:41.478Z"
+    },
+    "cause": "TSX added the host helper __name to an assigned arrow inside the browser-serialized reply reader; page.evaluate could not access that helper",
+    "change": "Use a self-contained object method and report source/author/existing-reply stages separately",
+    "original_failed_preview": {
+      "started_at": "2026-09-14T03:50:21.989Z",
+      "task_id": "3fe8c6cd-f8e7-4dcc-add6-cbb04f05f11e",
+      "snapshot_hash": "7d8afd4bff2b32ed859ecbba54fa2c55a8507a3a1d00e4a705ea23cbc2044742",
+      "purpose": "Use the original public-comment preparer; deliberately throw before submitting; never call the original commit endpoint or publish",
+      "platform_submissions": 0,
+      "commit_hook_reached": false,
+      "closed": true,
+      "result": {
+        "outcome": "BLOCKED",
+        "error_code": "EXECUTOR_ERROR",
+        "diagnostic": {
+          "step": "facebook-comment-read-final-scope"
+        }
+      },
+      "profile_after": "Inactive",
+      "accepted": false,
+      "finished_at": "2026-09-14T03:50:46.615Z"
+    },
+    "current_preview": {
+      "started_at": "2026-09-14T04:24:59.304Z",
+      "task_id": "d63a4ba9-c0f5-4acd-b837-27aa84855a09",
+      "snapshot_hash": "377183b79bfb8e5eb6a61806abf1097ac0138ddb750fbc7043d722ba6bfd01a6",
+      "purpose": "Use the original public-comment preparer; deliberately throw before submitting; never call the original commit endpoint or publish",
+      "platform_submissions": 0,
+      "commit_hook_reached": true,
+      "closed": true,
+      "result": {
+        "outcome": "BLOCKED",
+        "error_code": "PREVIEW_COMPLETE_NO_SUBMIT",
+        "diagnostic": {
+          "step": "facebook-comment-prepare-replies"
+        }
+      },
+      "profile_after": "Inactive",
+      "accepted": true,
+      "finished_at": "2026-09-14T04:25:30.880Z"
+    },
+    "rendered_dom": {
+      "old_browser_error": "page.evaluate: ReferenceError: __name is not defined\n    at inspectFacebookCommentRepliesDom (eval at evaluate (:311:30), <anonymous>:1:93)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+      "old_bug_reproduced": true,
+      "new_cases": [
+        {
+          "name": "one exact visible reply",
+          "passed": true
+        },
+        {
+          "name": "other parent ignored",
+          "passed": true
+        },
+        {
+          "name": "pending reply rejected",
+          "passed": true
+        },
+        {
+          "name": "ambiguous author rejected",
+          "passed": true
+        },
+        {
+          "name": "hidden reply ignored",
+          "passed": true
+        },
+        {
+          "name": "malformed reply id rejected",
+          "passed": true
+        },
+        {
+          "name": "duplicate permalink still one reply",
+          "passed": true
+        },
+        {
+          "name": "wrong page rejected",
+          "passed": true
+        }
+      ],
+      "passed": 8,
+      "host_helpers_injected": false
+    },
+    "contracts": {
+      "passed": 163,
+      "failed": 0
+    },
+    "typecheck": 0,
+    "build": 0
+  },
+  "runtime": {
+    "release_id": "kff-agent-0.1.22-win32-x64-6fe5b09da408",
+    "live_sending_enabled": false
+  },
+  "final_state": {
+    "at": "2026-09-14T04:29:48.720Z",
+    "runtime_id": "94479efd-6052-4cb4-a38c-b27a1a23bcc0",
+    "release_id": "kff-agent-0.1.22-win32-x64-6fe5b09da408",
+    "live_sending_enabled": false,
+    "open_commands": 0,
+    "monitors": [
+      {
+        "id": "6776ac4f-1baa-4064-a9d6-ecd866c2a34b",
+        "state": "PAUSED"
+      },
+      {
+        "id": "3ba710a3-f505-4f96-a002-bf29a81e56aa",
+        "state": "PAUSED"
+      },
+      {
+        "id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+        "state": "PAUSED"
+      },
+      {
+        "id": "149da22d-2ea8-49b1-accd-0ea2f4fc845f",
+        "state": "PAUSED"
+      }
+    ],
+    "profiles": [
+      {
+        "id": "k1gvdtft",
+        "status": "Inactive"
+      },
+      {
+        "id": "k1gw2kh9",
+        "status": "Inactive"
+      }
+    ],
+    "goal_complete": false
+  }
+}

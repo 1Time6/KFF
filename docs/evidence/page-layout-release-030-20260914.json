@@ -1,0 +1,51 @@
+{
+  "at": "2026-09-14T09:29:19.415Z",
+  "version": "0.1.30",
+  "goal_complete": false,
+  "real_page_read_passed": false,
+  "local_checks": {
+    "fixtures": {
+      "startTime": "2026-09-14T09:21:26.636Z",
+      "duration": 5750.892000000001,
+      "expected": 4,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "contracts": {
+      "total": 168,
+      "passed": 168,
+      "failed": 0
+    },
+    "typecheck": 0,
+    "build": 0
+  },
+  "agent": {
+    "release_id": "kff-agent-0.1.30-win32-x64-7cd958c7b59e",
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.30-win32-x64-7cd958c7b59e",
+    "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.30-win32-x64-7cd958c7b59e.zip",
+    "archive_sha256": "72714574b866999e56604661ac631549286d59193d104c8edcc629e17bf3148a",
+    "files": 1348,
+    "dependencies": 23,
+    "contains_pairing_or_browser_data": false
+  },
+  "controller": {
+    "release_id": "kff-controller-0.1.30-win32-x64-69363b554666",
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.30-win32-x64-69363b554666",
+    "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.30-win32-x64-69363b554666.zip",
+    "archive_sha256": "5e82985530976d533879a4c2bf314a103d8d0d4b05765bac35a2abb8ac31232e",
+    "files": 24092,
+    "uncompressed_bytes": 829488620,
+    "dependency_packages": 155,
+    "contains_runtime_data": false,
+    "live_config_values_scanned": 6
+  },
+  "archive_sha256_verified": true,
+  "real_evidence": "docs/evidence/profile10-page-read-030-20260914.json",
+  "limitations": [
+    "Only observed Chinese Product/Service Page header with native zero-review tile has a local fallback.",
+    "Real Page acquisition remains blocked at native review or tab matching.",
+    "New-post increment, profile10 Inbox, two-account continuous run and WhatsApp sales receipt are not accepted.",
+    "Complete controller archive verified; 0.1.30 clean Windows install, OS reboot and cross-version upgrade not tested."
+  ]
+}

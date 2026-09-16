@@ -1,0 +1,115 @@
+{
+  "at": "2026-09-14T14:46:30.559Z",
+  "purpose": "Identify the C reply control after the original pre-submit locator failure; one reply-entry click, no filling or submitting.",
+  "steps": [
+    "navigate",
+    "wait-comments",
+    "wait-comment-entry",
+    "locate-comment-entry",
+    "click-comment-entry",
+    "wait-sidebar",
+    "wait-comment-controls",
+    "open-sort-menu",
+    "choose-newest",
+    "wait-newest",
+    "wait-rows",
+    "scope",
+    "expand",
+    "parse-dom",
+    "scroll",
+    "scope",
+    "expand",
+    "parse-dom",
+    "scroll",
+    "scope",
+    "expand",
+    "parse-dom",
+    "scroll",
+    "scope",
+    "expand",
+    "parse-dom",
+    "final-scope"
+  ],
+  "frames": [
+    {
+      "phase": "before",
+      "at": "2026-09-14T14:46:59.852Z",
+      "textboxes": [
+        {
+          "label": "写评论…",
+          "placeholder": null,
+          "text_length": 0,
+          "role": "textbox"
+        }
+      ]
+    },
+    {
+      "phase": "after_click",
+      "at": "2026-09-14T14:47:00.205Z",
+      "textboxes": [
+        {
+          "label": "回复郑一哲…",
+          "placeholder": null,
+          "text_length": 4,
+          "role": "textbox"
+        },
+        {
+          "label": "写评论…",
+          "placeholder": null,
+          "text_length": 0,
+          "role": "textbox"
+        }
+      ]
+    },
+    {
+      "phase": "after_250ms",
+      "at": "2026-09-14T14:47:00.539Z",
+      "textboxes": [
+        {
+          "label": "回复郑一哲…",
+          "placeholder": null,
+          "text_length": 4,
+          "role": "textbox"
+        },
+        {
+          "label": "写评论…",
+          "placeholder": null,
+          "text_length": 0,
+          "role": "textbox"
+        }
+      ]
+    },
+    {
+      "phase": "after_1000ms",
+      "at": "2026-09-14T14:47:01.306Z",
+      "textboxes": [
+        {
+          "label": "回复郑一哲…",
+          "placeholder": null,
+          "text_length": 4,
+          "role": "textbox"
+        },
+        {
+          "label": "写评论…",
+          "placeholder": null,
+          "text_length": 0,
+          "role": "textbox"
+        }
+      ]
+    }
+  ],
+  "platform_sends": 0,
+  "identity": {
+    "method": "facebook-profile-dom-v1",
+    "authenticated": true,
+    "operating_identity_id": "61594402378582",
+    "account_type": "profile",
+    "display_name": "白青天",
+    "observed_at": "2026-09-14T14:46:42.461Z",
+    "source_url": "https://www.facebook.com/profile.php?id=61594402378582"
+  },
+  "parent_count": 1,
+  "reply_count": 1,
+  "profile_after": "Inactive",
+  "finished_at": "2026-09-14T14:47:03.502Z"
+}

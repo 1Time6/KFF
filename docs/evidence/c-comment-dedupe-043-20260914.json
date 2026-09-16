@@ -1,0 +1,409 @@
+{
+  "started_at": "2026-09-14T15:37:43.892Z",
+  "platform_sends": 0,
+  "original_scans": 1,
+  "requested_marker": "KFF-0914-C 我想了解咨询流程",
+  "expected_author": "100050174601107",
+  "expected_reader": "61594402378582",
+  "author_confirmation": {
+    "at": "2026-09-14T14:03:15.798Z",
+    "user_question": "C评论作者是郑一哲（ID尾号601107），是否由你控制的账号发布？",
+    "user_answer": "是的",
+    "actual_author": "100050174601107",
+    "actual_author_name": "郑一哲",
+    "comment_id": "1798186518043775",
+    "comment_body": "KFF-0914-C 我想了解咨询流程",
+    "source": "https://www.facebook.com/reel/2163157911082094/",
+    "prior_planned_author": "61589894042400",
+    "basis": "User confirmed actual author ownership; use actual C author for controlled single-message continuation."
+  },
+  "prior_failed_commands": [
+    "12c7a01a-8e95-40d4-a1a6-9bd9cc7c7bfc",
+    "0f05dce2-8fe5-49a8-b0d1-01dae73d1bae",
+    "facd880c-8558-4f45-8370-50f841dbeb74"
+  ],
+  "leads_before": [
+    {
+      "id": "bd7d506e-a852-4834-85f1-f963533a7eec",
+      "object_id": "34109353-e1dd-4fc3-9580-9dd57273b9a0",
+      "state": "QUALIFIED",
+      "version": 2
+    }
+  ],
+  "links_before": [
+    {
+      "task_id": "163cfb04-45da-40bd-a8f7-60e2148e82e1"
+    },
+    {
+      "task_id": "f05e4df4-fc2c-444a-b2e7-81ae6ae67ef4"
+    }
+  ],
+  "before": {
+    "runtime_id": "68b52eb7-ff34-4e99-b603-6c8d2c3e65fe",
+    "existing_monitors": [
+      {
+        "id": "833f62a5-0976-4d30-a1d2-cfe759062064",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+        "request_id": "080bc611-69a3-4b05-bc7d-3c3301d75d13",
+        "request_hash": "df980a9939ff7a2259d1413d1ec7cc7393831826e817a4013da45dc1efd152fe",
+        "title": "10号 · 郑一哲 C 新评论",
+        "config": {
+          "title": "10号 · 郑一哲 C 新评论",
+          "discovery": {
+            "target": "https://www.facebook.com/reel/2163157911082094/",
+            "browser": {
+              "template": "facebook-comments-dom-v1",
+              "comment_order": "NEWEST",
+              "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd"
+            },
+            "keywords": [
+              "KFF-0914-C"
+            ],
+            "platform": "facebook",
+            "provider": "LOCAL_BROWSER",
+            "strategy": "COMMENTS",
+            "exclusions": [],
+            "processing_basis": "用户确认已用自己控制的郑一哲（100050174601107）发布 KFF-0914-C 咨询测试评论；仅用10号从指定公开 Reel 读取一页，核对新评论作者及来源供原线索审核，不自动发消息。"
+          },
+          "max_pages": 1,
+          "page_size": 10,
+          "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+          "request_id": "080bc611-69a3-4b05-bc7d-3c3301d75d13",
+          "max_records": 10,
+          "retention_days": 14,
+          "interval_minutes": 60
+        },
+        "state": "PAUSED",
+        "version": 1,
+        "interval_minutes": 60,
+        "next_due_at": "2026-09-14T15:39:22.344Z",
+        "scan_number": 2,
+        "automation": null,
+        "created_by": "33333333-3333-4333-8333-333333333333",
+        "created_at": "2026-09-14T14:24:23.503Z"
+      }
+    ],
+    "capability": {
+      "id": "041982d9-857f-4a67-b461-c57f30f03164",
+      "organization_id": "11111111-1111-4111-8111-111111111111",
+      "brand_id": "22222222-2222-4222-8222-222222222222",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "capability_key": "facebook.discovery.read.browser",
+      "revision": 1,
+      "adapter_version": "facebook-search-browser-v1",
+      "evidence_state": "IMPLEMENTED_TEST_ONLY",
+      "mode": "CONTROLLED_PILOT",
+      "is_synthetic": false,
+      "description": "读取固定关键词公开内容、指定帖子的可见评论或固定公共主页帖子；仅覆盖当前页面窗口，需先登记代码证据。",
+      "last_verified_at": null,
+      "created_at": "2026-09-14T08:45:23.428Z",
+      "implementation_digest": "4057377454533808b8eac83849cd0675eb6977296723775ffe2a487cb6cbeefb"
+    }
+  },
+  "monitor": {
+    "id": "833f62a5-0976-4d30-a1d2-cfe759062064",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+    "request_id": "080bc611-69a3-4b05-bc7d-3c3301d75d13",
+    "request_hash": "df980a9939ff7a2259d1413d1ec7cc7393831826e817a4013da45dc1efd152fe",
+    "title": "10号 · 郑一哲 C 新评论",
+    "config": {
+      "title": "10号 · 郑一哲 C 新评论",
+      "discovery": {
+        "target": "https://www.facebook.com/reel/2163157911082094/",
+        "browser": {
+          "template": "facebook-comments-dom-v1",
+          "comment_order": "NEWEST",
+          "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd"
+        },
+        "keywords": [
+          "KFF-0914-C"
+        ],
+        "platform": "facebook",
+        "provider": "LOCAL_BROWSER",
+        "strategy": "COMMENTS",
+        "exclusions": [],
+        "processing_basis": "用户确认已用自己控制的郑一哲（100050174601107）发布 KFF-0914-C 咨询测试评论；仅用10号从指定公开 Reel 读取一页，核对新评论作者及来源供原线索审核，不自动发消息。"
+      },
+      "max_pages": 1,
+      "page_size": 10,
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "request_id": "080bc611-69a3-4b05-bc7d-3c3301d75d13",
+      "max_records": 10,
+      "retention_days": 14,
+      "interval_minutes": 60
+    },
+    "state": "PAUSED",
+    "version": 1,
+    "interval_minutes": 60,
+    "next_due_at": "2026-09-14T15:39:22.344Z",
+    "scan_number": 2,
+    "automation": null,
+    "created_by": "33333333-3333-4333-8333-333333333333",
+    "created_at": "2026-09-14T14:24:23.503Z"
+  },
+  "query": {
+    "id": "ccde5adc-c9e5-4354-a603-9d3eb63b0433",
+    "run_id": "b28ebb61-5617-4127-a950-fcab5e75ec1e"
+  },
+  "run": {
+    "id": "b28ebb61-5617-4127-a950-fcab5e75ec1e",
+    "state": "PARTIAL",
+    "error_code": null,
+    "stop_reason": "MAX_PAGES",
+    "returned_count": 4,
+    "unique_count": 4,
+    "committed_pages": 1
+  },
+  "actions": [
+    {
+      "task_id": "f9a44995-e9c3-4a6d-b295-ab1653eeba91",
+      "action_id": "100dca52-2640-459b-b75e-55e0ecbccbe2",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "receipt": {
+        "remote_id": "collection:b28ebb61-5617-4127-a950-fcab5e75ec1e:1",
+        "observed_at": "2026-09-14T15:38:11.397Z",
+        "content_hash": "6bd1514345eab3ca81091366590891c6511a68482002288fd700237f0dc6b016",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61594402378582"
+      },
+      "command_id": "47036418-dc7c-4b0d-b4dd-d0688f358639",
+      "claimed_at": "2026-09-14T15:37:46.069Z",
+      "quiesced_at": "2026-09-14T15:38:21.518Z"
+    }
+  ],
+  "closures": [
+    {
+      "command_id": "47036418-dc7c-4b0d-b4dd-d0688f358639",
+      "proof": {
+        "action_id": "100dca52-2640-459b-b75e-55e0ecbccbe2",
+        "closed_at": "2026-09-14T15:38:21.201Z",
+        "command_id": "47036418-dc7c-4b0d-b4dd-d0688f358639",
+        "proof_sha256": "60ff78ea2f7a74a1ba76f7a87ad1ce3e0361e9f06281d839a4f6cff1b7db005b",
+        "protocol_version": "kff.guardian-closure.v1"
+      },
+      "local_database_match": true
+    }
+  ],
+  "profile_after": "Inactive",
+  "observations": [
+    {
+      "id": "7b1d53c6-6fa0-4429-8499-565c09032da5",
+      "object_id": "34109353-e1dd-4fc3-9580-9dd57273b9a0",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "KFF-0914-C 我想了解咨询流程"
+        },
+        "author_id": {
+          "kind": "VALUE",
+          "value": "100050174601107"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月14日周一06:39"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "source_url": "https://www.facebook.com/reel/2163157911082094/?comment_id=1798186518043775",
+      "observed_at": "2026-09-14T15:38:11.397Z",
+      "expires_at": "2026-09-28T15:37:44.151Z"
+    },
+    {
+      "id": "8e5fc3bc-aa6d-4294-8efc-6ccfc06d3857",
+      "object_id": "64c029f8-b2e9-4090-b555-f062bbc65645",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "怎么测算啊"
+        },
+        "author_id": {
+          "kind": "VALUE",
+          "value": "61578850341360"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月11日周五03:13"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "source_url": "https://www.facebook.com/reel/2163157911082094/?comment_id=4486227441644316",
+      "observed_at": "2026-09-14T15:38:11.397Z",
+      "expires_at": "2026-09-28T15:37:44.151Z"
+    },
+    {
+      "id": "b4325354-fbf0-485a-93f1-fb2de5c307a0",
+      "object_id": "90c25e09-8c47-45b1-bfa7-894d2e3b66b7",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "怎么联系你"
+        },
+        "author_id": {
+          "kind": "VALUE",
+          "value": "100090732198621"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月11日周五03:15"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "source_url": "https://www.facebook.com/reel/2163157911082094/?comment_id=4028276564148800",
+      "observed_at": "2026-09-14T15:38:11.397Z",
+      "expires_at": "2026-09-28T15:37:44.151Z"
+    },
+    {
+      "id": "3a5670cf-c7a5-42ea-bdbe-f70308b93d44",
+      "object_id": "ef21064d-45fc-4ef5-9e0f-57a8658a0dd5",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "KFF-0914-A 我想了解咨询流程"
+        },
+        "author_id": {
+          "kind": "VALUE",
+          "value": "61589894042400"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月13日周日17:11"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "source_url": "https://www.facebook.com/reel/2163157911082094/?comment_id=4652715068308205",
+      "observed_at": "2026-09-14T15:38:11.397Z",
+      "expires_at": "2026-09-28T15:37:44.151Z"
+    }
+  ],
+  "leads": [
+    {
+      "id": "bd7d506e-a852-4834-85f1-f963533a7eec",
+      "organization_id": "11111111-1111-4111-8111-111111111111",
+      "brand_id": "22222222-2222-4222-8222-222222222222",
+      "monitor_id": "833f62a5-0976-4d30-a1d2-cfe759062064",
+      "object_id": "34109353-e1dd-4fc3-9580-9dd57273b9a0",
+      "observation_id": "3b778625-73f9-40a6-aa7d-5d07975dd6a4",
+      "version": 2,
+      "state": "QUALIFIED",
+      "score": 50,
+      "matched_keywords": [
+        "KFF-0914-C"
+      ],
+      "reason": "用户确认郑一哲为本人控制账号；原采集核对C新评论正文、数字作者、固定Reel及时间，作为单条受控流程测试。",
+      "automation_error": null,
+      "next_action_at": "2026-09-14T14:40:28.777Z",
+      "first_seen_at": "2026-09-14T14:40:05.916Z",
+      "last_seen_at": "2026-09-14T15:38:21.691Z"
+    }
+  ],
+  "diagnostics": [
+    {
+      "action_id": "100dca52-2640-459b-b75e-55e0ecbccbe2",
+      "manifest": {
+        "step": "facebook-comments-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "ad28f13c0cc37069cae33e3a45191d9ce296305df7ba3f280ac3d8e6d34ebdf2",
+            "content": {
+              "result_count": 4,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "100dca52-2640-459b-b75e-55e0ecbccbe2",
+        "attempt_id": "baa93ec9-a7f9-4dc3-a8b6-600372419117",
+        "created_at": "2026-09-14T15:38:21.497Z",
+        "error_code": null,
+        "duration_ms": 33333,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-search-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    }
+  ],
+  "finished_at": "2026-09-14T15:38:24.371Z",
+  "read_verified": true,
+  "c_matches": [
+    {
+      "id": "7b1d53c6-6fa0-4429-8499-565c09032da5",
+      "object_id": "34109353-e1dd-4fc3-9580-9dd57273b9a0",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "KFF-0914-C 我想了解咨询流程"
+        },
+        "author_id": {
+          "kind": "VALUE",
+          "value": "100050174601107"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月14日周一06:39"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "source_url": "https://www.facebook.com/reel/2163157911082094/?comment_id=1798186518043775",
+      "observed_at": "2026-09-14T15:38:11.397Z",
+      "expires_at": "2026-09-28T15:37:44.151Z"
+    }
+  ],
+  "links_after": [
+    {
+      "task_id": "163cfb04-45da-40bd-a8f7-60e2148e82e1"
+    },
+    {
+      "task_id": "f05e4df4-fc2c-444a-b2e7-81ae6ae67ef4"
+    }
+  ],
+  "new_c_verified": false,
+  "c_dedupe_verified": true,
+  "acceptance_note": "New observation retained for audit; same C lead and object, no additional outreach task or platform send."
+}

@@ -1,0 +1,176 @@
+{
+  "at": "2026-09-14T14:29:46.821Z",
+  "purpose": "Observe the original comment-entry click and sidebar only; no collection projection, no sends, no click retries.",
+  "original_failed_action": "139e1122-32f5-4888-a96c-20a8416e7d8d",
+  "events": [
+    {
+      "phase": "before_click",
+      "trusted": true,
+      "at": "2026-09-14T14:30:09.056Z",
+      "path": "/reel/2163157911082094",
+      "focused": true,
+      "visibility": "visible",
+      "ready": "interactive",
+      "sidebar_count": 0,
+      "dialog_count": 0,
+      "comment_articles": 0,
+      "buttons": [
+        {
+          "expanded": "false",
+          "pressed": null,
+          "x": 489.88751220703125,
+          "y": 308,
+          "width": 48,
+          "height": 65,
+          "hit": true
+        },
+        {
+          "expanded": "false",
+          "pressed": null,
+          "x": 489.88751220703125,
+          "y": 762,
+          "width": 48,
+          "height": 65,
+          "hit": false
+        }
+      ]
+    },
+    {
+      "phase": "after_click",
+      "delay_ms": 0,
+      "at": "2026-09-14T14:30:09.389Z",
+      "path": "/reel/2163157911082094",
+      "focused": true,
+      "visibility": "visible",
+      "ready": "interactive",
+      "sidebar_count": 0,
+      "dialog_count": 0,
+      "comment_articles": 0,
+      "buttons": [
+        {
+          "expanded": "true",
+          "pressed": null,
+          "x": 270.5249938964844,
+          "y": 135,
+          "width": 48,
+          "height": 65,
+          "hit": true
+        },
+        {
+          "expanded": "true",
+          "pressed": null,
+          "x": 270.5249938964844,
+          "y": 390,
+          "width": 48,
+          "height": 65,
+          "hit": false
+        }
+      ]
+    },
+    {
+      "phase": "after_click",
+      "delay_ms": 500,
+      "at": "2026-09-14T14:30:09.574Z",
+      "path": "/reel/2163157911082094",
+      "focused": true,
+      "visibility": "visible",
+      "ready": "interactive",
+      "sidebar_count": 0,
+      "dialog_count": 0,
+      "comment_articles": 0,
+      "buttons": [
+        {
+          "expanded": "true",
+          "pressed": null,
+          "x": 254.1999969482422,
+          "y": 135,
+          "width": 48,
+          "height": 65,
+          "hit": true
+        },
+        {
+          "expanded": "true",
+          "pressed": null,
+          "x": 254.1999969482422,
+          "y": 390,
+          "width": 48,
+          "height": 65,
+          "hit": false
+        }
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "at": "2026-09-14T14:30:03.925Z",
+      "step": "navigate"
+    },
+    {
+      "at": "2026-09-14T14:30:08.134Z",
+      "step": "wait-comments"
+    },
+    {
+      "at": "2026-09-14T14:30:08.136Z",
+      "step": "wait-comment-entry"
+    },
+    {
+      "at": "2026-09-14T14:30:08.211Z",
+      "step": "locate-comment-entry"
+    },
+    {
+      "at": "2026-09-14T14:30:08.910Z",
+      "step": "click-comment-entry"
+    },
+    {
+      "at": "2026-09-14T14:30:09.333Z",
+      "step": "wait-sidebar"
+    }
+  ],
+  "sends": 0,
+  "identity": {
+    "method": "facebook-profile-dom-v1",
+    "authenticated": true,
+    "operating_identity_id": "61594402378582",
+    "account_type": "profile",
+    "display_name": "白青天",
+    "observed_at": "2026-09-14T14:30:03.921Z",
+    "source_url": "https://www.facebook.com/profile.php?id=61594402378582"
+  },
+  "read_stop": {
+    "name": "Error",
+    "code": null,
+    "message": "page.waitForFunction: EvalError: Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src *.facebook.com *.fbcdn.net *.facebook.net 127.0.0.1:* 'nonce-QfPsXCFJ' blob: 'self' connect.facebook.net 'wasm-unsafe-eval' https://accounts.google.com https://*.google-analytics.com *.google.com\".\n"
+  },
+  "final_frame": {
+    "at": "2026-09-14T14:30:09.634Z",
+    "path": "/reel/2163157911082094",
+    "focused": true,
+    "visibility": "visible",
+    "ready": "interactive",
+    "sidebar_count": 0,
+    "dialog_count": 0,
+    "comment_articles": 0,
+    "buttons": [
+      {
+        "expanded": "true",
+        "pressed": null,
+        "x": 253.91250610351562,
+        "y": 135,
+        "width": 48,
+        "height": 65,
+        "hit": true
+      },
+      {
+        "expanded": "true",
+        "pressed": null,
+        "x": 253.91250610351562,
+        "y": 390,
+        "width": 48,
+        "height": 65,
+        "hit": false
+      }
+    ]
+  },
+  "profile_after": "Inactive",
+  "finished_at": "2026-09-14T14:30:10.745Z"
+}

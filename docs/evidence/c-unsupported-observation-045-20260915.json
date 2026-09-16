@@ -1,0 +1,264 @@
+{
+  "started_at": "2026-09-14T16:22:01.002Z",
+  "platform_sends": 0,
+  "imports": 0,
+  "identity": {
+    "method": "facebook-profile-dom-v1",
+    "authenticated": true,
+    "operating_identity_id": "61594402378582",
+    "account_type": "profile",
+    "display_name": "白青天",
+    "observed_at": "2026-09-14T16:22:11.944Z",
+    "source_url": "https://www.facebook.com/profile.php?id=61594402378582"
+  },
+  "parsed": {
+    "rows": [
+      {
+        "message_id": "100050174601107@msgr.7505283981980540236",
+        "body": "KFF-0914-C 我想了解咨询流程，需要提供哪些资料？",
+        "direction": "INBOUND",
+        "display_name": "郑一哲",
+        "displayed_time": "08:19",
+        "has_attachment": false
+      },
+      {
+        "message_id": "100050174601107@msgr.7505287682298342954",
+        "body": "感谢您的咨询。我们的咨询流程是先确认您想探讨的一个问题，再通过官方预约表提交必要的出生信息。请问您目前想了解的是感情、事业还是人生方向方面的疑问？",
+        "direction": "OUTBOUND",
+        "display_name": null,
+        "displayed_time": "08:33",
+        "has_attachment": false
+      },
+      {
+        "message_id": "100050174601107@msgr.7505288161128367482",
+        "body": "如需继续咨询，可以通过 WhatsApp 联系接待人员：https://wa.me/8618730836793",
+        "direction": "OUTBOUND",
+        "display_name": null,
+        "displayed_time": "08:35",
+        "has_attachment": false
+      },
+      {
+        "message_id": "100050174601107@msgr.7505296734139008217",
+        "body": "号码更正：上一条邀请中的号码有误。如需继续咨询，可以通过 WhatsApp 联系接待人员：https://wa.me/8618730936793",
+        "direction": "OUTBOUND",
+        "display_name": null,
+        "displayed_time": "09:09",
+        "has_attachment": false
+      },
+      {
+        "message_id": "100050174601107@msgr.7505299093355010386",
+        "body": "https://wa.me/message/JD6UETU6CBGTF1",
+        "direction": "INBOUND",
+        "display_name": "郑一哲",
+        "displayed_time": "09:19",
+        "has_attachment": false
+      }
+    ],
+    "invalid": 1
+  },
+  "articles": [
+    {
+      "label": null,
+      "text": "KFF-0914-C 我想了解咨询流程，需要提供哪些资料？\nEnter，消息由郑一哲发送于08:19：KFF-0914-C 我想了解咨询流程，需要提供哪些资料？",
+      "message_count": 1,
+      "messages": [
+        {
+          "id": "100050174601107@msgr.7505283981980540236",
+          "label": "08:19，郑一哲：KFF-0914-C 我想了解咨询流程，需要提供哪些资料？",
+          "bodies": [
+            {
+              "text": "KFF-0914-C 我想了解咨询流程，需要提供哪些资料？",
+              "tags": [],
+              "role": null
+            }
+          ],
+          "media": [
+            {
+              "tag": "IMG",
+              "alt": "郑一哲",
+              "hidden": true,
+              "role": null,
+              "parent_tag": "DIV",
+              "parent_role": "button",
+              "link": false,
+              "avatar": true,
+              "width": null,
+              "height": null
+            }
+          ],
+          "links": []
+        }
+      ]
+    },
+    {
+      "label": null,
+      "text": "感谢您的咨询。我们的咨询流程是先确认您想探讨的一个问题，再通过官方预约表提交必要的出生信息。请问您目前想了解的是感情、事业还是人生方向方面的疑问？\nEnter，消息由你发送于08:33：感谢您的咨询。我们的咨询流程是先确认您想探讨的一个问题，再通过官方预约表提交必要的出生信息。请问您目前想了解的是感情、事业还是人生方向方面的疑问？",
+      "message_count": 1,
+      "messages": [
+        {
+          "id": "100050174601107@msgr.7505287682298342954",
+          "label": "08:33，你：感谢您的咨询。我们的咨询流程是先确认您想探讨的一个问题，再通过官方预约表提交必要的出生信息。请问您目前想了解的是感情、事业还是人生方向方面的疑问？",
+          "bodies": [
+            {
+              "text": "感谢您的咨询。我们的咨询流程是先确认您想探讨的一个问题，再通过官方预约表提交必要的出生信息。请问您目前想了解的是感情、事业还是人生方向方面的疑问？",
+              "tags": [],
+              "role": null
+            }
+          ],
+          "media": [],
+          "links": []
+        }
+      ]
+    },
+    {
+      "label": null,
+      "text": "如需继续咨询，可以通过 WhatsApp 联系接待人员：https://wa.me/8618730836793\nwa.me\nEnter，消息由你发送于08:35：如需继续咨询，可以通过 WhatsApp 联系接待人员：https://wa.me/8618730836793",
+      "message_count": 1,
+      "messages": [
+        {
+          "id": "100050174601107@msgr.7505288161128367482",
+          "label": "08:35，你：如需继续咨询，可以通过 WhatsApp 联系接待人员：https://wa.me/8618730836793",
+          "bodies": [
+            {
+              "text": "如需继续咨询，可以通过 WhatsApp 联系接待人员：https://wa.me/8618730836793",
+              "tags": [
+                "SPAN"
+              ],
+              "role": null
+            }
+          ],
+          "media": [],
+          "links": [
+            {
+              "text": "https://wa.me/8618730836793",
+              "role": "link",
+              "label": null
+            },
+            {
+              "text": "wa.me",
+              "role": "link",
+              "label": "打开附件，wa.me"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": null,
+      "text": "号码更正：上一条邀请中的号码有误。如需继续咨询，可以通过 WhatsApp 联系接待人员：https://wa.me/8618730936793\nwa.me\nEnter，消息由你发送于09:09：号码更正：上一条邀请中的号码有误。如需继续咨询，可以通过 WhatsApp 联系接待人员：https://wa.me/8618730936793",
+      "message_count": 1,
+      "messages": [
+        {
+          "id": "100050174601107@msgr.7505296734139008217",
+          "label": "09:09，你：号码更正：上一条邀请中的号码有误。如需继续咨询，可以通过 WhatsApp 联系接待人员：https://wa.me/8618730936793",
+          "bodies": [
+            {
+              "text": "号码更正：上一条邀请中的号码有误。如需继续咨询，可以通过 WhatsApp 联系接待人员：https://wa.me/8618730936793",
+              "tags": [
+                "SPAN"
+              ],
+              "role": null
+            }
+          ],
+          "media": [
+            {
+              "tag": "IMG",
+              "alt": "郑一哲于09:11已读",
+              "hidden": false,
+              "role": null,
+              "parent_tag": "SPAN",
+              "parent_role": null,
+              "link": false,
+              "avatar": false,
+              "width": "14",
+              "height": "14"
+            }
+          ],
+          "links": [
+            {
+              "text": "https://wa.me/8618730936793",
+              "role": "link",
+              "label": null
+            },
+            {
+              "text": "wa.me",
+              "role": "link",
+              "label": "打开附件，wa.me"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": null,
+      "text": "https://wa.me/8618730936793?text=Hi%2C%20I%20came%20from%20Facebook%20and%20would%20like%20a%20reading\nEnter，消息由郑一哲发送于09:15：https://wa.me/8618730936793?text=Hi%2C%20I%20came%20from%20Facebook%20and%20would%20like%20a%20reading",
+      "message_count": 1,
+      "messages": [
+        {
+          "id": "100050174601107@msgr.7505298115747309006",
+          "label": "09:15，郑一哲：https://wa.me/8618730936793?text=Hi%2C%20I%20came%20from%20Facebook%20and%20would%20like%20a%20reading",
+          "bodies": [
+            {
+              "text": "https://wa.me/8618730936793?text=Hi%2C%20I%20came%20from%20Facebook%20and%20would%20like%20a%20reading",
+              "tags": [
+                "SPAN"
+              ],
+              "role": null
+            }
+          ],
+          "media": [],
+          "links": [
+            {
+              "text": "https://wa.me/8618730936793?text=Hi%2C%20I%20came%20from%20Facebook%20and%20would%20like%20a%20reading",
+              "role": "link",
+              "label": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": null,
+      "text": "https://wa.me/message/JD6UETU6CBGTF1\nEnter，消息由郑一哲发送于09:19：https://wa.me/message/JD6UETU6CBGTF1",
+      "message_count": 1,
+      "messages": [
+        {
+          "id": "100050174601107@msgr.7505299093355010386",
+          "label": "09:19，郑一哲：https://wa.me/message/JD6UETU6CBGTF1",
+          "bodies": [
+            {
+              "text": "https://wa.me/message/JD6UETU6CBGTF1",
+              "tags": [
+                "SPAN"
+              ],
+              "role": null
+            }
+          ],
+          "media": [
+            {
+              "tag": "IMG",
+              "alt": "郑一哲",
+              "hidden": true,
+              "role": null,
+              "parent_tag": "DIV",
+              "parent_role": "button",
+              "link": false,
+              "avatar": true,
+              "width": null,
+              "height": null
+            }
+          ],
+          "links": [
+            {
+              "text": "https://wa.me/message/JD6UETU6CBGTF1",
+              "role": "link",
+              "label": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "profile_after": "Inactive",
+  "finished_at": "2026-09-14T16:22:21.495Z"
+}

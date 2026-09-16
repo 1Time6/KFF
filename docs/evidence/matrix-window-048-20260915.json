@@ -1,0 +1,197 @@
+{
+  "schema_version": "kff.read-window-acceptance.v1",
+  "at": "2026-09-15T03:13:37.303Z",
+  "status": "CLOSED_WITH_FINDINGS",
+  "accepted": false,
+  "full_goal_complete": false,
+  "started_at": "2026-09-15T03:09:52.420Z",
+  "finished_at": "2026-09-15T03:11:20.791Z",
+  "elapsed_seconds": 88.371,
+  "stop_reason": "SELECTED_THREAD_INCOMPLETE",
+  "failure": {
+    "details": {
+      "stored": 0,
+      "task_id": "07f16150-a93c-4090-b87d-348e3b59c830",
+      "has_more": false,
+      "discovery": {
+        "skipped": [
+          {
+            "reason": "THREAD_IDENTITY_UNVERIFIED",
+            "failure": {
+              "code": "THREAD_IDENTITY_UNVERIFIED",
+              "stage": "facebook-inbox-directory-identity"
+            },
+            "thread_id": "2079341482680484"
+          }
+        ],
+        "threads": [
+          {
+            "peer_id": "61594402378582",
+            "thread_id": "2234491403949554",
+            "display_name": "白青天"
+          },
+          {
+            "peer_id": "100050174601107",
+            "thread_id": "27724009533944398",
+            "display_name": "郑一哲"
+          }
+        ],
+        "strategy": "RECENT_ACCEPTED",
+        "empty_list": false,
+        "unparsed_rows": 0,
+        "window_limited": true,
+        "visible_threads": 3
+      },
+      "duplicates": 8
+    }
+  },
+  "monitors": [
+    {
+      "id": "0ba89798-d362-4cbb-9016-14730718ee0b",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "state": "PAUSED",
+      "parent_monitor_id": null
+    },
+    {
+      "id": "f68a84c1-a113-43c0-aabb-cbe1d2549e97",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "state": "PAUSED",
+      "parent_monitor_id": null
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "92b88db2-f26a-4879-bff3-e83b59bd5a8c",
+      "task_id": "07f16150-a93c-4090-b87d-348e3b59c830",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "command_id": "5634fbf7-e680-4382-b5e5-6f816bb0cf68",
+      "claimed_at": "2026-09-15T03:09:53.747Z",
+      "quiesced_at": "2026-09-15T03:11:17.052Z"
+    },
+    {
+      "action_id": "efc2c69f-cfb3-4542-83a3-2c9465e43c09",
+      "task_id": "7a25a4ae-0f6e-47c3-aa7b-30d4960a711e",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "state": "CANCELED",
+      "error_code": "STOP_REQUESTED",
+      "command_id": null,
+      "claimed_at": null,
+      "quiesced_at": null
+    },
+    {
+      "action_id": "8ebff670-2b2b-48e8-b0da-899ee927d2e8",
+      "task_id": "d7409c06-d48e-41b5-b131-b9f8caa95d25",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "state": "CANCELED",
+      "error_code": "STOP_REQUESTED",
+      "command_id": null,
+      "claimed_at": null,
+      "quiesced_at": null
+    },
+    {
+      "action_id": "82ac2566-1667-4cca-95e6-f2d9307f6580",
+      "task_id": "0380c2e5-49e5-4bcc-8fce-68e6f22175c5",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "state": "CANCELED",
+      "error_code": "STOP_REQUESTED",
+      "command_id": null,
+      "claimed_at": null,
+      "quiesced_at": null
+    }
+  ],
+  "pages": [
+    {
+      "details": {
+        "stored": 0,
+        "task_id": "07f16150-a93c-4090-b87d-348e3b59c830",
+        "has_more": false,
+        "discovery": {
+          "skipped": [
+            {
+              "reason": "THREAD_IDENTITY_UNVERIFIED",
+              "failure": {
+                "code": "THREAD_IDENTITY_UNVERIFIED",
+                "stage": "facebook-inbox-directory-identity"
+              },
+              "thread_id": "2079341482680484"
+            }
+          ],
+          "threads": [
+            {
+              "peer_id": "61594402378582",
+              "thread_id": "2234491403949554",
+              "display_name": "白青天"
+            },
+            {
+              "peer_id": "100050174601107",
+              "thread_id": "27724009533944398",
+              "display_name": "郑一哲"
+            }
+          ],
+          "strategy": "RECENT_ACCEPTED",
+          "empty_list": false,
+          "unparsed_rows": 0,
+          "window_limited": true,
+          "visible_threads": 3
+        },
+        "duplicates": 8
+      }
+    }
+  ],
+  "closures": [
+    {
+      "command_id": "5634fbf7-e680-4382-b5e5-6f816bb0cf68",
+      "local_database_match": true,
+      "proof": {
+        "protocol_version": "kff.guardian-closure.v1",
+        "command_id": "5634fbf7-e680-4382-b5e5-6f816bb0cf68",
+        "action_id": "92b88db2-f26a-4879-bff3-e83b59bd5a8c",
+        "closed_at": "2026-09-15T03:11:16.301Z",
+        "proof_sha256": "e678f6a38b30b4196e40be78ffa9db7e3ee1e92e47cd1e1bf6348ed4c547d6e5"
+      }
+    }
+  ],
+  "profiles_after": [
+    {
+      "id": "k1gvdtft",
+      "status": "Inactive"
+    },
+    {
+      "id": "k1gx1n1s",
+      "status": "Inactive"
+    }
+  ],
+  "serialized": true,
+  "identity_matches": true,
+  "platform_submissions": [],
+  "open_commands": [],
+  "active_monitors": [],
+  "inbox_configuration_restored": [
+    {
+      "id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+      "version": 38,
+      "state": "PAUSED",
+      "interval_seconds": 300,
+      "page_size": 25,
+      "discovery": {
+        "strategy": "RECENT_ACCEPTED",
+        "max_threads": 3
+      }
+    },
+    {
+      "id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+      "version": 25,
+      "state": "PAUSED",
+      "interval_seconds": 3600,
+      "page_size": 25,
+      "discovery": {
+        "strategy": "RECENT_ACCEPTED",
+        "max_threads": 1
+      }
+    }
+  ],
+  "leads": [],
+  "observer_reporting_error": "Original observer queried nonexistent score_reasons after successfully closing all work. Corrected to existing columns; this read-only finalization preserves original failure log and never repeats platform work."
+}

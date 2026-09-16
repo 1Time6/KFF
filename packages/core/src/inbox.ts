@@ -177,7 +177,8 @@ export async function inboxConversation(scope:Scope,id:string,input:z.input<type
   return scoped(scope,async client=>{
     const conversation=(await client.query<InboxConversation>('SELECT '+conversationColumns+conversationJoins+' WHERE v.id=$1',[id])).rows[0];
     requireCondition(conversation,'NOT_FOUND','会话不存在',404);
-    return {conversation,...await readMessages(client,id,input),outbound_available:conversation.channel_kind==='FACEBOOK_MESSENGER'};
+    const connection=(await client.query('SELECT transport FROM kff.facebook_connections WHERE account_id=$1',[conversation.account_id])).rows[0];
+    return {conversation,...await readMessages(client,id,input),outbound_available:conversation.channel_kind==='FACEBOOK_MESSENGER'&&connection?.transport!=='BROWSER'||conversation.channel_kind==='FACEBOOK_BROWSER_MESSENGER'&&connection?.transport==='BROWSER'};
   });
 }
 export async function customerWorkspace(scope:Scope) {

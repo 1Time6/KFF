@@ -1,0 +1,427 @@
+{
+  "schema_version": "kff.controller-upgrade-acceptance.v1",
+  "recorded_at": "2026-09-14T07:35:27.675Z",
+  "goal_complete": false,
+  "package": {
+    "release_id": "kff-controller-0.1.26-win32-x64-c7abed97c5f8",
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.26-win32-x64-c7abed97c5f8",
+    "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.26-win32-x64-c7abed97c5f8.zip",
+    "archive_sha256": "b0c7e0e565870c1bf6456e628330f90686fef9a2857a4c3bdf64a0e5b51727f1",
+    "files": 24092,
+    "uncompressed_bytes": 829475179,
+    "dependency_packages": 155,
+    "contains_runtime_data": false,
+    "live_config_values_scanned": 6
+  },
+  "agent_package": {
+    "release_id": "kff-agent-0.1.26-win32-x64-275b244be15e",
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.26-win32-x64-275b244be15e",
+    "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.26-win32-x64-275b244be15e.zip",
+    "archive_sha256": "960fa25bfab7a8ec4b0bdc219767fcb48285115887a564f3c5b6a0316676120f",
+    "files": 1348,
+    "dependencies": 23,
+    "contains_pairing_or_browser_data": false
+  },
+  "isolated_upgrade": {
+    "started_at": "2026-09-14T07:32:22.813Z",
+    "source": "C:\\Users\\17731\\AppData\\Local\\KFF\\ControllerTests\\kff-controller-0.1.23-win32-x64-e3058fdd98eb",
+    "target": "C:\\Users\\17731\\AppData\\Local\\KFF\\ControllerTests\\kff-controller-0.1.26-win32-x64-c7abed97c5f8",
+    "synthetic_fixture": true,
+    "external_sends": 0,
+    "steps": [
+      {
+        "name": "busy-source",
+        "started_at": "2026-09-14T07:27:00.652Z",
+        "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-upgrade-026-retry1-busy-source.log",
+        "pid": 12516,
+        "exit_code": 1,
+        "finished_at": "2026-09-14T07:27:07.447Z"
+      },
+      {
+        "name": "upgrade",
+        "started_at": "2026-09-14T07:27:07.452Z",
+        "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-upgrade-026-retry1-upgrade.log",
+        "pid": 26324,
+        "exit_code": 0,
+        "finished_at": "2026-09-14T07:30:47.019Z"
+      },
+      {
+        "name": "incomplete-start",
+        "started_at": "2026-09-14T07:30:47.030Z",
+        "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-upgrade-026-retry1-incomplete-start.log",
+        "pid": 12968,
+        "exit_code": 1,
+        "finished_at": "2026-09-14T07:30:47.251Z"
+      },
+      {
+        "name": "repeat-upgrade",
+        "started_at": "2026-09-14T07:30:47.257Z",
+        "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-upgrade-026-retry1-repeat-upgrade.log",
+        "pid": 17848,
+        "exit_code": 1,
+        "finished_at": "2026-09-14T07:30:48.328Z"
+      },
+      {
+        "name": "start",
+        "started_at": "2026-09-14T07:32:24.353Z",
+        "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-upgrade-026-retry2-start.log",
+        "pid": 27600,
+        "exit_code": 0,
+        "finished_at": "2026-09-14T07:32:43.107Z"
+      },
+      {
+        "name": "stop",
+        "started_at": "2026-09-14T07:32:47.125Z",
+        "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-upgrade-026-retry2-stop.log",
+        "pid": 12872,
+        "exit_code": 0,
+        "finished_at": "2026-09-14T07:32:52.571Z"
+      },
+      {
+        "name": "verify-after-stop",
+        "started_at": "2026-09-14T07:32:52.576Z",
+        "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-upgrade-026-retry2-verify-after-stop.log",
+        "pid": 32040,
+        "exit_code": 0,
+        "finished_at": "2026-09-14T07:33:00.909Z"
+      }
+    ],
+    "resumed_from": ".kff/controller-upgrade-026-retry1-test.json",
+    "initial_upgrade_test_started_at": "2026-09-14T07:27:00.647Z",
+    "active_source_refused_before_copy": true,
+    "incomplete_upgrade_start_refused": true,
+    "existing_target_preserved": true,
+    "harness_correction": "Use the same UTC PostgreSQL session timezone as the original business query pool before comparing row_to_json fingerprints. Do not rerun or replace the successful upgrade.",
+    "upgrade": {
+      "id": "d51788b0-ed7f-4df8-84f4-824e0a2764b7",
+      "from": "kff-controller-0.1.23-win32-x64-e3058fdd98eb",
+      "to": "kff-controller-0.1.26-win32-x64-c7abed97c5f8",
+      "copied_files": 1914,
+      "copied_bytes": 73412327,
+      "migrations_before": 32,
+      "migrations_after": 32,
+      "refreshed_capabilities": 0
+    },
+    "login_and_pairing_preserved": true,
+    "fingerprint_session": {
+      "initial_timezone": "Asia/Shanghai",
+      "comparison_timezone": "UTC"
+    },
+    "database": {
+      "directory": "C:/Users/17731/AppData/Local/KFF/ControllerTests/kff-controller-0.1.26-win32-x64-c7abed97c5f8/.kff/postgres",
+      "port": "55440",
+      "compared_old_tables": 92,
+      "unchanged_old_tables": 91,
+      "changed_tables": [
+        "adapter_artifacts"
+      ],
+      "new_tables": [],
+      "accounts": 1,
+      "customers": 1,
+      "messages": 1,
+      "original_message_present": true
+    },
+    "runtime": {
+      "runtime_id": "f85efbfe-21a7-4d67-9c1d-d850b124fbe3",
+      "pid": 3764,
+      "phase": "RUNNING",
+      "updated_at": "2026-09-14T07:32:42.281Z",
+      "app_origin": "http://127.0.0.1:3000",
+      "release_id": "kff-agent-0.1.26-win32-x64-275b244be15e",
+      "database_owned": true,
+      "components": {
+        "database": {
+          "pid": 32204,
+          "state": "CONNECTED"
+        },
+        "web": {
+          "pid": 23316,
+          "state": "RUNNING"
+        },
+        "worker": {
+          "pid": 27532,
+          "state": "RUNNING"
+        },
+        "agent": {
+          "pid": 10672,
+          "state": "RUNNING"
+        }
+      }
+    },
+    "original_password_login_verified": true,
+    "authenticated_original_conversation_verified": true,
+    "screenshot": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-upgrade-026-retry2-inbox.png",
+    "rendered_original_message_verified": true,
+    "new_controller_and_database_closed": true,
+    "old_source_files_unchanged": 1914,
+    "accepted": true,
+    "finished_at": "2026-09-14T07:33:01.500Z"
+  },
+  "production_database_preservation": {
+    "at": "2026-09-14T07:33:29.078Z",
+    "tables": 92,
+    "all_table_rows_and_config_hashes_unchanged": true,
+    "changed_tables": []
+  },
+  "original_runtime_restored": {
+    "at": "2026-09-14T07:35:27.523Z",
+    "version": "0.1.26",
+    "phase": "RUNNING",
+    "runtime_id": "3e8a88db-b2b9-4c86-aedc-24ac89fcc23f",
+    "release_id": "kff-agent-0.1.26-win32-x64-275b244be15e",
+    "components": {
+      "database": {
+        "pid": null,
+        "state": "CONNECTED"
+      },
+      "web": {
+        "pid": 17260,
+        "state": "RUNNING"
+      },
+      "worker": {
+        "pid": 25496,
+        "state": "RUNNING"
+      },
+      "agent": {
+        "pid": 840,
+        "state": "RUNNING"
+      }
+    },
+    "database_owned": false,
+    "live_sending_enabled": false,
+    "build_source_changes": [],
+    "agent_source_changes": [],
+    "open_commands": 0,
+    "monitors": [
+      {
+        "kind": "acquisition",
+        "id": "faf8718e-cd9c-4650-80f3-9f8249e9282d",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "7205b958-b063-4fd9-aef5-52c7f41d66e7",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "6160dda8-de45-443a-9638-45e8ad0423a0",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "6ea416de-a5fe-44bb-8978-561b7be75194",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "c960d86e-5496-4a45-adb6-a43a3bfb6caa",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "72eceefc-3f5f-4f0a-8953-33c9f309517e",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "489cf2bc-a9ff-4793-8716-4f823d086c89",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "6045f65a-d8d3-4b92-ba39-9140b31bd336",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "96966f3c-ff03-4161-a7cf-bfd8fe577519",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "2808250f-061d-4ca4-bea5-495baaf5d7c8",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "6776ac4f-1baa-4064-a9d6-ecd866c2a34b",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "acquisition",
+        "id": "3ba710a3-f505-4f96-a002-bf29a81e56aa",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "inbox",
+        "id": "cdde409b-8272-4751-b22e-dc196f2acc64",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "inbox",
+        "id": "7125fe67-e3d6-4266-8261-738bb0206a01",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "inbox",
+        "id": "149da22d-2ea8-49b1-accd-0ea2f4fc845f",
+        "state": "PAUSED"
+      },
+      {
+        "kind": "inbox",
+        "id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+        "state": "PAUSED"
+      }
+    ],
+    "profiles": [
+      {
+        "id": "k1gvdtft",
+        "status": "Inactive"
+      },
+      {
+        "id": "k1gw2kh9",
+        "status": "Active"
+      }
+    ],
+    "whatsapp_referral": [
+      {
+        "id": "9ece8f0a-58f9-4cca-814a-7d48f08811ce",
+        "state": "REFERRED",
+        "version": 2,
+        "confirmed_at": null
+      }
+    ],
+    "goal_complete": false
+  },
+  "validation": {
+    "typecheck_exit": 0,
+    "build_exit": 0,
+    "changed_during_build": [],
+    "owned_scripts_eslint_exit": 0
+  },
+  "limits": [
+    "This is a cold upgrade of the existing 0.1.23 full installation to 0.1.26 on this Windows machine, using its own synthetic site Inbox customer and message. It is not a second clean-machine installation or OS reboot test.",
+    "All old table fingerprints were compared before starting the upgraded runtime; the only table changed by this test upgrade is the registered code evidence artifact. Login, pairing, customer and message records remained unchanged.",
+    "The occupied source-control-pipe refusal uses the same named pipe as the old runtime. It does not claim a forced shutdown of a running old controller.",
+    "This synthetic source has no existing real controlled-pilot capabilities or submitted browser actions. Their capability refresh and in-flight action handling are not real-platform acceptance evidence from this test.",
+    "Old installation files remain unchanged as the pre-upgrade rollback point. New data created after cutover must be preserved before any rollback.",
+    "No Facebook or WhatsApp messages were sent by this upgrade test. Remaining real-account and commercial acceptance items stay open."
+  ],
+  "prior_failure": {
+    "test": {
+      "started_at": "2026-09-14T07:15:48.330Z",
+      "source": "C:\\Users\\17731\\AppData\\Local\\KFF\\ControllerTests\\kff-controller-0.1.23-win32-x64-e3058fdd98eb",
+      "target": "C:\\Users\\17731\\AppData\\Local\\KFF\\ControllerTests\\kff-controller-0.1.26-win32-x64-351807ad3bba",
+      "synthetic_fixture": true,
+      "external_sends": 0,
+      "steps": [
+        {
+          "name": "busy-source",
+          "started_at": "2026-09-14T07:15:48.335Z",
+          "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-upgrade-026-busy-source.log",
+          "pid": 15072,
+          "exit_code": 1,
+          "finished_at": "2026-09-14T07:15:54.388Z"
+        },
+        {
+          "name": "upgrade",
+          "started_at": "2026-09-14T07:15:54.392Z",
+          "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-upgrade-026-upgrade.log",
+          "pid": 32548,
+          "exit_code": 1,
+          "finished_at": "2026-09-14T07:20:02.706Z"
+        }
+      ],
+      "active_source_refused_before_copy": true,
+      "accepted": false,
+      "error": "upgrade exit differs; inspect saved log",
+      "finished_at": "2026-09-14T07:20:02.708Z"
+    },
+    "cleanup": {
+      "at": "2026-09-14T07:21:24.455Z",
+      "failed_upgrade_id": "f5d57691-5293-47ab-b70a-7458c3592d7d",
+      "target": "C:\\Users\\17731\\AppData\\Local\\KFF\\ControllerTests\\kff-controller-0.1.26-win32-x64-351807ad3bba",
+      "verified_database_pid": 18172,
+      "port": 55440,
+      "normal_shutdown_verified": true,
+      "marker_preserved": true,
+      "old_source_written": false
+    },
+    "cause": "Synchronous configure child blocked the maintenance-pipe event loop; a client timeout led to an unhandled socket EPIPE after migration.",
+    "fix": "Await the configure child asynchronously; reply after client data and handle disconnected socket errors.",
+    "failed_copy_and_marker_preserved": true,
+    "actual_failed_copy_start_refused": true,
+    "start_refusal_log": ".kff/controller-upgrade-026-failed-copy-start-refusal.log"
+  },
+  "second_account_page_observation": {
+    "at": "2026-09-14T07:27:08.399Z",
+    "purpose": "Read current user-owned Facebook page text only after preparing the controller upgrade; no navigation, click, close, or submission.",
+    "tabs": [
+      {
+        "url": "https://www.facebook.com/checkpoint/1501092823525282/",
+        "title": "Facebook",
+        "body": "郑成功\n郑成功，你已提出申诉\n时间：2026年9月14日\n请稍后回到这里查看结果。\n你的个人主页不会显示给其他 Facebook 用户，也无法供你使用。\n接下来呢？\n我们通常需要一个小时左右来审核你的信息。请稍后回来看看。\n如果我们发现你的个人主页确实未违反社群守则，你便可以再次使用 Facebook。\n如果我们发现你的主页违反社群守则，则会永久禁用你的主页，而且你将无法再次提交申诉。"
+      }
+    ],
+    "finished_at": "2026-09-14T07:27:08.791Z"
+  },
+  "fingerprint_harness_correction": {
+    "started_at": "2026-09-14T07:27:00.647Z",
+    "source": "C:\\Users\\17731\\AppData\\Local\\KFF\\ControllerTests\\kff-controller-0.1.23-win32-x64-e3058fdd98eb",
+    "target": "C:\\Users\\17731\\AppData\\Local\\KFF\\ControllerTests\\kff-controller-0.1.26-win32-x64-c7abed97c5f8",
+    "synthetic_fixture": true,
+    "external_sends": 0,
+    "steps": [
+      {
+        "name": "busy-source",
+        "started_at": "2026-09-14T07:27:00.652Z",
+        "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-upgrade-026-retry1-busy-source.log",
+        "pid": 12516,
+        "exit_code": 1,
+        "finished_at": "2026-09-14T07:27:07.447Z"
+      },
+      {
+        "name": "upgrade",
+        "started_at": "2026-09-14T07:27:07.452Z",
+        "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-upgrade-026-retry1-upgrade.log",
+        "pid": 26324,
+        "exit_code": 0,
+        "finished_at": "2026-09-14T07:30:47.019Z"
+      },
+      {
+        "name": "incomplete-start",
+        "started_at": "2026-09-14T07:30:47.030Z",
+        "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-upgrade-026-retry1-incomplete-start.log",
+        "pid": 12968,
+        "exit_code": 1,
+        "finished_at": "2026-09-14T07:30:47.251Z"
+      },
+      {
+        "name": "repeat-upgrade",
+        "started_at": "2026-09-14T07:30:47.257Z",
+        "log": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\controller-upgrade-026-retry1-repeat-upgrade.log",
+        "pid": 17848,
+        "exit_code": 1,
+        "finished_at": "2026-09-14T07:30:48.328Z"
+      }
+    ],
+    "active_source_refused_before_copy": true,
+    "upgrade": {
+      "id": "d51788b0-ed7f-4df8-84f4-824e0a2764b7",
+      "from": "kff-controller-0.1.23-win32-x64-e3058fdd98eb",
+      "to": "kff-controller-0.1.26-win32-x64-c7abed97c5f8",
+      "copied_files": 1914,
+      "copied_bytes": 73412327,
+      "migrations_before": 32,
+      "migrations_after": 32,
+      "refreshed_capabilities": 0
+    },
+    "login_and_pairing_preserved": true,
+    "incomplete_upgrade_start_refused": true,
+    "existing_target_preserved": true,
+    "accepted": false,
+    "error": "Unexpected old table row changes: accounts,adapter_artifacts,agents,audit_events,contact_permissions,contact_targets,conversations,customer_events,customer_identities,customers,inbound_events,messages,schema_migrations,sessions,site_channels,template_versions,visitor_sessions",
+    "finished_at": "2026-09-14T07:30:49.664Z"
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "at": "2026-09-14T12:38:36.864Z",
+  "version": "0.1.39",
+  "change": "Split Reel entry wait, on-screen entry identification, click, and sidebar wait into distinct diagnostic phases; interaction and timeouts unchanged; no automatic retries added.",
+  "source_build_agent_match": true,
+  "agent": {
+    "release_id": "kff-agent-0.1.39-win32-x64-52e103d2e6f3",
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.39-win32-x64-52e103d2e6f3",
+    "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.39-win32-x64-52e103d2e6f3.zip",
+    "archive_sha256": "2082255a93ad40b951a674e0772045c448309723949ca4598fc90b67eba41c11",
+    "files": 1348,
+    "dependencies": 23,
+    "contains_pairing_or_browser_data": false
+  },
+  "controller": {
+    "release_id": "kff-controller-0.1.39-win32-x64-bdb646e3ffb1",
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.39-win32-x64-bdb646e3ffb1",
+    "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.39-win32-x64-bdb646e3ffb1.zip",
+    "archive_sha256": "68f0e2d4f567cf21a0494eea8e3551f36eeeef30e63b42c12ad3c8d08c287b93",
+    "files": 24092,
+    "uncompressed_bytes": 829501425,
+    "dependency_packages": 155,
+    "contains_runtime_data": false,
+    "live_config_values_scanned": 6
+  },
+  "installed_directory": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.39-win32-x64-52e103d2e6f3",
+  "runtime_id": "65404ff8-42ca-4308-ac4f-0fd4fdf7baab",
+  "tests": {
+    "comments_browser": {
+      "startTime": "2026-09-14T12:30:48.808Z",
+      "duration": 11138.813,
+      "expected": 5,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "contracts": 178,
+    "typecheck": 0,
+    "build": 0
+  },
+  "monitors": [
+    {
+      "kind": "public",
+      "state": "PAUSED",
+      "count": 13
+    },
+    {
+      "kind": "inbox",
+      "state": "PAUSED",
+      "count": 5
+    }
+  ],
+  "profiles": [
+    {
+      "id": "k1gvdtft",
+      "status": "Inactive"
+    },
+    {
+      "id": "k1gx1n1s",
+      "status": "Inactive"
+    }
+  ],
+  "open_commands": 0,
+  "live_sending_enabled": false,
+  "destinations": [
+    {
+      "id": "a80a2f14-32b5-4081-858a-ce1a8fca8731",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "state": "PAUSED",
+      "version": 2
+    },
+    {
+      "id": "61cef25d-7e01-4800-9c05-e5d46e070927",
+      "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "state": "PAUSED",
+      "version": 2
+    }
+  ],
+  "retired_profile9_disabled": true,
+  "platform_reads_on_039": 0,
+  "platform_sends": 0,
+  "scheduled_two_cycle_acceptance": false,
+  "sidebar_timeout_cause": "UNDETERMINED",
+  "sidebar_timeout_repaired": false,
+  "original_window": "docs/evidence/matrix-window-038-stopped-20260914.json",
+  "read_only_diagnosis": "docs/evidence/profile8-sidebar-diagnostic-038-20260914.json",
+  "whatsapp_receiving_number": "USER_NOT_READY",
+  "full_goal_complete": false
+}

@@ -1,0 +1,600 @@
+{
+  "started_at": "2026-09-14T16:53:14.717Z",
+  "keyword": "bazi reading",
+  "platform_sends": 0,
+  "manual_scans": 0,
+  "author_created_test_content": false,
+  "latest_scope": "用户要求冻结已通过的 Messenger/C 接待链，只推进真实关键词自动发现；第一条非人工制造的新潜客进入 lead 后优先 V1 交接并停止非必要开发。",
+  "status": "AUTOMATIC_READ_COMPLETE",
+  "previous_completed_query": "3d9afdd9-70ea-49fe-8b4d-0aeac06c5c86",
+  "runtime_id": "5b38befe-7245-45c0-b5db-e12ea223e00f",
+  "baseline_lead_ids": [
+    "b63c4585-bcea-4e62-bf0d-abb73cf6fe8e",
+    "f2572483-6a84-4486-8eee-ee3b51f18153",
+    "62743d3c-2081-4f8c-9062-5f3837a2b5b0",
+    "3e7d3a09-f8f0-4297-a3e6-2887a0eb44bf",
+    "8bce7a29-d230-4f04-a031-14a0fd1e7f2b",
+    "38764407-f780-4a83-8f39-53ca545ad165",
+    "059c04ae-bc08-4ef2-ba0e-7b44acf8229e",
+    "1cafb118-0f01-40a7-a2c9-00ccab0bc7cb",
+    "945ccf1a-dd2b-4bec-a246-c726549a292b",
+    "735cd202-2685-4a29-8945-7663b2ddfcde",
+    "accbd154-a469-44c5-862f-4046677af630",
+    "644dde49-1c2e-47bd-9be5-69ec66a09d23",
+    "e0c3324e-e9f1-47b9-b966-4770d4fb74ef",
+    "a0690603-1ada-4aaf-b8a7-16138697a883",
+    "5e04890e-7814-4856-be55-5d177fa126cf",
+    "81d21971-e353-45de-a216-3c66061fbcc8",
+    "b65bb311-96d8-463a-bb8f-d87e65eeda79",
+    "ce0e4cb7-b690-4bc6-858b-63f51b15fd46",
+    "252a4db7-0cc5-4155-ba7b-bb7606fa9292",
+    "35542a0f-c2c9-4566-b22d-9a689f09f8de",
+    "3efc8312-4c08-49f6-9dc4-91e29daa5365",
+    "5d2a85ff-c908-4480-ae27-9397ed9011c7",
+    "63cb8fc6-5f49-485d-b405-131e12339f0e",
+    "894075c7-d00d-44e0-a242-05e32934a92d",
+    "61c54a55-7f54-4d26-a369-c6121ddefb9e",
+    "19eb0c88-2002-40fd-acad-6040b684cd54",
+    "288caeca-c517-4d76-9411-f7ea80710333",
+    "445ae4fc-0df1-40ef-81ad-136f06aabd92",
+    "67a18414-e51d-4e98-bdc9-cfbed548f69f",
+    "d593af5c-9826-444d-b3e6-61da1e45fb34",
+    "5d0744dc-46aa-482d-903c-3119c459b18f",
+    "37f7d85e-2f7c-4059-ab67-f3633b22a358",
+    "d9843787-0e20-4b68-aa0c-a8e88ce3cfd4",
+    "1c43f70e-e89c-43e9-b49a-0a8feb4207f2",
+    "a501f766-4b75-4f59-b944-c1579a121ee4",
+    "b8ed2ad3-61ab-4ecc-bebe-39a2d86dd29c",
+    "dec6b356-fe22-46b2-99ca-c6e9b5ab7ddd",
+    "bd7d506e-a852-4834-85f1-f963533a7eec",
+    "f0fb7c53-76fa-4c16-b61f-ea8725821562"
+  ],
+  "baseline_source_ids": [
+    "facebook:comment:1382008900690725",
+    "00025",
+    "00000",
+    "facebook:comment:899678139871570",
+    "156469192459477633815711109783104159488_2",
+    "00023",
+    "199744314471809879741051834906773920364_4",
+    "116626378047931884670285795419281253202_4",
+    "facebook:comment:2386091551919086",
+    "00032",
+    "00029",
+    "00012",
+    "00030",
+    "facebook:comment:1039935125404089",
+    "199744314471809879741051834906773920364_2",
+    "00011",
+    "00018",
+    "9007199254740993123456789",
+    "00026",
+    "facebook:reel:2163157911082094",
+    "facebook:post:pfbid02inLKQH7pxELb9D9HusD6XkVf1VcQmS8Qrw5AmL7wKgAwuxoTaDPV6euTCrWnPja7l",
+    "00014",
+    "116626378047931884670285795419281253202_1",
+    "facebook:post:pfbid036uDymnMGfrYY8M7akRKHBej8nh9D1n5szzWnXigv2XnexW3u64wnqWbSvXQ7uS5Gl",
+    "156469192459477633815711109783104159488_1",
+    "00024",
+    "facebook:post:pfbid02ZyLfFziM7RSEqE6ZkiujsrspKox649JQ7ibQHKdiy7uEuwvLXVhQvbfZRoYmRbKhl",
+    "00003",
+    "00001",
+    "00013",
+    "156469192459477633815711109783104159488_4",
+    "duplicate",
+    "00027",
+    "9007199254740993123456790",
+    "00004",
+    "facebook:reel:1809956393694426",
+    "facebook:reel:1098432833113428",
+    "facebook:comment:1353993326906858",
+    "00005",
+    "00031",
+    "00010",
+    "00009",
+    "00007",
+    "00015",
+    "facebook:reel:1815660013151689",
+    "00021",
+    "facebook:post:pfbid022sdGHy9i14MrJE7t8CKuRH2gfgCGPdUaT7PEGEuQWPySBLefiKhkkewbM5nkafE3l",
+    "311849710373835193294296754455192102202_2",
+    "00028",
+    "facebook:comment:27903656085989070",
+    "facebook:comment:1077076494991097",
+    "facebook:comment:1393237392903595",
+    "00019",
+    "311849710373835193294296754455192102202_4",
+    "facebook:post:pfbid0UpeftT8hmyP9u3CAG1LVQsuMwVikLRUTuGLHp4whoXcjmkSakSp943pcRewn8FXSl",
+    "facebook:comment:4652715068308205",
+    "facebook:post:pfbid02fozvTzsGJuepwZemeSE2KxB45P8KaGdUjg32AUfZJ6QVwfyS8LZ51xggpjp5RGVHl",
+    "00006",
+    "00016",
+    "facebook:post:pfbid0SfPQgTjQcdQpyvbCRtdw4xB8VVaW7d7BfP9sFDGGC4eTvBnCHFqbD66Am1hQJWyPl",
+    "116626378047931884670285795419281253202_3",
+    "199744314471809879741051834906773920364_3",
+    "199744314471809879741051834906773920364_1",
+    "311849710373835193294296754455192102202_1",
+    "116626378047931884670285795419281253202_2",
+    "00002",
+    "facebook:comment:1798186518043775",
+    "311849710373835193294296754455192102202_3",
+    "00022",
+    "facebook:comment:4486227441644316",
+    "00020",
+    "facebook:post:pfbid032dKT7S2AnpRfz8ksSNXBMQNehy4n6hpP2pWbnhsngTBZYsXJDy1qeDRJubjqsTwPl",
+    "facebook:comment:1217101133887549",
+    "00008",
+    "facebook:reel:4019385248369368",
+    "facebook:comment:4028276564148800",
+    "000123456789012345678901234567890",
+    "156469192459477633815711109783104159488_3",
+    "facebook:comment:1581943333556716",
+    "00017"
+  ],
+  "monitor_request_id": "a46b01d4-a0ea-4c59-95cc-7a1defab2264",
+  "start_request_id": "de69002e-c493-43fc-be85-b8136688b4fe",
+  "pause_request_id": "25b4a602-083c-4aa5-b5b6-93c1ae1af34f",
+  "monitor": {
+    "id": "f0f24cd4-e7bd-4d80-8787-de9df30a132c",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "request_id": "a46b01d4-a0ea-4c59-95cc-7a1defab2264",
+    "request_hash": "30c33d764a2a55ec547b2034f535f82bb3b7ca0a332726bcae0d9dce966d559f",
+    "title": "V1 · bazi reading 真实关键词自动发现",
+    "config": {
+      "title": "V1 · bazi reading 真实关键词自动发现",
+      "discovery": {
+        "target": "",
+        "browser": {
+          "template": "facebook-search-dom-v1",
+          "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042"
+        },
+        "keywords": [
+          "bazi reading"
+        ],
+        "platform": "facebook",
+        "provider": "LOCAL_BROWSER",
+        "strategy": "KEYWORD",
+        "exclusions": [
+          "KFF-0914",
+          "KFF-0913"
+        ],
+        "max_age_days": 30,
+        "processing_basis": "按用户最新 V1 范围自动读取公开 bazi 搜索结果，发现非人工制造的新潜客并保留来源、原文和页面时间；不发布测试内容，不发送评论或私信，不重做 C 接待链。"
+      },
+      "max_pages": 1,
+      "page_size": 5,
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "request_id": "a46b01d4-a0ea-4c59-95cc-7a1defab2264",
+      "max_records": 5,
+      "retention_days": 14,
+      "interval_minutes": 60
+    },
+    "state": "PAUSED",
+    "version": 1,
+    "interval_minutes": 60,
+    "next_due_at": "2026-09-14T16:53:14.980Z",
+    "scan_number": 0,
+    "automation": null,
+    "created_by": "33333333-3333-4333-8333-333333333333",
+    "created_at": "2026-09-14T16:53:14.980Z"
+  },
+  "started_monitor": {
+    "id": "f0f24cd4-e7bd-4d80-8787-de9df30a132c",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "request_id": "a46b01d4-a0ea-4c59-95cc-7a1defab2264",
+    "request_hash": "30c33d764a2a55ec547b2034f535f82bb3b7ca0a332726bcae0d9dce966d559f",
+    "title": "V1 · bazi reading 真实关键词自动发现",
+    "config": {
+      "title": "V1 · bazi reading 真实关键词自动发现",
+      "discovery": {
+        "target": "",
+        "browser": {
+          "template": "facebook-search-dom-v1",
+          "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042"
+        },
+        "keywords": [
+          "bazi reading"
+        ],
+        "platform": "facebook",
+        "provider": "LOCAL_BROWSER",
+        "strategy": "KEYWORD",
+        "exclusions": [
+          "KFF-0914",
+          "KFF-0913"
+        ],
+        "max_age_days": 30,
+        "processing_basis": "按用户最新 V1 范围自动读取公开 bazi 搜索结果，发现非人工制造的新潜客并保留来源、原文和页面时间；不发布测试内容，不发送评论或私信，不重做 C 接待链。"
+      },
+      "max_pages": 1,
+      "page_size": 5,
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "request_id": "a46b01d4-a0ea-4c59-95cc-7a1defab2264",
+      "max_records": 5,
+      "retention_days": 14,
+      "interval_minutes": 60
+    },
+    "state": "ACTIVE",
+    "version": 2,
+    "interval_minutes": 60,
+    "next_due_at": "2026-09-14T16:53:15.091Z",
+    "scan_number": 0,
+    "automation": null,
+    "created_by": "33333333-3333-4333-8333-333333333333",
+    "created_at": "2026-09-14T16:53:14.980Z"
+  },
+  "scans": [
+    {
+      "query_id": "80f80e70-3df7-479a-af27-1180f1208706",
+      "scan_number": 1,
+      "run_id": "5bea897d-a4d0-4e83-b4c9-c9f566b2a3b8",
+      "state": "PARTIAL",
+      "returned_count": 5,
+      "unique_count": 5,
+      "committed_pages": 1,
+      "stop_reason": "MAX_RECORDS",
+      "error_code": null,
+      "finished_at": "2026-09-14T16:53:56.367Z"
+    }
+  ],
+  "commands": [
+    {
+      "command_id": "5d036159-5fb5-4ce1-95da-791c71cbe184",
+      "action_id": "7e761dd4-7b62-42e7-ad3a-e4fe96d2ae8e",
+      "claimed_at": "2026-09-14T16:53:16.382Z",
+      "quiesced_at": "2026-09-14T16:53:56.498Z",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "receipt": {
+        "remote_id": "collection:5bea897d-a4d0-4e83-b4c9-c9f566b2a3b8:1",
+        "observed_at": "2026-09-14T16:53:49.926Z",
+        "content_hash": "d6439a68746e370fca06b49e706c0bec16739d68f12c12a68539f8e543cc8155",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61589894042400"
+      },
+      "task_id": "1af738e1-a470-473f-966f-9ae26a9e5253"
+    }
+  ],
+  "paused_monitor": {
+    "id": "f0f24cd4-e7bd-4d80-8787-de9df30a132c",
+    "organization_id": "11111111-1111-4111-8111-111111111111",
+    "brand_id": "22222222-2222-4222-8222-222222222222",
+    "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "request_id": "a46b01d4-a0ea-4c59-95cc-7a1defab2264",
+    "request_hash": "30c33d764a2a55ec547b2034f535f82bb3b7ca0a332726bcae0d9dce966d559f",
+    "title": "V1 · bazi reading 真实关键词自动发现",
+    "config": {
+      "title": "V1 · bazi reading 真实关键词自动发现",
+      "discovery": {
+        "target": "",
+        "browser": {
+          "template": "facebook-search-dom-v1",
+          "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042"
+        },
+        "keywords": [
+          "bazi reading"
+        ],
+        "platform": "facebook",
+        "provider": "LOCAL_BROWSER",
+        "strategy": "KEYWORD",
+        "exclusions": [
+          "KFF-0914",
+          "KFF-0913"
+        ],
+        "max_age_days": 30,
+        "processing_basis": "按用户最新 V1 范围自动读取公开 bazi 搜索结果，发现非人工制造的新潜客并保留来源、原文和页面时间；不发布测试内容，不发送评论或私信，不重做 C 接待链。"
+      },
+      "max_pages": 1,
+      "page_size": 5,
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "request_id": "a46b01d4-a0ea-4c59-95cc-7a1defab2264",
+      "max_records": 5,
+      "retention_days": 14,
+      "interval_minutes": 60
+    },
+    "state": "PAUSED",
+    "version": 3,
+    "interval_minutes": 60,
+    "next_due_at": "2026-09-14T16:53:57.480Z",
+    "scan_number": 1,
+    "automation": null,
+    "created_by": "33333333-3333-4333-8333-333333333333",
+    "created_at": "2026-09-14T16:53:14.980Z"
+  },
+  "closures": [
+    {
+      "command_id": "5d036159-5fb5-4ce1-95da-791c71cbe184",
+      "local_database_match": true,
+      "proof": {
+        "action_id": "7e761dd4-7b62-42e7-ad3a-e4fe96d2ae8e",
+        "closed_at": "2026-09-14T16:53:56.170Z",
+        "command_id": "5d036159-5fb5-4ce1-95da-791c71cbe184",
+        "proof_sha256": "4bea33bb182ec54a261b29b5b37174465e7b52df4cc801ce8dbe4d9b63ee5aad",
+        "protocol_version": "kff.guardian-closure.v1"
+      }
+    }
+  ],
+  "leads": [
+    {
+      "id": "275b70d9-f67f-45a3-b231-8c3b66be0edd",
+      "organization_id": "11111111-1111-4111-8111-111111111111",
+      "brand_id": "22222222-2222-4222-8222-222222222222",
+      "monitor_id": "f0f24cd4-e7bd-4d80-8787-de9df30a132c",
+      "object_id": "926141eb-82c5-4963-b9f9-779ab63ff2f0",
+      "observation_id": "736247ba-7ad7-4211-8155-4a64edd429e4",
+      "version": 1,
+      "state": "NEW",
+      "score": 50,
+      "matched_keywords": [
+        "bazi reading"
+      ],
+      "reason": "关键词匹配 1 项。规则评分，不代表购买概率。",
+      "automation_error": null,
+      "next_action_at": "2026-09-14T16:53:56.620Z",
+      "first_seen_at": "2026-09-14T16:53:56.620Z",
+      "last_seen_at": "2026-09-14T16:53:56.620Z",
+      "source_object_id": "facebook:post:pfbid02TPyhwWpT5x5xcTqsWda8ZjSbzuZCBZKBupUtubQjrr4Jw9tJnshM6iCkuULfMRbXl",
+      "source_url": "https://www.facebook.com/FengShuiMasterLiang/posts/pfbid02TPyhwWpT5x5xcTqsWda8ZjSbzuZCBZKBupUtubQjrr4Jw9tJnshM6iCkuULfMRbXl/",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "Report session today for a referred Client for Resale Condo Fengshui. Good session and with all my inputs today, they can finalise their planning and liaise with their ID accordingly. \nThank you for the yummy pastry, appreciate it\nFor enquiry on Fengshui for your new/existing house, Office, Shop etc, as well as Bazi Reading, Wedding Date Selection, Auspicious Date selection, Baby Naming services, do drop me a WhatsApp text at +65 97586986, I will get back to you \n#fengshui #fengshuimaster #fengshuiconsultant #metaphysics  #geomancy #houseselection #babynames #naming #weddingdate #dateselection #newhome #fengshuihome #BusinessSpace #singapore #babynames #Hbd #BTO #風水 #命理 #八字 #風水師 #命理師 #風水命理 #居家風水 #八字命理 #新加坡風水師 #取名 #新家 #择日"
+        },
+        "author_id": {
+          "kind": "NOT_RETURNED"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月14日周一18:54"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "observed_at": "2026-09-14T16:53:49.926Z",
+      "expires_at": "2026-09-28T16:53:15.136Z"
+    }
+  ],
+  "observations": [
+    {
+      "id": "6b491fa6-211b-4e66-9b4b-73a91a593397",
+      "object_id": "9b525e77-2457-4a65-a933-a14aa6546408",
+      "source_object_id": "facebook:reel:1419888406765492",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "Ein einziger Satz, den Du seit 30 Jahren glaubst, kann dafür sorgen, dass Du Dein ganzes BaZi Potenzial nicht lebst.\n„Sei vernünftig.“\n„Mach erst mal was Sicheres.“\n„Damit kann man doch kein Geld verdienen.“\n„Du musst Dich mehr anstrengen.“\nUnd irgendwann hältst Du diese Sätze für Deine eigene Wahrheit. \nIn meinem BaZi & Human Design Reading schauen wir deshalb nicht nur darauf, was in Deinem BaZi steckt. Wir schauen auch darauf, warum Du genau das vielleicht bisher nicht leben konntest. \nWelche alten Glaubenssätze stehen zwischen Dir und Deinem Potenzial? Wo arbeitest Du gegen Deine eigene Struktur? Und was darf endlich weg, damit Du das, was schwarz auf weiß in Deinem BaZi steht, auch auf die Straße bringst?\nDenn Dein Potenzial zu kennen ist das eine. Dich endlich zu trauen, es zu leben, ist der verdammt wichtige Teil\n Kommentiere mit „BAZI“ und ich schicke Dir alle Informationen zu Deinem persönlichen 90-minütigen BaZi & Human Design Reading mit mir."
+        },
+        "author_id": {
+          "kind": "NOT_RETURNED"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月14日周一20:11"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "source_url": "https://www.facebook.com/reel/1419888406765492/",
+      "observed_at": "2026-09-14T16:53:49.926Z",
+      "expires_at": "2026-09-28T16:53:15.136Z",
+      "score": 0,
+      "reason": "未命中关键词"
+    },
+    {
+      "id": "41026191-d646-42ab-bff3-14448f976cfd",
+      "object_id": "19f177e6-1b5f-45d5-9478-3a84a1a8eb9f",
+      "source_object_id": "facebook:reel:2319710731766760",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "Most Feng Shui advice online starts too far downstream.\nPeople jump straight to wealth corners, lucky colors, cures, or furniture placement before establishing the one thing that changes how the whole space is read: orientation.\nThat is why two homes that look almost identical can still need very different recommendations.\nBefore interpreting any sector of a property, you need the map first.\nAnd in Feng Shui, direction is part of that map.\n#FengShui #FengShuiTips #FengShuiPhilippines #ChineseMetaphysics #FengShuiGo"
+        },
+        "author_id": {
+          "kind": "NOT_RETURNED"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月14日周一17:55"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "source_url": "https://www.facebook.com/reel/2319710731766760/",
+      "observed_at": "2026-09-14T16:53:49.926Z",
+      "expires_at": "2026-09-28T16:53:15.136Z",
+      "score": 0,
+      "reason": "未命中关键词"
+    },
+    {
+      "id": "a4cd5e96-8c5b-4f05-bec8-1bddc43810e7",
+      "object_id": "5af340f2-036a-4450-9b5e-a15f6b9b00e0",
+      "source_object_id": "facebook:reel:1611645807171944",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "Reading is a relatively recent human invention, so when children learn to read, the brain adapts and repurposes existing visual and language-related pathways to help connect written words with sounds and meaning.\nResearch has shown that, as children learn to read, parts of the visual system become increasingly tuned to written words. This is one reason reading is such a fascinating example of brain plasticity. (ScienceDirect⁠￼)\nSo when your child asks:\n“Can we read it again?”\nYou don’t always need a new book.\nSometimes, again is exactly what their developing brain needs. \nBecause reading isn’t simply about recognising words. \nIt’s about connecting what we see, what we hear, what we know and what we understand. \nTürkçe \n \nOkumak yeni bir insan icadıdır; bu yüzden çocuklar okurken beyin, yazılı kelimeleri ses ve anlamla bağlamak için mevcut görsel ve dil yollarını yeniden düzenler.\nÇocuklar okudukça görsel sistemin bazı kısımları yazılı kelimelere uyum sağlar; bu da okumayı beyin plastisitesinin harika bir örneği yapar.\nÇocuğunuz “Bunu tekrar okuyabilir miyiz?” diye sorduğunda, her zaman yeni bir kitaba ihtiyacınız yoktur. Bazen tekrarı, gelişen beyinlerinin tam ihtiyaç duyduğu şeydir. \nTekrar okuyun.\nKonuşun.\nBirlikte merak edin.\nBağlantılar kurun.\nÇünkü okumak sadece kelimeleri tanımak değildir; gördüğümüzü, duyduğumuzu, bildiğimizi ve anladığımızı birleştirmektir. \n#EarlyYears #EYFS #EarlyLiteracy #ReadingDevelopment #ReadingBrain"
+        },
+        "author_id": {
+          "kind": "NOT_RETURNED"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月14日周一20:25"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "source_url": "https://www.facebook.com/reel/1611645807171944/",
+      "observed_at": "2026-09-14T16:53:49.926Z",
+      "expires_at": "2026-09-28T16:53:15.136Z",
+      "score": 0,
+      "reason": "未命中关键词"
+    },
+    {
+      "id": "a50721c4-f20b-4ee1-804d-51d47d844ec2",
+      "object_id": "344b9421-f341-423a-916c-76ac56777a32",
+      "source_object_id": "facebook:post:pfbid02DwLweqyR6nUHySLTTNfYrdm2mzCsXmt9A5yiPprhNZhUVSxF5wscUsMQqn2wq3A8l",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "很多人覺得7代表起，7777真的旺嗎？\n車牌、門牌有7777，一定要留意！\n不要單憑數字寓意就決定選用。\n一款號碼吉不吉利，重點要看能否匹配你的命格氣場。\n我可以感應環境氣場，透過面相看出你當下的處境、運勢與健康。\n行動引導\n有疑問，歡迎找師傅咨詢。\n服務小字\n氣場感應｜精通面相八字｜家居風水調整｜擺桃花陣\n馬來西亞 · 芙蓉\n WhatsApp / 私信預約\nEnglish\nDoes number 7 mean rise? Is 7777 really auspicious?\nTake note if your car plate or house number has 7777.\nDo not choose a number only by its symbolic meaning.\nWhether a number is good depends on matching your personal life energy.\nI can sense environmental energy, read your current situation, fortune and health through face reading.\nCall to Action\nConsult the master if you have enquiries.\nServices\nEnergy Sensing | Face Reading & Bazi | Home Feng Shui Adjustment | Peach Blossom Arrangement\nSeremban, Malaysia\n WhatsApp / Private Message\n#Hashtag\n#數字命理 #車牌門牌 #面相風水 #FengShuiMalaysia"
+        },
+        "author_id": {
+          "kind": "NOT_RETURNED"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月14日周一20:49"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "source_url": "https://www.facebook.com/huang.ting.726675/posts/pfbid02DwLweqyR6nUHySLTTNfYrdm2mzCsXmt9A5yiPprhNZhUVSxF5wscUsMQqn2wq3A8l/",
+      "observed_at": "2026-09-14T16:53:49.926Z",
+      "expires_at": "2026-09-28T16:53:15.136Z",
+      "score": 0,
+      "reason": "未命中关键词"
+    },
+    {
+      "id": "736247ba-7ad7-4211-8155-4a64edd429e4",
+      "object_id": "926141eb-82c5-4963-b9f9-779ab63ff2f0",
+      "source_object_id": "facebook:post:pfbid02TPyhwWpT5x5xcTqsWda8ZjSbzuZCBZKBupUtubQjrr4Jw9tJnshM6iCkuULfMRbXl",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "Report session today for a referred Client for Resale Condo Fengshui. Good session and with all my inputs today, they can finalise their planning and liaise with their ID accordingly. \nThank you for the yummy pastry, appreciate it\nFor enquiry on Fengshui for your new/existing house, Office, Shop etc, as well as Bazi Reading, Wedding Date Selection, Auspicious Date selection, Baby Naming services, do drop me a WhatsApp text at +65 97586986, I will get back to you \n#fengshui #fengshuimaster #fengshuiconsultant #metaphysics  #geomancy #houseselection #babynames #naming #weddingdate #dateselection #newhome #fengshuihome #BusinessSpace #singapore #babynames #Hbd #BTO #風水 #命理 #八字 #風水師 #命理師 #風水命理 #居家風水 #八字命理 #新加坡風水師 #取名 #新家 #择日"
+        },
+        "author_id": {
+          "kind": "NOT_RETURNED"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月14日周一18:54"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "source_url": "https://www.facebook.com/FengShuiMasterLiang/posts/pfbid02TPyhwWpT5x5xcTqsWda8ZjSbzuZCBZKBupUtubQjrr4Jw9tJnshM6iCkuULfMRbXl/",
+      "observed_at": "2026-09-14T16:53:49.926Z",
+      "expires_at": "2026-09-28T16:53:15.136Z",
+      "score": 50,
+      "reason": "关键词匹配 1 项。规则评分，不代表购买概率。"
+    }
+  ],
+  "new_source_leads": [
+    {
+      "id": "275b70d9-f67f-45a3-b231-8c3b66be0edd",
+      "organization_id": "11111111-1111-4111-8111-111111111111",
+      "brand_id": "22222222-2222-4222-8222-222222222222",
+      "monitor_id": "f0f24cd4-e7bd-4d80-8787-de9df30a132c",
+      "object_id": "926141eb-82c5-4963-b9f9-779ab63ff2f0",
+      "observation_id": "736247ba-7ad7-4211-8155-4a64edd429e4",
+      "version": 1,
+      "state": "NEW",
+      "score": 50,
+      "matched_keywords": [
+        "bazi reading"
+      ],
+      "reason": "关键词匹配 1 项。规则评分，不代表购买概率。",
+      "automation_error": null,
+      "next_action_at": "2026-09-14T16:53:56.620Z",
+      "first_seen_at": "2026-09-14T16:53:56.620Z",
+      "last_seen_at": "2026-09-14T16:53:56.620Z",
+      "source_object_id": "facebook:post:pfbid02TPyhwWpT5x5xcTqsWda8ZjSbzuZCBZKBupUtubQjrr4Jw9tJnshM6iCkuULfMRbXl",
+      "source_url": "https://www.facebook.com/FengShuiMasterLiang/posts/pfbid02TPyhwWpT5x5xcTqsWda8ZjSbzuZCBZKBupUtubQjrr4Jw9tJnshM6iCkuULfMRbXl/",
+      "fields": {
+        "message": {
+          "kind": "VALUE",
+          "value": "Report session today for a referred Client for Resale Condo Fengshui. Good session and with all my inputs today, they can finalise their planning and liaise with their ID accordingly. \nThank you for the yummy pastry, appreciate it\nFor enquiry on Fengshui for your new/existing house, Office, Shop etc, as well as Bazi Reading, Wedding Date Selection, Auspicious Date selection, Baby Naming services, do drop me a WhatsApp text at +65 97586986, I will get back to you \n#fengshui #fengshuimaster #fengshuiconsultant #metaphysics  #geomancy #houseselection #babynames #naming #weddingdate #dateselection #newhome #fengshuihome #BusinessSpace #singapore #babynames #Hbd #BTO #風水 #命理 #八字 #風水師 #命理師 #風水命理 #居家風水 #八字命理 #新加坡風水師 #取名 #新家 #择日"
+        },
+        "author_id": {
+          "kind": "NOT_RETURNED"
+        },
+        "created_time": {
+          "kind": "DISPLAYED_TIME",
+          "value": "2026年9月14日周一18:54"
+        },
+        "comment_count": {
+          "kind": "NOT_RETURNED"
+        },
+        "reaction_count": {
+          "kind": "NOT_RETURNED"
+        }
+      },
+      "observed_at": "2026-09-14T16:53:49.926Z",
+      "expires_at": "2026-09-28T16:53:15.136Z"
+    }
+  ],
+  "diagnostics": [
+    {
+      "action_id": "7e761dd4-7b62-42e7-ad3a-e4fe96d2ae8e",
+      "manifest": {
+        "step": "facebook-search-visible",
+        "files": [
+          {
+            "name": "semantic-counts.json",
+            "sha256": "c61c8a0bb53e5a63091bd057ee18e328c58f3c2aefa0f53063207968b052a755",
+            "content": {
+              "result_count": 5,
+              "identity_count": 1,
+              "submit_controls": 0
+            }
+          }
+        ],
+        "level": "D1",
+        "omitted": [
+          "raw_dom",
+          "screenshots",
+          "trace",
+          "cookies",
+          "message_body",
+          "network_bodies"
+        ],
+        "outcome": "VERIFIED_SUCCEEDED",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "action_id": "7e761dd4-7b62-42e7-ad3a-e4fe96d2ae8e",
+        "attempt_id": "277be180-80e9-4482-8d97-d6aabf52bc61",
+        "created_at": "2026-09-14T16:53:56.479Z",
+        "error_code": null,
+        "duration_ms": 38084,
+        "schema_version": "kff.diagnostic.v2",
+        "adapter_version": "facebook-search-browser-v1",
+        "browser_version": "150.0.7871.47",
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "downgrade_reason": null,
+        "executor_version": "kff-agent-0.1.0_node-24.14.1",
+        "protocol_version": "kff.agent.v1",
+        "redaction_version": "allowlist-v1"
+      }
+    }
+  ],
+  "profile_after": "Inactive",
+  "finished_at": "2026-09-14T16:53:59.030Z"
+}

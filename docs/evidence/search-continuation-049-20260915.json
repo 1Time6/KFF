@@ -1,0 +1,423 @@
+{
+  "checked_at": "2026-09-15T04:32:22.585Z",
+  "version": "0.1.49",
+  "authorization": {
+    "approval": "USER_APPROVED",
+    "maximum_seconds": 600,
+    "accounts": [
+      8,
+      10
+    ],
+    "execution_order": "8 search + automatic source comments + closure, then 10 search + automatic source comments + closure",
+    "keyword": "八字",
+    "max_searches_per_account": 1,
+    "max_derived_sources_per_account": 1,
+    "max_visible_comments_per_source": 25,
+    "inbox_started": false,
+    "outbound_enabled": false,
+    "auto_reply_enabled": false,
+    "stop_on_first_failure": true,
+    "manager_restart_included": false,
+    "proxy_or_login_changes": false,
+    "entrypoint": ".kff/run-search-only-049.ts",
+    "entrypoint_sha256": "86447b7794017e8e6926b508e45c304c96dc94828bc047ce810147d4ee80bb9a",
+    "version": "0.1.49",
+    "prepared_at": "2026-09-15T04:13:20.9584197Z",
+    "user_reply": "执行这次验收，期间不手动使用 8、10 号",
+    "approved_at": "2026-09-15T04:20:52.2318804Z"
+  },
+  "started_at": "2026-09-15T04:21:05.613Z",
+  "business_stopped_at": "2026-09-15T04:24:31.632Z",
+  "finished_at": "2026-09-15T04:24:34.737Z",
+  "elapsed_seconds": 209.124,
+  "plan": {
+    "duration_limit_seconds": 600,
+    "account_order": [
+      "8 search and automatic comments",
+      "10 search and automatic comments"
+    ],
+    "public_interval_minutes": 30,
+    "inbox_interval_seconds": 1800,
+    "max_public_scans_per_account": 1,
+    "max_inbox_cycles_per_account": 0,
+    "max_sources_per_scan": 1,
+    "max_sources_total_per_account": 1,
+    "max_visible_comments_per_source": 25,
+    "max_inbox_threads": 0,
+    "max_inbox_messages": 0,
+    "platform_sends": 0
+  },
+  "accepted_scope": "One bounded search per account and at most one automatic comment source per account; excludes Inbox and outreach",
+  "planned_read_window_accepted": true,
+  "full_goal_complete": false,
+  "sustained_two_account_inbox_window_accepted": false,
+  "scopes": {
+    "automatic_new_source_to_comments": "REAL_VERIFIED",
+    "automatic_comment_candidate_projection": "REAL_VERIFIED_WITH_ADVERTISER_FALSE_POSITIVE",
+    "natural_new_consultation_customers": 0,
+    "naturally_received_messages": 0,
+    "whatsapp_arrivals": 0
+  },
+  "targets": [
+    {
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+      "external_id": "61589894042400",
+      "profile_id": "k1gvdtft",
+      "label": "8",
+      "id": "ac956f97-bfa6-41fa-8205-c6b2158db5e6",
+      "kind": "public",
+      "version": 2,
+      "started_at": "2026-09-15T04:21:05.667Z",
+      "completed_at": "2026-09-15T04:22:42.496Z"
+    },
+    {
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+      "external_id": "61594402378582",
+      "profile_id": "k1gx1n1s",
+      "label": "10",
+      "id": "6a2e923d-ceb1-4cb5-a604-e6fb85a352d6",
+      "kind": "public",
+      "version": 2,
+      "started_at": "2026-09-15T04:22:42.514Z",
+      "completed_at": "2026-09-15T04:24:31.631Z"
+    }
+  ],
+  "scans": [
+    {
+      "monitor_id": "ac956f97-bfa6-41fa-8205-c6b2158db5e6",
+      "query_id": "dbd0cff2-709c-4c95-8b72-ba478b011e36",
+      "scan_number": 1,
+      "run_id": "75e62b97-410a-4aec-a6d6-ed3679d0ad94",
+      "state": "PARTIAL",
+      "error_code": null,
+      "stop_reason": "MAX_PAGES",
+      "returned_count": 1,
+      "unique_count": 1,
+      "committed_pages": 1,
+      "finished_at": "2026-09-15T04:22:10.160Z"
+    },
+    {
+      "monitor_id": "6a2e923d-ceb1-4cb5-a604-e6fb85a352d6",
+      "query_id": "4884f673-c839-49f9-b816-fdbf8b04eedf",
+      "scan_number": 1,
+      "run_id": "21eca8c8-d5c8-4d7d-a20a-6c792e96a9e0",
+      "state": "PARTIAL",
+      "error_code": null,
+      "stop_reason": "MAX_PAGES",
+      "returned_count": 7,
+      "unique_count": 7,
+      "committed_pages": 1,
+      "finished_at": "2026-09-15T04:23:53.975Z"
+    },
+    {
+      "monitor_id": "a9537074-6977-45e7-b4ad-264aa74424a1",
+      "query_id": "a85b2721-a687-40dd-b117-36f8110e81cc",
+      "scan_number": 1,
+      "run_id": "3f112b1c-e393-400d-a63b-724a7974a86f",
+      "state": "COMPLETED",
+      "error_code": null,
+      "stop_reason": "SOURCE_EXHAUSTED",
+      "returned_count": 3,
+      "unique_count": 3,
+      "committed_pages": 1,
+      "finished_at": "2026-09-15T04:24:28.232Z"
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "b1ce86c1-d3b1-4e3a-b49e-45c9a3e92e59",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "receipt": {
+        "remote_id": "collection:75e62b97-410a-4aec-a6d6-ed3679d0ad94:1",
+        "observed_at": "2026-09-15T04:22:01.029Z",
+        "content_hash": "0c53cf13d06c538e7aabecec4a41909eb47945f05085a68f96518e495a2ab849",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61589894042400"
+      },
+      "task_id": "c9d9b6ef-3f04-420b-a99f-87f259c5a625",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "capability_key": "facebook.discovery.read.browser",
+      "inbox_monitor_id": null,
+      "inbox_cycle_id": null,
+      "query_id": "dbd0cff2-709c-4c95-8b72-ba478b011e36",
+      "profile_id": "k1gvdtft",
+      "external_id": "61589894042400",
+      "command_id": "22969eea-b709-4fae-9d0a-135b5293f787",
+      "created_at": "2026-09-15T04:21:07.223Z",
+      "claimed_at": "2026-09-15T04:21:07.506Z",
+      "quiesced_at": "2026-09-15T04:22:10.296Z"
+    },
+    {
+      "action_id": "5ddb2569-6f78-4f64-a4c0-8c9bd5f55abd",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "receipt": {
+        "remote_id": "collection:21eca8c8-d5c8-4d7d-a20a-6c792e96a9e0:1",
+        "observed_at": "2026-09-15T04:23:42.981Z",
+        "content_hash": "b01d8450e8b71d44b392cda8f1549a0728cbeea829a5761fbad61e59805f8c79",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61594402378582"
+      },
+      "task_id": "1b51b49d-da9b-4b73-96b7-c076475437cf",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "capability_key": "facebook.discovery.read.browser",
+      "inbox_monitor_id": null,
+      "inbox_cycle_id": null,
+      "query_id": "4884f673-c839-49f9-b816-fdbf8b04eedf",
+      "profile_id": "k1gx1n1s",
+      "external_id": "61594402378582",
+      "command_id": "4f13f61a-d83f-47d4-b2b9-bc7ac789f926",
+      "created_at": "2026-09-15T04:22:43.872Z",
+      "claimed_at": "2026-09-15T04:22:44.939Z",
+      "quiesced_at": "2026-09-15T04:23:54.041Z"
+    },
+    {
+      "action_id": "42a1bf17-1cbf-45d0-aef2-df87fe1c428a",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "receipt": {
+        "remote_id": "collection:3f112b1c-e393-400d-a63b-724a7974a86f:1",
+        "observed_at": "2026-09-15T04:24:21.328Z",
+        "content_hash": "47576602069df15a60ee19ba9c3c58d8d82be07b5d709646cb51524c0a2d207f",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61594402378582"
+      },
+      "task_id": "f96049fd-f1c4-42fa-bac1-76af246c6281",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "capability_key": "facebook.discovery.read.browser",
+      "inbox_monitor_id": null,
+      "inbox_cycle_id": null,
+      "query_id": "a85b2721-a687-40dd-b117-36f8110e81cc",
+      "profile_id": "k1gx1n1s",
+      "external_id": "61594402378582",
+      "command_id": "ad073fb4-8d34-4a59-9daa-fe97167cc2b1",
+      "created_at": "2026-09-15T04:23:54.612Z",
+      "claimed_at": "2026-09-15T04:23:55.214Z",
+      "quiesced_at": "2026-09-15T04:24:28.278Z"
+    }
+  ],
+  "closures": [
+    {
+      "command_id": "22969eea-b709-4fae-9d0a-135b5293f787",
+      "origin": "original_guardian_proof",
+      "local_database_match": true,
+      "proof": {
+        "protocol_version": "kff.guardian-closure.v1",
+        "command_id": "22969eea-b709-4fae-9d0a-135b5293f787",
+        "action_id": "b1ce86c1-d3b1-4e3a-b49e-45c9a3e92e59",
+        "closed_at": "2026-09-15T04:22:10.004Z",
+        "proof_sha256": "d8b423d0d907850d027bda6c02c89cd32bbdd0650b65c8c48ecae05e6c8872a5"
+      }
+    },
+    {
+      "command_id": "4f13f61a-d83f-47d4-b2b9-bc7ac789f926",
+      "origin": "original_guardian_proof",
+      "local_database_match": true,
+      "proof": {
+        "protocol_version": "kff.guardian-closure.v1",
+        "command_id": "4f13f61a-d83f-47d4-b2b9-bc7ac789f926",
+        "action_id": "5ddb2569-6f78-4f64-a4c0-8c9bd5f55abd",
+        "closed_at": "2026-09-15T04:23:53.837Z",
+        "proof_sha256": "1bf4e2ee23bebeb0bc7c4aba2d76143507197ed20766db0d76e5847e625f1402"
+      }
+    },
+    {
+      "command_id": "ad073fb4-8d34-4a59-9daa-fe97167cc2b1",
+      "origin": "original_guardian_proof",
+      "local_database_match": true,
+      "proof": {
+        "protocol_version": "kff.guardian-closure.v1",
+        "command_id": "ad073fb4-8d34-4a59-9daa-fe97167cc2b1",
+        "action_id": "42a1bf17-1cbf-45d0-aef2-df87fe1c428a",
+        "closed_at": "2026-09-15T04:24:28.069Z",
+        "proof_sha256": "8e49144dd9aeeadd27cefb2394f359c01a74003c825eae290a5ea14f37a7dfae"
+      }
+    }
+  ],
+  "accounts_serialized": true,
+  "account_identity_matches": true,
+  "profiles_after": [
+    {
+      "id": "k1gvdtft",
+      "status": "Inactive"
+    },
+    {
+      "id": "k1gx1n1s",
+      "status": "Inactive"
+    }
+  ],
+  "source": {
+    "child": {
+      "id": "a9537074-6977-45e7-b4ad-264aa74424a1",
+      "parent_monitor_id": "6a2e923d-ceb1-4cb5-a604-e6fb85a352d6",
+      "source_observation_id": "33f90367-036b-4a07-b90d-cfddd6a89e74",
+      "derived_source_url": "https://www.facebook.com/reel/1782066549596350/"
+    },
+    "source_observed_at": "2026-09-15T04:23:42.981Z",
+    "earlier_source_observations": 0,
+    "automatic_derivation_audit": [
+      {
+        "event_type": "acquisition.source_derived",
+        "object_id": "a9537074-6977-45e7-b4ad-264aa74424a1",
+        "created_at": "2026-09-15T04:23:54.295Z",
+        "details": {
+          "expires_at": "2026-09-15T05:23:42.000Z",
+          "source_url": "https://www.facebook.com/reel/1782066549596350/",
+          "source_query_id": "4884f673-c839-49f9-b816-fdbf8b04eedf",
+          "parent_monitor_id": "6a2e923d-ceb1-4cb5-a604-e6fb85a352d6",
+          "source_observation_id": "33f90367-036b-4a07-b90d-cfddd6a89e74"
+        }
+      }
+    ],
+    "comments": [
+      {
+        "id": "1930bae9-6ec3-4521-97ed-5e49fd46a7ca",
+        "source_object_id": "facebook:comment:1657954529083963",
+        "source_url": "https://www.facebook.com/reel/1782066549596350/?comment_id=1657954529083963",
+        "fields": {
+          "message": {
+            "kind": "VALUE",
+            "value": "想瞭解自身八字可直接私信我（批八字需卦金！）"
+          },
+          "author_id": {
+            "kind": "VALUE",
+            "value": "61554912537538"
+          },
+          "created_time": {
+            "kind": "DISPLAYED_TIME",
+            "value": "2026年9月14日周一14:41"
+          },
+          "comment_count": {
+            "kind": "NOT_RETURNED"
+          },
+          "reaction_count": {
+            "kind": "NOT_RETURNED"
+          }
+        },
+        "observed_at": "2026-09-15T04:24:21.328Z",
+        "expires_at": "2026-09-22T04:23:54.308Z",
+        "lead_id": "6cc91a4d-72e7-48fb-b965-d497dc003344",
+        "lead_state": "NEW",
+        "score": 50,
+        "first_seen_at": "2026-09-15T04:24:28.593Z"
+      },
+      {
+        "id": "c0f24779-a006-43d1-b167-40393662b3e5",
+        "source_object_id": "facebook:comment:4684062241872883",
+        "source_url": "https://www.facebook.com/reel/1782066549596350/?comment_id=4684062241872883",
+        "fields": {
+          "message": {
+            "kind": "VALUE",
+            "value": "未土不生金 \n⋯⋯"
+          },
+          "author_id": {
+            "kind": "NOT_RETURNED"
+          },
+          "created_time": {
+            "kind": "DISPLAYED_TIME",
+            "value": "2026年9月14日周一15:03"
+          },
+          "comment_count": {
+            "kind": "NOT_RETURNED"
+          },
+          "reaction_count": {
+            "kind": "NOT_RETURNED"
+          }
+        },
+        "observed_at": "2026-09-15T04:24:21.328Z",
+        "expires_at": "2026-09-22T04:23:54.308Z",
+        "lead_id": null,
+        "lead_state": null,
+        "score": null,
+        "first_seen_at": null
+      },
+      {
+        "id": "d2b9bc6d-499a-4aca-96ff-ef459a526076",
+        "source_object_id": "facebook:comment:1035892802775082",
+        "source_url": "https://www.facebook.com/reel/1782066549596350/?comment_id=1035892802775082",
+        "fields": {
+          "message": {
+            "kind": "VALUE",
+            "value": "冬天呢"
+          },
+          "author_id": {
+            "kind": "NOT_RETURNED"
+          },
+          "created_time": {
+            "kind": "DISPLAYED_TIME",
+            "value": "2026年9月14日周一17:36"
+          },
+          "comment_count": {
+            "kind": "NOT_RETURNED"
+          },
+          "reaction_count": {
+            "kind": "NOT_RETURNED"
+          }
+        },
+        "observed_at": "2026-09-15T04:24:21.328Z",
+        "expires_at": "2026-09-22T04:23:54.308Z",
+        "lead_id": null,
+        "lead_state": null,
+        "score": null,
+        "first_seen_at": null
+      }
+    ],
+    "leads": [
+      {
+        "id": "1930bae9-6ec3-4521-97ed-5e49fd46a7ca",
+        "source_object_id": "facebook:comment:1657954529083963",
+        "source_url": "https://www.facebook.com/reel/1782066549596350/?comment_id=1657954529083963",
+        "fields": {
+          "message": {
+            "kind": "VALUE",
+            "value": "想瞭解自身八字可直接私信我（批八字需卦金！）"
+          },
+          "author_id": {
+            "kind": "VALUE",
+            "value": "61554912537538"
+          },
+          "created_time": {
+            "kind": "DISPLAYED_TIME",
+            "value": "2026年9月14日周一14:41"
+          },
+          "comment_count": {
+            "kind": "NOT_RETURNED"
+          },
+          "reaction_count": {
+            "kind": "NOT_RETURNED"
+          }
+        },
+        "observed_at": "2026-09-15T04:24:21.328Z",
+        "expires_at": "2026-09-22T04:23:54.308Z",
+        "lead_id": "6cc91a4d-72e7-48fb-b965-d497dc003344",
+        "lead_state": "NEW",
+        "score": 50,
+        "first_seen_at": "2026-09-15T04:24:28.593Z",
+        "eligibility": {
+          "can_prepare": false,
+          "reasons": [
+            "需先人工审核为值得跟进"
+          ],
+          "scope": "仅用于准备公开回复草稿；发送时仍核对账号、环境、目标版本及许可。公开作者不等于 Messenger 收件人。"
+        }
+      }
+    ]
+  },
+  "candidate_review": {
+    "id": "6cc91a4d-72e7-48fb-b965-d497dc003344",
+    "state": "DISMISSED",
+    "version": 2,
+    "score": 50,
+    "reason": "原评论明确自称批八字收费并邀请私信，属于商家自推，不是自然客户咨询。保留原评论与历史规则评分，不准备外联。"
+  },
+  "review_record": ".kff/review-paid-comment-049-result.json",
+  "search_source_candidates": 7,
+  "source_candidates_are_customers": false,
+  "platform_submissions": 0,
+  "original_observer": ".kff/matrix-search-only-049.json",
+  "original_log": ".kff/matrix-search-only-049.log",
+  "interpretation": "The system selected a previously unseen Reel without a pasted source URL and read three visible comments. One projected candidate was the publisher advertising paid readings and was excluded through the original review API. The other two comments lacked the configured keyword and returned no author ID. No new qualified consultation or customer conversion is claimed."
+}

@@ -1,5 +1,7 @@
 import {randomUUID} from 'node:crypto';
 import type {z} from 'zod';
+import type {PoolClient} from 'pg';
+import {browserInboxBinding,browserInboxBatch,type BrowserInboxBinding,type BrowserInboxBatch} from '../../contracts/src/browser-inbox';
 import {query,scoped} from '@kff/database';
 import type {Scope} from '@kff/contracts';
 import {contactPolicy} from '../../contracts/src/contact';
@@ -18,13 +20,14 @@ export async function configureFacebook(scope:Scope,input:z.infer<typeof faceboo
     await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',['facebook-config/'+value.account_id]);
     const previous=(await client.query("SELECT details FROM kff.audit_events WHERE event_type='facebook.configured' AND details->>'request_id'=$1",[value.request_id])).rows[0];
     if(previous){requireCondition(previous.details.request_hash===hash,'IDEMPOTENCY_CONFLICT','请求已用于不同配置',409);return previous.details.result;}
-    const account=(await client.query("SELECT a.* FROM kff.accounts a JOIN kff.environments e ON e.account_id=a.id WHERE a.id=$1 AND e.id=$2 AND a.platform='facebook' AND a.account_type='page'",[value.account_id,value.environment_id])).rows[0];
+    const account=(await client.query("SELECT a.*,e.browser_configuration FROM kff.accounts a JOIN kff.environments e ON e.account_id=a.id WHERE a.id=$1 AND e.id=$2 AND a.platform='facebook' AND (a.account_type='page' OR ($3 AND a.account_type='profile'))",[value.account_id,value.environment_id,value.transport==='BROWSER'])).rows[0];
     requireCondition(account,'FORBIDDEN_SCOPE','Facebook 账号与 Agent 环境必须属于本品牌并相互匹配',403);
-    await ensureMessengerCapability(client,scope,account);
+    if(value.transport==='BROWSER')requireCondition(account.is_synthetic?account.browser_configuration?.driver==='native':account.account_type==='profile'&&account.browser_configuration?.driver==='adspower'&&!value.auto_reply&&value.policy_ref==='kff.facebook-browser.explicit-consent.v1','SOURCE_NOT_CONFIGURED','真实浏览器接待需要 AdsPower 个人账号、人工模式及明确同意策略',409);
+    await ensureMessengerCapability(client,scope,account,value.transport);
     const old=(await client.query('SELECT * FROM kff.facebook_connections WHERE account_id=$1 FOR UPDATE',[value.account_id])).rows[0];
     requireCondition((old?.version??0)===value.expected_version,'VERSION_CONFLICT','接待配置已变化，请刷新',409);
-    const result=old?(await client.query('UPDATE kff.facebook_connections SET environment_id=$1,state=$2,auto_reply=$3,reply_window_hours=$4,policy_ref=$5,version=version+1 WHERE account_id=$6 RETURNING *',[value.environment_id,value.state,value.auto_reply,value.reply_window_hours,value.policy_ref,value.account_id])).rows[0]
-      :(await client.query('INSERT INTO kff.facebook_connections(account_id,organization_id,brand_id,environment_id,page_id,is_synthetic,state,auto_reply,reply_window_hours,policy_ref,created_by) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *',[account.id,scope.organization_id,scope.brand_id,value.environment_id,account.external_id,account.is_synthetic,value.state,value.auto_reply,value.reply_window_hours,value.policy_ref,scope.user_id])).rows[0];
+    const result=old?(await client.query('UPDATE kff.facebook_connections SET environment_id=$1,state=$2,auto_reply=$3,reply_window_hours=$4,policy_ref=$5,transport=$7,version=version+1 WHERE account_id=$6 RETURNING *',[value.environment_id,value.state,value.auto_reply,value.reply_window_hours,value.policy_ref,value.account_id,value.transport??'API'])).rows[0]
+      :(await client.query('INSERT INTO kff.facebook_connections(account_id,organization_id,brand_id,environment_id,page_id,is_synthetic,state,auto_reply,reply_window_hours,policy_ref,created_by,transport) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *',[account.id,scope.organization_id,scope.brand_id,value.environment_id,account.external_id,account.is_synthetic,value.state,value.auto_reply,value.reply_window_hours,value.policy_ref,scope.user_id,value.transport??'API'])).rows[0];
     await audit(client,scope,'facebook.configured',account.id,{request_id:value.request_id,request_hash:hash,result});return result;
   });
 }
@@ -42,47 +45,58 @@ export async function createFacebookFixture(scope:Scope,input:z.infer<typeof fac
   });
 }
 export async function receiveFacebookEvent(scope:Scope,accountId:string,input:FacebookEvent,beforeCommit?:()=>Promise<void>){
-  const value=facebookEvent.parse(input),hash=digest(value);
+  return scoped(scope,client=>receiveFacebookEventInTransaction(client,scope,accountId,input,beforeCommit));
+}
+export async function receiveFacebookEventInTransaction(client:PoolClient,scope:Scope,accountId:string,input:FacebookEvent,beforeCommit?:()=>Promise<void>){
+  const value=facebookEvent.parse(input);
   requireCondition(Date.parse(value.occurred_at)<=Date.now()+300000,'INVALID_INPUT','互动时间不能来自未来');
-  return scoped(scope,async client=>{
-    const connection=(await client.query('SELECT f.*,a.outbound_paused,a.state AS account_state FROM kff.facebook_connections f JOIN kff.accounts a ON a.id=f.account_id WHERE f.account_id=$1 FOR SHARE OF f',[accountId])).rows[0];
-    requireCondition(connection&&connection.page_id===value.page_id,'ACCOUNT_MISMATCH','事件与当前 Facebook 账号不匹配',403);
-    const key=accountId+'/'+value.event_id;
+  const connection=(await client.query('SELECT f.*,a.outbound_paused,a.state AS account_state FROM kff.facebook_connections f JOIN kff.accounts a ON a.id=f.account_id WHERE f.account_id=$1 FOR SHARE OF f',[accountId])).rows[0];
+  requireCondition(connection&&connection.page_id===value.page_id,'ACCOUNT_MISMATCH','事件与当前 Facebook 账号不匹配',403);
+  return storeFacebookInboxEvent(client,scope,accountId,value,connection,beforeCommit);
+}
+type InboundConnection={transport?:string;is_synthetic:boolean;auto_reply:boolean;state:string;reply_window_hours:number;policy_ref:string};
+type BrowserProvenance={environment_id:string;configuration_version:number;observed_at:string;batch_sha256:string};
+type StoredInboxEvent=Omit<FacebookEvent,'occurred_at'|'source'>&{occurred_at:string|null;source:FacebookEvent['source']&{displayed_time?:string;thread_kind?:'DIRECT'|'UNVERIFIED';has_attachment?:true}};
+async function storeFacebookInboxEvent(client:PoolClient,scope:Scope,accountId:string,value:StoredInboxEvent,connection:InboundConnection,beforeCommit?:()=>Promise<void>,browser?:BrowserProvenance){
+    const canReply=Boolean(value.occurred_at)&&(browser?connection.transport==='BROWSER'&&connection.is_synthetic&&value.source.thread_kind!=='UNVERIFIED':connection.transport!=='BROWSER');
+    // Rendered relative/time-only labels and display names can change on a later read.
+    const hash=digest(browser?{...value,display_name:null,source:{...value.source,displayed_time:undefined}}:value),sourceKind=browser?'facebook_browser':'facebook',key=accountId+'/'+value.event_id;
     await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',['facebook-event/'+key]);
     // Serialize identity creation and per-conversation sequence. Duplicate requests also take this lock.
-    const channel=value.kind==='COMMENT'?'facebook_comment':value.kind==='INTERACTION'?'facebook_interaction':'facebook_messenger';
+    const channel=browser?'facebook_browser_messenger':value.kind==='COMMENT'?'facebook_comment':value.kind==='INTERACTION'?'facebook_interaction':'facebook_messenger';
     await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[accountId+'/'+channel+'/'+value.sender_id]);
-    const old=(await client.query("SELECT id,payload_hash FROM kff.inbound_events WHERE source_kind='facebook' AND source_key=$1",[key])).rows[0];
+    const old=(await client.query("SELECT id,payload_hash FROM kff.inbound_events WHERE source_kind=$2 AND source_key=$1",[key,sourceKind])).rows[0];
     if(old){requireCondition(old.payload_hash===hash,'IDEMPOTENCY_CONFLICT','同一 Facebook 事件已保存不同内容',409);const message=(await client.query('SELECT id,conversation_id FROM kff.messages WHERE inbound_event_id=$1',[old.id])).rows[0];return {event_id:old.id,message_id:message?.id,conversation_id:message?.conversation_id,duplicate:true};}
-    await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',['facebook-ingress/'+accountId]);
+    await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[sourceKind+'-ingress/'+accountId]);
     const limit=Number(process.env.KFF_FACEBOOK_EVENTS_PER_MINUTE??1000);
     requireCondition(Number.isInteger(limit)&&limit>=1&&limit<=10000,'FACEBOOK_CONFIGURATION_INVALID','Facebook 收件限额配置无效',503);
-    const recent=(await client.query("SELECT count(*)::int AS n FROM kff.inbound_events WHERE source_kind='facebook' AND split_part(source_key,'/',1)=$1 AND received_at>clock_timestamp()-interval '1 minute'",[accountId])).rows[0].n;
+    const recent=(await client.query("SELECT count(*)::int AS n FROM kff.inbound_events WHERE source_kind=$2 AND split_part(source_key,'/',1)=$1 AND received_at>clock_timestamp()-interval '1 minute'",[accountId,sourceKind])).rows[0].n;
     requireCondition(recent<limit,'RATE_LIMITED','此 Facebook 账号的收件速率已达上限，请稍后重试',429);
     const time=(await client.query<{now:Date}>('SELECT clock_timestamp() AS now')).rows[0].now;
     const eventId=randomUUID();
-    await client.query("INSERT INTO kff.inbound_events(id,organization_id,brand_id,source_kind,source_key,payload_hash,source_details) VALUES($1,$2,$3,'facebook',$4,$5,$6)",[eventId,scope.organization_id,scope.brand_id,key,hash,value]);
+    await client.query("INSERT INTO kff.inbound_events(id,organization_id,brand_id,source_kind,source_key,payload_hash,source_details) VALUES($1,$2,$3,$7,$4,$5,$6)",[eventId,scope.organization_id,scope.brand_id,key,hash,browser?{...value,browser_evidence:browser}:value,sourceKind]);
     // Our own signed echo is transport evidence, not a new human message. Never lock the action here:
     // submission/report transactions own action -> conversation, while ingress owns connection -> conversation.
     if(value.kind==='ECHO'){
-      const own=(await client.query("SELECT t.conversation_id,a.id FROM kff.actions a JOIN kff.tasks t ON t.id=a.task_id WHERE t.account_id=$1 AND t.snapshot->>'body'=$2 AND t.snapshot->'message'->'contact'->>'remote_id'=$3 AND a.state IN ('SUBMITTING','SUBMITTED','UNKNOWN_OUTCOME','VERIFIED_SUCCEEDED') AND ((a.id=$4::uuid) OR (a.receipt->>'remote_id'=$5)) LIMIT 1",[accountId,value.body,value.sender_id,value.correlation_id??null,value.event_id])).rows[0];
+      const own=(await client.query("SELECT t.conversation_id,a.id FROM kff.actions a JOIN kff.tasks t ON t.id=a.task_id WHERE t.account_id=$1 AND t.snapshot->'message'->'contact'->>'channel'=$6 AND t.snapshot->>'body'=$2 AND t.snapshot->'message'->'contact'->>'remote_id'=$3 AND a.state IN ('SUBMITTING','SUBMITTED','UNKNOWN_OUTCOME','VERIFIED_SUCCEEDED') AND ((a.id=$4::uuid) OR (a.receipt->>'remote_id'=$5)) LIMIT 1",[accountId,value.body,value.sender_id,value.correlation_id??null,browser?value.source.source_id:value.event_id,channel])).rows[0];
       if(own){await audit(client,scope,'facebook.own_echo_stored',eventId,{account_id:accountId,action_id:own.id,conversation_id:own.conversation_id});if(beforeCommit)await beforeCommit();return {event_id:eventId,message_id:undefined,conversation_id:own.conversation_id as string,duplicate:false};}
     }
     let identity=(await client.query('SELECT * FROM kff.customer_identities WHERE account_id=$1 AND channel=$2 AND remote_id=$3',[accountId,channel,value.sender_id])).rows[0];
+    if(browser&&identity){const first=(await client.query("SELECT source FROM kff.messages WHERE conversation_id=(SELECT id FROM kff.conversations WHERE identity_id=$1) ORDER BY sequence LIMIT 1",[identity.id])).rows[0];requireCondition(first?.source?.peer_id===(value.source as typeof value.source&{peer_id:string}).peer_id,'MESSAGE_IDENTITY_MISMATCH','同一浏览器会话的对方身份已变化',409);}
     if(!identity){
       const customer=(await client.query('INSERT INTO kff.customers(organization_id,brand_id,display_name,first_inquiry_event_id,first_interaction_at,last_interaction_at,acquisition_source) VALUES($1,$2,$3,$4,$5,$5,$6) RETURNING id',[scope.organization_id,scope.brand_id,value.display_name,eventId,value.occurred_at,{...value.source,account_id:accountId}])).rows[0];
       const target=(await client.query('INSERT INTO kff.contact_targets(organization_id,brand_id,account_id,channel,remote_id) VALUES($1,$2,$3,$4,$5) ON CONFLICT(brand_id,account_id,channel,remote_id) DO UPDATE SET remote_id=EXCLUDED.remote_id RETURNING id',[scope.organization_id,scope.brand_id,accountId,channel,value.sender_id])).rows[0];
       identity=(await client.query('INSERT INTO kff.customer_identities(organization_id,brand_id,customer_id,account_id,channel,remote_id,contact_target_id) VALUES($1,$2,$3,$4,$5,$6,$7) RETURNING *',[scope.organization_id,scope.brand_id,customer.id,accountId,channel,value.sender_id,target.id])).rows[0];
-      const automatic=connection.auto_reply&&connection.state==='ACTIVE'&&value.kind==='MESSAGE'&&!value.has_attachment;
+      const automatic=canReply&&connection.auto_reply&&connection.state==='ACTIVE'&&value.kind==='MESSAGE'&&!value.has_attachment;
       await client.query('INSERT INTO kff.conversations(organization_id,brand_id,customer_id,identity_id,account_id,channel_id,channel_kind,handling_mode) VALUES($1,$2,$3,$4,$5,NULL,$6,$7)',[scope.organization_id,scope.brand_id,customer.id,identity.id,accountId,channel.toUpperCase(),automatic?'AI':'HUMAN']);
     }
     const conversation=(await client.query('SELECT * FROM kff.conversations WHERE identity_id=$1 FOR UPDATE',[identity.id])).rows[0];
     await client.query('UPDATE kff.customers SET version=version+1,updated_at=$1,first_interaction_at=LEAST(first_interaction_at,$2::timestamptz),last_interaction_at=GREATEST(last_interaction_at,$2::timestamptz) WHERE id=$3',[time,value.occurred_at,identity.customer_id]);
     let permissionId:string|null=null,windowEnd:string|null=null;
-    if(value.kind==='MESSAGE'){
+    if(value.kind==='MESSAGE'&&canReply&&value.occurred_at){
       const target=(await client.query('SELECT * FROM kff.contact_targets WHERE id=$1 FOR UPDATE',[identity.contact_target_id])).rows[0];
       windowEnd=new Date(Date.parse(value.occurred_at)+connection.reply_window_hours*3600000).toISOString();
-      const policy=contactPolicy.parse({basis_type:'inbound_inquiry',purpose:'customer_service',source_type:'platform_event',source_ref:eventId,source_observed_at:value.occurred_at,source_use_status:'CONFIRMED',starts_at:value.occurred_at,expires_at:windowEnd,policy_ref:connection.policy_ref,window_rule:'EXPLICIT_END',window_expires_at:windowEnd,evidence_note:'Facebook 主页收到客户主动私信，仅建立配置窗口内的客户服务依据；评论及互动不授予私信资格。'});
+      const policy=contactPolicy.parse({basis_type:'inbound_inquiry',purpose:'customer_service',source_type:browser?'owned_endpoint':'platform_event',source_ref:eventId,source_observed_at:value.occurred_at,source_use_status:'CONFIRMED',starts_at:value.occurred_at,expires_at:windowEnd,policy_ref:browser?'kff.browser-fixture.service-window.v1':connection.policy_ref,window_rule:'EXPLICIT_END',window_expires_at:windowEnd,evidence_note:browser?'本项目编写的合成网页主动咨询，仅建立本地验证窗口，不证明真实平台发送资格。':'Facebook 主页收到客户主动私信，仅建立配置窗口内的客户服务依据；评论及互动不授予私信资格。'});
       permissionId=(await client.query('INSERT INTO kff.contact_permissions(organization_id,brand_id,target_id,target_version,purpose,policy,policy_hash,request_id,request_hash) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id',[scope.organization_id,scope.brand_id,target.id,target.version,'customer_service',policy,digest(policy),randomUUID(),hash])).rows[0].id;
     }
     const forcedHuman=value.kind==='ECHO'||value.has_attachment;
@@ -97,12 +111,36 @@ export async function receiveFacebookEvent(scope:Scope,accountId:string,input:Fa
     if(forcedHuman)await audit(client,scope,'conversation.native_takeover',conversation.id,{account_id:accountId,reason:value.kind==='ECHO'?'Facebook 原生人工回复':'附件需要人工查看',previous_mode:conversation.handling_mode});
     if(value.kind==='ECHO')await client.query("UPDATE kff.conversations v SET last_answered_sequence=GREATEST(v.last_answered_sequence,v.last_inbound_sequence) WHERE v.id=$1 AND EXISTS(SELECT 1 FROM kff.messages m WHERE m.conversation_id=v.id AND m.sequence=v.last_inbound_sequence AND m.client_sent_at<=$2::timestamptz)",[conversation.id,value.occurred_at]);
     const message=(await client.query('INSERT INTO kff.messages(organization_id,brand_id,conversation_id,inbound_event_id,sequence,direction,body,received_at,client_sent_at,contact_permission_id,client_display_name,message_kind,source) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING id',[scope.organization_id,scope.brand_id,conversation.id,eventId,updated.last_sequence,value.kind==='ECHO'?'EXTERNAL_OUTBOUND':'INBOUND',value.body,time,value.occurred_at,permissionId,value.display_name,value.kind,value.source])).rows[0];
-    await client.query("INSERT INTO kff.customer_events(organization_id,brand_id,customer_id,event_type,actor_id,details,request_id,request_hash) VALUES($1,$2,$3,'INQUIRY',$4,$5,$6,$7)",[scope.organization_id,scope.brand_id,identity.customer_id,scope.user_id,{actor_kind:'facebook',account_id:accountId,event_id:eventId,message_id:message.id,conversation_id:conversation.id,kind:value.kind,source:value.source},randomUUID(),hash]);
-    await audit(client,scope,'facebook.event_stored',eventId,{account_id:accountId,customer_id:identity.customer_id,conversation_id:conversation.id,message_id:message.id,kind:value.kind,is_synthetic:connection.is_synthetic});
-    if(value.kind==='MESSAGE'&&!value.has_attachment)await queueReceptionForConversation(client,conversation.id);
+    await client.query("INSERT INTO kff.customer_events(organization_id,brand_id,customer_id,event_type,actor_id,details,request_id,request_hash) VALUES($1,$2,$3,'INQUIRY',$4,$5,$6,$7)",[scope.organization_id,scope.brand_id,identity.customer_id,scope.user_id,{actor_kind:sourceKind,account_id:accountId,event_id:eventId,message_id:message.id,conversation_id:conversation.id,kind:value.kind,source:value.source},randomUUID(),hash]);
+    await audit(client,scope,'facebook.event_stored',eventId,{account_id:accountId,customer_id:identity.customer_id,conversation_id:conversation.id,message_id:message.id,kind:value.kind,is_synthetic:connection.is_synthetic,transport:sourceKind});
+    if(canReply&&value.kind==='MESSAGE'&&!value.has_attachment)await queueReceptionForConversation(client,conversation.id);
     if(beforeCommit)await beforeCommit();
     return {event_id:eventId,message_id:message.id as string,conversation_id:conversation.id as string,customer_id:identity.customer_id as string,duplicate:false};
-  });
+}
+
+/** Internal primitive for a verified Agent report transaction; not an HTTP or fixture-injection endpoint. */
+export async function receiveBrowserInboxBatchInTransaction(client:PoolClient,scope:Scope,inputBinding:BrowserInboxBinding,input:BrowserInboxBatch){
+  requireWrite(scope);
+  const binding=browserInboxBinding.parse(inputBinding),batch=browserInboxBatch.parse(input),environment=binding.environment;
+  requireCondition(environment.organization_id===scope.organization_id&&environment.brand_id===scope.brand_id&&environment.platform==='facebook','FORBIDDEN_SCOPE','浏览器收件环境不属于当前品牌',403);
+  const row=(await client.query('SELECT a.*,e.agent_id,e.profile_key,e.configuration_version,e.browser_configuration FROM kff.accounts a JOIN kff.environments e ON e.account_id=a.id WHERE a.id=$1 AND e.id=$2 AND a.organization_id=$3 AND a.brand_id=$4 FOR SHARE OF a,e',[environment.account_id,environment.environment_id,scope.organization_id,scope.brand_id])).rows[0];
+  requireCondition(row&&row.version===binding.account_version&&row.platform==='facebook'&&row.external_id===batch.operating_identity_id&&row.is_synthetic===environment.is_synthetic,'ACCOUNT_MISMATCH','浏览器消息与绑定账号不一致',409);
+  requireCondition(row.agent_id===environment.agent_id&&row.profile_key===environment.profile_key&&row.configuration_version===environment.configuration_version&&digest(row.browser_configuration)===digest(environment.configuration),'VERSION_CONFLICT','浏览器配置已变化',409);
+  requireCondition(batch.login_account_id===environment.configuration.login_account_id&&batch.operating_identity_id===environment.configuration.operating_identity_id,'ACCOUNT_MISMATCH','可见登录账号或操作身份不匹配',409);
+  requireCondition(Date.parse(batch.observed_at)<=Date.now()+300000,'INVALID_INPUT','观察时间不能来自未来');
+  const configured=(await client.query("SELECT * FROM kff.facebook_connections WHERE account_id=$1 AND environment_id=$2 AND transport='BROWSER' FOR SHARE",[environment.account_id,environment.environment_id])).rows[0];
+  const connection:InboundConnection=configured??{is_synthetic:row.is_synthetic,auto_reply:false,state:'PAUSED',reply_window_hours:24,policy_ref:'browser-inbound-unverified-send'};
+  const results=[];
+  // A fixed per-account ingress order avoids deadlock between overlapping browser batches.
+  await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',['facebook-browser-batch/'+environment.account_id]);
+  // If the platform only gives a time label, preserve observed DOM order without inventing a date.
+  const ordered=batch.messages.every(message=>message.occurred_at!==null)?[...batch.messages].sort((a,b)=>a.occurred_at!.localeCompare(b.occurred_at!)||a.message_id.localeCompare(b.message_id)):batch.messages;
+  for(const message of ordered){
+    const value:StoredInboxEvent={event_id:message.thread_id+'/'+message.message_id,page_id:batch.operating_identity_id,sender_id:message.thread_id,kind:message.direction==='INBOUND'?'MESSAGE':'ECHO',body:message.body,display_name:message.display_name,occurred_at:message.occurred_at,has_attachment:message.has_attachment,source:{kind:'MESSENGER',page_id:batch.operating_identity_id,source_id:message.message_id,ref:null,ad_id:null,...{transport:'BROWSER',thread_id:message.thread_id,peer_id:message.peer_id,source_url:message.source_url},...(message.thread_kind!=='DIRECT'?{thread_kind:message.thread_kind}:{}),...(message.displayed_time?{displayed_time:message.displayed_time}:{}),...(message.has_attachment?{has_attachment:true as const}:{})}};
+    // Browser thread IDs remain in their own namespace. This primitive never fabricates a PSID or API window.
+    results.push(await storeFacebookInboxEvent(client,scope,environment.account_id,value,connection,undefined,{environment_id:environment.environment_id,configuration_version:environment.configuration_version,observed_at:batch.observed_at,batch_sha256:digest(batch)}));
+  }
+  return {stored:results.filter(row=>!row.duplicate).length,duplicates:results.filter(row=>row.duplicate).length,events:results};
 }
 export async function injectFacebookFixture(scope:Scope,accountId:string,input:FacebookEvent){
   requireWrite(scope);

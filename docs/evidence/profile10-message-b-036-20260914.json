@@ -1,0 +1,150 @@
+{
+  "at": "2026-09-14T11:18:52.112Z",
+  "version": "0.1.36",
+  "goal_complete": false,
+  "platform_sends": 0,
+  "source_build_agent_match": true,
+  "tests": {
+    "browser": {
+      "startTime": "2026-09-14T11:09:39.161Z",
+      "duration": 52885.651999999995,
+      "expected": 13,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "contracts": 178,
+    "typecheck": 0,
+    "build": 0
+  },
+  "prior_failure": {
+    "commands": [
+      {
+        "id": "4d006aa5-1520-4306-abe2-e3919e7ec278",
+        "action_id": "07f1864c-1968-4894-9a2e-607a1c5a52b8",
+        "created_at": "2026-09-14T11:03:10.117Z",
+        "quiesced_at": "2026-09-14T11:03:53.630Z",
+        "state": "BLOCKED",
+        "error_code": "IDENTITY_UNVERIFIED",
+        "receipt": null,
+        "task_id": "a817ab5a-63dc-43f8-860f-903e8343c09e",
+        "implementation_digest": "000f84be9f4ea37f5397209269e7f3cdfd270c62160ddbfde702b365aea0643a"
+      }
+    ],
+    "closure": {
+      "protocol_version": "kff.guardian-closure.v1",
+      "command_id": "4d006aa5-1520-4306-abe2-e3919e7ec278",
+      "action_id": "07f1864c-1968-4894-9a2e-607a1c5a52b8",
+      "closed_at": "2026-09-14T11:03:53.237Z",
+      "proof_sha256": "9be79b74876c42812c5890a0b1215c9358ab2e6c0ba8ee773f84d29a214c68a6",
+      "local_and_database_match": true
+    },
+    "profile_after": "Inactive",
+    "stored": 0,
+    "step": "facebook-inbox-identity-before"
+  },
+  "diagnosis": {
+    "error": "个人账号页面类型未核实",
+    "steps": [
+      {
+        "at": "2026-09-14T11:07:50.081Z",
+        "step": "navigate"
+      },
+      {
+        "at": "2026-09-14T11:07:55.436Z",
+        "step": "resolve"
+      },
+      {
+        "at": "2026-09-14T11:07:55.543Z",
+        "step": "own-controls"
+      },
+      {
+        "at": "2026-09-14T11:07:56.065Z",
+        "step": "heading"
+      },
+      {
+        "at": "2026-09-14T11:07:59.152Z",
+        "step": "profile-type"
+      }
+    ],
+    "profile_id": "61594402378582",
+    "friend_link": [
+      {
+        "tag": "A",
+        "role": "link",
+        "label": "1 位好友",
+        "href": "https://www.facebook.com/profile.php?id=61594402378582&sk=friends_all"
+      }
+    ],
+    "closed": true
+  },
+  "read": {
+    "monitor_id": "e693f9db-6faa-4b7f-9e98-cf1079297665",
+    "monitor_version": 7,
+    "commands": [
+      {
+        "id": "6d22bb22-db5c-4cc8-a043-f3f2da968b9d",
+        "action_id": "138f1162-b8c0-41a9-ae24-4bab6fc1a100",
+        "created_at": "2026-09-14T11:14:55.616Z",
+        "quiesced_at": "2026-09-14T11:15:42.310Z",
+        "state": "BLOCKED",
+        "error_code": "INBOX_WINDOW_UNAVAILABLE",
+        "receipt": null,
+        "task_id": "c12cf556-6d5c-4d18-bd58-f13c5324d9a1",
+        "implementation_digest": "43ccb495c3656595d4a2074e2c0b76b41cd934139fc847d5ba60b3869d9a9ab2"
+      }
+    ],
+    "closure": {
+      "protocol_version": "kff.guardian-closure.v1",
+      "command_id": "6d22bb22-db5c-4cc8-a043-f3f2da968b9d",
+      "action_id": "138f1162-b8c0-41a9-ae24-4bab6fc1a100",
+      "closed_at": "2026-09-14T11:15:41.869Z",
+      "proof_sha256": "50ed8bd08aa83ce02397bd18d25974ecccf3aea096650f3ec35cd5f2a8a24185",
+      "local_and_database_match": true
+    },
+    "checkpoints": [],
+    "audit": [],
+    "accepted": false,
+    "profile_after": "Inactive",
+    "finished_at": "2026-09-14T11:15:46.285Z"
+  },
+  "expected_message": null,
+  "message_count": 0,
+  "account8_to_account10_inbox_verified": false,
+  "runtime": {
+    "runtime_id": "c41d6254-fcd6-49ec-96dd-4ee2ed3a153f",
+    "monitors": [
+      {
+        "kind": "acquisition",
+        "state": "PAUSED",
+        "count": 13
+      },
+      {
+        "kind": "inbox",
+        "state": "PAUSED",
+        "count": 5
+      }
+    ],
+    "open_commands": 0,
+    "live_sending_enabled": false
+  },
+  "preserved_history": {
+    "whatsapp_referrals": {
+      "count": 13,
+      "digest": "d4e2c7ebe15894e09b9e989c3a2aea12"
+    },
+    "collection_observations": {
+      "count": 705,
+      "digest": "97d0d17b1feb7aaf438430fe40529b44"
+    },
+    "acquisition_evaluations": {
+      "count": 121,
+      "digest": "93bc65e04cae5f994a95336c8017b666"
+    },
+    "acquisition_leads": {
+      "count": 38,
+      "digest": "b5f1d85f5b239911cb74b76ad196b6f3"
+    }
+  },
+  "coverage": "Only controlled account8-to-account10 accepted private message routing. Not a new public lead, continuous two-account operation, AI acceptance or WhatsApp sales receipt."
+}

@@ -1,0 +1,59 @@
+{
+  "at": "2026-09-14T12:20:44.432Z",
+  "version": "0.1.38",
+  "agent": {
+    "release_id": "kff-agent-0.1.38-win32-x64-bff5f1059318",
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.38-win32-x64-bff5f1059318",
+    "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.38-win32-x64-bff5f1059318.zip",
+    "archive_sha256": "738cb37e90bf7d6a5427c4cf8120e477891f468e0d6f88547a4e7e5eeffb5f61",
+    "files": 1348,
+    "dependencies": 23,
+    "contains_pairing_or_browser_data": false
+  },
+  "controller": {
+    "release_id": "kff-controller-0.1.38-win32-x64-95ba52a30d50",
+    "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.38-win32-x64-95ba52a30d50",
+    "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.38-win32-x64-95ba52a30d50.zip",
+    "archive_sha256": "763e0d0ed0a2b158fd1414193cf89d695ac9ad887ce13eb1735da0a190ec2b2b",
+    "files": 24092,
+    "uncompressed_bytes": 829501149,
+    "dependency_packages": 155,
+    "contains_runtime_data": false,
+    "live_config_values_scanned": 6
+  },
+  "installed_directory": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.38-win32-x64-bff5f1059318",
+  "active_runtime": "7373dfb2-e08c-418e-b181-ba87bda9afca",
+  "open_commands": 0,
+  "monitors": [
+    {
+      "kind": "acquisition",
+      "state": "PAUSED",
+      "count": 13
+    },
+    {
+      "kind": "inbox",
+      "state": "PAUSED",
+      "count": 5
+    }
+  ],
+  "live_sending_enabled": false,
+  "real_whatsapp_destinations": [
+    {
+      "id": "a80a2f14-32b5-4081-858a-ce1a8fca8731",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "state": "PAUSED",
+      "version": 2
+    },
+    {
+      "id": "61cef25d-7e01-4800-9c05-e5d46e070927",
+      "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "state": "PAUSED",
+      "version": 2
+    }
+  ],
+  "whatsapp_receiving_number": "USER_NOT_READY",
+  "bounded_two_account_dispatch_verified": true,
+  "continuous_pair_accepted": false,
+  "accepted_pair_evidence": "docs/evidence/matrix-pair-038-20260914.json",
+  "full_goal_complete": false
+}

@@ -1,0 +1,39 @@
+{
+  "at": "2026-09-15T02:03:21.523Z",
+  "read_only": true,
+  "rows": [
+    {
+      "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "external_id": "61594334430750",
+      "account_state": "ACTIVE",
+      "outbound_paused": true,
+      "environment_id": "bd009fb1-2f65-448e-8536-440225d913d9",
+      "environment_state": "DISABLED",
+      "configuration_version": 3,
+      "browser_status": "CLOSED",
+      "profile_id": "k1gw2kh9"
+    },
+    {
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "external_id": "61589894042400",
+      "account_state": "ACTIVE",
+      "outbound_paused": false,
+      "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+      "environment_state": "IDLE",
+      "configuration_version": 2,
+      "browser_status": "CLOSED",
+      "profile_id": "k1gvdtft"
+    },
+    {
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "external_id": "61594402378582",
+      "account_state": "ACTIVE",
+      "outbound_paused": false,
+      "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+      "environment_state": "IDLE",
+      "configuration_version": 2,
+      "browser_status": "CLOSED",
+      "profile_id": "k1gx1n1s"
+    }
+  ]
+}

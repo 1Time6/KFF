@@ -1,0 +1,345 @@
+{
+  "schema_version": "kff.profile10-switch.v1",
+  "recorded_at": "2026-09-14T08:54:22.388Z",
+  "goal_complete": false,
+  "state": {
+    "at": "2026-09-14T08:50:26.203Z",
+    "goal_complete": false,
+    "user_requested_replacement": {
+      "from": "9 / 客户-32857-A / 郑成功",
+      "reason": "User reported the account was banned; no additional Facebook actions were taken on it.",
+      "to": {
+        "profile_id": "k1gx1n1s",
+        "ui_sequence": "10",
+        "profile_name": "客户-32857-B",
+        "external_id": "61594402378582",
+        "display_name": "白青天"
+      }
+    },
+    "binding": {
+      "started_at": "2026-09-14T08:40:45.261Z",
+      "selected": {
+        "profile_id": "k1gx1n1s",
+        "ui_sequence": "10",
+        "profile_name": "客户-32857-B",
+        "external_id": "61594402378582",
+        "display_name": "白青天"
+      },
+      "scope": {
+        "organization_id": "11111111-1111-4111-8111-111111111111",
+        "brand_id": "22222222-2222-4222-8222-222222222222",
+        "user_id": "33333333-3333-4333-8333-333333333333",
+        "role": "admin"
+      },
+      "agent_id": "66666666-6666-4666-8666-666666666666",
+      "backup": ".kff/changes/profile10-switch-20260914/before.json",
+      "navigations": 0,
+      "platform_sends": 0,
+      "status": "BOUND_PENDING_ORIGINAL_AGENT_CHECK",
+      "observed_identity": {
+        "method": "manual-current-profile-dom",
+        "observed_at": "2026-09-14T08:40:45.831Z",
+        "source_url": "https://www.facebook.com/profile.php?id=61594402378582",
+        "operating_identity_id": "61594402378582",
+        "display_name": "白青天",
+        "own_edit_link": true,
+        "friends_tab": true,
+        "timeline_matches": true,
+        "locale": "en-US",
+        "timezone_id": "America/New_York"
+      },
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+      "configuration_version": 2,
+      "original_history_and_first_binding_unchanged": true,
+      "comparison_correction": "Compared the database timestamps and serialized backup in the same JSON representation; no original row differences.",
+      "prior_observation": ".kff/changes/profile10-switch-20260914/binding-comparison-observation.json",
+      "finished_at": "2026-09-14T08:41:44.204Z"
+    },
+    "identity": {
+      "started_at": "2026-09-14T08:43:58.547Z",
+      "profile_id": "k1gx1n1s",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "environment_id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+      "request_id": "db68209f-30ad-4637-94cf-93054960e737",
+      "platform_sends": 0,
+      "runtime_id": "969bbf61-2673-42f3-a883-5dd71ce497bc",
+      "release_id": "kff-agent-0.1.28-win32-x64-6ba81add4ecd",
+      "command_id": "95a1b8a7-4ee8-4bbd-bcd0-639fbc31b4dd",
+      "command": {
+        "id": "95a1b8a7-4ee8-4bbd-bcd0-639fbc31b4dd",
+        "state": "CLOSED",
+        "result": {
+          "outcome": "CHECKED",
+          "identity": {
+            "method": "facebook-profile-dom-v1",
+            "source_url": "https://www.facebook.com/profile.php?id=61594402378582",
+            "observed_at": "2026-09-14T08:44:19.695Z",
+            "account_type": "profile",
+            "display_name": "白青天",
+            "authenticated": true,
+            "operating_identity_id": "61594402378582"
+          },
+          "context_closed": true,
+          "browser_version": "150.0.7871.47"
+        },
+        "closed_at": "2026-09-14T08:44:20.842Z"
+      },
+      "closure_matches": true,
+      "provider_after": "Inactive",
+      "verified": true,
+      "status": "VERIFIED",
+      "finished_at": "2026-09-14T08:44:21.205Z"
+    },
+    "page_read": {
+      "source": "https://www.facebook.com/61594197356279/",
+      "max_pages": 1,
+      "max_records": 3,
+      "monitor_id": "d30bcd50-5365-42a3-87f2-17cdcb9be43f",
+      "query_id": "b4e8e280-e3a2-43ed-a3f4-9c912543b284",
+      "run": {
+        "id": "8e08f62d-0373-49b0-9d8d-eb94cc63f885",
+        "state": "FAILED",
+        "returned_count": 0,
+        "unique_count": 0,
+        "committed_pages": 0,
+        "error_code": "BROWSER_STEP_TIMEOUT",
+        "stop_reason": "BROWSER_STEP_TIMEOUT"
+      },
+      "command": {
+        "id": "8345b325-edea-469a-8898-4339f1a4e809",
+        "action_id": "61a9479a-57e9-412b-8aca-29f93e18bd4d",
+        "created_at": "2026-09-14T08:45:24.471Z",
+        "quiesced_at": "2026-09-14T08:46:01.758Z",
+        "state": "BLOCKED",
+        "error_code": "BROWSER_STEP_TIMEOUT",
+        "receipt": null,
+        "implementation_digest": "c8c50d0e6a7c2bf61dcc65e6864d70a6d8ca0ab754c87bf0fb2e54c3f9eea675"
+      },
+      "diagnostics": [
+        {
+          "id": "91d13855-21be-4d7b-9fd9-4b669aa8b7e8",
+          "manifest": {
+            "step": "facebook-page-read-scope",
+            "files": [
+              {
+                "name": "semantic-counts.json",
+                "sha256": "d6c270a3fde6109ca6aaf4399aa721f3a4b656559bb5cbb4f55c17b2fb6e55d8",
+                "content": {
+                  "result_count": 0,
+                  "identity_count": 1,
+                  "submit_controls": 0
+                }
+              }
+            ],
+            "level": "D1",
+            "omitted": [
+              "raw_dom",
+              "screenshots",
+              "trace",
+              "cookies",
+              "message_body",
+              "network_bodies"
+            ],
+            "outcome": "BLOCKED",
+            "brand_id": "22222222-2222-4222-8222-222222222222",
+            "action_id": "61a9479a-57e9-412b-8aca-29f93e18bd4d",
+            "attempt_id": "cc893ee4-56fc-4327-ba98-02e4f266492d",
+            "created_at": "2026-09-14T08:46:01.730Z",
+            "error_code": "BROWSER_STEP_TIMEOUT",
+            "duration_ms": 34837,
+            "schema_version": "kff.diagnostic.v2",
+            "adapter_version": "facebook-search-browser-v1",
+            "browser_version": "150.0.7871.47",
+            "organization_id": "11111111-1111-4111-8111-111111111111",
+            "downgrade_reason": null,
+            "executor_version": "kff-agent-0.1.0_node-24.14.1",
+            "protocol_version": "kff.agent.v1",
+            "redaction_version": "allowlist-v1"
+          }
+        }
+      ],
+      "retried": false,
+      "closure": {
+        "proof": {
+          "protocol_version": "kff.guardian-closure.v1",
+          "command_id": "8345b325-edea-469a-8898-4339f1a4e809",
+          "action_id": "61a9479a-57e9-412b-8aca-29f93e18bd4d",
+          "closed_at": "2026-09-14T08:46:01.520Z",
+          "proof_sha256": "7aeca215df39b6982df08dbb2a62ff4a83c7f3e4fc4639e39388592f03389dac"
+        },
+        "local_database_match": true,
+        "acknowledged": true,
+        "quarantined": false
+      }
+    },
+    "runtime": {
+      "runtime_id": "969bbf61-2673-42f3-a883-5dd71ce497bc",
+      "phase": "RUNNING",
+      "components": {
+        "database": {
+          "pid": null,
+          "state": "CONNECTED"
+        },
+        "web": {
+          "pid": 15980,
+          "state": "RUNNING"
+        },
+        "worker": {
+          "pid": 17260,
+          "state": "RUNNING"
+        },
+        "agent": {
+          "pid": 24816,
+          "state": "RUNNING"
+        }
+      },
+      "version": "0.1.28",
+      "release_id": "kff-agent-0.1.28-win32-x64-6ba81add4ecd",
+      "source_build_agent_match": true,
+      "live_sending_enabled": false,
+      "open_commands": 0,
+      "monitors": [
+        {
+          "kind": "acquisition",
+          "state": "PAUSED",
+          "count": 13
+        },
+        {
+          "kind": "inbox",
+          "state": "PAUSED",
+          "count": 4
+        }
+      ],
+      "profiles": [
+        {
+          "profile": "k1gvdtft",
+          "status": "Inactive"
+        },
+        {
+          "profile": "k1gx1n1s",
+          "status": "Inactive"
+        }
+      ],
+      "environments": [
+        {
+          "id": "bd009fb1-2f65-448e-8536-440225d913d9",
+          "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+          "state": "DISABLED",
+          "configuration_version": 3,
+          "profile": "k1gw2kh9",
+          "external_id": "61594334430750",
+          "display_name": "郑成功",
+          "outbound_paused": true
+        },
+        {
+          "id": "b9e37c03-6c8c-4f18-bab6-078f27de08fd",
+          "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+          "state": "IDLE",
+          "configuration_version": 2,
+          "profile": "k1gx1n1s",
+          "external_id": "61594402378582",
+          "display_name": "白青天",
+          "outbound_paused": false
+        }
+      ]
+    },
+    "original_business_history_unchanged": true,
+    "history": {
+      "messages": {
+        "count": 128,
+        "digest": "e88da1cc8deba9f88906762e6368b761"
+      },
+      "conversations": {
+        "count": 95,
+        "digest": "ec9b1521a9d672c11d5ef7070059d736"
+      },
+      "whatsapp_referrals": {
+        "count": 13,
+        "digest": "d4e2c7ebe15894e09b9e989c3a2aea12"
+      },
+      "acquisition_leads": {
+        "count": 35,
+        "digest": "d8a653c2d7e0ff33795b2848b1c8a5ea"
+      }
+    },
+    "platform_sends": 0,
+    "remaining": "Public Page read timed out at facebook-page-read-scope with 0 stored; do not count it as acquisition success or infer a ban. Inbox/new controlled lead/WhatsApp tests still need to be established for profile 10 without relabeling profile 9 history."
+  },
+  "implementation": {
+    "changes": [
+      "Support the observed ProfileActions edit link only for the same numeric profile with its explicit profile-header editing context.",
+      "Support the new name button only when it matches the same numeric profile timeline label and occurs before ProfileActions.",
+      "Keep the existing numeric identity, own-control, Friends-tab, login/challenge and final identity checks."
+    ],
+    "contracts": {
+      "passed": 168,
+      "failed": 0
+    },
+    "identity_fixtures": {
+      "startTime": "2026-09-14T08:35:28.549Z",
+      "duration": 41345.129,
+      "expected": 6,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "identity_followup_fixtures": {
+      "startTime": "2026-09-14T08:37:27.483Z",
+      "duration": 4664.034,
+      "expected": 3,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "typecheck_exit": 0,
+    "owned_eslint_exit": 0,
+    "build_exit": 0
+  },
+  "packages": {
+    "agent": {
+      "release_id": "kff-agent-0.1.28-win32-x64-6ba81add4ecd",
+      "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.28-win32-x64-6ba81add4ecd",
+      "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.28-win32-x64-6ba81add4ecd.zip",
+      "archive_sha256": "7d07f97f803c39a9e60392cf61a306f3b65ddf787aea898be83c173388f5dfa8",
+      "files": 1348,
+      "dependencies": 23,
+      "contains_pairing_or_browser_data": false
+    },
+    "controller": {
+      "release_id": "kff-controller-0.1.28-win32-x64-9b83d774283e",
+      "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.28-win32-x64-9b83d774283e",
+      "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.28-win32-x64-9b83d774283e.zip",
+      "archive_sha256": "66eed3b15189cf0e45c84e799ba6d02abd093220eab76c9e0979ef042ab10ed3",
+      "files": 24092,
+      "uncompressed_bytes": 829481725,
+      "dependency_packages": 155,
+      "contains_runtime_data": false,
+      "live_config_values_scanned": 6
+    }
+  },
+  "installation": {
+    "started_at": "2026-09-14T08:42:01.672Z",
+    "log": ".kff/profile10-028-install.log",
+    "pid": 6448,
+    "exit_code": 0,
+    "finished_at": "2026-09-14T08:42:44.614Z"
+  },
+  "limits": [
+    "The real original Agent identity check passed; the single public Page read failed before storing content.",
+    "No Facebook message, comment, invitation or account/proxy setting was submitted during this switch.",
+    "The user reported profile 9 banned. A Page-read timeout is not proof that profile 10 is banned or unrestricted.",
+    "Historical conversations and referrals belong to their original accounts; profile 10 Inbox and new lead handoff are not yet accepted.",
+    "The 0.1.28 full archive was verified, but clean-machine, reboot and full two-account sustained acceptance remain incomplete."
+  ],
+  "preserved_observations": [
+    ".kff/profile10-identity-observation-20260914.json",
+    ".kff/profile10-own-controls-20260914.json",
+    ".kff/changes/profile10-switch-20260914/binding-comparison-observation.json",
+    ".kff/profile10-028-controller-package.log"
+  ],
+  "harness_notes": [
+    "The first metadata comparison used live Date objects against JSON strings. A serialized comparison proved no first-account changes; existing new account/environment IDs were reused, not recreated.",
+    "The first controller packaging invocation omitted its required --agent-release argument and stopped before packaging. The corrected invocation produced the verified archive."
+  ]
+}

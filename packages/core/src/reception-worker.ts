@@ -42,7 +42,9 @@ async function lockCurrentReception(client:import('pg').PoolClient,claim:Recepti
   const job=(await client.query('SELECT * FROM kff.jobs WHERE id=$1 FOR UPDATE',[claim.id])).rows[0];
   requireCondition(job?.state==='LEASED'&&job.lease_token===claim.lease_token&&job.lease_expires_at>(await client.query('SELECT clock_timestamp() AS now')).rows[0].now&&digest(job.payload)===digest(p),'RECEPTION_LEASE_STALE','接待准备任务已过期',409);
   const pause=(await client.query('SELECT a.outbound_paused OR b.outbound_paused OR o.outbound_paused AS paused FROM kff.accounts a JOIN kff.brands b ON b.id=a.brand_id JOIN kff.organizations o ON o.id=a.organization_id WHERE a.id=$1',[p.account_id])).rows[0];
-  const current=conversation&&connection&&conversation.control_version===p.control_version&&conversation.last_inbound_sequence===p.trigger_sequence&&conversation.handling_mode==='AI'&&conversation.last_answered_sequence<p.trigger_sequence&&connection.version===p.connection_version&&connection.auto_reply&&connection.state==='ACTIVE'&&!pause?.paused&&digest(await readStopEpochs(client,p.account_id,p.agent_id))===digest(p.stop_epochs);
+  const trigger=p.draft_only?(await client.query('SELECT body FROM kff.messages WHERE id=$1 AND conversation_id=$2 AND sequence=$3',[p.message_id,p.conversation_id,p.trigger_sequence])).rows[0]:null;
+  const modeCurrent=p.draft_only?conversation?.handling_mode==='HUMAN'&&Date.parse(p.draft_expires_at??'')>Date.now()&&trigger&&digest(trigger.body)===p.trigger_content_hash:conversation?.handling_mode==='AI'&&connection?.auto_reply;
+  const current=conversation&&connection&&modeCurrent&&conversation.control_version===p.control_version&&conversation.last_inbound_sequence===p.trigger_sequence&&conversation.last_answered_sequence<p.trigger_sequence&&connection.version===p.connection_version&&connection.state==='ACTIVE'&&!pause?.paused&&digest(await readStopEpochs(client,p.account_id,p.agent_id))===digest(p.stop_epochs);
   return {job,conversation,current};
 }
 export async function completeReception(claim:ReceptionClaim,input:ReceptionDecision,modelName:string,beforeCommit?:()=>Promise<void>){
@@ -52,6 +54,12 @@ export async function completeReception(claim:ReceptionClaim,input:ReceptionDeci
     if(!locked.current){await client.query("UPDATE kff.jobs SET state='DONE',result=$1,lease_expires_at=NULL WHERE id=$2",[{status:'STALE',reason:'控制权、来源消息、配置或停止版本已变化'},claim.id]);return {status:'STALE'};}
     const customer=(await client.query('SELECT * FROM kff.customers WHERE id=$1 FOR UPDATE',[locked.conversation.customer_id])).rows[0];
     if(['BLOCKED','IGNORED','HANDOFF_COMPLETE'].includes(customer.lead_status)||customer.stage==='OPTED_OUT'){await client.query("UPDATE kff.jobs SET state='DONE',result=$1,lease_expires_at=NULL WHERE id=$2",[{status:'STOPPED'},claim.id]);return {status:'STOPPED'};}
+    if(p.draft_only){
+      const result={status:'DRAFT_READY',model:modelName,decision,generated_at:new Date().toISOString(),expires_at:p.draft_expires_at};
+      await client.query("UPDATE kff.jobs SET state='DONE',result=$1,error_code=NULL,lease_expires_at=NULL WHERE id=$2",[result,claim.id]);
+      await audit(client,scope,'reception.draft_ready',p.conversation_id,{job_id:claim.id,model:modelName,action:decision.action});
+      if(beforeCommit)await beforeCommit();return result;
+    }
     const valid=customer.valid_inquiry||decision.valid_inquiry,tags=[...new Set([...customer.tags,...decision.tags])].slice(0,20);
     const leadStatus=decision.action==='STOP'?(decision.intent==='UNSUBSCRIBE'?'BLOCKED':'IGNORED'):['WHATSAPP_REFERRED','HANDOFF_COMPLETE'].includes(customer.lead_status)?customer.lead_status:valid?'QUALIFIED':'ENGAGED';
     await client.query("UPDATE kff.customers SET valid_inquiry=$1,tags=$2,intent_level=$3,intent_category=$4,intent_reason=$5,lead_status=$6,stage=CASE WHEN $7 THEN 'OPTED_OUT' ELSE stage END,version=version+1,updated_at=clock_timestamp() WHERE id=$8",[valid,tags,decision.intent_level,decision.intent,decision.reason,leadStatus,decision.action==='STOP'&&decision.intent==='UNSUBSCRIBE',customer.id]);
@@ -70,6 +78,7 @@ export async function completeReception(claim:ReceptionClaim,input:ReceptionDeci
 export async function failReception(claim:ReceptionClaim,code:string){const p=claim.payload;return scoped({organization_id:p.organization_id,brand_id:p.brand_id,user_id:p.actor_id,role:'operator'},async client=>{
   const {current,conversation}=await lockCurrentReception(client,claim),p=claim.payload;
   if(!current){await client.query("UPDATE kff.jobs SET state='DONE',result=$1,error_code=$2,lease_expires_at=NULL WHERE id=$3",[{status:'STALE'},code,claim.id]);return;}
+  if(p.draft_only){await client.query("UPDATE kff.jobs SET state='DEAD',result=$1,error_code=$2,lease_expires_at=NULL WHERE id=$3",[{status:'DRAFT_FAILED'},code,claim.id]);return;}
   if(['RATE_LIMITED','MESSAGE_IN_FLIGHT'].includes(code)){await client.query("UPDATE kff.jobs SET state='READY',attempts=GREATEST(0,attempts-1),error_code=$1,available_at=clock_timestamp()+interval '30 seconds',lease_expires_at=NULL,result=$2 WHERE id=$3",[code,{status:'WAIT'},claim.id]);return;}
   const final=claim.attempts>=3;
   await client.query("UPDATE kff.jobs SET state=$1,error_code=$2,available_at=clock_timestamp()+make_interval(secs=>$3),lease_expires_at=NULL,result=$4 WHERE id=$5",[final?'DEAD':'READY',code,Math.min(60,2**claim.attempts),{status:final?'HANDOFF':'RETRY',attempt:claim.attempts},claim.id]);

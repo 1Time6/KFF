@@ -1,0 +1,31 @@
+import { test, expect } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import { randomUUID } from 'node:crypto';
+
+test('Inbox controls schedule actual Agent DOM reads and show deduplicated conversations after closure', async ({ page }) => {
+  test.setTimeout(120000); const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
+  await page.route('**/*', route => new URL(route.request().url()).origin === 'http://127.0.0.1:3000' ? route.continue() : route.abort());
+  await page.goto('/inbox'); const config = JSON.parse(readFileSync('.kff/local-config.json', 'utf8'));
+  await page.getByLabel('密码', { exact: true }).fill(config.operator_password); await page.getByRole('button', { name: '进入工作台' }).click();
+  await expect(page.getByRole('heading', { name: '最近会话' })).toBeVisible();
+  const workspace = await (await page.request.get('/api/workspace')).json(), agent = workspace.agents.find((row: { is_online: boolean; status: string }) => row.is_online && row.status === 'ONLINE'); expect(agent).toBeTruthy();
+  const headers = { Origin: 'http://127.0.0.1:3000' };
+  const response = await page.request.post('/api/acquisition/fixtures', { headers, data: { request_id: randomUUID(), platform: 'facebook', agent_id: agent.id } }); expect(response.ok()).toBe(true);
+  const fixture = await response.json(), after = await (await page.request.get('/api/workspace')).json(), account = after.accounts.find((row: { id: string }) => row.id === fixture.account_id);
+  const configured = await page.request.post('/api/environments/' + fixture.environment_id + '/configuration', { headers, data: { expected_version: 1, configuration: { driver: 'native', provider_profile_id: null, login_account_id: '800001', operating_identity_id: account.external_id, locale: 'en-US', timezone_id: 'UTC', proxy_ref: null } } }); expect(configured.ok()).toBe(true);
+  await page.reload(); await page.locator('summary').filter({ hasText: '浏览器收件' }).click();
+  const form = page.getByRole('form', { name: '配置浏览器收件' }); await form.getByLabel('收件环境').selectOption(fixture.environment_id);
+  await form.getByLabel('每页消息上限').fill('2'); await form.getByRole('button', { name: '保存收件监控' }).click();
+  await expect(page.getByRole('status')).toContainText('收件监控已保存');
+  let state = await (await page.request.get('/api/browser-inbox')).json(); const monitor = state.monitors.find((row: { account_id: string }) => row.account_id === fixture.account_id); expect(monitor).toBeTruthy();
+  const card = page.getByRole('region', { name: '收件监控 ' + monitor.id }); await card.getByRole('button', { name: '读取一次', exact: true }).click();
+  await expect.poll(async () => { const result = await (await page.request.get('/api/browser-inbox')).json(); const m = result.monitors.find((row: { id: string }) => row.id === monitor.id); return Boolean(m.last_polled_at && !m.current_task_id && !m.scan_requested); }, { timeout: 60000 }).toBe(true);
+  state = await (await page.request.get('/api/browser-inbox')).json();
+  expect(state.checkpoints.filter((row: { monitor_id: string }) => row.monitor_id === monitor.id)).toHaveLength(2);
+  const inbox = await (await page.request.get('/api/inbox')).json(), conversations = inbox.conversations.filter((row: { account_id: string }) => row.account_id === fixture.account_id); expect(conversations).toHaveLength(2);
+  await page.goto('/inbox?conversation=' + conversations.find((row: { display_name: string }) => row.display_name === 'Inbox sample A').id);
+  await expect(page.getByText('What does a consultation include?', { exact: true })).toBeVisible();
+  await expect(page.getByText('浏览器会话目前支持查看和跟进，请在原会话回复。')).toBeVisible();
+  expect((await (await page.request.get('/api/browser-environments')).json()).find((row: { id: string }) => row.id === fixture.environment_id).browser_status).toBe('CLOSED');
+  expect(errors).toEqual([]); await page.screenshot({ path: 'output/playwright/browser-inbox-polling.png' });
+});

@@ -1,0 +1,851 @@
+{
+  "observed_at": "2026-09-14T02:20:23.315Z",
+  "scope": "AdsPower cold manager launch and bounded original queue reads on two existing accounts; no platform send",
+  "launch": {
+    "stderr": "20260914T020227226.stderr.log",
+    "stdout": "20260914T020227226.stdout.log",
+    "pid": 27908,
+    "process_only_no_proxy_added": "api-global.adspower.net",
+    "started_at": "2026-09-14T02:02:27.3133239Z",
+    "executable": "C:\\Program Files\\AdsPower Global\\AdsPower Global.exe"
+  },
+  "runtime": {
+    "runtime_id": "61108462-6bd0-46ed-9362-5b3b52921264",
+    "pid": 15740,
+    "phase": "RUNNING",
+    "updated_at": "2026-09-14T02:20:22.418Z",
+    "app_origin": "http://127.0.0.1:3000",
+    "release_id": "kff-agent-0.1.18-win32-x64-244c3ca81d65",
+    "database_owned": false,
+    "components": {
+      "database": {
+        "pid": null,
+        "state": "CONNECTED"
+      },
+      "web": {
+        "pid": 21384,
+        "state": "RUNNING"
+      },
+      "worker": {
+        "pid": 8720,
+        "state": "RUNNING"
+      },
+      "agent": {
+        "pid": 29236,
+        "state": "RUNNING"
+      }
+    }
+  },
+  "settings": {
+    "live_sending_enabled": false
+  },
+  "pending": {
+    "commands": 0,
+    "environments": 0
+  },
+  "profiles": [
+    {
+      "id": "k1gvdtft",
+      "status": "Inactive"
+    },
+    {
+      "id": "k1gw2kh9",
+      "status": "Inactive"
+    }
+  ],
+  "monitors": {
+    "comments": [
+      {
+        "id": "2808250f-061d-4ca4-bea5-495baaf5d7c8",
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "state": "PAUSED",
+        "version": 1
+      },
+      {
+        "id": "3ba710a3-f505-4f96-a002-bf29a81e56aa",
+        "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+        "state": "PAUSED",
+        "version": 1
+      },
+      {
+        "id": "489cf2bc-a9ff-4793-8716-4f823d086c89",
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "state": "PAUSED",
+        "version": 1
+      },
+      {
+        "id": "6045f65a-d8d3-4b92-ba39-9140b31bd336",
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "state": "PAUSED",
+        "version": 1
+      },
+      {
+        "id": "6160dda8-de45-443a-9638-45e8ad0423a0",
+        "account_id": "83b6e199-903b-42e7-98f3-30150eb9c9e5",
+        "state": "PAUSED",
+        "version": 1
+      },
+      {
+        "id": "6776ac4f-1baa-4064-a9d6-ecd866c2a34b",
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "state": "PAUSED",
+        "version": 1
+      },
+      {
+        "id": "6ea416de-a5fe-44bb-8978-561b7be75194",
+        "account_id": "5f55b1e5-0d38-4fe9-9e90-2ea75368227c",
+        "state": "PAUSED",
+        "version": 1
+      },
+      {
+        "id": "7205b958-b063-4fd9-aef5-52c7f41d66e7",
+        "account_id": "d9995a62-558e-4303-871d-220247f1d7fa",
+        "state": "PAUSED",
+        "version": 4
+      },
+      {
+        "id": "72eceefc-3f5f-4f0a-8953-33c9f309517e",
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "state": "PAUSED",
+        "version": 3
+      },
+      {
+        "id": "96966f3c-ff03-4161-a7cf-bfd8fe577519",
+        "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+        "state": "PAUSED",
+        "version": 1
+      },
+      {
+        "id": "c960d86e-5496-4a45-adb6-a43a3bfb6caa",
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "state": "PAUSED",
+        "version": 1
+      },
+      {
+        "id": "faf8718e-cd9c-4650-80f3-9f8249e9282d",
+        "account_id": "417978e2-8526-4e82-8cd7-2d2887287a50",
+        "state": "PAUSED",
+        "version": 1
+      }
+    ],
+    "inbox": [
+      {
+        "id": "149da22d-2ea8-49b1-accd-0ea2f4fc845f",
+        "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+        "state": "PAUSED",
+        "version": 6,
+        "last_error_code": null,
+        "current_task_id": null,
+        "scan_requested": false
+      },
+      {
+        "id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "state": "PAUSED",
+        "version": 22,
+        "last_error_code": "INBOX_WINDOW_UNAVAILABLE",
+        "current_task_id": null,
+        "scan_requested": false
+      },
+      {
+        "id": "7125fe67-e3d6-4266-8261-738bb0206a01",
+        "account_id": "26d4284d-fddc-4cde-878b-e9c16115e5a3",
+        "state": "PAUSED",
+        "version": 2,
+        "last_error_code": null,
+        "current_task_id": null,
+        "scan_requested": false
+      },
+      {
+        "id": "cdde409b-8272-4751-b22e-dc196f2acc64",
+        "account_id": "37da4950-507a-464a-95ab-79a1156c3774",
+        "state": "PAUSED",
+        "version": 2,
+        "last_error_code": null,
+        "current_task_id": null,
+        "scan_requested": false
+      }
+    ]
+  },
+  "comment_reads": [
+    {
+      "commands": [
+        {
+          "id": "25eb4cc5-92a8-490d-80d0-431060d01c1d",
+          "action_id": "30509afe-be5c-4d63-9ffe-7e2a491c66e2",
+          "created_at": "2026-09-14T02:03:31.955Z",
+          "claimed_at": "2026-09-14T02:03:32.262Z",
+          "quiesced_at": "2026-09-14T02:04:37.019Z",
+          "state": "VERIFIED_SUCCEEDED",
+          "error_code": null,
+          "task_id": "de85c71b-d6a0-4c50-bc5e-0d10c33a9ab2",
+          "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+          "query_id": "fb1c0d6a-0413-4c0c-ae31-d9f321c6245c"
+        },
+        {
+          "id": "26ce64e7-b239-46d5-8138-8347b04f76cb",
+          "action_id": "fcd21d4f-c290-4a93-abdf-ad4a7877c348",
+          "created_at": "2026-09-14T02:04:38.880Z",
+          "claimed_at": "2026-09-14T02:04:39.317Z",
+          "quiesced_at": "2026-09-14T02:05:08.007Z",
+          "state": "BLOCKED",
+          "error_code": "IDENTITY_NAVIGATION_FAILED",
+          "task_id": "b914cd18-e4e3-4d98-9131-cbf7d92f2bfa",
+          "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+          "query_id": "3b3ea3de-1f72-4f51-810c-22dfc0fa2157"
+        }
+      ],
+      "runs": [
+        {
+          "id": "4044c3e6-8e33-414c-9b7e-f15e21d29278",
+          "state": "COMPLETED",
+          "returned_count": 3,
+          "unique_count": 3,
+          "committed_pages": 1,
+          "error_code": null
+        },
+        {
+          "id": "a2a99ee4-0a68-4e74-9077-b45638405d2c",
+          "state": "FAILED",
+          "returned_count": 0,
+          "unique_count": 0,
+          "committed_pages": 0,
+          "error_code": "IDENTITY_NAVIGATION_FAILED"
+        }
+      ],
+      "closures": [
+        {
+          "command_id": "25eb4cc5-92a8-490d-80d0-431060d01c1d",
+          "proof": {
+            "protocol_version": "kff.guardian-closure.v1",
+            "command_id": "25eb4cc5-92a8-490d-80d0-431060d01c1d",
+            "action_id": "30509afe-be5c-4d63-9ffe-7e2a491c66e2",
+            "closed_at": "2026-09-14T02:04:36.505Z",
+            "proof_sha256": "61289c89d8336c391da7ec383bb1075d626f63cd636a91f81cfa2f8385dcfae1"
+          },
+          "local_database_match": true
+        },
+        {
+          "command_id": "26ce64e7-b239-46d5-8138-8347b04f76cb",
+          "proof": {
+            "protocol_version": "kff.guardian-closure.v1",
+            "command_id": "26ce64e7-b239-46d5-8138-8347b04f76cb",
+            "action_id": "fcd21d4f-c290-4a93-abdf-ad4a7877c348",
+            "closed_at": "2026-09-14T02:05:07.712Z",
+            "proof_sha256": "fe30cf849c4da7e0709b6af52d295ca94e5037ece0479ae6cb54107f0bc73f2e"
+          },
+          "local_database_match": true
+        }
+      ]
+    },
+    {
+      "commands": [
+        {
+          "id": "45ad4035-e42d-40ba-9034-bec8e81d442d",
+          "action_id": "ef976848-53c7-4c80-8e38-616a1b9f4fde",
+          "created_at": "2026-09-14T02:09:42.948Z",
+          "claimed_at": "2026-09-14T02:09:43.451Z",
+          "quiesced_at": "2026-09-14T02:10:37.466Z",
+          "state": "VERIFIED_SUCCEEDED",
+          "error_code": null,
+          "task_id": "94d7e04a-483a-4ce1-8b50-f2b36550b384",
+          "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+          "query_id": "29e72025-cdc0-4bf8-99cd-a9ed3fd9796f"
+        }
+      ],
+      "runs": [
+        {
+          "id": "aef40e33-03fc-47d3-8a9e-2b8ff38be0d2",
+          "state": "PARTIAL",
+          "returned_count": 3,
+          "unique_count": 3,
+          "committed_pages": 1,
+          "error_code": null
+        }
+      ],
+      "closures": [
+        {
+          "command_id": "45ad4035-e42d-40ba-9034-bec8e81d442d",
+          "proof": {
+            "protocol_version": "kff.guardian-closure.v1",
+            "command_id": "45ad4035-e42d-40ba-9034-bec8e81d442d",
+            "action_id": "ef976848-53c7-4c80-8e38-616a1b9f4fde",
+            "closed_at": "2026-09-14T02:10:37.245Z",
+            "proof_sha256": "d50aef31091d5d71ab784b6035af772ce985f8ca3a421fe02cfe27819eadebcc"
+          },
+          "local_database_match": true
+        }
+      ]
+    }
+  ],
+  "inbox_read": {
+    "kind": "INBOX",
+    "started_at": "2026-09-14T02:10:42.443Z",
+    "targets": [
+      {
+        "monitor_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "request_id": "efd136db-c790-450a-b6be-939b414adc41",
+        "version": 22,
+        "queued": true
+      },
+      {
+        "monitor_id": "149da22d-2ea8-49b1-accd-0ea2f4fc845f",
+        "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+        "request_id": "7c38179e-410b-4d34-ab6d-7ea6988c59d5",
+        "version": 6,
+        "queued": true
+      }
+    ],
+    "commands": [
+      {
+        "id": "83ae81e2-36bc-4b9a-98b9-74fa2c9debfe",
+        "action_id": "9d0ed6da-f3ba-400f-9479-ca29fce4ecb5",
+        "created_at": "2026-09-14T02:10:43.017Z",
+        "claimed_at": "2026-09-14T02:10:43.265Z",
+        "quiesced_at": "2026-09-14T02:11:40.090Z",
+        "state": "BLOCKED",
+        "error_code": "INBOX_WINDOW_UNAVAILABLE",
+        "task_id": "382816c4-9500-4e9f-af37-1b7703a7ec7d",
+        "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+        "monitor_id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb"
+      },
+      {
+        "id": "0f62ecf7-496e-4a6c-881a-4a3a3241287b",
+        "action_id": "f164f8e2-85fc-4639-a60c-b41a5434f8b1",
+        "created_at": "2026-09-14T02:11:42.350Z",
+        "claimed_at": "2026-09-14T02:11:42.620Z",
+        "quiesced_at": "2026-09-14T02:12:22.998Z",
+        "state": "VERIFIED_SUCCEEDED",
+        "error_code": null,
+        "task_id": "53cd2e58-7aa2-4197-ac38-2cb5d1e801a2",
+        "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+        "monitor_id": "149da22d-2ea8-49b1-accd-0ea2f4fc845f"
+      }
+    ],
+    "closures": [
+      {
+        "command_id": "83ae81e2-36bc-4b9a-98b9-74fa2c9debfe",
+        "proof": {
+          "protocol_version": "kff.guardian-closure.v1",
+          "command_id": "83ae81e2-36bc-4b9a-98b9-74fa2c9debfe",
+          "action_id": "9d0ed6da-f3ba-400f-9479-ca29fce4ecb5",
+          "closed_at": "2026-09-14T02:11:39.588Z",
+          "proof_sha256": "61bd331824d46b46b6ea28bb7836d50b2468e9a9d814069fb9885192d41e0aa0"
+        },
+        "local_database_match": true
+      },
+      {
+        "command_id": "0f62ecf7-496e-4a6c-881a-4a3a3241287b",
+        "proof": {
+          "protocol_version": "kff.guardian-closure.v1",
+          "command_id": "0f62ecf7-496e-4a6c-881a-4a3a3241287b",
+          "action_id": "f164f8e2-85fc-4639-a60c-b41a5434f8b1",
+          "closed_at": "2026-09-14T02:12:22.560Z",
+          "proof_sha256": "4a581486a2577598afa1d7d4d1729097f74435f57479e9b2f01a08b79bfe3fab"
+        },
+        "local_database_match": true
+      }
+    ],
+    "profiles_after": [
+      {
+        "id": "k1gvdtft",
+        "status": "Inactive"
+      },
+      {
+        "id": "k1gw2kh9",
+        "status": "Inactive"
+      }
+    ],
+    "accepted": false,
+    "checkpoints": [
+      {
+        "task_id": "53cd2e58-7aa2-4197-ac38-2cb5d1e801a2",
+        "stored": 0,
+        "duplicates": 1,
+        "page_sha256": "92bce61b721eac96f5df4a5d61d42bfab0203f2d287e71c573b8110cd233eb6d",
+        "observed_at": "2026-09-14T02:12:16.185Z"
+      }
+    ],
+    "discovery": [
+      {
+        "object_id": "149da22d-2ea8-49b1-accd-0ea2f4fc845f",
+        "details": {
+          "stored": 0,
+          "task_id": "53cd2e58-7aa2-4197-ac38-2cb5d1e801a2",
+          "has_more": false,
+          "discovery": {
+            "skipped": [],
+            "threads": [
+              {
+                "peer_id": "61589894042400",
+                "thread_id": "2079341482680484",
+                "display_name": "XiangHuan Master"
+              }
+            ],
+            "strategy": "RECENT_ACCEPTED",
+            "empty_list": false,
+            "unparsed_rows": 0,
+            "window_limited": false,
+            "visible_threads": 1
+          },
+          "duplicates": 1
+        }
+      }
+    ],
+    "finished_at": "2026-09-14T02:12:28.674Z"
+  },
+  "first_inbox_diagnostic": {
+    "started_at": "2026-09-14T02:17:58.868Z",
+    "original_command": "83ae81e2-36bc-4b9a-98b9-74fa2c9debfe",
+    "purpose": "Read-only original first account Inbox diagnosis, no ingestion or sending",
+    "platform_sends": 0,
+    "observations": [
+      {
+        "step": "facebook-inbox-directory-load",
+        "kind": "inspectFacebookInboxDirectoryDom",
+        "data": {
+          "rows": [],
+          "invalid": 1,
+          "ready": false,
+          "empty": false
+        }
+      },
+      {
+        "step": "facebook-inbox-directory-load",
+        "kind": "inspectFacebookInboxDirectoryDom",
+        "data": {
+          "rows": [],
+          "invalid": 2,
+          "ready": false,
+          "empty": false
+        }
+      },
+      {
+        "step": "facebook-inbox-directory-load",
+        "kind": "inspectFacebookInboxDirectoryDom",
+        "data": {
+          "rows": [],
+          "invalid": 2,
+          "ready": false,
+          "empty": false
+        }
+      },
+      {
+        "step": "facebook-inbox-directory-load",
+        "kind": "inspectFacebookInboxDirectoryDom",
+        "data": {
+          "rows": [
+            {
+              "thread_id": "2079341482680484",
+              "display_name": "郑成功",
+              "source_url": "https://www.facebook.com/messages/e2ee/t/2079341482680484/"
+            },
+            {
+              "thread_id": "27724009533944398",
+              "display_name": "郑一哲",
+              "source_url": "https://www.facebook.com/messages/e2ee/t/27724009533944398/"
+            }
+          ],
+          "invalid": 0,
+          "ready": true,
+          "empty": false
+        }
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "kind": "inspectFacebookInboxHeaderDom",
+        "data": null
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "kind": "inspectFacebookInboxHeaderDom",
+        "data": null
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "kind": "inspectFacebookInboxHeaderDom",
+        "data": null
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "kind": "inspectFacebookInboxHeaderDom",
+        "data": null
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "kind": "inspectFacebookInboxHeaderDom",
+        "data": null
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "kind": "inspectFacebookInboxHeaderDom",
+        "data": null
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "kind": "inspectFacebookInboxHeaderDom",
+        "data": {
+          "thread_id": "2079341482680484",
+          "peer_id": "61594334430750",
+          "display_name": "郑成功"
+        }
+      },
+      {
+        "step": "facebook-inbox-parse",
+        "kind": "inspectFacebookInboxDom",
+        "invalid": 0,
+        "rows": [
+          {
+            "message_id": "61594334430750@msgr.7505071649019619421",
+            "direction": "OUTBOUND",
+            "display_name": null,
+            "body_length": 10
+          }
+        ]
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "kind": "inspectFacebookInboxHeaderDom",
+        "data": null
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "kind": "inspectFacebookInboxHeaderDom",
+        "data": null
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "kind": "inspectFacebookInboxHeaderDom",
+        "data": null
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "kind": "inspectFacebookInboxHeaderDom",
+        "data": null
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "kind": "inspectFacebookInboxHeaderDom",
+        "data": null
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "kind": "inspectFacebookInboxHeaderDom",
+        "data": null
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "kind": "inspectFacebookInboxHeaderDom",
+        "data": null
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "kind": "inspectFacebookInboxHeaderDom",
+        "data": null
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "kind": "inspectFacebookInboxHeaderDom",
+        "data": null
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "kind": "inspectFacebookInboxHeaderDom",
+        "data": null
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "kind": "inspectFacebookInboxHeaderDom",
+        "data": null
+      },
+      {
+        "step": "facebook-inbox-directory-identity",
+        "kind": "inspectFacebookInboxHeaderDom",
+        "data": {
+          "thread_id": "27724009533944398",
+          "peer_id": "100050174601107",
+          "display_name": "郑一哲"
+        }
+      },
+      {
+        "step": "facebook-inbox-parse",
+        "kind": "inspectFacebookInboxDom",
+        "invalid": 1,
+        "rows": [
+          {
+            "message_id": "100050174601107@msgr.7504736197992583760",
+            "direction": "INBOUND",
+            "display_name": "郑一哲",
+            "body_length": 20
+          },
+          {
+            "message_id": "100050174601107@msgr.7504750673031032433",
+            "direction": "INBOUND",
+            "display_name": "郑一哲",
+            "body_length": 8
+          },
+          {
+            "message_id": "100050174601107@msgr.7504799492323995768",
+            "direction": "OUTBOUND",
+            "display_name": null,
+            "body_length": 53
+          },
+          {
+            "message_id": "100050174601107@msgr.7504805443784841461",
+            "direction": "INBOUND",
+            "display_name": "郑一哲",
+            "body_length": 8
+          }
+        ]
+      }
+    ],
+    "original_diagnostic": [
+      {
+        "id": "0af65d21-f119-45be-9105-0387bc95a2c0",
+        "manifest": {
+          "step": "facebook-inbox-parse",
+          "files": [],
+          "level": "D0",
+          "omitted": [
+            "raw_dom",
+            "screenshots",
+            "trace",
+            "cookies",
+            "message_body",
+            "network_bodies"
+          ],
+          "outcome": "BLOCKED",
+          "brand_id": "22222222-2222-4222-8222-222222222222",
+          "action_id": "9d0ed6da-f3ba-400f-9479-ca29fce4ecb5",
+          "attempt_id": "1fec2959-91b4-4c03-ae4f-0ec8a6d1dafd",
+          "created_at": "2026-09-14T02:11:40.061Z",
+          "error_code": "INBOX_WINDOW_UNAVAILABLE",
+          "duration_ms": 53480,
+          "schema_version": "kff.diagnostic.v2",
+          "adapter_version": "facebook-inbox-browser-v1",
+          "browser_version": "150.0.7871.47",
+          "organization_id": "11111111-1111-4111-8111-111111111111",
+          "downgrade_reason": "本驱动未取得可安全导出的现场，保留 D0",
+          "executor_version": "kff-agent-0.1.0_node-24.14.1",
+          "protocol_version": "kff.agent.v1",
+          "redaction_version": "allowlist-v1"
+        }
+      }
+    ],
+    "identity": {
+      "method": "facebook-profile-dom-v1",
+      "authenticated": true,
+      "operating_identity_id": "61589894042400",
+      "account_type": "profile",
+      "display_name": "XiangHuan Master",
+      "observed_at": "2026-09-14T02:18:19.448Z",
+      "source_url": "https://www.facebook.com/profile.php?id=61589894042400"
+    },
+    "step": "facebook-inbox-parse",
+    "message_layout": [
+      {
+        "nodes": 1,
+        "fields": [
+          {
+            "id": "100050174601107@msgr.7504736197992583760",
+            "self": false,
+            "bodies": [
+              {
+                "length": 20,
+                "links": 0
+              }
+            ],
+            "avatars": 1,
+            "has_time_separator": true,
+            "label_matches_body": true,
+            "media": [
+              {
+                "tag": "IMG",
+                "hidden": true,
+                "width": null,
+                "height": null,
+                "read_marker": false,
+                "in_body": false,
+                "interactive": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "nodes": 1,
+        "fields": [
+          {
+            "id": "100050174601107@msgr.7504750673031032433",
+            "self": false,
+            "bodies": [
+              {
+                "length": 8,
+                "links": 0
+              }
+            ],
+            "avatars": 1,
+            "has_time_separator": true,
+            "label_matches_body": true,
+            "media": [
+              {
+                "tag": "IMG",
+                "hidden": true,
+                "width": null,
+                "height": null,
+                "read_marker": false,
+                "in_body": false,
+                "interactive": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "nodes": 1,
+        "fields": [
+          {
+            "id": "100050174601107@msgr.7504799492323995768",
+            "self": true,
+            "bodies": [
+              {
+                "length": 53,
+                "links": 1
+              }
+            ],
+            "avatars": 0,
+            "has_time_separator": true,
+            "label_matches_body": true,
+            "media": []
+          }
+        ]
+      },
+      {
+        "nodes": 1,
+        "fields": [
+          {
+            "id": "100050174601107@msgr.7504805443784841461",
+            "self": false,
+            "bodies": [
+              {
+                "length": 8,
+                "links": 0
+              }
+            ],
+            "avatars": 1,
+            "has_time_separator": true,
+            "label_matches_body": true,
+            "media": [
+              {
+                "tag": "IMG",
+                "hidden": true,
+                "width": null,
+                "height": null,
+                "read_marker": false,
+                "in_body": false,
+                "interactive": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "nodes": 1,
+        "fields": [
+          {
+            "id": "100050174601107@msgr.7505055556361771799",
+            "self": false,
+            "bodies": [],
+            "avatars": 0,
+            "has_time_separator": true,
+            "label_matches_body": false,
+            "media": [
+              {
+                "tag": "IMG",
+                "hidden": false,
+                "width": null,
+                "height": null,
+                "read_marker": false,
+                "in_body": false,
+                "interactive": true
+              },
+              {
+                "tag": "IMG",
+                "hidden": false,
+                "width": "14",
+                "height": "14",
+                "read_marker": true,
+                "in_body": false,
+                "interactive": false
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "error": "当前窗口没有可核实的已接受会话；需要人工查看，不认定没有消息",
+    "error_code": "INBOX_WINDOW_UNAVAILABLE",
+    "accepted": false,
+    "closed": true,
+    "finished_at": "2026-09-14T02:18:53.528Z"
+  },
+  "before_counts": {
+    "messenger_tasks": 1,
+    "referrals": 11,
+    "permissions": 110
+  },
+  "after_counts": {
+    "messenger_tasks": 1,
+    "referrals": 11,
+    "permissions": 110
+  },
+  "outbound_counts_unchanged": true,
+  "controlled_conversation": {
+    "id": "79a78ecf-9814-47ab-87ab-25c093ed1306",
+    "account_id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+    "handling_mode": "HUMAN",
+    "control_version": 3,
+    "last_sequence": 1,
+    "last_inbound_sequence": 1,
+    "last_outbound_at": null
+  },
+  "controlled_messages": [
+    {
+      "id": "437e10b2-104a-47d8-83c5-601246555077",
+      "sequence": 1,
+      "body": "KFF-0914-A",
+      "direction": "INBOUND",
+      "contact_permission_id": null,
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61594334430750",
+        "peer_id": "61589894042400",
+        "source_id": "61589894042400@msgr.7505071649019619421",
+        "thread_id": "2079341482680484",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/2079341482680484/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "21:15"
+      }
+    }
+  ],
+  "controlled_tasks": [],
+  "controlled_referrals": [],
+  "adapter_digest": "c985f94f01e5d4809ff5aff701ddea5aee6db135e154012bba14da438e7d2f91",
+  "installed_adapter_matches": true,
+  "build_input_changes": [],
+  "acceptance": {
+    "cold_manager_start": true,
+    "original_comment_reads_both_accounts": true,
+    "second_inbox_read": true,
+    "first_inbox_read": false,
+    "full_two_account_inbox": false,
+    "sustained_operation": false,
+    "os_autostart": false,
+    "platform_sends": 0
+  },
+  "pending_user_action": "Explicit authorization for the one reviewed second-account WhatsApp invitation remains pending; no new task, permission or send created."
+}

@@ -1,0 +1,116 @@
+{
+  "schema_version": "kff.browser-collection-checkpoint.v1",
+  "recorded_at": "2026-09-12T16:03:39.884Z",
+  "goal_complete": false,
+  "source": "repository-authored visible DOM only",
+  "provider": "LOCAL_BROWSER",
+  "template": "fixture-discovery-dom-v1",
+  "real_platform_collection_verified": false,
+  "checks": {
+    "final_isolated_integration": {
+      "passed": 19,
+      "failed": 0,
+      "files": [
+        "browser-collections.test.ts",
+        "acquisition.test.ts"
+      ],
+      "duration_ms": 260163.14892578125
+    },
+    "earlier_execution_collection_acquisition_regression": {
+      "passed": 56,
+      "failed": 0
+    },
+    "unit_contract_batch": {
+      "passed": 130,
+      "failed": 0
+    },
+    "additional_browser_collection_contract_batch": {
+      "passed": 10,
+      "failed": 0,
+      "includes_new_tests": 3
+    },
+    "actual_web_worker_agent_dom": {
+      "passed": 1,
+      "failed": 0,
+      "seconds": 48.4,
+      "pages": 2,
+      "observations": 4,
+      "unique_objects": 4,
+      "qualified_leads": 3,
+      "monitor_state": "PAUSED",
+      "browser_closed": true
+    },
+    "typecheck": {
+      "passed": true,
+      "finished_at": "2026-09-12T15:58:38.625Z"
+    },
+    "production_build": {
+      "passed": true,
+      "finished_at": "2026-09-12T15:58:07.440Z",
+      "source_changed_during_check": []
+    },
+    "targeted_eslint": true,
+    "legacy_planning": {
+      "tasks": 134,
+      "acceptance": 72,
+      "goal_acceptance_implied": false
+    }
+  },
+  "initial_failures_resolved": [
+    "Scoped scheduler must not request organization UPDATE privileges merely to check pause state",
+    "Expiry fixture preserves immutable queries and uses natural expiry",
+    "UI test locators account for collapsed details and select label text",
+    "Queued collection cancellation must also finish its original durable job"
+  ],
+  "database": {
+    "backup": ".kff/backups/before-browser-collections-20260912-234332",
+    "cold_copy_files": 10546,
+    "cold_copy_bytes": 289933179,
+    "all_file_sha256_matched": true,
+    "pre_migration_accounts": 78,
+    "pre_migration_prospects": 46,
+    "migrations_before": 24,
+    "migrations_after": 25,
+    "after_ui_test_accounts": 81,
+    "after_ui_test_prospects": 46,
+    "active_collection_runs_after": 0
+  },
+  "not_yet_verified": [
+    "Authenticated Facebook identity in selected AdsPower profile 1876794",
+    "Real platform collection template",
+    "Raw local closure-report retention before enabling real sources",
+    "Browser Inbox and WhatsApp sales handoff",
+    "Two real accounts trial"
+  ],
+  "source_hashes": {
+    "packages/contracts/src/acquisition.ts": "69f1414233e4556a275e5a5f1fb9182e11c9bec250440a58d8245d55ec1bc1f1",
+    "packages/contracts/src/collection.ts": "f33780950489432dd30078b98d05386d7ef9c7fe50f50dd605cc88c880ecc6d6",
+    "packages/contracts/src/browser-collection.ts": "a44146c47c767591637ef47f47f581baeecd7ffe8529356a537be98ae9d552fd",
+    "packages/contracts/src/index.ts": "1bb359715764a5c87447db14f12df94594180886534eb73a4eff4ddd59d6ec2d",
+    "packages/contracts/src/template.ts": "d70ce9275ef1ffb7ff1a8254812f82aa2c7e3800ae8159050a6307c2f378d14a",
+    "packages/core/src/browser-collections.ts": "4b0f71c69819629b05db942ebbc9fa06540ac83ec01949313692680aa34e8cdf",
+    "packages/core/src/collections.ts": "238ef5f860293c5f312f65dbc2b42b02c9b13e1295e0c0e3cb3f4449129fb459",
+    "packages/core/src/service.ts": "538f219d2ec8c3f4a49bdb60c0c4af0df2281bb23848d131ddbacd1c11fa3907",
+    "packages/core/src/execution.ts": "da491e68b2d190a401b5fafbc97717cb489a7caf6ec1a72805cdacdb391d6253",
+    "packages/core/src/acquisition.ts": "c92f0c4b0c9a5ba5e01a0b460c369728877809e0dfe13b60664c7b18e0d7faa9",
+    "packages/core/src/templates.ts": "d612e3369b57aa1109731963dd003851a2836c2cd5ad2a69fce336c59cb79db0",
+    "packages/core/src/artifacts.ts": "c2593d784c065924ef7b5a7b079b3a34f10977bfadad8957da72a7c477097b98",
+    "packages/adapters/src/browser-discovery.ts": "f1105f70d5b500e380a9c77565720928bf0fac947068c8669db8313771941e99",
+    "packages/adapters/src/browser-discovery-fixture.ts": "9d88f8d14d9c81f5bfc6b2739ca7fd0e205b3c1be1f1b4f9cf29d3715a6e0906",
+    "packages/adapters/src/collection-fixture.ts": "6403f0052b5239d454282a8c08d27a4e555be6742ea304bab3873919a59f071c",
+    "packages/adapters/src/discovery.ts": "2375e7509a3821a00d8dbf9617f752c29544ba1e1462b4c02ab064699401aac0",
+    "packages/adapters/src/templates.ts": "4a4a699d1b70a9b73f74b36847da30f198d9477a60b1d19b9292008ddd0aefb4",
+    "apps/agent/src/guardian.ts": "ab6b4436fe49e5207d97789f2f036a08c248d6a9c6d513560bb21f91b5114b5e",
+    "apps/agent/src/guardian-child.ts": "fe7abe6079e8d5f41d0c455fea8ca6e7c088aebb692edd1c284c20e3e5e7cbba",
+    "apps/worker/src/main.ts": "16bfce8279aba52527c4be379ef04c932d46334e49451447f01b1c1e2d02e62a",
+    "apps/web/components/acquisition-workbench.tsx": "e86b38505474ad9285d3777e33bbe319af78704086ff4f71171c116166121d56",
+    "apps/web/components/workbench.tsx": "e252d2465077fa54aae66b269a4b80d55cf84057a3b191254d7dd695ea3b103e",
+    "apps/web/app/api/[[...path]]/route.ts": "fab18705700ce5eb01545b5840bf9ca39fd9a44cc9596dc548f15e348a2f6eaa",
+    "scripts/fixture-server.ts": "caf37708ba32092453fe0bc0da526d359b27bad0f8dbacfaf225c437f8ca0084",
+    "scripts/start-adspower.ps1": "7485e611fd29564d0f35f517dfdd17b15e91815d1fdb3aa975801a6f6d02708e",
+    "supabase/migrations/20260912151353_browser_collection_tasks.sql": "cb00e00594f83f8ff40e60df59ceabfa89e652e46b8d1c446164467ec43ee516",
+    "tests/integration/browser-collections.test.ts": "5f51e65bdf99c545320307693236d9999309da57833e988c98e98847feba451b",
+    "tests/contracts/browser-collection.test.ts": "c653d3aff2361d2e8b46cbe23fcd9b287730fa879234ec105c2986dab317a4bf",
+    "tests/browser/web/browser-collection.spec.ts": "24ec51b1763a7148d9760bff91d9c2738d1cc9cca91d735579b3f396b12b2151"
+  }
+}

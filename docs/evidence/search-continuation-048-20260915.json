@@ -1,0 +1,242 @@
+{
+  "schema_version": "kff.search-continuation-acceptance.v1",
+  "recorded_at": "2026-09-15T03:36:30.866Z",
+  "version": "0.1.48",
+  "authorization": "User: 执行纯搜索验收",
+  "accepted": false,
+  "full_goal_complete": false,
+  "status": "CLOSED_WITH_FINDINGS",
+  "stop_reason": "FIRST_FAILURE",
+  "failure": {
+    "action": {
+      "action_id": "0300548d-1f2b-493e-914c-9d75fac5544d",
+      "state": "NEEDS_HUMAN",
+      "error_code": "LEASE_EXPIRED",
+      "receipt": null,
+      "task_id": "7a8d8f17-57c8-4c8d-951c-a68b17b2f2a1",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "capability_key": "facebook.discovery.read.browser",
+      "inbox_monitor_id": null,
+      "inbox_cycle_id": null,
+      "query_id": "c26d11bf-1b9b-4768-b3e6-32ae0a7071d0",
+      "profile_id": "k1gx1n1s",
+      "external_id": "61594402378582",
+      "command_id": "f6b68e7c-c386-46d5-b24f-fb1addf8de2e",
+      "created_at": "2026-09-15T03:24:36.928Z",
+      "claimed_at": "2026-09-15T03:24:38.122Z",
+      "quiesced_at": null
+    },
+    "scan": {
+      "monitor_id": "535d7375-43e9-47af-a43d-7803fcf36995",
+      "query_id": "c26d11bf-1b9b-4768-b3e6-32ae0a7071d0",
+      "scan_number": 1,
+      "run_id": "34c25d17-e4a0-4bbc-92a0-0e7e7cddb2c4",
+      "state": "FAILED",
+      "error_code": "LEASE_EXPIRED",
+      "stop_reason": "LEASE_EXPIRED",
+      "returned_count": 0,
+      "unique_count": 0,
+      "committed_pages": 0,
+      "finished_at": "2026-09-15T03:25:48.772Z"
+    }
+  },
+  "started_at": "2026-09-15T03:23:13.782Z",
+  "finished_at": "2026-09-15T03:36:17.119Z",
+  "elapsed_seconds": 783.337,
+  "scans": [
+    {
+      "monitor_id": "7edd9e34-d306-4f13-a2db-aa99ecb562e7",
+      "query_id": "3626830a-21d5-4296-a83c-520fc89116bf",
+      "scan_number": 1,
+      "run_id": "f336750e-5938-464f-bd1b-dae3f65c89d4",
+      "state": "PARTIAL",
+      "error_code": null,
+      "stop_reason": "MAX_PAGES",
+      "returned_count": 1,
+      "unique_count": 1,
+      "committed_pages": 1,
+      "finished_at": "2026-09-15T03:24:36.435Z"
+    },
+    {
+      "monitor_id": "535d7375-43e9-47af-a43d-7803fcf36995",
+      "query_id": "c26d11bf-1b9b-4768-b3e6-32ae0a7071d0",
+      "scan_number": 1,
+      "run_id": "34c25d17-e4a0-4bbc-92a0-0e7e7cddb2c4",
+      "state": "FAILED",
+      "error_code": "LEASE_EXPIRED",
+      "stop_reason": "LEASE_EXPIRED",
+      "returned_count": 0,
+      "unique_count": 0,
+      "committed_pages": 0,
+      "finished_at": "2026-09-15T03:25:48.772Z"
+    },
+    {
+      "monitor_id": "9979f930-d91a-48a7-ad7f-2939921aca1a",
+      "query_id": "b2ee3e3e-d52d-4dd8-b99b-d8004b217bb3",
+      "scan_number": 1,
+      "run_id": "59c6ed96-2ec9-4558-b77d-7e8ea97f2a52",
+      "state": "CANCELED",
+      "error_code": null,
+      "stop_reason": "MONITOR_PAUSED",
+      "returned_count": 0,
+      "unique_count": 0,
+      "committed_pages": 0,
+      "finished_at": "2026-09-15T03:25:49.108Z"
+    }
+  ],
+  "monitors": [
+    {
+      "id": "9979f930-d91a-48a7-ad7f-2939921aca1a",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "state": "PAUSED",
+      "parent_monitor_id": "7edd9e34-d306-4f13-a2db-aa99ecb562e7",
+      "source_query_id": "3626830a-21d5-4296-a83c-520fc89116bf",
+      "derived_source_url": "https://www.facebook.com/reel/3444005145770677/"
+    },
+    {
+      "id": "7edd9e34-d306-4f13-a2db-aa99ecb562e7",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "state": "PAUSED",
+      "parent_monitor_id": null,
+      "source_query_id": null,
+      "derived_source_url": null
+    },
+    {
+      "id": "535d7375-43e9-47af-a43d-7803fcf36995",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "state": "PAUSED",
+      "parent_monitor_id": null,
+      "source_query_id": null,
+      "derived_source_url": null
+    }
+  ],
+  "actions": [
+    {
+      "action_id": "5b887698-556f-458d-a404-b7bcc66d5415",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "task_id": "841b0d7f-6443-41ec-8b90-0938b24f3d1a",
+      "query_id": "3626830a-21d5-4296-a83c-520fc89116bf",
+      "command_id": "ebe87632-3246-4cba-b00c-d48a4bd5e288",
+      "claimed_at": "2026-09-15T03:23:15.650Z",
+      "quiesced_at": "2026-09-15T03:24:36.657Z",
+      "receipt": {
+        "remote_id": "collection:f336750e-5938-464f-bd1b-dae3f65c89d4:1",
+        "observed_at": "2026-09-15T03:24:25.372Z",
+        "content_hash": "797b693f51994dc223982f683080de8b511ac85e4824f894f7f1f951dea25259",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61589894042400"
+      }
+    },
+    {
+      "action_id": "0300548d-1f2b-493e-914c-9d75fac5544d",
+      "state": "NEEDS_HUMAN",
+      "error_code": "LEASE_EXPIRED",
+      "account_id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "task_id": "7a8d8f17-57c8-4c8d-951c-a68b17b2f2a1",
+      "query_id": "c26d11bf-1b9b-4768-b3e6-32ae0a7071d0",
+      "command_id": "f6b68e7c-c386-46d5-b24f-fb1addf8de2e",
+      "claimed_at": "2026-09-15T03:24:38.122Z",
+      "quiesced_at": "2026-09-15T03:34:12.823Z",
+      "receipt": null
+    },
+    {
+      "action_id": "77b208a5-a43d-4b7c-93b2-2cc692b984fb",
+      "state": "CANCELED",
+      "error_code": "COMMAND_NOT_STARTED",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "task_id": "21e282f4-41eb-4d35-97c9-16dbd81494f7",
+      "query_id": "b2ee3e3e-d52d-4dd8-b99b-d8004b217bb3",
+      "command_id": "2f81971c-eb16-49b3-a816-fe2fa1cae106",
+      "claimed_at": null,
+      "quiesced_at": "2026-09-15T03:25:50.382Z",
+      "receipt": null
+    }
+  ],
+  "closures": [
+    {
+      "command_id": "ebe87632-3246-4cba-b00c-d48a4bd5e288",
+      "origin": "guardian",
+      "local_database_match": true,
+      "proof": {
+        "protocol_version": "kff.guardian-closure.v1",
+        "command_id": "ebe87632-3246-4cba-b00c-d48a4bd5e288",
+        "action_id": "5b887698-556f-458d-a404-b7bcc66d5415",
+        "closed_at": "2026-09-15T03:24:36.155Z",
+        "proof_sha256": "d16845c7adb28b2202195fe864a32c07f6be82f706c107770702a65f46cda131"
+      }
+    },
+    {
+      "command_id": "f6b68e7c-c386-46d5-b24f-fb1addf8de2e",
+      "origin": "operator_manager_shutdown",
+      "local_database_match": true,
+      "proof": {
+        "protocol_version": "kff.guardian-closure.v1",
+        "command_id": "f6b68e7c-c386-46d5-b24f-fb1addf8de2e",
+        "action_id": "0300548d-1f2b-493e-914c-9d75fac5544d",
+        "closed_at": "2026-09-15T03:34:10.942Z",
+        "proof_sha256": "538ad9eb5d243785d85c56700031b2b3b72606df68f7ae425adbddd3356c7573"
+      }
+    },
+    {
+      "command_id": "2f81971c-eb16-49b3-a816-fe2fa1cae106",
+      "origin": "controller_never_claimed",
+      "no_agent_execution": true
+    }
+  ],
+  "profiles_after": [
+    {
+      "id": "k1gvdtft",
+      "status": "Inactive"
+    },
+    {
+      "id": "k1gx1n1s",
+      "status": "Inactive"
+    }
+  ],
+  "serialized": true,
+  "identity_matches": true,
+  "platform_submissions": [],
+  "observations": [
+    {
+      "id": "ebd90c54-58d6-469a-89f9-93b6c7580e55",
+      "source_object_id": "facebook:reel:3444005145770677",
+      "source_url": "https://www.facebook.com/reel/3444005145770677/",
+      "displayed_time": {
+        "kind": "DISPLAYED_TIME",
+        "value": "2026年9月15日周二09:24"
+      },
+      "author_id": {
+        "kind": "VALUE",
+        "value": "61593806893026"
+      },
+      "monitor_id": "7edd9e34-d306-4f13-a2db-aa99ecb562e7",
+      "parent_monitor_id": null,
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "observed_before_this_window": false
+    }
+  ],
+  "leads": [
+    {
+      "id": "1957a48b-992d-4ce5-a33e-5b4d16a1f6c7",
+      "monitor_id": "7edd9e34-d306-4f13-a2db-aa99ecb562e7",
+      "object_id": "ca6d453b-7315-4f8a-8565-add61be28f61",
+      "state": "NEW",
+      "score": 50
+    }
+  ],
+  "inbox_cycles": 0,
+  "coverage": "Bounded original search and automatic continuation. New monitor records are not automatically globally new sources or distinct customers.",
+  "recovery": {
+    "manager_shutdown": ".kff/adspower-manager-stop-048.json",
+    "operator_evidence": ".kff/agent/recoveries/f6b68e7c-c386-46d5-b24f-fb1addf8de2e.json",
+    "quarantine_release": ".kff/read-quarantine-released-048.json",
+    "agent_original_closure_uploaded": true,
+    "read_reexecuted": false,
+    "api_healthy": true
+  },
+  "window_limit_note": "The first failure stopped business work within the authorized window. Remaining elapsed time is closure inspection and separately authorized shared-manager recovery; no further search or comments executed.",
+  "business_stopped_at": "2026-09-15T03:25:49.108Z",
+  "new_record_kind": "PUBLIC_REEL_SOURCE_NOT_CUSTOMER_COMMENT"
+}

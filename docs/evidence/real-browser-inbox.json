@@ -1,0 +1,267 @@
+{
+  "schema_version": "kff.real-browser-inbox.v1",
+  "recorded_at": "2026-09-13T05:13:45.088Z",
+  "status": "REAL_INBOX_READ_AND_DEDUP_VERIFIED",
+  "scope": "One selected, already accepted encrypted conversation; two visible inbound text messages; no platform sends.",
+  "selection": {
+    "ui_sequence": "1876794",
+    "profile_id": "k1gvdtft",
+    "external_account_id": "61589894042400",
+    "display_name": "XiangHuan Master",
+    "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+    "agent_id": "66666666-6666-4666-8666-666666666666"
+  },
+  "target": {
+    "thread_id": "27724009533944398",
+    "peer_id": "100050174601107",
+    "display_name": "郑一哲"
+  },
+  "conversation_id": "cf4cb0be-4191-4451-bfda-825ce1b35798",
+  "attempts": [
+    {
+      "command_id": "d290cd2e-32bc-4bb2-b996-f82ee18bb22d",
+      "action_id": "b0d16b37-81d9-4c4d-bef3-05dc59fa36d8",
+      "quiesced_at": "2026-09-13T04:43:35.622Z",
+      "state": "BLOCKED",
+      "error_code": "IDENTITY_UNVERIFIED",
+      "step": "facebook-inbox-identity-before",
+      "duration_ms": "43739"
+    },
+    {
+      "command_id": "cad19fcf-2780-48c7-9025-d95a943d5cb1",
+      "action_id": "a3cc495b-78f8-4a83-9ccd-f007dfbf123a",
+      "quiesced_at": "2026-09-13T04:48:14.556Z",
+      "state": "BLOCKED",
+      "error_code": "EXECUTOR_ERROR",
+      "step": "facebook-inbox-read",
+      "duration_ms": "29218"
+    },
+    {
+      "command_id": "4f2e49be-edb7-4721-8fc6-0deda61371e7",
+      "action_id": "1430244a-49ba-4548-88d5-d0a689919d83",
+      "quiesced_at": "2026-09-13T04:59:04.148Z",
+      "state": "BLOCKED",
+      "error_code": "EXECUTOR_ERROR",
+      "step": "facebook-inbox-peer",
+      "duration_ms": "42034"
+    },
+    {
+      "command_id": "402f0870-6642-4bb7-abb1-f735c629c7a9",
+      "action_id": "158b75e2-74dc-4a50-b7d3-ab60c44d6cdc",
+      "quiesced_at": "2026-09-13T05:10:33.947Z",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "step": "facebook-inbox-visible",
+      "duration_ms": "27563"
+    },
+    {
+      "command_id": "0c25d606-71dc-4190-a9b0-926e1a7ce2de",
+      "action_id": "953ec6ac-2ce6-4833-ae9c-d9a5572c790b",
+      "quiesced_at": "2026-09-13T05:11:03.234Z",
+      "state": "VERIFIED_SUCCEEDED",
+      "error_code": null,
+      "step": "facebook-inbox-visible",
+      "duration_ms": "26124"
+    }
+  ],
+  "successful_scans": [
+    {
+      "scan": 1,
+      "checkpoint": {
+        "task_id": "68e5f47b-e946-40bf-8bb7-9d9e2b79449c",
+        "stored": 2,
+        "duplicates": 0,
+        "page_sha256": "0a0ab4cf2a862495b472f302cd97a7239cd9677eca28746a6f2d002fe2fb6156",
+        "observed_at": "2026-09-13T05:10:27.592Z"
+      }
+    },
+    {
+      "scan": 2,
+      "checkpoint": {
+        "task_id": "6eac97d8-d139-48e1-938f-50d8cb07b099",
+        "stored": 0,
+        "duplicates": 2,
+        "page_sha256": "e45dd32eab5d0a8b2c1e933ccb2ab939ebaaf9fb5d659e54bd0d044b09abc0a8",
+        "observed_at": "2026-09-13T05:10:57.763Z"
+      }
+    }
+  ],
+  "proofs": [
+    {
+      "command_id": "402f0870-6642-4bb7-abb1-f735c629c7a9",
+      "action_id": "158b75e2-74dc-4a50-b7d3-ab60c44d6cdc",
+      "receipt": {
+        "remote_id": "inbox:6a14ca96-4988-4aa2-a0c7-686fc01c15eb:4",
+        "observed_at": "2026-09-13T05:10:27.592Z",
+        "content_hash": "0a0ab4cf2a862495b472f302cd97a7239cd9677eca28746a6f2d002fe2fb6156",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61589894042400"
+      },
+      "db_quiesced_at": "2026-09-13T05:10:33.947Z",
+      "local_closed_at": "2026-09-13T05:10:33.332Z",
+      "proof_matches": true
+    },
+    {
+      "command_id": "0c25d606-71dc-4190-a9b0-926e1a7ce2de",
+      "action_id": "953ec6ac-2ce6-4833-ae9c-d9a5572c790b",
+      "receipt": {
+        "remote_id": "inbox:6a14ca96-4988-4aa2-a0c7-686fc01c15eb:5",
+        "observed_at": "2026-09-13T05:10:57.763Z",
+        "content_hash": "e45dd32eab5d0a8b2c1e933ccb2ab939ebaaf9fb5d659e54bd0d044b09abc0a8",
+        "evidence_kind": "browser_dom",
+        "actual_account_id": "61589894042400"
+      },
+      "db_quiesced_at": "2026-09-13T05:11:03.234Z",
+      "local_closed_at": "2026-09-13T05:11:02.872Z",
+      "proof_matches": true
+    }
+  ],
+  "messages": [
+    {
+      "id": "fcc1ce5b-12e3-455c-b915-ca83fb924b67",
+      "body": "XiangHuan Master，你好！",
+      "direction": "INBOUND",
+      "client_sent_at": null,
+      "received_at": "2026-09-13T05:10:33.711Z",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61589894042400",
+        "peer_id": "100050174601107",
+        "source_id": "100050174601107@msgr.7504736197992583760",
+        "thread_id": "27724009533944398",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/27724009533944398/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "11:02"
+      },
+      "contact_permission_id": null,
+      "handling_mode": "HUMAN",
+      "reply_window_expires_at": null
+    },
+    {
+      "id": "9677a477-d1f0-499a-ad55-746ac2cb020f",
+      "body": "KFF 联调测试",
+      "direction": "INBOUND",
+      "client_sent_at": null,
+      "received_at": "2026-09-13T05:10:33.862Z",
+      "source": {
+        "ref": null,
+        "kind": "MESSENGER",
+        "ad_id": null,
+        "page_id": "61589894042400",
+        "peer_id": "100050174601107",
+        "source_id": "100050174601107@msgr.7504750673031032433",
+        "thread_id": "27724009533944398",
+        "transport": "BROWSER",
+        "source_url": "https://www.facebook.com/messages/e2ee/t/27724009533944398/",
+        "thread_kind": "UNVERIFIED",
+        "displayed_time": "11:59"
+      },
+      "contact_permission_id": null,
+      "handling_mode": "HUMAN",
+      "reply_window_expires_at": null
+    }
+  ],
+  "monitor": {
+    "id": "6a14ca96-4988-4aa2-a0c7-686fc01c15eb",
+    "state": "PAUSED",
+    "version": 9,
+    "scan_requested": false,
+    "current_task_id": null,
+    "last_error_code": null,
+    "last_polled_at": "2026-09-13T05:11:03.173Z"
+  },
+  "provider_after": "Inactive",
+  "counts": {
+    "accounts": 86,
+    "existing_prospects": 46,
+    "migrations": 30,
+    "unclosed_commands": 0,
+    "selected_outbound": 0,
+    "selected_referrals": 0
+  },
+  "whatsapp": {
+    "configured": true,
+    "ui_readback_verified": true,
+    "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+    "destination_id": "a80a2f14-32b5-4081-858a-ce1a8fca8731",
+    "name": "宸均",
+    "phone_last4": "6793",
+    "version": 1,
+    "state": "ACTIVE",
+    "scope": "account_override",
+    "backup_sha256": "fb9ced60a5f820a2f3ea6b54d228375458d58b36c4ede71b766d4188203c0f43",
+    "platform_invitation_sent": false,
+    "sales_handoff_confirmed": false
+  },
+  "release": {
+    "release_id": "kff-agent-0.1.2-win32-x64-0cc4ffc7bc05",
+    "archive_sha256": "fe28fec5a2ea2b6cc63b4ed96936c71b2ffc63bedfcf3aa3f5741ddc7e63998d",
+    "files": 1340,
+    "runtime": {
+      "live_sending_enabled": false,
+      "health_status": 200,
+      "owner_pid": 9872,
+      "agent_id": "66666666-6666-4666-8666-666666666666",
+      "discovery_enabled": true,
+      "agent_created_at": "2026-09-13T05:09:36.9004660Z",
+      "recorded_at": "2026-09-13T05:11:50.5048597Z",
+      "browser_inbox_enabled": true,
+      "executable": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.2-win32-x64-0cc4ffc7bc05\\node.exe",
+      "command_line": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.2-win32-x64-0cc4ffc7bc05\\node.exe C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.2-win32-x64-0cc4ffc7bc05\\agent-launch.mjs start --data-root C:\\Users\\17731\\Desktop\\KFF",
+      "data_root": "C:\\Users\\17731\\Desktop\\KFF",
+      "release_directory": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.2-win32-x64-0cc4ffc7bc05",
+      "automatic_restart_on_boot": false,
+      "agent_pid": 25348
+    }
+  },
+  "backup": {
+    "recorded_at": "2026-09-13T04:42:06.0606249Z",
+    "backup_path": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\backups\\before-real-browser-inbox-20260913-123643",
+    "file_count": 14529,
+    "bytes": 364849785,
+    "all_sha256_match": true,
+    "original_database_stopped": true,
+    "config_backup_matches": true
+  },
+  "validation": {
+    "contracts": {
+      "exit_code": 0,
+      "ended_at": "2026-09-13T05:06:41.911Z"
+    },
+    "typecheck": {
+      "exit_code": 0,
+      "ended_at": "2026-09-13T05:06:47.869Z"
+    },
+    "lint": {
+      "exit_code": 0,
+      "ended_at": "2026-09-13T05:06:28.704Z"
+    },
+    "build": {
+      "exit_code": 0,
+      "ended_at": "2026-09-13T05:08:33.271Z"
+    },
+    "contract_tests": 118,
+    "integration_tests": 21,
+    "integration_scope": "Three isolated-database suites; final browser click change verified separately against the real page and original Agent",
+    "dom_runtime_cases": 6
+  },
+  "ui": {
+    "screenshot": "output/playwright/real-inbox-verified.png",
+    "messages_visible": 2,
+    "platform_time_labels_visible": [
+      "11:02",
+      "11:59"
+    ],
+    "unknown_full_date_explicit": true
+  },
+  "limitations": [
+    "Only this fixed accepted Chinese encrypted thread is supported; no request discovery, attachments, outbound history or history paging acceptance.",
+    "Conversation kind remains UNVERIFIED and source full timestamps remain null; no reply permission or API window is synthesized.",
+    "Real browser reply template and WhatsApp customer arrival / sales confirmation are not verified.",
+    "No continuous incoming-message increment, second real platform account, unattended long-term run, clean machine installation or boot startup acceptance."
+  ]
+}

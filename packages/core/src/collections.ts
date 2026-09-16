@@ -1,5 +1,8 @@
+import { discoveryIsSynthetic } from '../../contracts/src/acquisition';
+import { browserEnvironmentSnapshot } from '../../contracts/src/environment';
 import { randomUUID } from 'node:crypto';
 import type { PoolClient } from 'pg';
+import {discoveryAdapter} from '../../adapters/src/discovery';
 import { z } from 'zod';
 import { scoped, transaction } from '@kff/database';
 import { collectionInput, collectionSnapshotSchema, collectionResumeInput, type CollectionQueryInput, type CollectionSnapshot, type CollectionQuery, type CollectionRun, type Scope } from '@kff/contracts';
@@ -10,41 +13,56 @@ import {filteredCollectionRows,collectionResultPage} from './collection-filter';
 import { fixtureCollectionAdapter, normalizeCollectionPage, type CollectionRead, type CollectionAdapter } from '../../adapters/src/collection-fixture';
 
 const runColumns = 'r.id,r.query_id,r.state,r.version,r.committed_pages,r.returned_count,r.unique_count,r.reported_total::integer,r.stop_reason,r.error_code,r.started_at,r.finished_at,r.created_at';
-const internalSelect = 'SELECT r.*,q.snapshot,q.snapshot_hash,q.expires_at,q.created_by FROM kff.collection_runs r JOIN kff.collection_queries q ON q.id=r.query_id AND q.organization_id=r.organization_id AND q.brand_id=r.brand_id';
-interface InternalRun extends CollectionRun { organization_id: string; brand_id: string; snapshot: CollectionSnapshot; snapshot_hash: string; expires_at: string; created_by: string; next_cursor: string | null; lease_token: string; lease_until: string | null }
+export const internalSelect = 'SELECT r.*,q.snapshot,q.snapshot_hash,q.expires_at,q.created_by FROM kff.collection_runs r JOIN kff.collection_queries q ON q.id=r.query_id AND q.organization_id=r.organization_id AND q.brand_id=r.brand_id';
+export interface InternalRun extends CollectionRun { browser_task_id: string | null; organization_id: string; brand_id: string; snapshot: CollectionSnapshot; snapshot_hash: string; expires_at: string; created_by: string; next_cursor: string | null; lease_token: string; lease_until: string | null }
 export interface CollectionClaim extends CollectionRead { run_id: string; organization_id: string; brand_id: string; snapshot_hash: string; token: string; page_number: number }
 
 export async function createCollection(scope: Scope, input: CollectionQueryInput) {
-  requireWrite(scope); const value = collectionInput.parse(input); const requestHash = digest(value);
-  return scoped(scope, async client => {
+  requireWrite(scope); return scoped(scope,client=>createCollectionInTransaction(client,scope,input));
+}
+export async function createCollectionInTransaction(client:PoolClient,scope:Scope,input:CollectionQueryInput){
+    const value=collectionInput.parse(input),requestHash=digest(value);
     await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))', ['collection/' + scope.brand_id + '/' + value.request_id]);
     const previous = (await client.query('SELECT q.*,r.id AS run_id FROM kff.collection_queries q JOIN kff.collection_runs r ON r.query_id=q.id WHERE q.request_id=$1', [value.request_id])).rows[0];
     if (previous) { requireCondition(previous.request_hash === requestHash, 'IDEMPOTENCY_CONFLICT', '相同采集请求已有不同内容', 409); return { id: previous.id as string, run_id: previous.run_id as string }; }
     const account = (await client.query('SELECT * FROM kff.accounts WHERE id=$1 FOR SHARE', [value.account_id])).rows[0];
     requireCondition(account, 'FORBIDDEN_SCOPE', '执行账号不属于当前品牌', 403);
-    requireCondition(account.is_synthetic && account.external_id === value.targets[0], 'COLLECTION_SOURCE_MISMATCH', '当前采集入口只允许本项目合成账号和相同目标', 409);
+    requireCondition(account.external_id===value.targets[0],'COLLECTION_SOURCE_MISMATCH','采集账号与目标范围不符',409);
+    if(value.source_key==='social.discovery'){
+      requireCondition(scope.role==='admin'&&value.discovery,'FORBIDDEN_SCOPE','主动采集需要管理员配置来源',403);
+      requireCondition(account.is_synthetic===(discoveryIsSynthetic(value.discovery)),'COLLECTION_SOURCE_MISMATCH','真实和合成来源不能混用');
+      requireCondition(account.platform===value.discovery.platform,'COLLECTION_SOURCE_MISMATCH','来源平台与账号不符');
+      requireCondition(value.purpose===(account.is_synthetic?'software_verification':'lead_discovery')&&value.mode===(account.is_synthetic?'TEST_ONLY':'CONTROLLED_PILOT'),'COLLECTION_SOURCE_MISMATCH','采集模式或用途不符');
+      if(value.discovery.provider==='META_API')requireCondition(value.discovery.credential_ref===account.credential_ref,'SOURCE_AUTH_REQUIRED','凭据引用必须与账号绑定一致');
+    }else requireCondition(account.is_synthetic&&!value.discovery&&value.mode==='TEST_ONLY'&&value.purpose==='software_verification','COLLECTION_SOURCE_MISMATCH','合成来源不可用于真实账号',409);
     const { request_id: requestId, ...configuration } = value;
-    const snapshot = collectionSnapshotSchema.parse({ ...configuration, schema_version: 'kff.collection.v1', source_version: 'fixture-page-posts-v1', source_type: 'OWNED_FIXTURE', account_version: account.version, external_account_id: account.external_id, allowed_purposes: ['software_verification'] });
+    const browser = value.discovery?.browser;
+    const environment = browser ? (await client.query('SELECT * FROM kff.environments WHERE id=$1 AND account_id=$2 AND organization_id=$3 AND brand_id=$4 FOR SHARE', [browser.environment_id, account.id, scope.organization_id, scope.brand_id])).rows[0] : undefined;
+    if (browser) requireCondition(environment?.browser_configuration && environment.browser_configuration.operating_identity_id === account.external_id, 'SOURCE_NOT_CONFIGURED', '采集需要已配置且匹配当前账号的浏览器环境', 409);
+    const browserSnapshot = environment ? browserEnvironmentSnapshot.parse({ environment_id: environment.id, account_id: account.id, agent_id: environment.agent_id, organization_id: scope.organization_id, brand_id: scope.brand_id, profile_key: environment.profile_key, configuration_version: environment.configuration_version, configuration: environment.browser_configuration, ...(account.account_type === 'profile' ? { account_type: 'profile' } : {}), platform: account.platform, is_synthetic: account.is_synthetic }) : undefined;
+    const snapshot = collectionSnapshotSchema.parse({ ...configuration, browser_environment: browserSnapshot, schema_version: 'kff.collection.v1', source_version: value.discovery?'social-discovery-v1':'fixture-page-posts-v1', source_type: value.discovery?'SOCIAL_DISCOVERY':'OWNED_FIXTURE', account_version: account.version, external_account_id: account.external_id, allowed_purposes: [value.purpose] });
     const query = (await client.query<CollectionQuery>('INSERT INTO kff.collection_queries(organization_id,brand_id,request_id,account_id,title,snapshot,snapshot_hash,request_hash,created_by,expires_at) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,now()+make_interval(days=>$10)) RETURNING *', [scope.organization_id, scope.brand_id, requestId, account.id, value.title, snapshot, digest(snapshot), requestHash, scope.user_id, value.retention_days])).rows[0];
     const run = (await client.query('INSERT INTO kff.collection_runs(organization_id,brand_id,query_id) VALUES($1,$2,$3) RETURNING id', [scope.organization_id, scope.brand_id, query.id])).rows[0];
-    await audit(client, scope, 'collection.created', query.id, { run_id: run.id, snapshot_hash: query.snapshot_hash, source_type: 'OWNED_FIXTURE' }); return { id: query.id, run_id: run.id as string };
-  });
+    await audit(client, scope, 'collection.created', query.id, { run_id: run.id, snapshot_hash: query.snapshot_hash, source_type: snapshot.source_type }); return { id: query.id, run_id: run.id as string };
 }
 export async function claimCollection(): Promise<CollectionClaim | null> {
   return transaction(async client => {
-    const row = (await client.query<InternalRun>(internalSelect + " JOIN kff.accounts ac ON ac.id=q.account_id AND ac.organization_id=q.organization_id AND ac.brand_id=q.brand_id JOIN kff.brands b ON b.id=q.brand_id AND b.organization_id=q.organization_id JOIN kff.organizations o ON o.id=q.organization_id WHERE q.snapshot->>'source_type'='OWNED_FIXTURE' AND ((r.state='QUEUED' AND r.available_at<=clock_timestamp()) OR (r.state='RUNNING' AND r.lease_until<=clock_timestamp())) AND NOT ac.outbound_paused AND NOT b.outbound_paused AND NOT o.outbound_paused ORDER BY r.available_at,r.created_at,r.id LIMIT 1 FOR UPDATE OF r SKIP LOCKED")).rows[0];
+    const row = (await client.query<InternalRun>(internalSelect + " JOIN kff.accounts ac ON ac.id=q.account_id AND ac.organization_id=q.organization_id AND ac.brand_id=q.brand_id JOIN kff.brands b ON b.id=q.brand_id AND b.organization_id=q.organization_id JOIN kff.organizations o ON o.id=q.organization_id WHERE COALESCE(q.snapshot->'discovery'->>'provider','') <> 'LOCAL_BROWSER' AND r.browser_task_id IS NULL AND q.snapshot->>'source_type' IN ('OWNED_FIXTURE','SOCIAL_DISCOVERY') AND ((r.state='QUEUED' AND r.available_at<=clock_timestamp()) OR (r.state='RUNNING' AND r.lease_until<=clock_timestamp())) AND NOT ac.outbound_paused AND NOT b.outbound_paused AND NOT o.outbound_paused ORDER BY r.available_at,r.created_at,r.id LIMIT 1 FOR UPDATE OF r SKIP LOCKED")).rows[0];
     if (!row) return null;
     const snapshot = collectionSnapshotSchema.parse(row.snapshot);
     const account = (await client.query('SELECT ac.*,o.outbound_paused AS organization_paused,b.outbound_paused AS brand_paused FROM kff.accounts ac JOIN kff.brands b ON b.id=ac.brand_id AND b.organization_id=ac.organization_id JOIN kff.organizations o ON o.id=ac.organization_id WHERE ac.id=$1 AND ac.organization_id=$2 AND ac.brand_id=$3 FOR SHARE OF o,b,ac', [snapshot.account_id, row.organization_id, row.brand_id])).rows[0];
     if (account?.outbound_paused || account?.organization_paused || account?.brand_paused) return null;
     const expired = (await client.query('SELECT $1::timestamptz<=clock_timestamp() AS expired', [row.expires_at])).rows[0].expired;
-    const failure = expired ? 'RETENTION_EXPIRED' : !account || !account.is_synthetic || account.state !== 'ACTIVE' || account.version !== snapshot.account_version || account.external_id !== snapshot.external_account_id || digest(snapshot) !== row.snapshot_hash ? 'COLLECTION_SOURCE_MISMATCH' : null;
+    // Apify verifies its own credentials; a registered Meta account is only the local ownership scope.
+    const apifyRead=snapshot.discovery?.provider==='DATA_PROVIDER'&&snapshot.discovery.target.startsWith('apify-run:');
+    const accountReady=account&&(account.state==='ACTIVE'||(apifyRead&&account.state==='DRAFT'));
+    const failure = expired ? 'RETENTION_EXPIRED' : !account || account.is_synthetic !== (!snapshot.discovery || discoveryIsSynthetic(snapshot.discovery)) || !accountReady || account.version !== snapshot.account_version || account.external_id !== snapshot.external_account_id || digest(snapshot) !== row.snapshot_hash ? 'COLLECTION_SOURCE_MISMATCH' : null;
     if (failure) { await finishFailed(client, row, failure); return null; }
     const lease = (await client.query("UPDATE kff.collection_runs SET state='RUNNING',lease_token=lease_token+1,lease_until=clock_timestamp()+interval '30 seconds',version=version+1,started_at=COALESCE(started_at,now()),updated_at=now() WHERE id=$1 RETURNING lease_token", [row.id])).rows[0];
     return { run_id: row.id, query_id: row.query_id, organization_id: row.organization_id, brand_id: row.brand_id, snapshot, snapshot_hash: row.snapshot_hash, token: lease.lease_token as string, page_number: row.committed_pages + 1, cursor: row.next_cursor, limit: Math.min(snapshot.page_size, snapshot.max_records - row.returned_count) };
   });
 }
-async function finishFailed(client: PoolClient, row: InternalRun, code: string) {
+export async function finishFailed(client: PoolClient, row: InternalRun, code: string) {
   await client.query("UPDATE kff.collection_runs SET state=CASE WHEN committed_pages>0 THEN 'PARTIAL' ELSE 'FAILED' END,stop_reason=$1,error_code=$1,lease_until=NULL,version=version+1,finished_at=now(),updated_at=now() WHERE id=$2", [code, row.id]);
   await audit(client, { organization_id: row.organization_id, brand_id: row.brand_id, user_id: row.created_by, role: 'operator' }, 'collection.stopped', row.query_id, { run_id: row.id, code, committed_pages: row.committed_pages });
 }
@@ -52,13 +70,15 @@ function matchClaim(row: InternalRun | undefined, claim: CollectionClaim) {
   requireCondition(row && row.query_id === claim.query_id && row.organization_id === claim.organization_id && row.brand_id === claim.brand_id && row.snapshot_hash === claim.snapshot_hash && digest(claim.snapshot) === row.snapshot_hash, 'COLLECTION_CLAIM_MISMATCH', '分页领取与原查询不一致', 409); return row;
 }
 export async function commitCollectionPage(claim: CollectionClaim, input: unknown, beforeCommit?: () => Promise<void>) {
+  return transaction(async client => { const result = await commitCollectionPageInTransaction(client, claim, input); await beforeCommit?.(); return result; });
+}
+export async function commitCollectionPageInTransaction(client: PoolClient, claim: CollectionClaim, input: unknown, ownerTaskId?: string) {
   const page = normalizeCollectionPage(input, claim); const pageHash = digest(page); const cursorHash = digest(claim.cursor);
-  return transaction(async client => {
     const row = matchClaim((await client.query<InternalRun>(internalSelect + ' WHERE r.id=$1 FOR UPDATE OF r', [claim.run_id])).rows[0], claim);
     const previous = (await client.query('SELECT evidence_hash,cursor_in_hash FROM kff.collection_pages WHERE run_id=$1 AND page_number=$2', [row.id, claim.page_number])).rows[0];
     if (previous) { requireCondition(previous.evidence_hash === pageHash && previous.cursor_in_hash === cursorHash, 'IDEMPOTENCY_CONFLICT', '同一页已有不同证据', 409); return { committed: true, reused: true }; }
     const clock = (await client.query('SELECT $1::timestamptz>clock_timestamp() AS lease_valid,$2::timestamptz>clock_timestamp() AS retention_valid', [row.lease_until, row.expires_at])).rows[0];
-    requireCondition(row.state === 'RUNNING' && row.lease_token === claim.token && clock.lease_valid && clock.retention_valid, 'STALE_COLLECTION_LEASE', '采集租约已过期、停止或被新工作者替代', 409);
+    requireCondition(row.state === 'RUNNING' && row.lease_token === claim.token && (ownerTaskId ? row.browser_task_id === ownerTaskId : row.browser_task_id === null && clock.lease_valid) && clock.retention_valid, 'STALE_COLLECTION_LEASE', '采集租约已过期、停止或被新工作者替代', 409);
     requireCondition(row.committed_pages + 1 === claim.page_number && row.next_cursor === claim.cursor && claim.limit === Math.min(row.snapshot.page_size, row.snapshot.max_records - row.returned_count) && page.rows.length <= row.snapshot.max_records - row.returned_count, 'COLLECTION_CHECKPOINT_CONFLICT', '分页位置或剩余上限已变化', 409);
     const nextHash = page.next_cursor === null ? null : digest(page.next_cursor);
     const loop = nextHash !== null && (nextHash === cursorHash || Boolean((await client.query('SELECT 1 FROM kff.collection_pages WHERE run_id=$1 AND cursor_in_hash=$2', [row.id, nextHash])).rowCount));
@@ -80,23 +100,22 @@ export async function commitCollectionPage(claim: CollectionClaim, input: unknow
     const returned = row.returned_count + page.rows.length; const pages = row.committed_pages + 1;
     const reason = loop ? 'CURSOR_LOOP' : page.next_cursor === null ? 'SOURCE_EXHAUSTED' : returned >= row.snapshot.max_records ? 'MAX_RECORDS' : pages >= row.snapshot.max_pages ? 'MAX_PAGES' : null;
     const state = reason === 'SOURCE_EXHAUSTED' ? 'COMPLETED' : reason ? 'PARTIAL' : 'QUEUED';
-    await client.query("UPDATE kff.collection_runs SET state=$1,committed_pages=$2,returned_count=$3,unique_count=(SELECT count(*) FROM kff.collection_results WHERE run_id=$10),reported_total=$4,next_cursor=$5,stop_reason=$6,error_code=$7,lease_until=NULL,version=version+1,available_at=now()+interval '500 milliseconds',finished_at=CASE WHEN $8 THEN now() ELSE NULL END,updated_at=now() WHERE id=$10 AND lease_token=$9", [state, pages, returned, page.reported_total, page.next_cursor, reason, loop ? 'CURSOR_LOOP' : null, reason !== null, claim.token, row.id]);
+    await client.query("UPDATE kff.collection_runs SET state=$1,committed_pages=$2,returned_count=$3,unique_count=(SELECT count(*) FROM kff.collection_results WHERE run_id=$10),reported_total=$4,next_cursor=$5,stop_reason=$6,error_code=$7,lease_until=NULL,browser_task_id=NULL,version=version+1,available_at=now()+interval '500 milliseconds',finished_at=CASE WHEN $8 THEN now() ELSE NULL END,updated_at=now() WHERE id=$10 AND lease_token=$9", [state, pages, returned, page.reported_total, page.next_cursor, reason, loop ? 'CURSOR_LOOP' : null, reason !== null, claim.token, row.id]);
     await audit(client, { organization_id: row.organization_id, brand_id: row.brand_id, user_id: row.created_by, role: 'operator' }, 'collection.page_committed', row.query_id, { run_id: row.id, page_number: pages, returned: page.rows.length, evidence_hash: pageHash, stop_reason: reason });
-    await beforeCommit?.(); return { committed: true, reused: false };
-  });
+    return { committed: true, reused: false };
 }
 export async function failCollectionClaim(claim: CollectionClaim, code: string) {
   return transaction(async client => {
     const row = matchClaim((await client.query<InternalRun>(internalSelect + ' WHERE r.id=$1 FOR UPDATE OF r', [claim.run_id])).rows[0], claim);
-    if (row.state !== 'RUNNING' || row.lease_token !== claim.token) return;
+    if (row.browser_task_id || row.state !== 'RUNNING' || row.lease_token !== claim.token) return;
     if (!(await client.query('SELECT $1::timestamptz>clock_timestamp() AS valid', [row.lease_until])).rows[0].valid) return;
-    const mapped = ['CURSOR_EXPIRED', 'COLLECTION_SOURCE_MISMATCH', 'COLLECTION_FIELDS_MISMATCH', 'COLLECTION_LIMIT_EXCEEDED', 'COLLECTION_INVALID_PAGE'].includes(code) ? code : 'REMOTE_ERROR';
+    const mapped = ['CURSOR_EXPIRED', 'COLLECTION_SOURCE_MISMATCH', 'COLLECTION_FIELDS_MISMATCH', 'COLLECTION_LIMIT_EXCEEDED', 'COLLECTION_INVALID_PAGE','SOURCE_RATE_LIMITED','SOURCE_AUTH_REQUIRED','SOURCE_NOT_CONFIGURED','DISCOVERY_DISABLED','SOURCE_UNSUPPORTED','SOURCE_NOT_OWNED','ACCOUNT_MISMATCH'].includes(code) ? code : 'REMOTE_ERROR';
     await finishFailed(client, row, mapped);
   });
 }
-export async function processCollectionPage(adapter: CollectionAdapter = fixtureCollectionAdapter) {
+export async function processCollectionPage(adapter?: CollectionAdapter) {
   const claim = await claimCollection(); if (!claim) return false;
-  try { const page = await adapter.readPage(claim); await commitCollectionPage(claim, page); }
+  try { const page = await (adapter??(claim.snapshot.discovery?discoveryAdapter():fixtureCollectionAdapter)).readPage(claim); await commitCollectionPage(claim, page); }
   catch (error) { if (!(error instanceof AppError && ['STALE_COLLECTION_LEASE', 'COLLECTION_CHECKPOINT_CONFLICT'].includes(error.code))) await failCollectionClaim(claim, error instanceof z.ZodError ? 'COLLECTION_INVALID_PAGE' : error instanceof AppError ? error.code : 'REMOTE_ERROR'); }
   return true;
 }

@@ -1,0 +1,141 @@
+{
+  "schema_version": "kff.browser-matrix-checkpoint.v1",
+  "recorded_at": "2026-09-12T18:17:24.970Z",
+  "goal_complete": false,
+  "real_platform_verified": false,
+  "selected_adspower_profile": "k1gvdtft",
+  "selected_ui_sequence": "1876794",
+  "profile_login": {
+    "observed_at": "2026-09-12T18:05:18.364Z",
+    "profile_id": "k1gvdtft",
+    "facebook_state": "LOGIN_REQUIRED",
+    "visible_signals": [
+      "Log into Facebook",
+      "Email or mobile number",
+      "Password",
+      "Log In"
+    ],
+    "real_identity_verified": false,
+    "platform_write_actions": 0,
+    "closure_confirmed_at": "2026-09-12T18:05:27.333Z",
+    "after_status": "Inactive"
+  },
+  "tests": {
+    "process_integration": {
+      "passed": 1,
+      "failed": 0
+    },
+    "typecheck": {
+      "exit_code": 0,
+      "ended_at": "2026-09-12T18:16:09.277Z"
+    },
+    "lint": {
+      "exit_code": 0,
+      "ended_at": "2026-09-12T18:15:59.051Z"
+    }
+  },
+  "process": {
+    "checked_at": "2026-09-12T18:09:11.426Z",
+    "synthetic": true,
+    "real_platform_verified": false,
+    "independent_agent_processes": 2,
+    "first_agent_restarted": true,
+    "lost_ack_report_replayed_unchanged": true,
+    "first_action_submission_attempts": 1,
+    "first_action_remote_messages": 1,
+    "second_account_continued_while_first_quarantined": true,
+    "exact_account_destinations_verified": true,
+    "runtime_root": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\browser-matrix-process-QlFDI7",
+    "proofs": [
+      {
+        "agent_id": "46a2c095-88ca-4117-b9c1-d60da4762444",
+        "command_id": "2f7d1e7e-68bc-40b8-9d09-cd09688e6dcb",
+        "action_id": "ff9b6913-0620-402c-befc-e79595bb251a",
+        "proof_matches_database": true
+      },
+      {
+        "agent_id": "46a2c095-88ca-4117-b9c1-d60da4762444",
+        "command_id": "9b7769f2-1012-40cf-9e39-36a0edf94195",
+        "action_id": "8b3e5c09-173e-4127-9487-3489a1221908",
+        "proof_matches_database": true
+      },
+      {
+        "agent_id": "94a6b8f4-69fd-4d98-aa44-b989b8b6e051",
+        "command_id": "a49ecf21-e882-4bd8-9d48-8c5ec2bd8685",
+        "action_id": "3866fab1-63bf-45b6-9646-49ace9588982",
+        "proof_matches_database": true
+      },
+      {
+        "agent_id": "94a6b8f4-69fd-4d98-aa44-b989b8b6e051",
+        "command_id": "65a23d75-cac0-4614-bff7-c19ef493dfdb",
+        "action_id": "e58a4366-7898-44cd-b9f0-bd44146ec722",
+        "proof_matches_database": true
+      },
+      {
+        "agent_id": "94a6b8f4-69fd-4d98-aa44-b989b8b6e051",
+        "command_id": "dad8abf8-202e-4c29-9352-8359d865702d",
+        "action_id": "d9e4f07e-d9fb-4dfd-8666-a279af4ee439",
+        "proof_matches_database": true
+      },
+      {
+        "agent_id": "94a6b8f4-69fd-4d98-aa44-b989b8b6e051",
+        "command_id": "146b6d8d-5efa-434e-ad08-9d4ab97cd169",
+        "action_id": "bc4063b5-11b3-4df2-a877-778694b452ca",
+        "proof_matches_database": true
+      }
+    ]
+  },
+  "backup_restore": {
+    "schema_version": "kff.local-backup-restore.v1",
+    "checked_at": "2026-09-12T18:15:11.043Z",
+    "backup_path": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\backups\\before-browser-message-20260913-015620",
+    "restored_directory": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\restore-checks\\0288ad7d-5522-4139-8159-121f532d477a\\postgres",
+    "isolated_port": 64745,
+    "file_count": 13604,
+    "all_copy_sha256_match": true,
+    "restored": {
+      "database": "kff",
+      "accounts": 84,
+      "prospects": 46,
+      "migrations": 27
+    },
+    "rls": {
+      "tables": 4,
+      "all_rls": true
+    },
+    "upgrade_validation": {
+      "transport_column": true,
+      "history_columns": [
+        "version",
+        "sha256",
+        "applied_at"
+      ],
+      "upgrade_transaction_rolled_back": true
+    },
+    "restored_server_closed": true,
+    "main_before": {
+      "database": "kff",
+      "accounts": 85,
+      "prospects": 46,
+      "migrations": 28
+    },
+    "main_after": {
+      "database": "kff",
+      "accounts": 85,
+      "prospects": 46,
+      "migrations": 28
+    },
+    "main_counts_unchanged": true,
+    "no_live_data_replaced": true
+  },
+  "limitations": [
+    "Two actual local Agent processes used an HTTP test bridge calling production authentication, dispatch, report and receipt functions",
+    "Only repository-authored synthetic browser pages were used; two real platform accounts remain untested",
+    "Restore used an isolated directory and port; the post-backup migration DDL was exercised in a rolled-back transaction",
+    "Windows installation, upgrade distribution and real Facebook/WhatsApp acceptance remain incomplete"
+  ],
+  "source_sha256": {
+    "tests/integration/browser-matrix-process.test.ts": "460d1530fb720b6a961f413dcefa3f0c371d3cd2339f08f18718e0de23ea1b61"
+  },
+  "restore_probe_sha256": "358651421e3c9a0ae4584fb8b6d4e2b0b4273ecd732bebceff0d54d7a54d2e72"
+}

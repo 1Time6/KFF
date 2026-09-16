@@ -7,6 +7,7 @@ import type {InboxMessage,SiteChannel} from '../../../packages/contracts/src/inb
 import {businessRequest,businessTime,stageNames} from './business-ui';
 import {useRequestKey} from './use-request-key';
 import {FacebookSetup} from './facebook-setup';
+import {BrowserInboxSetup} from './browser-inbox-setup';
 import {WhatsappSetup} from './whatsapp-setup';
 import {ReceptionControls} from './reception-controls';
 import {modeNames} from './lead-ui';
@@ -34,6 +35,7 @@ export function InboxWorkbench({data}:{data:Workspace}) {
     {error&&<div className="alert warning" role="alert">{error}<button onClick={()=>void refresh().then(()=>setError('')).catch(failure=>setError(failure.message))}>重新读取</button></div>}
     <div className="business-counts"><div><span>咨询客户</span><strong>{inbox.counts.customers}</strong></div><div><span>会话</span><strong>{inbox.counts.conversations}</strong></div><div><span>收到消息</span><strong>{inbox.counts.inbound_messages}</strong></div></div>
     <FacebookSetup data={data} onReceived={refresh}/>
+    <BrowserInboxSetup data={data}/>
     <WhatsappSetup data={data}/>
     <details className="business-box channel-settings"><summary>站内咨询入口 <span>{inbox.channels.length} 个</span></summary>
       {inbox.channels.length===0&&<p className="muted">创建入口后，访客可在独立咨询页面发送消息。</p>}
@@ -73,8 +75,8 @@ function ConversationPanel({id,role}:{id:string;role:Workspace['scope']['role']}
     {detail&&<><div className="business-box-head"><div><h2>{detail.conversation.display_name??'匿名访客'}</h2><p>{detail.conversation.channel_name} · {detail.conversation.is_synthetic?'测试咨询':detail.conversation.channel_id?'站内咨询':'Facebook 咨询'} · {modeNames[detail.conversation.handling_mode]}</p></div><Link href={'/customers?customer='+detail.conversation.customer_id}>客户档案 →</Link></div>
       <div className="conversation-context"><span>负责人：{detail.conversation.owner_user_id?.slice(0,8)??'待分配'}</span><span>客服窗口截至 {businessTime(detail.conversation.reply_window_expires_at)}</span>{detail.conversation.opted_out&&<strong>客户已退出，停止新联系</strong>}</div></>}
     {error&&<p role="alert" className="alert warning">{error}</p>}
-    <ol className="message-stream" aria-label="已保存的客户消息">{messages.map(message=><li key={message.id} className={message.direction==='INBOUND'?'':'outgoing'}><div className="message-bubble"><p>{message.body}</p></div><small>#{message.sequence} · {businessTime(message.received_at)} · {message.direction==='INBOUND'?'客户消息':message.direction==='EXTERNAL_OUTBOUND'?'Facebook 原生人工回复':message.actor_kind==='AI'?'自动接待 · 已确认发送':'人工回复 · 已确认发送'}</small></li>)}</ol>
-    <div className="conversation-footer"><button className="button subtle" onClick={()=>void refresh()}>{detail?.has_more?'加载后续消息':'刷新消息'}</button>{detail?.conversation.channel_kind!=='FACEBOOK_MESSENGER'&&<p>{detail?.conversation.channel_id?'此入口用于收取咨询和记录跟进。':'评论和互动保留为潜客来源，收到主动私信后可进行接待。'}</p>}</div>
-    {detail?.conversation.channel_kind==='FACEBOOK_MESSENGER'&&<ReceptionControls conversation={detail.conversation} role={role} onSaved={()=>refresh()}/>}
+    <ol className="message-stream" aria-label="已保存的客户消息">{messages.map(message=><li key={message.id} className={message.direction==='INBOUND'?'':'outgoing'}><div className="message-bubble"><p>{message.body}</p></div><small>#{message.sequence} · {message.direction==='INBOUND'?'收件于':'记录于'} {businessTime(message.received_at)}{message.direction!=='OUTBOUND'&&typeof message.source?.displayed_time==='string'&&<span> · 平台显示 {message.source.displayed_time}{!message.client_sent_at?'（完整日期未取得）':''}</span>} · {message.direction==='INBOUND'?'客户消息':message.direction==='EXTERNAL_OUTBOUND'?'Facebook 原生人工回复':message.actor_kind==='AI'?'自动接待 · 已确认发送':'人工回复 · 已确认发送'}</small></li>)}</ol>
+    <div className="conversation-footer"><button className="button subtle" onClick={()=>void refresh()}>{detail?.has_more?'加载后续消息':'刷新消息'}</button>{!detail?.outbound_available&&<p>{detail?.conversation.channel_kind==='FACEBOOK_BROWSER_MESSENGER'?'浏览器会话目前支持查看和跟进，请在原会话回复。':detail?.conversation.channel_id?'此入口用于收取咨询和记录跟进。':'评论和互动保留为潜客来源，收到主动私信后可进行接待。'}</p>}</div>
+    {detail?.outbound_available&&<ReceptionControls key={detail.conversation.id} conversation={detail.conversation} role={role} onSaved={()=>refresh()}/>}
   </section>;
 }

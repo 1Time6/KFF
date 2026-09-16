@@ -35,6 +35,7 @@ test('creates, approves and verifies one durable local publication', async ({ pa
   const { title, row } = await createAndRun(page, 'normal');
   await expect(row.getByText('核实成功', { exact: true })).toBeVisible({ timeout: 30000 });
   await page.getByRole('link', { name: '运行记录', exact: true }).click();
+  await expect(page.getByRole('heading', { name: '运行记录', exact: true })).toBeVisible();
   await page.getByRole('button', { name: title, exact: true }).click();
   const detail = page.getByRole('dialog', { name: '运行详情', exact: true });
   await expect(detail.getByText('已取得结果证据', { exact: true })).toBeVisible();
@@ -52,6 +53,7 @@ test('records a wrong-account failure with a diagnostic and no publication', asy
   const { title, row } = await createAndRun(page, 'wrong_account');
   await expect(row.getByText('执行失败', { exact: true })).toBeVisible({ timeout: 30000 });
   await page.getByRole('link', { name: '运行记录', exact: true }).click();
+  await expect(page.getByRole('heading', { name: '运行记录', exact: true })).toBeVisible();
   await page.getByRole('button', { name: title, exact: true }).click();
   const detail = page.getByRole('dialog', { name: '运行详情', exact: true });
   await expect(detail.getByText('ACCOUNT_MISMATCH', { exact: true })).toBeVisible();
@@ -61,6 +63,7 @@ test('records a wrong-account failure with a diagnostic and no publication', asy
 test('stops preparation before a publication and displays cancellation', async ({ page }) => {
   const { title } = await createAndRun(page, 'slow');
   await page.getByRole('link', { name: '运行记录', exact: true }).click();
+  await expect(page.getByRole('heading', { name: '运行记录', exact: true })).toBeVisible();
   const row = page.getByRole('row').filter({ has: page.getByRole('button', { name: title, exact: true }) });
   await expect(row.getByText('准备中', { exact: true })).toBeVisible();
   await row.getByRole('button', { name: '停止', exact: true }).click();
@@ -70,6 +73,7 @@ test('reconciles an unknown publication and then releases the quarantined enviro
   const { title, row } = await createAndRun(page, 'lost_after_submit');
   await expect(row.getByText('需人工处理', { exact: true })).toBeVisible({ timeout: 30000 });
   await page.getByRole('link', { name: '运行记录', exact: true }).click();
+  await expect(page.getByRole('heading', { name: '运行记录', exact: true })).toBeVisible();
   await page.getByRole('button', { name: title, exact: true }).click();
   const detail = page.getByRole('dialog', { name: '运行详情', exact: true });
   await expect(detail.getByText('结果未知', { exact: true })).toBeVisible();
@@ -205,6 +209,7 @@ test('previews, pins, executes and deprecates a derived template while preservin
     const latest = await (await page.request.get('/api/workspace')).json();
     expect(latest.tasks.find((value: Task) => value.id === waiting.task.id).snapshot_hash).toBe(waiting.task.snapshot_hash);
     await page.getByRole('link', { name: '运行记录', exact: true }).click();
+  await expect(page.getByRole('heading', { name: '运行记录', exact: true })).toBeVisible();
     await page.getByRole('button', { name: executedTitle, exact: true }).click();
     const detail = page.getByRole('dialog', { name: '运行详情', exact: true });
     await expect(detail.getByText('核实成功', { exact: true }).first()).toBeVisible();
@@ -356,6 +361,7 @@ test('records inconclusive and confirmed human reviews of one original synthetic
   const postsResponse = await page.request.get('http://127.0.0.1:4311/posts?action_id=' + encodeURIComponent(run.action_id));
   expect(postsResponse.ok()).toBe(true); const posts = await postsResponse.json(); expect(posts).toHaveLength(1);
   await page.getByRole('link', { name: '运行记录', exact: true }).click();
+  await expect(page.getByRole('heading', { name: '运行记录', exact: true })).toBeVisible();
   await page.getByRole('button', { name: title, exact: true }).click();
   const detail = page.getByRole('dialog', { name: '运行详情', exact: true });
   const review = detail.getByRole('region', { name: '人工复核与裁定' });

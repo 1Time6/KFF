@@ -1,0 +1,29 @@
+{
+  "checked_at": "2026-09-15T04:23:05.4708211Z",
+  "version": "0.1.49",
+  "input": "Verified actual controller ZIP extracted to a fresh isolated directory",
+  "synthetic_source": true,
+  "other_computer_verified": false,
+  "system_reboot_verified": false,
+  "platform_actions": 0,
+  "record": {
+    "schema_version": "kff.controller-upgrade.v1",
+    "id": "339eab51-b4db-4eb0-8172-5880266725f9",
+    "phase": "VERIFIED",
+    "source_release": "kff-controller-0.1.26-win32-x64-c7abed97c5f8",
+    "target_release": "kff-controller-0.1.49-win32-x64-b248a40aa1a9",
+    "started_at": "2026-09-15T04:20:24.263Z",
+    "finished_at": "2026-09-15T04:21:14.888Z",
+    "copied_files": 1925,
+    "copied_bytes": 73755559,
+    "migrations_before": 32,
+    "migrations_after": 33,
+    "refreshed_capabilities": 0,
+    "source_preserved": true,
+    "source_unchanged": true,
+    "target_database_closed": true,
+    "live_sending_enabled": false
+  },
+  "evidence_record": ".kff/controller-upgrade-049/kff-controller-0.1.49-win32-x64-b248a40aa1a9/.kff/upgrades/339eab51-b4db-4eb0-8172-5880266725f9.json",
+  "command_log": ".kff/upgrade-current-049-command.log"
+}

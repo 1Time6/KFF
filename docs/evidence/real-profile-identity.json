@@ -1,0 +1,121 @@
+{
+  "schema_version": "kff.real-profile-identity.v1",
+  "recorded_at": "2026-09-13T00:47:03.328871Z",
+  "scope": "One selected personal Facebook profile; visible identity and managed lifecycle only",
+  "selection": {
+    "profile_id": "k1gvdtft",
+    "ui_sequence": "1876794",
+    "external_id": "61589894042400",
+    "display_name": "XiangHuan Master"
+  },
+  "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+  "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+  "configuration_version": 2,
+  "backup": {
+    "recorded_at": "2026-09-13T00:32:28.8737648Z",
+    "backup_path": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\backups\\before-real-profile-20260913-082652",
+    "file_count": 13604,
+    "bytes": 348177441,
+    "all_sha256_match": true,
+    "original_database_stopped": true,
+    "config_backup_matches": true
+  },
+  "attempts": [
+    {
+      "recorded_at": "2026-09-13T00:33:32.115Z",
+      "ui_sequence": "1876794",
+      "profile_id": "k1gvdtft",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+      "command_id": "648b568a-c18b-4fbe-bc1c-702d7fd0b02b",
+      "snapshot_hash": "a31eee7cedb53cda643aca9e1fbc0f9a76ca18c07813c87bed540d81eb21b8e6",
+      "result": {
+        "outcome": "BLOCKED",
+        "error_code": "IDENTITY_UNVERIFIED",
+        "context_closed": true,
+        "browser_version": "150.0.7871.47"
+      },
+      "db_closed_at": "2026-09-13T00:33:31.962Z",
+      "local_closed_at": "2026-09-13T00:33:31.868Z",
+      "closure_matches": true,
+      "provider_after": "Inactive",
+      "platform_send_actions": 0
+    },
+    {
+      "recorded_at": "2026-09-13T00:40:47.155Z",
+      "ui_sequence": "1876794",
+      "profile_id": "k1gvdtft",
+      "account_id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "environment_id": "8a712567-b324-41f6-b3dd-693aaf431042",
+      "command_id": "03175d78-4554-4d79-b992-80adaf298e0e",
+      "snapshot_hash": "a31eee7cedb53cda643aca9e1fbc0f9a76ca18c07813c87bed540d81eb21b8e6",
+      "result": {
+        "outcome": "CHECKED",
+        "identity": {
+          "method": "facebook-profile-dom-v1",
+          "source_url": "https://www.facebook.com/profile.php?id=61589894042400",
+          "observed_at": "2026-09-13T00:40:44.843Z",
+          "account_type": "profile",
+          "display_name": "XiangHuan Master",
+          "authenticated": true,
+          "operating_identity_id": "61589894042400"
+        },
+        "context_closed": true,
+        "browser_version": "150.0.7871.47"
+      },
+      "db_closed_at": "2026-09-13T00:40:46.197Z",
+      "local_closed_at": "2026-09-13T00:40:46.014Z",
+      "closure_matches": true,
+      "provider_after": "Inactive",
+      "platform_send_actions": 0
+    }
+  ],
+  "ui_verified": true,
+  "ui_screenshot": "output/playwright/real-profile-identity.png",
+  "after_counts": {
+    "accounts": 86,
+    "environments": 53,
+    "prospects": 46,
+    "migrations": 28
+  },
+  "readiness": {
+    "facebook_session_authenticated": true,
+    "operating_identity_verified": true,
+    "primary_login_account_separately_verified": false,
+    "messenger_pin_created": true,
+    "messenger_visible_chat_list_empty": true,
+    "real_message_read_accepted": false,
+    "real_message_send_accepted": false,
+    "real_discovery_accepted": false,
+    "two_real_accounts_accepted": false
+  },
+  "verification": {
+    "integration_passed": 11,
+    "contract_passed": 8,
+    "dom_passed": 2,
+    "typecheck_exit": 0,
+    "lint_exit": 0,
+    "build_exit": 0,
+    "production_sources_match_successful_build": true
+  },
+  "manual_window": {
+    "provider_status": "Active",
+    "purpose": "User test incoming conversation",
+    "outside_agent_ownership": true,
+    "pin_prompt_absent_after_restart": true
+  },
+  "source_hashes": {
+    "packages/contracts/src/index.ts": "810339ed7561ba888e5a775aceeded811ca8cf88f62c8b52b2bd03cfc3522bd0",
+    "packages/contracts/src/environment.ts": "2c610f8f0f3a6b95f2a0eb228f5ced74885b8ebde03dc3b087be063b4624b4b0",
+    "packages/adapters/src/facebook-browser-identity.ts": "d720f62058e0751039bb2ea54d6fa155ae2ffac7d4ae15aa1399e77c75093142",
+    "packages/core/src/service.ts": "aec11f1a44a246c0fe96c941da71305c8618a277b666c332aba56eb6e9b2ad0d",
+    "packages/core/src/environments.ts": "0187b202df02754fd12d26050e4895148984a969e6ed6780c3f348a3ae18e729",
+    "apps/agent/src/environment-child.ts": "9bae9e2e2b84e59eb9477dcac53ec33bacd47b99b143f41d62edea69366c0631",
+    "apps/web/components/workbench.tsx": "ba35e7ba2087c4d8777c3ff170e54a0f4b464c2a484047e68268205b24e666eb",
+    "apps/web/components/environment-workbench.tsx": "4b5824d110ddc609bad65ebd624cc81cc7dd889c2fe2638af03326ce13acb776",
+    "tests/integration/environments.test.ts": "c22b62900645d8c7884cd38fb9b3b80c7e244907d7231b8fb0373221b62e3b6b",
+    "tests/contracts/browser-environment.test.ts": "61a0cb9e2df8c16f2e7a965a223fdd62d4c1343da0ab138d9f34062cd21bc253",
+    "tests/browser/fixtures/facebook-browser-identity.spec.ts": "92f846e9b3ae8f70dd019d9d29ab898d9524bceff0820521ba8ded4e9c8414d8"
+  },
+  "goal_complete": false
+}

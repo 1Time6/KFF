@@ -1,0 +1,182 @@
+{
+  "checked_at": "2026-09-16T00:18:29.417Z",
+  "version": "0.1.52",
+  "scope": "Stop treating the accepted-thread composer as a blind exact-label wait; resolve it from its own semantic label and report a fact-only composer surface instead of an undiagnosed timeout",
+  "previous_blocker": "docs/evidence/matrix-window-051-20260915.json",
+  "observed_diagnostic": ".kff/inbox-composer-diagnostic-051-r2.json",
+  "validation": {
+    "checks": {
+      "typecheck": {
+        "exit_code": 0,
+        "checked_at": "2026-09-16T00:17:28.873Z",
+        "sources_current": true
+      },
+      "lint": {
+        "exit_code": 0,
+        "checked_at": "2026-09-16T00:17:54.240Z",
+        "sources_current": true
+      },
+      "contracts": {
+        "exit_code": 0,
+        "checked_at": "2026-09-16T00:14:26.673Z",
+        "sources_current": true
+      },
+      "build": {
+        "exit_code": 0,
+        "checked_at": "2026-09-16T00:08:42.215Z",
+        "sources_current": true
+      }
+    },
+    "contracts_passed": 192,
+    "browser_passed": 18,
+    "inbox_integration_passed": 19,
+    "browser_report": ".kff/inbox-composer-052-results.json",
+    "integration_report": ".kff/checks/integration-results.json"
+  },
+  "runtime": {
+    "runtime_id": "9ca12390-54ec-4cf2-a5d5-442e9b8e1681",
+    "pid": 11412,
+    "phase": "RUNNING",
+    "updated_at": "2026-09-16T00:18:27.583Z",
+    "app_origin": "http://127.0.0.1:3000",
+    "release_id": "kff-agent-0.1.52-win32-x64-5b9afdd9aa26",
+    "database_owned": true,
+    "components": {
+      "database": {
+        "pid": 2000,
+        "state": "CONNECTED"
+      },
+      "web": {
+        "pid": 5104,
+        "state": "RUNNING"
+      },
+      "worker": {
+        "pid": 16204,
+        "state": "RUNNING"
+      },
+      "agent": {
+        "pid": 12964,
+        "state": "RUNNING"
+      }
+    }
+  },
+  "health": {
+    "status": "ok",
+    "protocol": "kff.api.v1",
+    "runtime_id": "9ca12390-54ec-4cf2-a5d5-442e9b8e1681"
+  },
+  "configuration": {
+    "discovery_enabled": true,
+    "browser_inbox_enabled": true,
+    "live_sending_enabled": false
+  },
+  "accounts": [
+    {
+      "id": "20fdc8c6-edc3-4ec9-b6eb-53b79a4a09d6",
+      "display_name": "白青天",
+      "outbound_paused": false,
+      "environment_state": "IDLE",
+      "auto_reply": false
+    },
+    {
+      "id": "51bb1a34-7436-4fed-8efd-72a05f58607c",
+      "display_name": "XiangHuan Master",
+      "outbound_paused": false,
+      "environment_state": "IDLE",
+      "auto_reply": false
+    },
+    {
+      "id": "71895ed1-9cb8-490b-817b-dc1f82da1785",
+      "display_name": "郑成功",
+      "outbound_paused": true,
+      "environment_state": "DISABLED",
+      "auto_reply": false
+    }
+  ],
+  "data": {
+    "at": "2026-09-16T00:16:01.232Z",
+    "open_commands": 0,
+    "monitors": [
+      {
+        "state": "PAUSED",
+        "count": 38
+      }
+    ],
+    "tables": {
+      "acquisition_leads": {
+        "count": 57,
+        "sha256": "03bbbaeedccf0380dc3c56123390c093fa791c7c8d42a54ad43e4bff9eece8c3"
+      },
+      "messages": {
+        "count": 140,
+        "sha256": "2640e219d9380b32f868eb4bc87659db851bb9e5eaefd985117a69c3e55ca29c"
+      },
+      "whatsapp_referrals": {
+        "count": 16,
+        "sha256": "a414fb7d35f54cce6aedd25a4ac3a2451826de86730b2e75a2f06ee68a3db5f5"
+      },
+      "customers": {
+        "count": 98,
+        "sha256": "e496d36a67c5c34c88e39e8ffbc322b2348255f261b91af2d14eb75573938019"
+      },
+      "accounts": {
+        "count": 88,
+        "sha256": "fa305e29027e42fd1866b5137fc2e7b95ca43aa94f6353a26d29a4c60a4e645f"
+      },
+      "acquisition_scans": {
+        "count": 80,
+        "sha256": "b78cb4ae9b6bef5fc8d4772b89c8992454e1b3ec6615fc4927ba46e86a765cec"
+      },
+      "acquisition_evaluations": {
+        "count": 168,
+        "sha256": "db9f90008bf36c2dc258f521506645a530d77a6aff5abc32fb0f08f7bdf61e44"
+      }
+    },
+    "baseline_051_counts": {
+      "acquisition_leads": 53,
+      "messages": 140,
+      "whatsapp_referrals": 16,
+      "customers": 98,
+      "accounts": 88,
+      "acquisition_scans": 77,
+      "acquisition_evaluations": 163
+    },
+    "expected_additions_from_window_051": {
+      "acquisition_leads": 4,
+      "acquisition_scans": 3,
+      "acquisition_evaluations": 5
+    },
+    "business_rows_preserved": null
+  },
+  "release": {
+    "agent": {
+      "release_id": "kff-agent-0.1.52-win32-x64-5b9afdd9aa26",
+      "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.52-win32-x64-5b9afdd9aa26",
+      "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-agent-0.1.52-win32-x64-5b9afdd9aa26.zip",
+      "archive_sha256": "70b479d3a57b60d383c0fad79991f2a673c064c008c851e9b53d4fe9006733a9",
+      "files": 1348,
+      "dependencies": 23,
+      "contains_pairing_or_browser_data": false,
+      "note": "Recorded from this session's package-agent.mjs output and re-hashed here; a second run is refused because the release directory is immutable."
+    },
+    "controller": {
+      "release_id": "kff-controller-0.1.52-win32-x64-0759eeb12cc5",
+      "directory": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.52-win32-x64-0759eeb12cc5",
+      "archive": "C:\\Users\\17731\\Desktop\\KFF\\dist\\kff-controller-0.1.52-win32-x64-0759eeb12cc5.zip",
+      "archive_sha256": "51a15bb5993e5372b8d74dcb957f103db6c200f7fe9900551b645c56fea9416a",
+      "files": 24096,
+      "uncompressed_bytes": 829628631,
+      "dependency_packages": 155,
+      "contains_runtime_data": false,
+      "live_config_values_scanned": 6
+    },
+    "installed_agent": "C:\\Users\\17731\\AppData\\Local\\KFF\\Agent\\releases\\kff-agent-0.1.52-win32-x64-5b9afdd9aa26"
+  },
+  "new_migrations": 0,
+  "live_composer_fix_acceptance": "PENDING_FRESH_AUTHORIZED_WINDOW",
+  "full_goal_complete": false,
+  "other_computer_or_system_reboot_verified": false,
+  "live_sending_enabled": false,
+  "automatic_reception_enabled": false,
+  "account9_enabled": false
+}
