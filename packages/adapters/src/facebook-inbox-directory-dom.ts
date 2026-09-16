@@ -31,7 +31,7 @@ export function inspectFacebookInboxDirectoryDom() {
  * placeholder, so the header supplied the only established name and the composer may
  * legitimately carry it; without that, only the resolved peer name qualifies.
  */
-export function inspectFacebookInboxComposerDom(expected:{display_name:string;allow_other_name:boolean;operating_identity_id:string}) {
+export function inspectFacebookInboxComposerDom(expected:{display_name:string;allow_other_name:boolean;operating_identity_id:string;peer_name?:string}) {
   // TSX injects __name into arrow functions passed as callbacks, which breaks page
   // serialization. Every helper below is an object method or a direct local call.
   const h={
@@ -42,42 +42,54 @@ export function inspectFacebookInboxComposerDom(expected:{display_name:string;al
     // The observed placeholder is never a person: a bare or placeholder-derived label
     // must not become chat evidence on its own.
     placeholder(value:string){return value.includes('Facebook 用户');},
-    // EXACT_NAME means the label names the resolved peer. NAMED_PREFIX means it names
-    // some other person, which is only usable while the directory still shows a
-    // placeholder. BARE_PREFIX ("发消息给", "Message") names nobody and is never used.
-    kind(value:string,display:string):'ABSENT'|'EXACT_NAME'|'NAMED_PREFIX'|'BARE_PREFIX'|'OTHER' {
-      if(!value)return 'ABSENT';
-      const compact=value.replace(/\s+/g,'').toLowerCase(),peer=display.replace(/\s+/g,'').toLowerCase();
+    // EXACT_NAME means the label names the resolved peer. NAMED_PREFIX means the label names
+    // somebody through a supported prefix; whether that person is the verified peer is decided
+    // by `names`, never by the prefix alone. BARE_PREFIX ("发消息给", "Message") names nobody.
+    kind(value:string):'EXACT_NAME'|'NAMED_PREFIX'|'BARE_PREFIX'|'OTHER' {
+      const compact=value.replace(/\s+/g,'').toLowerCase(),peer=expected.display_name.replace(/\s+/g,'').toLowerCase();
       if(peer&&compact==='发消息给'+peer)return 'EXACT_NAME';
       const bounds=['发消息给','发信息给','sendmessageto','message'];
       for(const bound of bounds)if(compact.startsWith(bound))return compact.length>bound.length?'NAMED_PREFIX':'BARE_PREFIX';
       return 'OTHER';
     },
+    // The name a prefix-based label points at, and whether it is the verified peer. A label may
+    // only ever name the peer this window already verified: accepting a bare prefix, the
+    // placeholder or a label naming somebody else is what the two stages used to disagree about.
+    names(value:string,kind:string){
+      if(kind==='EXACT_NAME')return true;
+      if(kind!=='NAMED_PREFIX')return false;
+      const target=(expected.peer_name??expected.display_name).replace(/\s+/g,'').toLowerCase(),compact=value.replace(/\s+/g,'').toLowerCase();
+      return ['发消息给','发信息给','sendmessageto','message'].some(bound=>compact.startsWith(bound)&&compact.slice(bound.length)===target);
+    },
     reachable(node:Element){return node.getAttribute('aria-disabled')!=='true'&&!(node as HTMLButtonElement).disabled;},
   };
   const mains=[...document.querySelectorAll('main,[role="main"]')].filter(h.visible);
-  const inputs=[] as {value:string;kind:'ABSENT'|'EXACT_NAME'|'NAMED_PREFIX'|'BARE_PREFIX'|'OTHER';reachable:boolean;hit_target:boolean;role:'textbox'|'combobox'|'none';contenteditable:boolean}[];
+  const inputs=[] as {value:string;kind:'EXACT_NAME'|'NAMED_PREFIX'|'BARE_PREFIX'|'OTHER';reachable:boolean;hit_target:boolean;role:'textbox'|'combobox'|'none';contenteditable:boolean}[];
   for(const main of mains){
     for(const node of main.querySelectorAll<HTMLElement>('[contenteditable="true"],[contenteditable=""],[role="textbox"],[role="combobox"]')){
       if(!h.visible(node)||node.closest('[role="log"]'))continue;
       const rect=node.getBoundingClientRect(),value=node.getAttribute('aria-label')??node.getAttribute('placeholder')??node.getAttribute('data-placeholder')??'';
-      inputs.push({value,kind:h.kind(value,expected.display_name),reachable:h.reachable(node),hit_target:node.contains(document.elementFromPoint(rect.x+rect.width/2,rect.y+rect.height/2)),
+      inputs.push({value,kind:h.kind(value),reachable:h.reachable(node),hit_target:node.contains(document.elementFromPoint(rect.x+rect.width/2,rect.y+rect.height/2)),
         role:node.getAttribute('role')==='combobox'?'combobox':node.getAttribute('role')==='textbox'?'textbox':'none',
         contenteditable:node.getAttribute('contenteditable')==='true'||node.getAttribute('contenteditable')===''});
     }
   }
-  // A label that names the resolved peer is the preferred evidence. A label that names
-  // somebody else qualifies only while the directory still shows the placeholder,
-  // because then the header is the only name source and the incoming avatars are
-  // rechecked against this label afterwards. A bare prefix, the placeholder itself or
-  // the operating account's identity never qualifies.
-  const matched=inputs.filter(input=>(input.kind==='EXACT_NAME'||(expected.allow_other_name&&input.kind==='NAMED_PREFIX'))&&!h.placeholder(input.value)&&!input.value.includes(expected.operating_identity_id));
-  const only=inputs.length===1?inputs[0]:null;
-  // The observation must survive the zero-input case: a composer area with nothing in it
-  // is a fact this system needs on record, and it is not the same outcome as a composer
-  // that exists but carries a conflicting label.
-  const surface=only?{label_kind:only.kind,label_length:only.value.length,placeholder:!only.value||h.placeholder(only.value),reachable:only.reachable,hit_target:only.hit_target,role:only.role,contenteditable:only.contenteditable}:{label_kind:'ABSENT' as const,label_length:0,placeholder:false,reachable:false,hit_target:false,role:'none' as const,contenteditable:false};
-  return {composer:matched.length===1?matched[0]:null,absent:!inputs.length,candidate_count:inputs.length,surface};
+  // A label that names the verified peer through a supported prefix is the preferred evidence. A
+  // label that names somebody else qualifies only while the directory still shows the placeholder,
+  // because then the header is the only name source and the incoming avatars are rechecked against
+  // this label afterwards. A bare prefix, the placeholder itself or the operating account's
+  // identity never qualifies.
+  const matched=inputs.filter(input=>(input.kind==='EXACT_NAME'||(expected.allow_other_name&&input.kind==='NAMED_PREFIX'&&h.names(input.value,input.kind)))&&!h.placeholder(input.value)&&!input.value.includes(expected.operating_identity_id));
+  // The observation must name the state that was actually seen. Only a real zero-candidate region
+  // is ABSENT; more than one candidate is its own ambiguity, because a single candidate plus a
+  // conflicting one, or two that carry the same accepted label, is not the same fact as none.
+  // Reporting both as ABSENT let a multi-input page satisfy the zero-input read-only condition.
+  // Whenever there is exactly one candidate, its own observation is kept instead of a summary.
+  const empty={label_kind:'ABSENT' as const,label_length:0,placeholder:false,reachable:false,hit_target:false,role:'none' as const,contenteditable:false};
+  const single=inputs.length===1?{label_kind:inputs[0].kind,label_length:inputs[0].value.length,placeholder:!inputs[0].value||h.placeholder(inputs[0].value),reachable:inputs[0].reachable,hit_target:inputs[0].hit_target,role:inputs[0].role,contenteditable:inputs[0].contenteditable}:null;
+  const ambiguous=inputs.length>1?{label_kind:'AMBIGUOUS' as const,label_length:0,placeholder:false,reachable:false,hit_target:false,role:'none' as const,contenteditable:false}:null;
+  const surface=single??ambiguous??empty;
+  return {composer:inputs.length===1&&matched.length===1?matched[0]:null,absent:!inputs.length,candidate_count:inputs.length,surface};
 }
 
 /** A numeric profile link in the conversation header is a candidate, then every incoming avatar is rechecked. */

@@ -65,6 +65,24 @@ it('retains the complete estimate while actual cost is unknown and records the p
   expect((await query("SELECT count(*)::int AS count FROM kff.cost_entries WHERE event_type='PENDING_RECONCILIATION'"))[0].count).toBe(1);
   const second = await queued(); await expect(reserve(second.action_id, '30')).rejects.toMatchObject({ code: 'BUDGET_EXCEEDED' });
 });
+// The page decided the available decisions from the cost state alone, so it offered SETTLE and
+// RELEASE for a record the server refuses while the action is still in flight. The workspace now
+// reports the accepted set, computed from the action state and the closure proof.
+it('reports the decisions the server accepts for each reservation', async () => {
+  await budget(); const action = await queued(); await reserve(action.action_id);
+  // The action is queued, so only "keep pending" is legal.
+  const inFlight = (await costWorkspace(scope)).reservations.find(row => row.action_id === action.action_id)!;
+  expect(inFlight.options?.allowed_actions).toEqual(['PENDING']);
+  expect(inFlight.options?.restriction).toBeTruthy();
+  await expect(reconcileCost(scope, action.action_id, { request_id: randomUUID(), expected_version: inFlight.version, decision: 'SETTLE', actual_cost_minor: '10', evidence_ref: 'synthetic-evidence', note: 'Attempt to settle while the action is still queued', confirmation: 'I_RECONCILED_THIS_COST' })).rejects.toMatchObject({ code: 'COST_ACTION_IN_FLIGHT' });
+  // Every offered decision is accepted by the server, and nothing else is offered.
+  for (const decision of inFlight.options!.allowed_actions) {
+    const current = (await costWorkspace(scope)).reservations.find(row => row.action_id === action.action_id)!;
+    if (decision === 'PENDING') { await reconcileCost(scope, action.action_id, { request_id: randomUUID(), expected_version: current.version, decision, actual_cost_minor: null, evidence_ref: 'synthetic-evidence', note: 'Keep the reservation pending while the action is in flight', confirmation: 'I_RECONCILED_THIS_COST' }); }
+  }
+  // A reservation is never auto-zeroed: the held amount is unchanged by staying pending.
+  expect((await costWorkspace(scope)).balances[0]).toMatchObject({ held_minor: '75', confirmed_minor: '0' });
+});
 it('refuses to settle an in-flight action or to label a null amount as a settlement', async () => {
   await budget(); const action = await queued(); await reserve(action.action_id);
   await expect(reconcileCost(scope, action.action_id, settleInput(1, '0'))).rejects.toMatchObject({ code: 'COST_ACTION_IN_FLIGHT' });

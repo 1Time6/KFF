@@ -1,14 +1,16 @@
 'use client';
-import { cloneElement, useCallback, useEffect, useId, useRef, useState, type FormEvent, type ReactElement } from 'react';
+import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import type { Account, Scope } from '@kff/contracts';
 import type { z } from 'zod';
 import type { contactPolicy } from '@kff/contracts';
 
 interface Target { id: string; account_id: string; remote_id: string; opted_out: boolean; version: number }
 interface Permission { id: string; target_id: string; purpose: 'customer_service' | 'marketing'; revoked_at: string | null; policy: z.infer<typeof contactPolicy> }
-interface Records { targets: Target[]; permissions: Permission[] }
+interface Records { targets: Target[]; permissions: Permission[]; next_targets_cursor?: string | null; next_permissions_cursor?: string | null; has_more?: { targets: boolean; permissions: boolean } }
 const reasonNames: Record<string, string> = { CONTACT_OPTED_OUT: '目标已退出联系', ACCOUNT_UNAVAILABLE: '账号尚未连接或已停用', STOP_REQUESTED: '账号、品牌或组织已暂停', CONTACT_BASIS_REVOKED: '依据已撤销', CONTACT_BASIS_STALE: '退出或重新同意后，旧依据已失效', CONTACT_PURPOSE_MISMATCH: '依据用途不匹配', CONTACT_SOURCE_UNKNOWN: '来源用途尚未核实', CONTACT_SOURCE_DENIED: '来源不允许此用途', CONTACT_BASIS_EXPIRED: '依据尚未生效或已到期', CONTACT_WINDOW_UNKNOWN: '联系窗口规则尚未核实', CONTACT_WINDOW_EXPIRED: '联系窗口已到期', CONTACT_SELECTION_STALE: '先前选择已失效' };
-function Field({ label, children }: { label: string; children: ReactElement<{ id?: string }> }) { const id = useId(); return <div className="field"><label htmlFor={id}>{label}</label>{cloneElement(children, { id })}</div>; }
+import { Field } from './field';
+import { resolveContactChannel } from './contact-channel';
+import { appendContactPage, contactListNotice, contactListQuery } from './contact-list';
 async function api<T>(endpoint: string, value?: unknown): Promise<T> {
   const response = await fetch('/api/' + endpoint, { method: value === undefined ? 'GET' : 'POST', headers: value === undefined ? {} : { 'Content-Type': 'application/json' }, body: value === undefined ? undefined : JSON.stringify(value), cache: 'no-store' });
   const body = await response.json(); if (!response.ok) throw new Error(body.error?.message ?? '联系记录暂时无法读取'); return body;
@@ -21,9 +23,25 @@ export function ContactPermissions({ account, role }: { account: Account; role: 
   const [review, setReview] = useState<{ basis_eligible: boolean; reason_codes: string[] } | null>(null);
   const requests = useRef(new Map<string, string>());
   const requestId = (value: unknown) => { const key = JSON.stringify(value); if (!requests.current.has(key)) requests.current.set(key, crypto.randomUUID()); return requests.current.get(key)!; };
-  const load = useCallback(async () => { const value = await api<Records>('contacts'); setRecords({ targets: value.targets.filter(target => target.account_id === account.id), permissions: value.permissions }); }, [account.id]);
+  // The list is scoped to this account by the server, before LIMIT, and paged with the cursor the
+  // server returns. Filtering a brand-wide page in the browser is what hid an account's older rows.
+  const [cursors, setCursors] = useState<{ targets: string | null; permissions: string | null }>({ targets: null, permissions: null });
+  const [pageMeta, setPageMeta] = useState<{ targets: { has_more: boolean; next_cursor: string | null }; permissions: { has_more: boolean; next_cursor: string | null } }>({ targets: { has_more: false, next_cursor: null }, permissions: { has_more: false, next_cursor: null } });
+  const load = useCallback(async () => {
+    const value = await api<Records>('contacts?' + contactListQuery(account.id));
+    setRecords({ targets: value.targets, permissions: value.permissions });
+    setCursors({ targets: value.next_targets_cursor ?? null, permissions: value.next_permissions_cursor ?? null });
+    setPageMeta({ targets: { has_more: Boolean(value.has_more?.targets), next_cursor: value.next_targets_cursor ?? null }, permissions: { has_more: Boolean(value.has_more?.permissions), next_cursor: value.next_permissions_cursor ?? null } });
+  }, [account.id]);
+  const loadMore = useCallback(async () => {
+    const value = await api<Records>('contacts?' + contactListQuery(account.id, { targets: cursors.targets, permissions: cursors.permissions }));
+    setRecords(current => ({ targets: appendContactPage(current.targets, value.targets), permissions: appendContactPage(current.permissions, value.permissions) }));
+    setCursors({ targets: value.next_targets_cursor ?? null, permissions: value.next_permissions_cursor ?? null });
+    setPageMeta({ targets: { has_more: Boolean(value.has_more?.targets), next_cursor: value.next_targets_cursor ?? null }, permissions: { has_more: Boolean(value.has_more?.permissions), next_cursor: value.next_permissions_cursor ?? null } });
+  }, [account.id, cursors.targets, cursors.permissions]);
   useEffect(() => { void load().catch(failure => setError(failure instanceof Error ? failure.message : '无法加载记录')); }, [load]);
   const target = records.targets.find(value => value.id === targetId); const permissions = records.permissions.filter(value => value.target_id === targetId);
+  const targetNotice = contactListNotice(pageMeta.targets, { cursor: cursors.targets, loaded: records.targets.length });
   async function act(operation: () => Promise<void>) { setBusy(true); setError(''); setReview(null); try { await operation(); await load(); } catch (failure) { setError(failure instanceof Error ? failure.message : '操作未完成'); } finally { setBusy(false); } }
   async function savePermission(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const form = new FormData(event.currentTarget); const date = (key: string) => new Date(String(form.get(key))).toISOString();
@@ -32,14 +50,22 @@ export function ContactPermissions({ account, role }: { account: Account; role: 
       const permission = await api<Permission>('contacts/permissions', { ...value, request_id: requestId(value) }); setPermissionId(permission.id);
     });
   }
+  // The channel comes from the account itself, using the same rule the server enforces. The old
+  // form only chose between synthetic and facebook_messenger, so a site or Instagram account was
+  // always submitted as a Facebook target and refused with FORBIDDEN_SCOPE.
+  const channel = resolveContactChannel(account);
+  const channelLabels: Record<string, string> = { synthetic: '本地合成', facebook_messenger: 'Facebook Messenger', site_chat: '站内会话' };
   return <div className="form-body contact-manager">
     <p className="field-hint">记录联系依据和退出状态。发送还需完成对应渠道、内容审核、预算与执行检查。</p>
     {error && <p role="alert" className="form-error">{error}</p>}
-    <form className="contact-target-create" onSubmit={event => { event.preventDefault(); const remoteId = String(new FormData(event.currentTarget).get('remote_id')); void act(async () => { const created = await api<Target>('contacts', { account_id: account.id, channel: account.is_synthetic ? 'synthetic' : 'facebook_messenger', remote_id: remoteId }); setTargetId(created.id); setPermissionId(''); }); }}>
-      <Field label="目标在此账号下的标识"><input name="remote_id" required maxLength={160} pattern={account.is_synthetic ? '[A-Za-z0-9_:+.@\\-]{1,160}' : '[0-9]{1,128}'} disabled={busy || role === 'viewer'} /></Field>
+    {!channel.supported && <p className="field-hint" role="note">{channel.reason}</p>}
+    {channel.supported && <form className="contact-target-create" onSubmit={event => { event.preventDefault(); const remoteId = String(new FormData(event.currentTarget).get('remote_id')); void act(async () => { const created = await api<Target>('contacts', { account_id: account.id, channel: channel.channel, remote_id: remoteId }); setTargetId(created.id); setPermissionId(''); }); }}>
+      <Field label="联系渠道"><input value={channelLabels[channel.channel] ?? channel.channel} readOnly disabled /></Field>
+      <Field label="目标在此账号下的标识" hint={channel.remote_id_hint}><input name="remote_id" required maxLength={160} pattern={channel.remote_id_pattern} disabled={busy || role === 'viewer'} /></Field>
       <button className="button subtle" disabled={busy || role === 'viewer'}>登记联系目标</button>
-    </form>
-    <Field label="查看联系目标"><select disabled={busy} value={targetId} onChange={event => { setTargetId(event.target.value); setPermissionId(''); setReview(null); }}><option value="">选择已登记目标</option>{records.targets.map(value => <option key={value.id} value={value.id}>{value.remote_id}</option>)}</select></Field>
+    </form>}
+    <Field label="查看联系目标" hint={targetNotice.text ?? undefined}><select disabled={busy} value={targetId} onChange={event => { setTargetId(event.target.value); setPermissionId(''); setReview(null); }}><option value="">选择已登记目标</option>{records.targets.map(value => <option key={value.id} value={value.id}>{value.remote_id}</option>)}</select></Field>
+    {targetNotice.can_load_more && <div className="contact-actions"><button className="button subtle" disabled={busy} onClick={() => void act(loadMore)}>加载更多联系目标</button></div>}
     {target && <>
       <div className="contact-target-state"><strong>{target.opted_out ? '已退出联系' : '尚未记录退出'}</strong><button className="text-button" disabled={busy} onClick={() => void act(load)}>刷新记录</button></div>
       {role === 'admin' && <details className="contact-grant" open={permissions.length === 0}>

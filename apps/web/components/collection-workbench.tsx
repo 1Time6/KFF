@@ -1,5 +1,5 @@
 'use client';
-import { cloneElement, useCallback, useEffect, useId, useRef, useState, type FormEvent, type ReactElement } from 'react';
+import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import type { Workspace } from '@kff/core/service';
 import type { CollectionQuery, CollectionRun, CollectionResult, CollectionRecord } from '@kff/contracts';
 import { ImportWorkbench } from './import-workbench';
@@ -7,6 +7,7 @@ import { CollectionExport } from './collection-export';
 import {CollectionFilterForm,CollectionTargets,emptyFilter} from './collection-targets';
 import type {CollectionFilter} from '../../../packages/contracts/src/target-selection';
 import {discoveryIsSynthetic} from '../../../packages/contracts/src/acquisition';
+import { Field } from './field';
 
 interface Summary extends CollectionQuery { run_id: string; state: CollectionRun['state']; returned_count: number; unique_count: number; committed_pages: number; stop_reason: string | null }
 interface Detail { filter:CollectionFilter;filtered_count:number;page_hash:string;page_after:string;query: CollectionQuery; run: CollectionRun; results: CollectionResult[]; next_cursor: string | null; expired: boolean; pages: { page_number: number; evidence_hash: string; returned_count: number }[] }
@@ -14,7 +15,6 @@ interface Observation { id: string; object_version: number; observed_at: string;
 const fields = { message: '正文', author_id: '作者标识', reaction_count: '互动数', comment_count: '评论数', created_time: '来源时间' };
 const states = { QUEUED: '等待采集', RUNNING: '读取当前页', COMPLETED: '样本读取完成', PARTIAL: '部分结果', FAILED: '读取失败', CANCELED: '已停止' };
 const reasons: Record<string, string> = { SOURCE_EXHAUSTED: '已遍历此来源当前返回的样本', MAX_RECORDS: '已达到返回条数上限', MAX_PAGES: '已达到分页上限', CURSOR_LOOP: '来源游标重复，已停止继续读取', CURSOR_EXPIRED: '来源游标已失效，需要重新核对查询', REMOTE_ERROR: '来源连接失败，已保存的分页仍保留', COLLECTION_SOURCE_MISMATCH: '账号或来源已变化，需要重新核对', COLLECTION_INVALID_PAGE: '来源响应不符合字段合同', COLLECTION_FIELDS_MISMATCH: '返回字段与允许字段不符', STOP_REQUESTED: '操作员已停止后续采集', RETENTION_EXPIRED: '数据保留期已结束' };
-function Field({ label, children }: { label: string; children: ReactElement<{ id?: string }> }) { const id = useId(); return <div className="field"><label htmlFor={id}>{label}</label>{cloneElement(children, { id })}</div>; }
 function datum(value: CollectionRecord['fields'][keyof CollectionRecord['fields']]) { return !value ? '未请求' : value.kind==='DISPLAYED_TIME'?value.value+'（页面时间，时区未取得）':value.kind === 'VALUE' ? value.value === '' ? '空字符串' : String(value.value) : value.kind === 'NULL' ? '空值' : value.kind === 'HIDDEN' ? '来源隐藏' : '来源未返回'; }
 function observed(value: string, timezone: string) { return new Date(value).toLocaleString('zh-CN', { timeZone: timezone, hour12: false }); }
 function realDiscovery(snapshot:CollectionQuery['snapshot']) { return snapshot.source_type==='SOCIAL_DISCOVERY'&&Boolean(snapshot.discovery)&&!discoveryIsSynthetic(snapshot.discovery!); }

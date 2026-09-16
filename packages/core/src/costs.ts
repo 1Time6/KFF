@@ -6,6 +6,23 @@ import { budgetInput, costReconciliationInput, minorAmount, type Scope, type Cos
 import { digest, requireCondition } from './index';
 import { audit, requireAdmin } from './service';
 
+/**
+ * Which reconciliation decisions a cost record currently allows, mirroring the two gates in
+ * `reconcileCost` below: a terminal decision needs the action out of flight and its old execution
+ * context closed, and only a still-pending record may be settled or released. The workspace returns
+ * this so the form offers exactly what the server accepts instead of a superset that is refused.
+ */
+export type CostDecision = 'SETTLE' | 'RELEASE' | 'PENDING' | 'ADJUST';
+const IN_FLIGHT=['QUEUED','PREPARING','SUBMITTING','SUBMITTED'], PENDING_STATES=['RESERVED','PENDING_RECONCILIATION'];
+export function costDecisionOptions(input:{state:string;action_state:string;guardian_unclosed:boolean}):{allowed_actions:CostDecision[];restriction:string|null;pending:boolean}{
+  const pending=PENDING_STATES.includes(input.state);
+  const blocked=IN_FLIGHT.includes(input.action_state)?'动作仍在途，保留费用预占，只能继续待核账。':input.guardian_unclosed?'旧执行上下文尚未确认关闭，保留费用预占，只能继续待核账。':null;
+  // The in-flight and unclosed gates apply to every terminal decision, ADJUST included.
+  if(blocked)return {allowed_actions:pending?['PENDING']:[],restriction:blocked,pending};
+  if(!pending)return {allowed_actions:['ADJUST'],restriction:null,pending:false};
+  return {allowed_actions:['SETTLE','RELEASE','PENDING'],restriction:null,pending:true};
+}
+
 type BrandScope = Pick<Scope, 'organization_id' | 'brand_id'>;
 interface CostBudget { id: string; currency: string; minor_unit_exponent: number; precision_source: string; limit_minor: string; version: number }
 interface CostReservation extends BrandScope { action_id: string; permit_id: string | null; currency: string; reserved_minor: string; actual_cost_minor: string | null; cost_basis: string; state: 'RESERVED' | 'PENDING_RECONCILIATION' | 'SETTLED' | 'RELEASED'; version: number }
@@ -102,7 +119,9 @@ export async function reconcileCost(scope: Scope, actionId: string, input: z.inf
 export async function costWorkspace(scope: Scope): Promise<CostWorkspace> {
   return scoped(scope, async client => {
     const balances = (await client.query<CostBalance>("WITH balances AS (SELECT currency,sum(reserved_minor) FILTER(WHERE state IN ('RESERVED','PENDING_RECONCILIATION')) AS held_minor,sum(actual_cost_minor) AS confirmed_minor,count(*) FILTER(WHERE actual_cost_minor IS NULL)::int AS pending_count FROM kff.cost_reservations GROUP BY currency) SELECT COALESCE(b.currency,x.currency) AS currency,b.id,b.minor_unit_exponent,b.precision_source,b.limit_minor,b.version,COALESCE(x.held_minor,0)::text AS held_minor,COALESCE(x.confirmed_minor,0)::text AS confirmed_minor,COALESCE(x.pending_count,0) AS pending_count,CASE WHEN b.id IS NULL THEN NULL ELSE (b.limit_minor-COALESCE(x.held_minor,0)-COALESCE(x.confirmed_minor,0))::text END AS available_minor FROM kff.cost_budgets b FULL JOIN balances x ON x.currency=b.currency ORDER BY currency")).rows;
-    const reservations = (await client.query<CostRecord>('SELECT c.*,t.title FROM kff.cost_reservations c JOIN kff.actions a ON a.id=c.action_id JOIN kff.tasks t ON t.id=a.task_id ORDER BY c.created_at DESC,c.action_id LIMIT 200')).rows;
+    // The action's own state and whether any execution context is still open decide what may be
+    // done with its reservation, so both are read here rather than guessed by the page.
+    const reservations = (await client.query<CostRecord>('SELECT c.*,t.title,a.state AS action_state,EXISTS(SELECT 1 FROM kff.agent_commands cmd WHERE cmd.action_id=c.action_id AND cmd.quiesced_at IS NULL) AS guardian_unclosed FROM kff.cost_reservations c JOIN kff.actions a ON a.id=c.action_id JOIN kff.tasks t ON t.id=a.task_id ORDER BY c.created_at DESC,c.action_id LIMIT 200')).rows.map(row=>({...row,options:costDecisionOptions({state:row.state,action_state:row.action_state as string,guardian_unclosed:Boolean(row.guardian_unclosed)})}));
     const entries = (await client.query<CostEvent>('SELECT * FROM kff.cost_entries ORDER BY created_at DESC,id LIMIT 200')).rows;
     return { balances, reservations, entries };
   });

@@ -32,8 +32,36 @@ beforeAll(async () => { if (!process.env.KFF_TEST_DATABASE?.startsWith('kff_test
 beforeEach(reset);
 afterAll(async () => { await reset(); await closePool(); });
 
-it('deduplicates new versions and allocates unique version numbers under concurrent changes', async () => {
-  const input = { request_id: randomUUID(), based_on_version_id: (await base()).id, name: 'New test version', version_label: 'v2', max_body_length: 100, reason: 'Synthetic change record' };
+// The ALLOW button used to decide from the version state and the page's newest preview, so it was
+// offered for a version the server refuses with TEMPLATE_PREVIEW_REQUIRED, and a qualifying preview
+// older than the returned preview window was invisible to it.
+it('reports enable readiness from every preview, not from the page window', async () => {
+  const version = await derived();
+  const readiness = async () => (await templateWorkspace(scope)).versions.find(row => row.id === version.id)!;
+  // A new version has no preview at all.
+  expect((await readiness()).enable_ready).toBe(false);
+  await expect(policy(version, 'ALLOW')).rejects.toMatchObject({ code: 'TEMPLATE_PREVIEW_REQUIRED' });
+  // One qualifying preview is enough.
+  await previewTemplate(scope, version.id, previewInput('OK'));
+  expect((await readiness()).enable_ready).toBe(true);
+  // 201 newer previews for the same version push the qualifying one outside the returned window.
+  for (let index = 0; index < 201; index++) {
+    await scoped(scope, client => client.query("INSERT INTO kff.template_previews(id,organization_id,brand_id,template_version_id,manifest_hash,account_id,environment_id,capability_id,request_hash,input_hash,can_enable,result,created_by) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,false,$11,$12)", [randomUUID(), scope.organization_id, scope.brand_id, version.id, version.manifest_hash, localIds.account, localIds.environment, localIds.publish, randomUUID(), randomUUID(), { valid: false }, scope.user_id]));
+  }
+  const page = await templateWorkspace(scope);
+  // The page cannot see the qualifying preview any more: the newest 200 are all failures.
+  expect(page.previews.filter(row => row.template_version_id === version.id).every(row => !row.can_enable)).toBe(true);
+  // Readiness is still true, because the server computes it over every preview, and the server does
+  // enable the version: a later failed preview must not hide an earlier success.
+  expect(page.versions.find(row => row.id === version.id)!.enable_ready).toBe(true);
+  expect((await policy(version, 'ALLOW')).state).toBe('ALLOWED');
+  // A version whose only preview would be a failure stays not-ready.
+  const failed = await derived(120);
+  await scoped(scope, client => client.query("INSERT INTO kff.template_previews(id,organization_id,brand_id,template_version_id,manifest_hash,account_id,environment_id,capability_id,request_hash,input_hash,can_enable,result,created_by) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,false,$11,$12)", [randomUUID(), scope.organization_id, scope.brand_id, failed.id, failed.manifest_hash, localIds.account, localIds.environment, localIds.publish, randomUUID(), randomUUID(), { valid: false }, scope.user_id]));
+  expect((await templateWorkspace(scope)).versions.find(row => row.id === failed.id)!.enable_ready).toBe(false);
+});
+
+it('deduplicates new versions and allocates unique version numbers under concurrent changes', async () => {  const input = { request_id: randomUUID(), based_on_version_id: (await base()).id, name: 'New test version', version_label: 'v2', max_body_length: 100, reason: 'Synthetic change record' };
   const repeated = await Promise.all(Array.from({ length: 5 }, () => createTemplateVersion(scope, input)));
   expect(new Set(repeated.map(row => row.id)).size).toBe(1);
   const versions = await Promise.all(Array.from({ length: 4 }, (_, index) => createTemplateVersion(scope, { ...input, request_id: randomUUID(), version_label: 'parallel-' + index })));

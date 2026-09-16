@@ -1,9 +1,10 @@
 'use client';
-import { cloneElement, useCallback, useEffect, useId, useRef, useState, type FormEvent, type ReactElement } from 'react';
+import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import type { CostBalance, CostWorkspace, Scope } from '@kff/contracts';
 
 const names: Record<string, string> = { RESERVED: '费用已预占', PENDING_RECONCILIATION: '待核账', SETTLED: '已结算', RELEASED: '零费用已释放', LIMIT_SET: '预算已登记', ADJUSTED: '差异已调整' };
-function Field({ label, children }: { label: string; children: ReactElement<{ id?: string }> }) { const id = useId(); return <div className="field"><label htmlFor={id}>{label}</label>{cloneElement(children, { id })}</div>; }
+import { Field } from './field';
+import { costDecisionOptions, reconcileDecision, type CostDecision } from './cost-decisions';
 function amount(value: string | null, balance?: CostBalance) {
   if (value === null) return '尚未登记';
   if (balance?.minor_unit_exponent === null || balance?.minor_unit_exponent === undefined) return value + ' 最小单位';
@@ -25,7 +26,17 @@ export function CostLedger({ role }: { role: Scope['role'] }) {
   const load = useCallback(async () => setRecords(await api<CostWorkspace>('costs')), []);
   useEffect(() => { void load().catch(failure => setError(failure instanceof Error ? failure.message : '无法加载费用')); }, [load]);
   const existing = records?.balances.find(row => row.currency === currency); const selected = records?.reservations.find(row => row.action_id === actionId);
-  const pending = selected && ['RESERVED', 'PENDING_RECONCILIATION'].includes(selected.state);
+  // The option set comes from the server, so the form offers exactly what reconcileCost accepts.
+  // A decision chosen before a refresh is corrected into that set instead of being submitted.
+  const options = selected?.options ?? costDecisionOptions({ state: selected?.state ?? '', action_state: selected?.action_state ?? '', guardian_unclosed: Boolean(selected?.guardian_unclosed) });
+  const decisionChoices: { value: CostDecision; label: string }[] = options.allowed_actions.map((value: CostDecision) => ({ value, label: value === 'SETTLE' ? '按实际费用结算' : value === 'RELEASE' ? '确认零费用并释放预占' : value === 'PENDING' ? '保留预占，继续待核账' : '调整已确认费用' }));
+  // Re-run whenever the selected record or its version changes, so a stale decision cannot survive
+  // another client settling the record or the list being refreshed.
+  useEffect(() => {
+    if (!selected) return;
+    const corrected = reconcileDecision(decision, options);
+    if (corrected.corrected) setDecision(corrected.decision);
+  }, [selected?.action_id, selected?.version, options.allowed_actions.join(',')]);
   async function act(operation: () => Promise<void>, message: string) {
     setBusy(true); setError(''); setNotice('');
     try { await operation(); await load(); setNotice(message); } catch (failure) { setError(failure instanceof Error ? failure.message : '操作未完成'); } finally { setBusy(false); }
@@ -61,10 +72,10 @@ export function CostLedger({ role }: { role: Scope['role'] }) {
       <div className="panel-head cost-subhead"><h2>动作费用</h2><span>最近 200 条</span></div>
       {records.reservations.length ? <div className="table-scroll"><table aria-label="动作费用"><thead><tr><th>任务 / 动作</th><th>币种</th><th>原预占</th><th>实际费用</th><th>费用状态</th></tr></thead><tbody>{records.reservations.map(row => { const balance = records.balances.find(value => value.currency === row.currency); return <tr key={row.action_id}><td><strong>{row.title}</strong><small className="mono">{row.action_id.slice(0, 8)}</small></td><td>{row.currency}</td><td>{amount(row.reserved_minor, balance)}</td><td>{row.actual_cost_minor === null ? '待核账' : amount(row.actual_cost_minor, balance)}</td><td>{names[row.state]}</td></tr>; })}</tbody></table></div> : <p className="cost-intro">尚无动作费用预占。</p>}
       {role === 'admin' && records.reservations.length > 0 && <div className="cost-form-section">
-        <Field label="选择核账动作"><select disabled={busy} value={actionId} onChange={event => { setActionId(event.target.value); const row = records.reservations.find(value => value.action_id === event.target.value); setDecision(row && ['SETTLED', 'RELEASED'].includes(row.state) ? 'ADJUST' : 'SETTLE'); setNotice(''); }}><option value="">选择一条费用记录</option>{records.reservations.map(row => <option key={row.action_id} value={row.action_id}>{row.title} · {row.action_id.slice(0, 8)} · {row.currency} · {names[row.state]}</option>)}</select></Field>
+        <Field label="选择核账动作"><select disabled={busy} value={actionId} onChange={event => { setActionId(event.target.value); setNotice(''); }}><option value="">选择一条费用记录</option>{records.reservations.map(row => <option key={row.action_id} value={row.action_id}>{row.title} · {row.action_id.slice(0, 8)} · {row.currency} · {names[row.state]}</option>)}</select></Field>
         {selected && <form key={selected.action_id} onSubmit={event => void saveReconciliation(event)}><fieldset disabled={busy}>
           <p className="field-hint cost-basis">原费用依据：{selected.cost_basis}。记录版本 {selected.version}。</p>
-          <Field label="核账处理"><select value={decision} onChange={event => setDecision(event.target.value)}>{pending ? <><option value="SETTLE">按实际费用结算</option><option value="RELEASE">确认零费用并释放预占</option><option value="PENDING">保留预占，继续待核账</option></> : <option value="ADJUST">调整已确认费用</option>}</select></Field>
+          <Field label="核账处理" hint={options.restriction ?? undefined}><select value={decision} onChange={event => setDecision(event.target.value)} disabled={!decisionChoices.length}>{decisionChoices.map(choice => <option value={choice.value} key={choice.value}>{choice.label}</option>)}</select></Field>
           {['SETTLE', 'ADJUST'].includes(decision) ? <Field label={'实际费用总额（' + selected.currency + ' 最小单位）'}><input name="actual" required pattern="0|[1-9][0-9]{0,14}" inputMode="numeric" /></Field> : <p className="field-hint">{decision === 'RELEASE' ? '仅在确认实际总费用为零后释放预占。' : '实际费用保持未知，继续保留原预占。'}</p>}
           <Field label="账单或核查依据"><input name="evidence_ref" required maxLength={300} /></Field><Field label="核账说明"><textarea name="note" required minLength={10} maxLength={1000} rows={3} /></Field>
           <label className="contact-checkbox"><input type="checkbox" required />已核对本动作的费用依据与处理结果</label>

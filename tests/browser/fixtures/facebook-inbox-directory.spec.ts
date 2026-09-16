@@ -98,6 +98,36 @@ for (const [name, composer, identity, expected, directoryLabel] of [
   });
 }
 
+// A contradictory or repeated composer is two observations, not zero. The old reader only
+// recorded its single-input observation, so every multi-candidate page fell back to the same
+// zero-input object the read-only path keys off. Absence has to stay a fact with one cause.
+for (const [name, composer] of [
+  ['one correct and one foreign input box',
+    '<div role="textbox" aria-label="发消息给Peer Fullname" contenteditable="true"></div><div role="textbox" aria-label="发消息给Someone Else" contenteditable="true"></div>'],
+  ['two input boxes with the same accepted label',
+    '<div role="textbox" aria-label="发消息给Peer Fullname" contenteditable="true"></div><div role="textbox" aria-label="发消息给Peer Fullname" contenteditable="true"></div>'],
+  ['two input boxes that both name another person',
+    '<div role="textbox" aria-label="发消息给Someone Else" contenteditable="true"></div><div role="textbox" aria-label="发消息给Another Person" contenteditable="true"></div>'],
+] as const) {
+  test('keeps ' + name + ' an observed ambiguity instead of an absent input box', async ({ page }) => {
+    await page.route('https://www.facebook.com/**', route => route.fulfill({ contentType: 'text/html; charset=utf-8', body: composerDirectory() + (route.request().url().includes('/e2ee/') ? composerThread(composer) : '') }));
+    const request = { binding: { discovery: { strategy: 'RECENT_ACCEPTED', max_threads: 1 }, environment: { configuration: { operating_identity_id: '9999' } } }, template: 'facebook-inbox-dom-v1', cursor: null, limit: 5 } as Pick<BrowserInboxTask, 'binding' | 'template' | 'cursor' | 'limit'>;
+    const failure = await readFacebookInboxDirectory(page, request, () => {}).then(() => null, error => error as { code?: string; discovery?: { skipped: { reason?: string; composer_surface?: { candidate_count?: number; label_kind?: string } }[] } });
+    // Two candidates cannot be resolved into one accepted composer, so the conversation stays unread.
+    // The window fails closed because it has nothing readable, and the per-conversation record
+    // names the real cause (a two-candidate ambiguity) instead of a generic window failure.
+    expect(failure?.code).toBe('INBOX_WINDOW_UNAVAILABLE');
+    expect(failure?.discovery?.skipped[0]).toMatchObject({ reason: 'THREAD_COMPOSER_AMBIGUOUS', failure: { stage: 'facebook-inbox-directory-composer', code: 'THREAD_COMPOSER_AMBIGUOUS' } });
+    // The observation names the real cause: two candidates were seen, not none.
+    expect(failure?.discovery?.skipped[0].composer_surface).toMatchObject({ candidate_count: 2 });
+    expect(failure?.discovery?.skipped[0].composer_surface?.label_kind).not.toBe('ABSENT');
+    // The observation the caller keeps must say the same thing.
+    const probe = await page.evaluate(inspectFacebookInboxComposerDom, { display_name: 'Peer Fullname', allow_other_name: true, operating_identity_id: '9999' });
+    expect(probe).toMatchObject({ composer: null, candidate_count: 2 });
+    expect(probe.surface.label_kind).not.toBe('ABSENT');
+  });
+}
+
 // Requirement: a verified thread with no input box is not automatically unreadable. The read-only
 // path needs the numeric header identity plus the message log that names that same peer, and it
 // still verifies every incoming avatar against the header profile.
@@ -125,7 +155,80 @@ test('refuses the read-only path when the message log names another person', asy
   // so the conversation is skipped rather than read.
   expect(failure?.code).toBe('INBOX_WINDOW_UNAVAILABLE');
   expect(failure?.discovery?.skipped[0]).toMatchObject({ reason: 'THREAD_WINDOW_UNAVAILABLE', failure: { stage: 'facebook-inbox-read-only', code: 'INBOX_SOURCE_MISMATCH' } });
-  expect(failure?.discovery?.coverage).toEqual({ threads_attempted: 1, threads_read: 0, threads_skipped: 1, threads_failed: 1 });
+  // The conversation was attempted and failed, so it is counted once, as a failure. This
+  // previously asserted attempted=1 with skipped=1 and failed=1, an object the coverage contract
+  // refuses: the assertion encoded the same overlapping count the adapter produced, which is why
+  // the defect could not be caught by running the fixture suite.
+  expect(failure?.discovery?.coverage).toEqual({ threads_attempted: 1, threads_read: 0, threads_skipped: 0, threads_failed: 1 });
+});
+
+// The adapter's own output, not a hand-written object, has to satisfy the page contract and the
+// controller's arithmetic. A local failure in one conversation must never discard the messages
+// that were read successfully from another.
+test('a window with one successful and one failed conversation keeps its readable result', async ({ page }) => {
+  const good = '9999';
+  const bad = '8888';
+  const directory = '<nav aria-label="对话列表"><div role="tab" aria-selected="true">全部</div><div role="grid" aria-label="聊天">' +
+    '<div role="row"><a href="/messages/e2ee/t/' + good + '/">Facebook 用户</a><button aria-label="Facebook 用户的更多选项">更多</button></div>' +
+    '<div role="row"><a href="/messages/e2ee/t/' + bad + '/">Facebook 用户</a><button aria-label="Facebook 用户的更多选项">更多</button></div>' +
+    '</div></nav>';
+  const thread = (id: string, peer: string) => '<main><div id="header"><a href="/' + peer + '/"><h3>Peer Fullname</h3></a></div>' +
+    '<div role="textbox" aria-label="发消息给Peer Fullname" contenteditable="true"></div>' +
+    '<div role="log" aria-label="与Peer Fullname的对话中的消息"><div role="article"><div data-message-id="incoming.' + id + '" aria-label="03:57，Peer Fullname：Original inquiry"><div dir="auto">Original inquiry</div>' +
+    '<div role="button" aria-haspopup="dialog" style="width:30px;height:30px" onclick="document.body.insertAdjacentHTML(\'beforeend\',\'<a role=menuitem href=/' + peer + '/>查看个人主页</a>\');document.body.dataset.avatarVerified=\'yes\'"><span aria-hidden="true"><img alt="Peer Fullname" style="width:20px;height:20px"></span></div></div></div></main>' + composerKeyboard;
+  await page.route('https://www.facebook.com/**', route => {
+    const url = route.request().url();
+    // The second conversation never resolves its header identity, so it fails locally.
+    const body = url.includes('/t/' + good + '/') ? thread(good, '1122') : url.includes('/t/' + bad + '/') ? '<main><h3>Facebook 用户</h3></main>' : directory;
+    return route.fulfill({ contentType: 'text/html; charset=utf-8', body });
+  });
+  const request = { binding: { discovery: { strategy: 'RECENT_ACCEPTED', max_threads: 2 }, environment: { configuration: { operating_identity_id: '9999' } } }, template: 'facebook-inbox-dom-v1', cursor: null, limit: 5 } as Pick<BrowserInboxTask, 'binding' | 'template' | 'cursor' | 'limit'>;
+  const result = await readFacebookInboxDirectory(page, request, () => {});
+  // The readable conversation survives, and the failed one keeps its own reason.
+  expect(result.discovery.threads.map(t => t.thread_id)).toEqual([good]);
+  expect(result.messages.map(row => row.message_id)).toEqual(['incoming.' + good]);
+  expect(result.discovery.skipped.map(s => s.thread_id)).toEqual([bad]);
+  const coverage = result.discovery.coverage!;
+  expect(coverage).toEqual({ threads_attempted: 2, threads_read: 1, threads_skipped: 0, threads_failed: 1 });
+  // The arithmetic the controller checks, and the page contract the controller parses.
+  expect(coverage.threads_attempted).toBe(coverage.threads_read + coverage.threads_failed);
+  const parsed = browserInboxPage.parse({ monitor_id: '6a14ca96-4988-4aa2-a0c7-686fc01c15eb', cursor: null, next_cursor: null, has_more: false, discovery: result.discovery, batch: { schema_version: 'kff.browser-inbox-batch.v1', login_account_id: '9999', operating_identity_id: '9999', observed_at: new Date().toISOString(), coverage: 'VISIBLE_MESSAGES_ONLY', messages: result.messages } });
+  expect(parsed.discovery?.coverage).toEqual(coverage);
+});
+
+// The caller and the inner reader must make the same acceptance decision about the same page.
+// The caller accepts a label that names the resolved peer through any of the supported prefixes,
+// so the inner reader has to accept it too instead of re-deriving its own stricter string rule.
+for (const [name, label] of [
+  ['the exact supported label', '发消息给Peer Fullname'],
+  ['an alternate supported Chinese prefix', '发信息给Peer Fullname'],
+  ['a supported English prefix', 'Message Peer Fullname'],
+] as const) {
+  test('the inner thread reader accepts ' + name + ' the caller already accepted', async ({ page }) => {
+    await page.route('https://www.facebook.com/**', route => route.fulfill({ contentType: 'text/html; charset=utf-8', body: composerThread('<div role="textbox" aria-label="' + label + '" contenteditable="true"></div>') }));
+    const request = { binding: { target: { thread_id: '9988', peer_id: '1122', display_name: 'Peer Fullname' }, environment: { configuration: { operating_identity_id: '9999' } } }, template: 'facebook-inbox-dom-v1', cursor: null, limit: 5 } as Pick<BrowserInboxTask, 'binding' | 'template' | 'cursor' | 'limit'>;
+    const rows = await readFacebookInboxThread(page, request, () => {});
+    expect(rows.map(row => [row.message_id, row.peer_id, row.display_name])).toEqual([['incoming.1', '1122', 'Peer Fullname']]);
+  });
+}
+
+// The inner reader used to receive the peer id in the parameter that means "our own account", so a
+// label naming the peer read as a label naming the operating account. A peer whose name carries
+// digits must still be readable, and the two ids must stay independent.
+test('keeps the operating account identity separate from a peer whose name carries digits', async ({ page }) => {
+  const peerName = 'Alice 12345';
+  const peerThread = '<main><div id="header"><a href="/1122/"><h3>' + peerName + '</h3></a></div>' +
+    '<div role="textbox" aria-label="发消息给' + peerName + '" contenteditable="true"></div>' +
+    '<div role="log" aria-label="与' + peerName + '的对话中的消息">' + composerMessage.replaceAll('Peer Fullname', peerName) + '</div></main>' + composerKeyboard;
+  await page.route('https://www.facebook.com/**', route => route.fulfill({ contentType: 'text/html; charset=utf-8', body: peerThread }));
+  const request = { binding: { target: { thread_id: '9988', peer_id: '1122', display_name: peerName }, environment: { configuration: { operating_identity_id: '9999' } } }, template: 'facebook-inbox-dom-v1', cursor: null, limit: 5 } as Pick<BrowserInboxTask, 'binding' | 'template' | 'cursor' | 'limit'>;
+  const rows = await readFacebookInboxThread(page, request, () => {});
+  expect(rows.map(row => [row.message_id, row.peer_id, row.display_name])).toEqual([['incoming.1', '1122', peerName]]);
+  // A label naming our own operating account is still refused, so the fix did not widen acceptance.
+  await page.setContent('<main><div id="header"><a href="/1122/"><h3>' + peerName + '</h3></a></div>' +
+    '<div role="textbox" aria-label="发消息给Our Own Account" contenteditable="true"></div>' +
+    '<div role="log" aria-label="与' + peerName + '的对话中的消息">' + composerMessage.replaceAll('Peer Fullname', peerName) + '</div></main>');
+  expect(await page.evaluate(inspectFacebookInboxComposerDom, { display_name: peerName, allow_other_name: false, operating_identity_id: '9999' })).toMatchObject({ composer: null, candidate_count: 1 });
 });
 
 // A fixed thread binding is read only through the composer: the directory row is not there to

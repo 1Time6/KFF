@@ -19,7 +19,10 @@ test('the workbench sends bounded browser pages through Worker and Agent into th
   const account = afterCreate.accounts.find((row: { id: string }) => row.id === fixture.account_id);
   const configured = await page.request.post('/api/environments/' + fixture.environment_id + '/configuration', { headers, data: { expected_version: 1, configuration: { driver: 'native', provider_profile_id: null, login_account_id: '900010', operating_identity_id: account.external_id, locale: 'en-US', timezone_id: 'UTC', proxy_ref: null } } }); expect(configured.ok()).toBe(true);
   await page.reload();
-  const outer = page.locator('details').filter({ has: page.locator(':scope > summary').filter({ hasText: '自有账号监控与合成验证' }) });
+  // The section summary is the name the workbench actually renders. The spec previously waited for
+  // '自有账号监控与合成验证', which no revision of the workbench has ever used, so the locator could
+  // never resolve and the test could only ever time out.
+  const outer = page.locator('details').filter({ has: page.locator(':scope > summary').filter({ hasText: '账号采集与合成验证' }) });
   if ((await outer.getAttribute('open')) === null) await outer.locator(':scope > summary').click();
   const form = page.getByRole('form', { name: '创建获客监控', includeHidden: true });
   const details = page.locator('details').filter({ has: form }).last();

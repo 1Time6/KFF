@@ -5,15 +5,24 @@ import {outreachSnapshot} from './acquisition';
 import {messageSnapshot} from './lead';
 import { browserEnvironmentSnapshot } from './environment';
 import { browserCollectionTaskSchema } from './browser-collection';
-import { browserInboxTask, browserInboxPage } from './browser-inbox';
+import { browserInboxTask, browserInboxPage, browserInboxDiscoverySummary } from './browser-inbox';
 import { collectionPageSchema } from './collection';
 export * from './contact';
 export * from './cost';
 export * from './adjudication';
 export * from './template';
 export * from './collection';
+// The bounded window summary is re-exported because the controller stores it as failure evidence
+// and re-validates it on export: it is the same contract the adapter reports through `resultInput`.
+export { browserInboxDiscoverySummary } from './browser-inbox';
 
 export const uuid = z.string().uuid();
+/**
+ * Every capability key the product declares. It is a named schema so the operator-facing
+ * descriptions can be checked exhaustively against it: a capability added here without a
+ * description fails the contract test instead of rendering under a wrong label.
+ */
+export const capabilityKey = z.enum(['facebook.comment.reply.browser','facebook.messenger.reply.browser','facebook.inbox.read.browser','facebook.discovery.read.browser','kff.fixture.messenger.reply.browser','kff.fixture.inbox.read.browser', 'kff.fixture.discovery.read.browser', 'kff.fixture.page.read.browser', 'kff.fixture.page.publish.browser', 'facebook.page.read.api', 'facebook.page.publish.api','kff.fixture.messenger.reply.api','facebook.messenger.reply.api','kff.fixture.social.reply.api','social.comment.reply.api','instagram.account.read.api']);
 export const externalId = z.string().regex(/^[0-9]{1,128}$/, '平台 ID 必须使用数字字符串');
 export const modeSchema = z.enum(['DISABLED', 'TEST_ONLY', 'CONTROLLED_PILOT', 'PRODUCTION']);
 export const evidenceStateSchema = z.enum(['UNASSESSED', 'FEASIBLE', 'IMPLEMENTED_TEST_ONLY', 'VERIFIED_REAL', 'BLOCKED', 'DEPRECATED']);
@@ -74,6 +83,11 @@ export const resultInput = z.object({
     // A blocked read must carry its reason: the report diagnostic is the only place it survives.
     error_kind: z.string().regex(/^[A-Za-z0-9_]{1,80}$/).optional(),
     error_message: z.string().min(1).max(200).optional(),
+    // A window that failed closed still has to return the per-conversation reasons it collected,
+    // or the next cycle starts from a generic error. This is the same bounded summary the success
+    // path uses - enums, counts and identifiers only, never page text - re-validated here so a
+    // failure report cannot smuggle raw browser output into the diagnostic.
+    inbox_discovery: browserInboxDiscoverySummary.optional(),
     scene: z.object({ identity_count: z.number().int().min(0).max(100), submit_controls: z.number().int().min(0).max(100), result_count: z.number().int().min(0).max(100), unparsed_visible_max: z.number().int().min(0).max(1000).optional() }).strict().optional(),
   }).strict(),
 }).strict();
@@ -105,7 +119,7 @@ export const taskSnapshotSchema = z.object({
   environment_id: uuid, profile_key: uuid, agent_id: uuid, capability_id: uuid,
   environment_version: z.number().int().positive().optional(),
   browser_environment: browserEnvironmentSnapshot.optional(),
-  capability_key: z.enum(['facebook.comment.reply.browser','facebook.messenger.reply.browser','facebook.inbox.read.browser','facebook.discovery.read.browser','kff.fixture.messenger.reply.browser','kff.fixture.inbox.read.browser', 'kff.fixture.discovery.read.browser', 'kff.fixture.page.read.browser', 'kff.fixture.page.publish.browser', 'facebook.page.read.api', 'facebook.page.publish.api','kff.fixture.messenger.reply.api','facebook.messenger.reply.api','kff.fixture.social.reply.api','social.comment.reply.api','instagram.account.read.api']),
+  capability_key: capabilityKey,
   capability_revision: z.number().int().positive(), adapter_version: z.enum(['facebook-browser-comment-v1','facebook-browser-messenger-v1','facebook-inbox-browser-v1','facebook-search-browser-v1','fixture-browser-messenger-v1','browser-inbox-v1', 'browser-discovery-v1', 'fixture-page-v1', 'facebook-graph-v1','fixture-messenger-v1','facebook-messenger-v1','social-outreach-v1','instagram-graph-v1']),
   implementation_digest: hashSchema.nullable().optional(),
   platform_api_version: z.string().regex(/^v[0-9]{1,3}\.[0-9]+$/).nullable().optional(),

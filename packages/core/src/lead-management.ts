@@ -48,7 +48,35 @@ export async function leadAnalytics(scope:Scope,input:z.input<typeof leadAnalyti
     return {filter:value,metrics,decisions,templates,outcomes};
   });
 }
+/**
+ * Build the position cursor for the next audit page. It carries both sort keys, because the page
+ * is ordered by `created_at DESC, id DESC`: a timestamp alone cannot separate records that share a
+ * timestamp, and those are exactly the records that used to fall through the page boundary. The
+ * format is `<iso>|<uuid>` so a plain timestamp keeps working as a legacy cursor.
+ */
+export function leadAuditCursor(event:{id:string;created_at:string}){return new Date(event.created_at).toISOString()+'|'+event.id;}
+/**
+ * Parse a cursor into its two keys. A value without the separator is read as a legacy timestamp
+ * cursor: it still bounds the page by time, but it cannot order records that share that time, so
+ * the caller is told the boundary is the old kind.
+ */
+export function parseLeadAuditCursor(before?:string):{created_at:string;id:string|null;legacy:boolean}|null{
+  if(!before)return null;
+  const separator=before.lastIndexOf('|');
+  if(separator<0)return {created_at:z.string().datetime().parse(before),id:null,legacy:true};
+  const created_at=z.string().datetime().parse(before.slice(0,separator));
+  const id=z.string().uuid().parse(before.slice(separator+1));
+  return {created_at,id,legacy:false};
+}
 export async function leadAudit(scope:Scope,before?:string){
-  const timestamp=before?z.string().datetime().parse(before):null;
-  return scoped(scope,async client=>({events:(await client.query<{id:string;event_type:string;object_id:string;actor_id:string;created_at:string;details:Record<string,unknown>}>(`SELECT id,event_type,object_id,actor_id,created_at,jsonb_strip_nulls(jsonb_build_object('account_id',details->'account_id','reason',details->'reason','action',details->'action','intent',details->'intent','model',details->'model','actor_kind',details->'actor_kind','referral',details->'referral','lead_status',details->'lead_status','is_synthetic',details->'is_synthetic')) AS details FROM kff.audit_events WHERE event_type ~ '^(facebook[.]|reception[.]|conversation[.]|whatsapp[.]|lead[.]|contact[.]|customer[.]|account[.]|agent[.]|organization[.]|brand[.])' AND ($1::timestamptz IS NULL OR created_at<$1) ORDER BY created_at DESC,id DESC LIMIT 200`,[timestamp])).rows}));
+  const cursor=parseLeadAuditCursor(before);
+  return scoped(scope,async client=>{
+    // The comparison matches the ordering exactly: rows strictly after the cursor position in
+    // `(created_at, id)` descending order. Records sharing the cursor timestamp but with a smaller
+    // id are still returned, which is what stops same-timestamp rows leaking across pages.
+    const rows=(await client.query<{id:string;event_type:string;object_id:string;actor_id:string;created_at:string;details:Record<string,unknown>}>(`SELECT id,event_type,object_id,actor_id,created_at,jsonb_strip_nulls(jsonb_build_object('account_id',details->'account_id','reason',details->'reason','action',details->'action','intent',details->'intent','model',details->'model','actor_kind',details->'actor_kind','referral',details->'referral','lead_status',details->'lead_status','is_synthetic',details->'is_synthetic')) AS details FROM kff.audit_events WHERE event_type ~ '^(facebook[.]|reception[.]|conversation[.]|whatsapp[.]|lead[.]|contact[.]|customer[.]|account[.]|agent[.]|organization[.]|brand[.])' AND ($1::timestamptz IS NULL OR ($2::uuid IS NOT NULL AND (created_at,id)<($1::timestamptz,$2::uuid)) OR ($2::uuid IS NULL AND created_at<$1)) ORDER BY created_at DESC,id DESC LIMIT 200`,[cursor?.created_at??null,cursor?.id??null])).rows;
+    const last=rows.at(-1);
+    // A short page means the window is exhausted; a full page offers the exact position to resume.
+    return {events:rows,next_cursor:rows.length===200&&last?leadAuditCursor(last):null,cursor_kind:cursor?.legacy?'LEGACY_TIMESTAMP':'POSITION' as const,cursor_limited:cursor?.legacy??false};
+  });
 }

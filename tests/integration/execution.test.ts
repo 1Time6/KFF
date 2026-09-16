@@ -194,13 +194,22 @@ describe('Postgres execution and failure boundaries', () => {
   });
   it('exports diagnostics only after scope, permission and content checks with an audit event', async () => {
     const { command, run } = await claimed();
+    // A blocked action is the case the export reader has to accept: the producer records the bounded
+    // error kind and message for it, and the export schema is strict. Reading with a narrower object
+    // than the writer used refused every bundle the system had just stored — the failure this test
+    // did not catch because it asserted the export without ever checking the stored manifest.
     await acceptReport(agent, { event_id: randomUUID(), command_id: command.id, outcome: 'BLOCKED', error_code: 'AUTH_EXPIRED', diagnostic: { step: 'identity', scene: { identity_count: 0, submit_controls: 0, result_count: 0 } } });
-    const bundle = (await query('SELECT id FROM kff.diagnostic_bundles'))[0];
+    const bundle = (await query('SELECT id, manifest FROM kff.diagnostic_bundles'))[0];
     expect((await runDetail(scope, run.id)).diagnostics[0].manifest).toEqual({ level: 'D1' });
+    expect(bundle.manifest.error_kind).toBeNull();
+    expect(bundle.manifest.error_message).toBeNull();
     await expect(exportDiagnostic({ ...scope, role: 'viewer' }, bundle.id)).rejects.toMatchObject({ code: 'FORBIDDEN_SCOPE' });
     expect((await exportDiagnostic(scope, bundle.id)).level).toBe('D1');
     expect((await query("SELECT count(*)::int AS count FROM kff.audit_events WHERE event_type='diagnostic.exported'"))[0].count).toBe(1);
-    await query("UPDATE kff.diagnostic_bundles SET manifest=(manifest-ARRAY['protocol_version','adapter_version','attempt_id','outcome','duration_ms','executor_version','browser_version']) || '{\"schema_version\":\"kff.diagnostic.v1\"}'::jsonb WHERE id=$1", [bundle.id]);
+    // Downgrade to the v1 shape by removing every v2-only field. `error_kind` and `error_message`
+    // are v2 fields too, and leaving them behind made the downgraded manifest fail the v1 reader for
+    // a reason that had nothing to do with what this step is checking.
+    await query("UPDATE kff.diagnostic_bundles SET manifest=(manifest-ARRAY['protocol_version','adapter_version','attempt_id','outcome','duration_ms','executor_version','browser_version','error_kind','error_message']) || '{\"schema_version\":\"kff.diagnostic.v1\"}'::jsonb WHERE id=$1", [bundle.id]);
     expect((await exportDiagnostic(scope, bundle.id)).schema_version).toBe('kff.diagnostic.v1');
     await query("UPDATE kff.diagnostic_bundles SET manifest=manifest || '{\"cookie\":\"SENSITIVE_SENTINEL\"}'::jsonb WHERE id=$1", [bundle.id]);
     await expect(exportDiagnostic(scope, bundle.id)).rejects.toMatchObject({ code: 'DIAGNOSTIC_REDACTION_FAILED' });

@@ -1,0 +1,28 @@
+# Line endings are part of the build contract.
+#
+# The runtime, the build manifest and the Agent manifest all hash source files, and the Agent release
+# is verified against the working tree before it may run. With `core.autocrlf=true` a checkout
+# materialised the same revision as CRLF on one machine and LF on another, so those hashes described
+# the checkout instead of the source and a fresh clone failed the runtime's own freshness checks with
+# no source change at all. Pinning LF here makes the stored text, the checkout and the manifests
+# agree everywhere; `scripts/source-hash.mjs` normalises as well, so an already-materialised CRLF
+# checkout is still read as the revision it is.
+* text=auto eol=lf
+
+# Windows ships these two to a shell that reads them as ANSI when they lack their byte order mark, so
+# their bytes are deliberately left alone rather than normalised.
+*.ps1 -text
+*.cmd -text
+
+# Binary artefacts are never text.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.zip binary
+*.xlsx binary
+*.woff binary
+*.woff2 binary
+*.ttf binary

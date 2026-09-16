@@ -1,5 +1,6 @@
 import { createHash, randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
 import path from 'node:path';
+import { browserInboxDiscoverySummary } from '@kff/contracts';
 import type { ActionState, Capability, ExecutionMode, TaskSnapshot } from '@kff/contracts';
 
 export class AppError extends Error {
@@ -66,20 +67,28 @@ export function redactError(error: unknown): { code: string; message: string; st
   if (error instanceof AppError) return { code: error.code, message: error.message, status: error.status };
   return { code: 'INTERNAL_ERROR', message: '操作未完成，请查看运行记录或稍后重试', status: 500 };
 }
-export function buildDiagnostic(report: { step: string; scene?: Record<string, number>; duration_ms?: number; executor_version?: string; browser_version?: string; error_kind?: string; error_message?: string }, errorCode: string | undefined, scope: { organization_id: string; brand_id: string }, actionId: string, execution?: { adapter_version: string; attempt_id: string; outcome: ActionState }) {
+export function buildDiagnostic(report: { step: string; scene?: Record<string, number>; duration_ms?: number; executor_version?: string; browser_version?: string; error_kind?: string; error_message?: string; inbox_discovery?: unknown }, errorCode: string | undefined, scope: { organization_id: string; brand_id: string }, actionId: string, execution?: { adapter_version: string; attempt_id: string; outcome: ActionState }) {
   const scene = report.scene ? Object.fromEntries(Object.entries(report.scene).filter(([key, value]) => ['identity_count', 'submit_controls', 'result_count'].includes(key) && Number.isSafeInteger(value) && value >= 0 && value <= 100)) : null;
   // A blocked action has to keep its reason. The executor already reports only a fact-only kind and a
   // bounded, page-content-free message, so they are carried through the allowlist unchanged.
   const errorKind = report.error_kind && /^[A-Za-z0-9_]{1,80}$/.test(report.error_kind) ? report.error_kind : null;
   const errorMessage = report.error_message ? report.error_message.slice(0, 200) : null;
+  // A window that failed closed returns the per-conversation reasons it collected. They are re-parsed
+  // here rather than trusted: only the bounded summary survives, so page text, message bodies and raw
+  // provider output cannot reach the bundle even if an executor tried to send them.
+  const discovery = browserInboxDiscoverySummary.safeParse(report.inbox_discovery);
+  const files = [
+    ...(scene ? [{ name: 'semantic-counts.json' as const, sha256: digest(scene), content: scene }] : []),
+    ...(discovery.success ? [{ name: 'inbox-discovery.json' as const, sha256: digest(discovery.data), content: discovery.data }] : []),
+  ];
   return {
     schema_version: 'kff.diagnostic.v2', organization_id: scope.organization_id, brand_id: scope.brand_id, action_id: actionId,
     protocol_version: 'kff.agent.v1', adapter_version: execution?.adapter_version ?? null, attempt_id: execution?.attempt_id ?? null, outcome: execution?.outcome ?? null,
     duration_ms: report.duration_ms ?? null, executor_version: report.executor_version ?? null, browser_version: report.browser_version ?? null,
-    level: scene ? 'D1' : 'D0', step: report.step, error_code: errorCode ?? null, error_kind: errorKind, error_message: errorMessage,
+    level: files.length ? 'D1' : 'D0', step: report.step, error_code: errorCode ?? null, error_kind: errorKind, error_message: errorMessage,
     created_at: new Date().toISOString(), redaction_version: 'allowlist-v1',
-    files: scene ? [{ name: 'semantic-counts.json', sha256: digest(scene), content: scene }] : [],
+    files,
     omitted: ['raw_dom', 'screenshots', 'trace', 'cookies', 'message_body', 'network_bodies'],
-    downgrade_reason: scene ? null : '本驱动未取得可安全导出的现场，保留 D0',
+    downgrade_reason: files.length ? null : '本驱动未取得可安全导出的现场，保留 D0',
   };
 }

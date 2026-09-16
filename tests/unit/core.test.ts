@@ -42,6 +42,30 @@ describe('execution invariants', () => {
     expect(metadata.schema_version).toBe('kff.diagnostic.v2'); expect(metadata.duration_ms).toBe(25); expect(metadata.outcome).toBe('VERIFIED_SUCCEEDED');
     expect(metadata.browser_version).toBeNull();
   });
+  // A blocked window returns the per-conversation reasons it collected. They have to survive the
+  // controller's allowlist, and the allowlist has to keep rejecting anything outside the contract.
+  it('persists a blocked window summary as bounded evidence and drops anything wider', () => {
+    const scope = { organization_id: 'org', brand_id: 'brand' };
+    const summary = {
+      strategy: 'RECENT_ACCEPTED', visible_threads: 2, unparsed_rows: 0, threads: [], window_limited: true, empty_list: false,
+      skipped: [
+        { thread_id: '00456', reason: 'THREAD_WINDOW_UNAVAILABLE', failure: { stage: 'facebook-inbox-load', code: 'TIMEOUT' } },
+        { thread_id: '00789', reason: 'THREAD_COMPOSER_AMBIGUOUS', failure: { stage: 'facebook-inbox-directory-composer', code: 'THREAD_COMPOSER_AMBIGUOUS' } },
+      ],
+      coverage: { threads_attempted: 2, threads_read: 0, threads_skipped: 0, threads_failed: 2 },
+    };
+    const bundle = buildDiagnostic({ step: 'facebook-inbox-read', error_kind: 'INBOX_WINDOW_UNAVAILABLE', inbox_discovery: summary }, 'INBOX_WINDOW_UNAVAILABLE', scope, 'action');
+    const discovery = bundle.files.find(file => file.name === 'inbox-discovery.json');
+    expect(discovery?.content.skipped.map(s => [s.thread_id, s.failure?.code])).toEqual([['00456', 'TIMEOUT'], ['00789', 'THREAD_COMPOSER_AMBIGUOUS']]);
+    expect(bundle.level).toBe('D1');
+    expect(digest(discovery!.content)).toBe(discovery!.sha256);
+    // The allowlist is the boundary, not a passthrough: raw page text and extra keys are refused,
+    // and a refused summary leaves the bundle at D0 rather than storing unvalidated content.
+    const leaked = { ...summary, skipped: [{ ...summary.skipped[0], body: 'Original inquiry text' }] };
+    expect(buildDiagnostic({ step: 'facebook-inbox-read', inbox_discovery: leaked }, 'INBOX_WINDOW_UNAVAILABLE', scope, 'action').files).toEqual([]);
+    expect(buildDiagnostic({ step: 'facebook-inbox-read', inbox_discovery: { ...summary, raw_page: '<div>page</div>' } }, 'INBOX_WINDOW_UNAVAILABLE', scope, 'action').level).toBe('D0');
+    expect(JSON.stringify(buildDiagnostic({ step: 'facebook-inbox-read', inbox_discovery: summary }, 'X', scope, 'action'))).not.toContain('Original inquiry');
+  });
   it('stores a salted password hash and rejects a wrong password', () => {
     const hash = hashPassword('a-local-test-password');
     expect(hash).not.toContain('a-local-test-password');

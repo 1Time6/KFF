@@ -1,10 +1,10 @@
 'use client';
-import { cloneElement, useId, useRef, useState, type FormEvent, type ReactElement } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import type { AdjudicationRecord, Run, Scope, Task } from '@kff/contracts';
+import { Field } from './field';
 
 const decisions: Record<string, string> = { CONFIRMED_SUCCESS: '人工确认成功', CONFIRMED_FAILURE: '人工确认失败', INCONCLUSIVE: '证据不足，继续待人工' };
 const sources: Record<string, string> = { owned_fixture: '本地合成页人工复核', platform_ui: '原生平台界面人工复核', platform_support: '平台支持的书面结论' };
-function Field({ label, children }: { label: string; children: ReactElement<{ id?: string }> }) { const id = useId(); return <div className="field"><label htmlFor={id}>{label}</label>{cloneElement(children, { id })}</div>; }
 function localTime() { return new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 19); }
 export function ActionAdjudication({ run, task, records, role, onSaved }: { run: Run; task: Task; records: AdjudicationRecord[]; role: Scope['role']; onSaved(): Promise<void> }) {
   const [version, setVersion] = useState(run.adjudication_version ?? 0); const [expectedState, setExpectedState] = useState(run.action_state);

@@ -8,6 +8,7 @@ import { query, scoped, closePool } from '../../packages/database/src/index';
 import { contactPolicy, contactPermissionInput, type Scope } from '../../packages/contracts/src/index';
 import { createContactTarget, grantContactPermission, exitContact, reviewContactBasis, assertContactBasisAtSubmission, revokeContactPermission, listContactRecords } from '../../packages/core/src/contacts';
 import { setAccountPause } from '../../packages/core/src/controls';
+import { createAccount } from '../../packages/core/src/service';
 
 const scope: Scope = { organization_id: localIds.organization, brand_id: localIds.brand, user_id: localIds.user, role: 'admin' };
 function policy(overrides: Partial<z.infer<typeof contactPolicy>> = {}): z.infer<typeof contactPolicy> {
@@ -97,4 +98,49 @@ it('applies brand isolation and refuses viewer changes', async () => {
   expect((await listContactRecords(foreign)).targets).toHaveLength(0);
   await expect(reviewContactBasis(foreign, value.review)).rejects.toMatchObject({ code: 'NOT_FOUND' });
   await expect(exitContact({ ...scope, role: 'viewer' }, value.contact.id, { request_id: randomUUID(), expected_version: 1, reason: 'Not authorized' })).rejects.toMatchObject({ code: 'FORBIDDEN_SCOPE' });
+});
+// The brand-wide list is truncated to 200 rows before the page filters by account, so an account
+// whose records are older than 200 newer rows from other accounts appears empty even though its
+// records exist. The account filter has to run in SQL, before LIMIT, with a stable cursor.
+it('returns an older account\'s contact records that a brand-wide truncation would hide', async () => {
+  const other = await createAccount(scope, { display_name: 'Filter probe account', external_id: '7' + String(Date.now()).slice(-12), platform: 'facebook', account_type: 'page' });
+  // 201 rows for the other account at the current time.
+  for (let index = 0; index < 201; index++) {
+    await query("INSERT INTO kff.contact_targets(organization_id,brand_id,account_id,channel,remote_id) VALUES($1,$2,$3,'synthetic',$4)", [scope.organization_id, scope.brand_id, other.id, 'probe-' + index + '-' + randomUUID()]);
+  }
+  // The record under test belongs to the seed account and is older than all 201 of them. The
+  // timestamp is set on insert because a contact identity is immutable once written.
+  const mineId = randomUUID(), olderAt = new Date(Date.now() - 7200000).toISOString();
+  await query("INSERT INTO kff.contact_targets(id,organization_id,brand_id,account_id,channel,remote_id,created_at) VALUES($1,$2,$3,$4,'synthetic',$5,$6)", [mineId, scope.organization_id, scope.brand_id, localIds.account, 'older-' + randomUUID(), olderAt]);
+  const mine = { id: mineId };
+
+  // The brand-wide page cannot see the older account's record: this is the truncation, not a loss.
+  const brandWide = await listContactRecords(scope);
+  expect(brandWide.targets).toHaveLength(200);
+  expect(brandWide.targets.some(row => (row as { id: string }).id === mine.id)).toBe(false);
+
+  // Filtering by account in SQL returns it, and the page is honestly bounded.
+  const scopedList = await listContactRecords(scope, { account_id: localIds.account });
+  expect(scopedList.targets.map(row => (row as unknown as { id: string }).id)).toContain(mine.id);
+  expect(scopedList.targets.every(row => (row as unknown as { account_id: string }).account_id === localIds.account)).toBe(true);
+  expect(scopedList.has_more.targets).toBe(false);
+  expect(scopedList.next_targets_cursor).toBeNull();
+
+  // The other account pages through all 201 rows without dropping or repeating any.
+  const seen: string[] = []; let cursor: string | null | undefined;
+  for (let page = 0; page < 5; page++) {
+    const listed = await listContactRecords(scope, { account_id: other.id, targets_cursor: cursor ?? undefined });
+    expect(listed.targets.every(row => (row as unknown as { account_id: string }).account_id === other.id)).toBe(true);
+    seen.push(...listed.targets.map(row => (row as unknown as { id: string }).id));
+    cursor = listed.next_targets_cursor;
+    if (!cursor) break;
+  }
+  expect(seen).toHaveLength(201);
+  expect(new Set(seen).size).toBe(201);
+
+  // An account from another brand is never reachable, even when its id is valid.
+  const foreign = { ...scope, brand_id: randomUUID() };
+  expect((await listContactRecords(foreign, { account_id: localIds.account })).targets).toHaveLength(0);
+  // A malformed cursor is refused rather than silently restarting from the newest row.
+  await expect(listContactRecords(scope, { targets_cursor: 'not-a-cursor' })).rejects.toThrow();
 });

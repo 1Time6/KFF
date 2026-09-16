@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 import type { ActionReport, AgentCommand } from '@kff/contracts';
 import { AppError, digest, requireCondition } from '@kff/core';
-import { browserInboxPage, browserInboxThreadFailure, type BrowserInboxTask, type BrowserInboxDiscoverySummary } from '../../contracts/src/browser-inbox';
+import { browserInboxPage, browserInboxThreadFailure, browserInboxDiscoverySummary, browserInboxDiscoveryCoverageFrom, type BrowserInboxTask, type BrowserInboxDiscoverySummary } from '../../contracts/src/browser-inbox';
 import { inspectFacebookInboxDom, isFacebookInboxExpansion } from './facebook-inbox-dom';
 import { inspectFacebookProfileIdentity } from './facebook-browser-identity';
 import { openManagedBrowser } from './browser-profile';
@@ -14,13 +14,12 @@ import { inspectFacebookInboxComposerDom, inspectFacebookInboxDirectoryDom, insp
  * Messenger setup, retention, lease, Guardian - must stop this environment instead of being
  * averaged away as a skipped conversation.
  */
-const LOCAL_THREAD_CODES=new Set(['THREAD_IDENTITY_UNVERIFIED','ACCOUNT_MISMATCH','THREAD_NOT_ACCEPTED','THREAD_COMPOSER_ABSENT','THREAD_COMPOSER_UNVERIFIED','THREAD_INPUT_UNUSABLE','THREAD_INPUT_FOREIGN','INBOX_SOURCE_MISMATCH']);
+const LOCAL_THREAD_CODES=new Set(['THREAD_IDENTITY_UNVERIFIED','ACCOUNT_MISMATCH','THREAD_NOT_ACCEPTED','THREAD_COMPOSER_ABSENT','THREAD_COMPOSER_AMBIGUOUS','THREAD_COMPOSER_UNVERIFIED','THREAD_INPUT_UNUSABLE','THREAD_INPUT_FOREIGN','INBOX_SOURCE_MISMATCH']);
 
 type ThreadSkip=BrowserInboxDiscoverySummary['skipped'][number];
 type ComposerSurface=NonNullable<ThreadSkip['composer_surface']>;
 /** The only reasons that may keep a conversation readable through the read-only path. */
-type ReadOnlyReason='THREAD_COMPOSER_ABSENT'|'THREAD_COMPOSER_UNVERIFIED'|'THREAD_INPUT_UNUSABLE'|'THREAD_INPUT_FOREIGN';
-type ComposerProbe={composer:null|{value:string};absent:boolean;candidate_count:number;surface:Omit<ComposerSurface,'stage'|'candidate_count'>};
+type ReadOnlyReason='THREAD_COMPOSER_ABSENT'|'THREAD_COMPOSER_UNVERIFIED'|'THREAD_INPUT_UNUSABLE'|'THREAD_INPUT_FOREIGN';type ComposerProbe={composer:null|{value:string};absent:boolean;candidate_count:number;surface:Omit<ComposerSurface,'stage'|'candidate_count'>};
 
 /**
  * Resolve the thread input box from its own semantic label. The label is what authorises the
@@ -30,7 +29,7 @@ type ComposerProbe={composer:null|{value:string};absent:boolean;candidate_count:
  * untrusted input box never becomes a Facebook business conclusion.
  */
 async function resolveThreadComposer(page:Page,target:{display_name:string;peer_id:string},identityId:string,guard:()=>Promise<void>,viaPlaceholder:boolean,deadlineMs=15000){
-  const probe={display_name:target.display_name,allow_other_name:viaPlaceholder,operating_identity_id:identityId};
+  const probe={display_name:target.display_name,allow_other_name:viaPlaceholder,operating_identity_id:identityId,peer_name:target.display_name};
   let observed:ComposerProbe=await page.evaluate(inspectFacebookInboxComposerDom,probe);
   for(const started=Date.now();!observed.composer&&Date.now()-started<deadlineMs;){
     await guard();await page.waitForTimeout(500);
@@ -43,7 +42,9 @@ async function resolveThreadComposer(page:Page,target:{display_name:string;peer_
   // Field observations stay separate from conclusions: no input box is not proof the chat was
   // never accepted, an unusable box is a page fact, and a box naming somebody else is only a
   // label conflict. Each keeps its own code so one local anomaly cannot masquerade as another.
-  if(!composer)return {composer:null,surface,reason:(observed.absent?'THREAD_COMPOSER_ABSENT':'THREAD_COMPOSER_UNVERIFIED') as ReadOnlyReason};
+  // More than one candidate is its own fact too: with two boxes there is no single box whose
+  // reachability or target could be judged, so it is never described as an unusable one.
+  if(!composer)return {composer:null,surface,reason:(observed.candidate_count>1?'THREAD_COMPOSER_AMBIGUOUS':observed.absent?'THREAD_COMPOSER_ABSENT':'THREAD_COMPOSER_UNVERIFIED')};
   if(!observed.surface.reachable)return {composer:null,surface,reason:'THREAD_INPUT_UNUSABLE' as ReadOnlyReason};
   if(!observed.surface.hit_target)return {composer:null,surface,reason:'THREAD_INPUT_FOREIGN' as ReadOnlyReason};
   return {composer,surface,reason:null};
@@ -102,15 +103,21 @@ export async function readFacebookInboxThread(page: Page, request: Pick<BrowserI
   await log.getByRole('article').first().waitFor({state:'visible',timeout:15000});
   await guard();
   if(demand==='COMPOSER'){
-    // The inner read uses the same semantic rule as the caller: a blind exact-label wait
-    // here would reject any label the caller legitimately accepted.
+    // The inner read uses the same semantic rule and the same acceptance decision as the caller.
+    // This stage runs only because the caller already accepted a composer for this exact verified
+    // peer, so the label may reach the peer name through any supported prefix. Re-deriving a
+    // stricter exact-string rule here rejected the same page state the caller had just accepted.
+    // The probe still enforces the rest: one candidate only, not the placeholder, not our own
+    // identity, and a label that names somebody other than the verified peer remains refused.
     stage('facebook-inbox-composer-surface');
-    const composer=await page.evaluate(inspectFacebookInboxComposerDom,{display_name:target.display_name,allow_other_name:false,operating_identity_id:target.peer_id});
+    // The operating account is the bound environment identity. Passing the peer id here instead
+    // made the probe treat every label naming the peer as naming the operating account, so a
+    // label the caller had just accepted was rejected by the same page state.
+    const operating=request.binding.environment.configuration.operating_identity_id;
+    const composer=await page.evaluate(inspectFacebookInboxComposerDom,{display_name:target.display_name,allow_other_name:true,operating_identity_id:operating,peer_name:target.display_name});
     // Zero input boxes stays a fact; a foreign label stays a label conflict.
     if(!composer.composer)requireCondition(composer.absent,'INBOX_SOURCE_MISMATCH','会话输入框标签与指定对象不符');
     requireCondition(composer.composer,'THREAD_COMPOSER_ABSENT','内层读取没有找到可核验的会话输入框');
-    const label=composer.composer.value,compact=label.replace(/\s+/g,'').toLowerCase(),peer=target.display_name.replace(/\s+/g,'').toLowerCase();
-    requireCondition(compact==='发消息给'+peer,'INBOX_SOURCE_MISMATCH','会话输入框标签与指定对象不符');
   }
   else stage('facebook-inbox-read-only');
   stage('facebook-inbox-wait-content'); let data=await page.evaluate(inspectFacebookInboxDom), stable=false;
@@ -178,6 +185,7 @@ export async function readFacebookInboxDirectory(page:Page,request:Pick<BrowserI
   const skippedReason=(error:unknown):ThreadSkip['reason']=>{
     const code=error instanceof AppError?error.code:null;
     if(code==='THREAD_COMPOSER_ABSENT')return 'THREAD_COMPOSER_ABSENT';
+    if(code==='THREAD_COMPOSER_AMBIGUOUS')return 'THREAD_COMPOSER_AMBIGUOUS';
     if(code==='THREAD_COMPOSER_UNVERIFIED')return 'THREAD_COMPOSER_UNVERIFIED';
     if(code==='THREAD_INPUT_UNUSABLE')return 'THREAD_INPUT_UNUSABLE';
     if(code==='THREAD_INPUT_FOREIGN')return 'THREAD_INPUT_FOREIGN';
@@ -214,10 +222,16 @@ export async function readFacebookInboxDirectory(page:Page,request:Pick<BrowserI
       // that only repeats the directory placeholder, or a box naming somebody else is a page
       // state that cannot be reconciled with this thread, so it is left unread: the read-only
       // path never becomes a way around an unverifiable input box.
-      const accepted=Boolean(composer.composer), absent=composer.surface?.label_kind==='ABSENT';
-      const fallback:ReadOnlyReason=composer.reason??'THREAD_COMPOSER_ABSENT';
+      // The read-only path is allowed only for a verified zero-candidate region. A multi-candidate
+      // page must not reach it: `label_kind` alone reported every multi-input page as ABSENT, so
+      // "two input boxes" satisfied the zero-input condition and the thread was read read-only.
+      const accepted=Boolean(composer.composer), absent=composer.surface?.candidate_count===0, ambiguous=composer.reason==='THREAD_COMPOSER_AMBIGUOUS';
+      // An ambiguous composer refuses the conversation rather than reading it, so this fallback is
+      // only ever recorded for a conversation that reaches the read-only path. It is typed as a
+      // read-only reason for that reason, not widened to cover the ambiguity code.
+      const fallback:ReadOnlyReason=(composer.reason==='THREAD_COMPOSER_AMBIGUOUS'?'THREAD_COMPOSER_UNVERIFIED':composer.reason??'THREAD_COMPOSER_ABSENT') as ReadOnlyReason;
       if(!accepted){
-        const reason:ReadOnlyReason=absent?'THREAD_COMPOSER_ABSENT':composer.surface!.placeholder?'THREAD_COMPOSER_UNVERIFIED':composer.surface!.reachable?'THREAD_INPUT_FOREIGN':'THREAD_INPUT_UNUSABLE';
+        const reason=absent?'THREAD_COMPOSER_ABSENT':ambiguous?'THREAD_COMPOSER_AMBIGUOUS':composer.surface!.placeholder?'THREAD_COMPOSER_UNVERIFIED':composer.surface!.reachable?'THREAD_INPUT_FOREIGN':'THREAD_INPUT_UNUSABLE';
         requireCondition(reason==='THREAD_COMPOSER_ABSENT',reason,'会话输入框不可用于本次读取，保留逐会话观测');
       }
       if(accepted)threadStep('facebook-inbox-composer-surface');
@@ -243,13 +257,16 @@ export async function readFacebookInboxDirectory(page:Page,request:Pick<BrowserI
   }
   controlled();discovery.window_limited ||= discovery.skipped.length>0;
   // Read, skipped and failed conversations are reported separately so a skipped one is never
-  // counted as a successful read and never displaces a later retry. `threads_skipped` counts every
-  // recorded local anomaly; `threads_failed` is the subset that failed with a read failure code.
+  // counted as a successful read and never displaces a later retry. The counts come from the one
+  // shared derivation, because `discovery.skipped` mixes attempted failures with conversations the
+  // message limit never reached: counting both overlap sets produced attempted=read+skipped+failed
+  // on top of the failures, so a window that read one conversation and failed another was refused
+  // by its own contract and the messages that were read successfully were thrown away.
   // A conversation kept back by the message limit was never read and is reported as not reached.
   const failed=discovery.skipped.filter(skip=>skip.reason!=='MESSAGE_LIMIT');
   const reachable=[...discovery.threads,...failed];
   discovery.window_limited ||= connectionStopped||reachable.length<selected.length;
-  discovery.coverage={threads_attempted:reachable.length,threads_read:discovery.threads.length,threads_skipped:failed.length,threads_failed:discovery.skipped.filter(skip=>skip.failure).length};
+  discovery.coverage=browserInboxDiscoveryCoverageFrom(discovery.threads,discovery.skipped);
   // The task fails closed when nothing readable was found, but the per-thread
   // observations must survive: attach the summary to the error instead of losing it.
   const refuse=(message:string):never=>{
@@ -265,11 +282,22 @@ export async function readFacebookInboxDirectory(page:Page,request:Pick<BrowserI
  * A blocked read must leave the reason on record. The controller does not store report diagnostics,
  * so the message itself has to stay short, fact-only and free of page content: the stage, the error
  * kind and, for an AppError, the code that the caller already maps into discovery.skipped.
+ *
+ * `readFacebookInboxDirectory` attaches its per-conversation summary to the error it throws when the
+ * window has nothing readable. That summary is the only record of why each conversation failed, so
+ * it is re-validated through the same bounded contract and carried into the report. Passing the raw
+ * error through is deliberately not done: the schema accepts only enums, counts and identifiers, so
+ * page text, selector strings and provider output cannot reach the diagnostic.
  */
+export function inboxDiscoveryDiagnostic(error:unknown){
+  const attached=(error as {discovery?:unknown}|null|undefined)?.discovery;
+  const parsed=browserInboxDiscoverySummary.safeParse(attached);
+  return parsed.success?{inbox_discovery:parsed.data}:{};
+}
 function blockedDiagnostic(error:unknown,step:string,browserVersion:string|undefined){
   const kind=error instanceof AppError?error.code:error instanceof Error?error.name:'UNKNOWN';
   const message=error instanceof Error?error.message:'';
-  return {step,browser_version:browserVersion,error_kind:kind,error_message:message.slice(0,180)};
+  return {step,browser_version:browserVersion,error_kind:kind,error_message:message.slice(0,180),...inboxDiscoveryDiagnostic(error)};
 }
 
 export async function executeFacebookBrowserInbox(command: AgentCommand, root: string, hooks: ExecutorHooks): Promise<Omit<ActionReport,'event_id'|'command_id'>> {

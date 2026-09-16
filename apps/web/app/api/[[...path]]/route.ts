@@ -1,6 +1,7 @@
 import { browserInboxWorkspace, configureBrowserInbox, controlBrowserInbox } from '@kff/core/browser-inbox';
 import { environmentWorkspace, configureEnvironment, queueEnvironmentOperation, controlEnvironment, claimEnvironmentCommand, environmentHeartbeat, completeEnvironmentCommand } from '@kff/core/environments';
 import { z } from 'zod';
+import { fieldErrorsFrom, uniqueViolationMessage, validationSummary } from '../../../lib/api-errors';
 import { randomUUID } from 'node:crypto';
 import { loginInput, uuid, taskInput, accountInput, environmentInput, approvalInput, heartbeatInput, resultInput, stopInput, permitInput, pauseInput, agentInput, agentControlInput, quiescenceInput, contactTargetInput, contactPermissionInput, contactExitInput, contactReviewInput, budgetInput, costReconciliationInput } from '@kff/contracts';
 import { AppError, redactError, requireCondition } from '@kff/core';
@@ -255,7 +256,7 @@ async function handle(request: Request, context: Context) {
     if (path === 'costs' && !write) return json(await costWorkspace(scope));
     if (path === 'cost-budgets' && write) return json(await configureBudget(scope, budgetInput.parse(await body(request))));
     if (parts.length === 3 && parts[0] === 'costs' && parts[2] === 'reconciliation' && write) return json(await reconcileCost(scope, uuid.parse(parts[1]), costReconciliationInput.parse(await body(request))));
-    if (path === 'contacts' && !write) return json(await listContactRecords(scope));
+    if (path === 'contacts' && !write) { const search = new URL(request.url).searchParams; return json(await listContactRecords(scope, { account_id: search.get('account_id') ?? undefined, targets_cursor: search.get('targets_cursor') ?? undefined, permissions_cursor: search.get('permissions_cursor') ?? undefined })); }
     if (path === 'contacts' && write) return json(await createContactTarget(scope, contactTargetInput.parse(await body(request))), 201);
     if (path === 'contacts/permissions' && write) return json(await grantContactPermission(scope, contactPermissionInput.parse(await body(request))), 201);
     if (path === 'contacts/eligibility' && write) return json(await reviewContactBasis(scope, contactReviewInput.parse(await body(request))));
@@ -288,8 +289,15 @@ async function handle(request: Request, context: Context) {
     if (path === 'brand/pause' && write) { const input = z.object({ paused: z.boolean() }).strict().parse(await body(request)); return json(await setBrandPause(scope, input.paused)); }
     throw new AppError('NOT_FOUND', '接口不存在', 404);
   } catch (error) {
-    if (error instanceof z.ZodError) return json({ error: { code: 'INVALID_INPUT', message: error.issues[0]?.message ?? '输入无效', request_id: requestId } }, 400);
-    if (error && typeof error === 'object' && 'code' in error && error.code === '23505') return json({ error: { code: 'VERSION_CONFLICT', message: '记录已存在，请刷新后查看', request_id: requestId } }, 409);
+    // A validation failure reports every offending field, bounded and path-carrying, so the page can
+    // locate the input instead of showing one unattributed sentence. The server check stays final.
+    if (error instanceof z.ZodError) { const field_errors = fieldErrorsFrom(error.issues); return json({ error: { code: 'INVALID_INPUT', message: validationSummary(field_errors), field_errors, request_id: requestId } }, 400); }
+    // A unique conflict the product can explain is explained by constraint name; anything else keeps
+    // the generic conflict text. The database error itself is never returned.
+    if (error && typeof error === 'object' && 'code' in error && error.code === '23505') {
+      const constraint = 'constraint' in error && typeof error.constraint === 'string' ? error.constraint : undefined;
+      return json({ error: { code: 'VERSION_CONFLICT', message: uniqueViolationMessage(constraint).message, request_id: requestId } }, 409);
+    }
     const mapped = redactError(error); if (mapped.status === 500) console.error('API request failed:', requestId, error instanceof Error ? error.name : 'Unknown');
     return json({ error: { code: mapped.code, message: mapped.message, request_id: requestId } }, mapped.status);
   }

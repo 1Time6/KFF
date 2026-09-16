@@ -130,9 +130,14 @@ export async function acceptBrowserInboxReport(client: PoolClient, taskId: strin
     for(const thread of summary.threads){const count=page.batch.messages.filter(message=>message.thread_id===thread.thread_id&&message.peer_id===thread.peer_id).length;
       requireCondition(thread.message_count===undefined||thread.message_count===count,'INBOX_SOURCE_MISMATCH','会话读取条数必须与本次消息一致',409);
       requireCondition(thread.read!==false||count===0,'INBOX_SOURCE_MISMATCH','未读取的会话不能携带本窗口消息',409);}
-    // Read, skipped and failed conversations are reported separately and must add up.
+    // Read, skipped and failed conversations are reported separately and must add up. `skipped`
+    // holds every conversation the window did not read; the ones it tried and failed are also
+    // counted as failures, so the two cover that list exactly once each. `attempted` is the reads
+    // plus the attempted failures. Deriving `attempted` from a base that already contained the
+    // failures is what made a window of two conversations report three and refuse a page whose
+    // other conversation had been read successfully.
     const coverage=summary.coverage;
-    requireCondition(!coverage||coverage.threads_attempted===coverage.threads_read+coverage.threads_skipped+coverage.threads_failed&&coverage.threads_read===summary.threads.filter(t=>t.read!==false).length&&coverage.threads_skipped===summary.skipped.length,'INBOX_SOURCE_MISMATCH','会话覆盖计数必须与实际读取和跳过数量一致',409);
+    requireCondition(!coverage||coverage.threads_attempted===coverage.threads_read+coverage.threads_failed&&coverage.threads_read===summary.threads.filter(t=>t.read!==false).length&&coverage.threads_failed+coverage.threads_skipped===summary.skipped.length&&coverage.threads_failed===summary.skipped.filter(s=>s.reason!=='MESSAGE_LIMIT').length,'INBOX_SOURCE_MISMATCH','会话覆盖计数必须与实际读取和跳过数量一致',409);
   }
   if (request.binding.target) {
     const target=request.binding.target;

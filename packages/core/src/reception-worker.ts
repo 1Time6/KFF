@@ -4,7 +4,7 @@ import {scoped,transaction} from '@kff/database';
 import {receptionDecision,receptionPolicyInput,type ReceptionDecision} from '../../contracts/src/lead';
 import type {Scope} from '@kff/contracts';
 import {configuredReceptionModel,enforceReceptionDecision,type ReceptionModel,type ReceptionContext} from '../../adapters/src/reception-model';
-import {queueReceptionForConversation,type ReceptionPayload} from './reception-queue';
+import {queueReceptionForConversation,receptionActivationLabels,type ReceptionPayload} from './reception-queue';
 import {readStopEpochs,queueConversationReply,effectiveDestination} from './lead-reception';
 import {digest,requireCondition,AppError} from './index';
 import {audit,requireAdmin} from './service';
@@ -102,7 +102,9 @@ export async function retryReception(scope:Scope,conversationId:string,requestId
     const unsafe=await client.query("SELECT a.id FROM kff.actions a JOIN kff.tasks t ON t.id=a.task_id WHERE t.conversation_id=$1 AND (a.state IN ('SUBMITTING','SUBMITTED','UNKNOWN_OUTCOME') OR EXISTS(SELECT 1 FROM kff.agent_commands c WHERE c.action_id=a.id AND (c.state IN ('READY','CLAIMED') OR c.quiesced_at IS NULL))) LIMIT 1",[conversationId]);
     requireCondition(!unsafe.rowCount,'GUARDIAN_UNCONFIRMED','仍有在途、未知或未关闭的旧执行，请先核验',409);
     await client.query("UPDATE kff.conversations SET handling_mode='AI',control_version=control_version+1 WHERE id=$1",[conversationId]);
-    const job=await queueReceptionForConversation(client,conversationId);requireCondition(job,'RECEPTION_UNAVAILABLE','没有符合规则且尚未回答的私信',409);
-    const result={job_id:job,control_version:conversation.control_version+1};await audit(client,scope,'reception.retried',conversationId,{request_id:requestId,conversation_id:conversationId,expected_version:expectedVersion,result});return result;
+    const job=await queueReceptionForConversation(client,conversationId);
+    // The refusal states the real blocker from the same gate the queue applies.
+    requireCondition(job.job_id,'RECEPTION_UNAVAILABLE',receptionActivationLabels[job.status.reason],409);
+    const result={job_id:job.job_id,control_version:conversation.control_version+1};await audit(client,scope,'reception.retried',conversationId,{request_id:requestId,conversation_id:conversationId,expected_version:expectedVersion,result});return result;
   });
 }

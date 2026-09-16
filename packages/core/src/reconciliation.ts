@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { scoped, transaction } from '@kff/database';
-import { actionStateSchema, quiescenceInput, type Scope, type TaskSnapshot } from '@kff/contracts';
+import { actionStateSchema, browserInboxDiscoverySummary, quiescenceInput, type Scope, type TaskSnapshot } from '@kff/contracts';
 import { digest, requireCondition } from './index';
 import { audit, requireAdmin, runDetail } from './service';
 import {projectMessageOutcome} from './lead-reception';
@@ -27,8 +27,15 @@ export async function exportDiagnostic(scope: Scope, bundleId: string) {
     requireCondition(bundle, 'NOT_FOUND', '诊断记录不存在或已过期', 404);
     const manifest = bundle.manifest;
     const scene = z.object({ identity_count: z.number().int().min(0).max(100), submit_controls: z.number().int().min(0).max(100), result_count: z.number().int().min(0).max(100) }).strict();
-    const schema = z.object({ schema_version: z.literal('kff.diagnostic.v1'), organization_id: z.literal(scope.organization_id), brand_id: z.literal(scope.brand_id), action_id: z.literal(bundle.action_id), level: z.enum(['D0', 'D1']), step: z.string().regex(/^[a-z0-9_-]{1,60}$/), error_code: z.string().regex(/^[A-Z0-9_]{1,80}$/).nullable(), created_at: z.string().datetime(), redaction_version: z.literal('allowlist-v1'), files: z.array(z.object({ name: z.literal('semantic-counts.json'), sha256: z.string(), content: scene }).strict()).max(1), omitted: z.array(z.enum(['raw_dom', 'screenshots', 'trace', 'cookies', 'message_body', 'network_bodies'])), downgrade_reason: z.enum(['本驱动未取得可安全导出的现场，保留 D0']).nullable() }).strict();
-    const schemaV2 = schema.extend({ schema_version: z.literal('kff.diagnostic.v2'), protocol_version: z.literal('kff.agent.v1'), adapter_version: z.string().regex(/^[A-Za-z0-9._-]{1,80}$/).nullable(), attempt_id: z.string().uuid().nullable(), outcome: actionStateSchema.nullable(), duration_ms: z.number().int().min(0).max(3600000).nullable(), executor_version: z.string().regex(/^[A-Za-z0-9._-]{1,80}$/).nullable(), browser_version: z.string().regex(/^[A-Za-z0-9._-]{1,80}$/).nullable() });
+    // A blocked window's per-conversation reasons are exported beside the scene counts. They are
+    // re-parsed from the bounded window contract on the way out, so an export can never widen into
+    // page text, and the digest below still has to match what was stored.
+    const discoveryFile = z.object({ name: z.literal('inbox-discovery.json'), sha256: z.string(), content: browserInboxDiscoverySummary }).strict();
+    const schema = z.object({ schema_version: z.literal('kff.diagnostic.v1'), organization_id: z.literal(scope.organization_id), brand_id: z.literal(scope.brand_id), action_id: z.literal(bundle.action_id), level: z.enum(['D0', 'D1']), step: z.string().regex(/^[a-z0-9_-]{1,60}$/), error_code: z.string().regex(/^[A-Z0-9_]{1,80}$/).nullable(), created_at: z.string().datetime(), redaction_version: z.literal('allowlist-v1'), files: z.array(z.union([z.object({ name: z.literal('semantic-counts.json'), sha256: z.string(), content: scene }).strict(), discoveryFile])).max(2), omitted: z.array(z.enum(['raw_dom', 'screenshots', 'trace', 'cookies', 'message_body', 'network_bodies'])), downgrade_reason: z.enum(['本驱动未取得可安全导出的现场，保留 D0']).nullable() }).strict();
+    // The producer's own v2 fields have to be spelled out here or the strict object rejects the
+    // bundle it just wrote: `buildDiagnostic` records `error_kind` and `error_message` for a failed
+    // action, and a stricter reader than the writer made every export fail the shared pre-check.
+    const schemaV2 = schema.extend({ schema_version: z.literal('kff.diagnostic.v2'), protocol_version: z.literal('kff.agent.v1'), adapter_version: z.string().regex(/^[A-Za-z0-9._-]{1,80}$/).nullable(), attempt_id: z.string().uuid().nullable(), outcome: actionStateSchema.nullable(), duration_ms: z.number().int().min(0).max(3600000).nullable(), executor_version: z.string().regex(/^[A-Za-z0-9._-]{1,80}$/).nullable(), browser_version: z.string().regex(/^[A-Za-z0-9._-]{1,80}$/).nullable(), error_kind: z.string().regex(/^[A-Za-z0-9_]{1,80}$/).nullable(), error_message: z.string().max(200).nullable() });
     const parsed = z.union([schema, schemaV2]).safeParse(manifest);
     requireCondition(parsed.success && parsed.data.files.every(file => digest(file.content) === file.sha256), 'DIAGNOSTIC_REDACTION_FAILED', '诊断包未通过共享前检查', 409);
     await audit(client, scope, 'diagnostic.exported', bundleId, { action_id: bundle.action_id, sha256: digest(parsed.data), level: parsed.data.level });

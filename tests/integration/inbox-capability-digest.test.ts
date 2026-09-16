@@ -7,7 +7,7 @@ import {adapterImplementationDigest} from '../../packages/core/src/artifacts';
 import {leadScope as scope,leadAgent as agent,clearLeads} from '../helpers/lead-fixture';
 import {createAccount,createEnvironment} from '../../packages/core/src/service';
 import {configureEnvironment} from '../../packages/core/src/environments';
-import {configureBrowserInbox,controlBrowserInbox,prepareBrowserInboxPage,browserInboxWorkspace} from '../../packages/core/src/browser-inbox';
+import {configureBrowserInbox,controlBrowserInbox,prepareBrowserInboxPage} from '../../packages/core/src/browser-inbox';
 import {configureBudget} from '../../packages/core/src/costs';
 import {attachLocalEvidence} from '../../packages/core/src/capabilities';
 import {dispatchOne,claimCommand,agentHeartbeat} from '../../packages/core/src/execution';

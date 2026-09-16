@@ -1,5 +1,7 @@
 # KFF 运营工作台
 
+**当前状态入口：[docs/current-status.md](docs/current-status.md)**（基线提交、已验证范围、明确未验证项）。缺陷与修复状态以 [docs/defect-ledger.json](docs/defect-ledger.json) 为唯一台账，可用 `pnpm verify:planning` 校验；按日期命名的交接与审计文档均为历史记录，不作为当前依据。
+
 当前实施目标：**AdsPower 本地矩阵执行、持续主动发现与 Inbox → WhatsApp 闭环**。环境配置、受控登录/检查/停止、持久 Profile 与恢复机制见 [浏览器环境](docs/api/browser-environments.md)；分阶段进度见 [本地矩阵工作卡](docs/tasks/local-matrix.md)。真实平台闭环尚待验收。
 
 2026-09-12 新增 **主动获客与自动执行**：`/acquisition` 提供 FB/IG 关键词监控、评论采集、线索池和自动动作。当前用户尚无外部数据源，本地合成链路与真实来源合同分开验收；接入所需账号、服务、凭据及操作步骤见 [接入说明](docs/api/acquisition.md)，当前范围见 [ADR-021](docs/decisions/021-acquisition-automation.md) 和 [完成度](docs/acquisition-readiness.md)。真实采集与发送默认关闭。

@@ -100,11 +100,11 @@ it('ingests a read-only conversation, records its reason, and never counts a ski
  Object.assign(readOnly,{read:true,message_count:1,read_only_reason:'THREAD_COMPOSER_ABSENT'});
  page.discovery!.skipped=[{thread_id:skipped.thread_id,reason:'THREAD_COMPOSER_ABSENT',failure:{stage:'facebook-inbox-directory-composer',code:'THREAD_COMPOSER_ABSENT'}}];
  page.discovery!.observed=[{thread_id:readOnly.thread_id,reason:'THREAD_COMPOSER_ABSENT',failure:{stage:'facebook-inbox-directory-composer',code:'THREAD_COMPOSER_ABSENT'}}];
- page.discovery!.coverage={threads_attempted:2,threads_read:1,threads_skipped:1,threads_failed:0};
+ page.discovery!.coverage={threads_attempted:2,threads_read:1,threads_skipped:0,threads_failed:1};
  page.discovery!.window_limited=true;value.receipt!.content_hash=digest(page);
  await acceptReport(agent,value);await close(command);
  const workspace=await browserInboxWorkspace(scope);
- expect(workspace.reads[0].discovery.coverage).toEqual({threads_attempted:2,threads_read:1,threads_skipped:1,threads_failed:0});
+ expect(workspace.reads[0].discovery.coverage).toEqual({threads_attempted:2,threads_read:1,threads_skipped:0,threads_failed:1});
  expect(workspace.reads[0].discovery.threads).toMatchObject([{thread_id:readOnly.thread_id,read:true,message_count:1,read_only_reason:'THREAD_COMPOSER_ABSENT'}]);
  expect((await query('SELECT i.remote_id FROM kff.conversations v JOIN kff.customer_identities i ON i.id=v.identity_id WHERE v.account_id=$1',[h.account.id])).map(r=>r.remote_id)).toEqual([readOnly.thread_id]);
  expect((await query('SELECT stored,duplicates FROM kff.browser_inbox_checkpoints WHERE monitor_id=$1',[h.monitor.id]))).toEqual([{stored:1,duplicates:0}]);
@@ -112,7 +112,7 @@ it('ingests a read-only conversation, records its reason, and never counts a ski
  await controlBrowserInbox(scope,h.monitor.id,{request_id:randomUUID(),expected_version:h.monitor.version,action:'SCAN'});const again=await next(),repeat=directoryReport(again),repeatPage=repeat.inbox_page!;
  repeatPage.batch.messages=structuredClone(page.batch.messages);Object.assign(repeatPage.discovery!.threads[0],{read:true,message_count:1,read_only_reason:'THREAD_COMPOSER_ABSENT'});
  repeatPage.discovery!.threads.pop();repeatPage.discovery!.skipped=[{thread_id:skipped.thread_id,reason:'THREAD_COMPOSER_ABSENT',failure:{stage:'facebook-inbox-directory-composer',code:'THREAD_COMPOSER_ABSENT'}}];
- repeatPage.discovery!.coverage={threads_attempted:2,threads_read:1,threads_skipped:1,threads_failed:0};repeatPage.discovery!.window_limited=true;repeat.receipt!.content_hash=digest(repeatPage);
+ repeatPage.discovery!.coverage={threads_attempted:2,threads_read:1,threads_skipped:0,threads_failed:1};repeatPage.discovery!.window_limited=true;repeat.receipt!.content_hash=digest(repeatPage);
  await acceptReport(agent,repeat);await close(again);
  expect((await query('SELECT sum(stored)::int stored,sum(duplicates)::int duplicates FROM kff.browser_inbox_checkpoints WHERE monitor_id=$1',[h.monitor.id]))[0]).toEqual({stored:1,duplicates:1});
 });

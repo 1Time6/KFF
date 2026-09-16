@@ -1,11 +1,13 @@
 'use client';
-import { cloneElement, useCallback, useEffect, useId, useRef, useState, type FormEvent, type ReactElement } from 'react';
+import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import type { TemplateVersion, TemplatePreview } from '@kff/contracts';
 import type { Workspace } from '@kff/core/service';
 
 const states: Record<string, string> = { DRAFT: '待预演', ALLOWED: '允许使用', DISABLED: '已停用', DEPRECATED: '已弃用' };
-const steps: Record<string, string> = { validate_input: '检查输入与版本', verify_identity: '核对实际账号', prepare_content: '准备已审核内容', submit_once: '提交前复核，单次提交', verify_original: '核验原提交的结果' };
-function Field({ label, children }: { label: string; children: ReactElement<{ id?: string }> }) { const id = useId(); return <div className="field"><label htmlFor={id}>{label}</label>{cloneElement(children, { id })}</div>; }
+const steps = TEMPLATE_STEPS;
+import { templateEnableEligibility } from './template-enable';
+import { TEMPLATE_STEPS } from './capability-descriptions';
+import { Field } from './field';
 async function api<T>(endpoint: string, input?: unknown): Promise<T> {
   const response = await fetch('/api/' + endpoint, { method: input === undefined ? 'GET' : 'POST', headers: input === undefined ? {} : { 'Content-Type': 'application/json' }, body: input === undefined ? undefined : JSON.stringify(input), cache: 'no-store' });
   const data = await response.json(); if (!response.ok) throw new Error(data.error?.message ?? '模板记录无法读取'); return data;
@@ -23,6 +25,11 @@ export function TemplateWorkbench({ data }: { data: Workspace }) {
   const actualAccount = accounts.find(account => account.id === accountId) ?? accounts[0];
   const capability = data.capabilities.find(value => value.account_id === actualAccount?.id && value.capability_key === selected?.capability_key);
   const latestPreview = records.previews.find(preview => preview.template_version_id === selectedId);
+  // Whether this version may be enabled comes from the server's readiness flag, not from the newest
+  // preview on this page: a qualifying preview older than the returned window must still count, and
+  // a later failed preview must not hide it.
+  const allow = templateEnableEligibility(selected ?? { state: '' });
+  const allowReason = allow.allowed || (selected && selected.state === 'ALLOWED') ? null : allow.reason;
   async function act(operation: () => Promise<void>, message: string) { setBusy(true); setError(''); setNotice(''); try { await operation(); await load(); setNotice(message); } catch (failure) { setError(failure instanceof Error ? failure.message : '操作未完成'); } finally { setBusy(false); } }
   async function createVersion(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); if (!selected) return; const form = new FormData(event.currentTarget);
@@ -44,7 +51,7 @@ export function TemplateWorkbench({ data }: { data: Workspace }) {
     </section>
     {selected && <section className="panel template-detail" aria-label="选中模板版本"><div className="panel-head"><h2>{selected.name}</h2><span>{selected.version_label} · {states[selected.state]}</span></div>
       <div className="template-layout"><div className="template-definition"><h3>此版本的执行步骤</h3><ol>{selected.manifest.steps.map(step => <li key={step}>{steps[step]}</li>)}</ol><p>输入上限 {selected.manifest.input.max_body_length}，{selected.manifest.input.body_required ? '发布内容必填' : '此动作不发布内容'}。</p><p>外部提交发生后结果不确定时，保留原动作并核验。</p><div className="template-hash"><span>版本摘要</span><code>{selected.manifest_hash}</code></div>
-        {data.scope.role === 'admin' && <div className="template-policy"><h3>版本使用策略</h3><p className="field-hint">允许模板不会提升账号或平台能力。弃用后需要创建新版本，历史结果与裁定记录保留。</p>{selected.state !== 'DEPRECATED' ? <><Field label="模板策略调整原因"><input value={reason} onChange={event => setReason(event.target.value)} required minLength={5} maxLength={300} disabled={busy} /></Field><div className="contact-actions"><button className="button primary" disabled={busy || reason.trim().length < 5 || selected.state === 'ALLOWED'} onClick={() => void policy('ALLOW')}>允许此版本</button><button className="button subtle" disabled={busy || reason.trim().length < 5 || selected.state === 'DISABLED'} onClick={() => void policy('DISABLE')}>停用此版本</button><button className="button danger" disabled={busy || reason.trim().length < 5} onClick={() => void policy('DEPRECATE')}>弃用此版本</button></div></> : <p>此版本已永久弃用，可从它派生新版本。</p>}</div>}
+        {data.scope.role === 'admin' && <div className="template-policy"><h3>版本使用策略</h3><p className="field-hint">允许模板不会提升账号或平台能力。弃用后需要创建新版本，历史结果与裁定记录保留。</p>{selected.state !== 'DEPRECATED' ? <><Field label="模板策略调整原因" hint={allowReason ?? undefined}><input value={reason} onChange={event => setReason(event.target.value)} required minLength={5} maxLength={300} disabled={busy} /></Field><div className="contact-actions"><button className="button primary" disabled={busy || reason.trim().length < 5 || !allow.allowed} onClick={() => void policy('ALLOW')}>允许此版本</button><button className="button subtle" disabled={busy || reason.trim().length < 5 || selected.state === 'DISABLED'} onClick={() => void policy('DISABLE')}>停用此版本</button><button className="button danger" disabled={busy || reason.trim().length < 5} onClick={() => void policy('DEPRECATE')}>弃用此版本</button></div></> : <p>此版本已永久弃用，可从它派生新版本。</p>}</div>}
       </div><div className="template-forms">
         <h3>输入与关联预演</h3><p className="field-hint">预演不连接平台，也不发送或发布。下方分别显示本地检查和未检查条件。</p>
         {data.scope.role !== 'viewer' && <form key={'preview/' + selected.id} onSubmit={event => void preview(event)}><fieldset disabled={busy || !actualAccount || !capability}>

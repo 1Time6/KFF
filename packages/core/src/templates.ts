@@ -90,6 +90,19 @@ export async function setTemplatePolicy(scope: Scope, versionId: string, input: 
     await audit(client, scope, 'template.policy_changed', row.id, { previous_state: row.state, state: next, policy_version: result.policy_version }); return result;
   });
 }
+/**
+ * List template versions with the enable readiness the server actually applies.
+ *
+ * `setTemplatePolicy` enables a version when *any* preview with the same `manifest_hash` has
+ * `can_enable`; it does not have to be the newest one, so a later failed preview must not hide an
+ * earlier success. The workspace previously returned only the newest 200 previews and let the page
+ * infer readiness from them, so a qualifying preview outside that window looked like no preview at
+ * all and the ALLOW button was offered for a version the server refuses. The flag is computed per
+ * version here, over every preview rather than the recent window.
+ */
 export async function templateWorkspace(scope: Scope) {
-  return scoped(scope, async client => ({ versions: (await client.query<TemplateVersion>('SELECT * FROM (SELECT * FROM kff.template_versions ORDER BY created_at DESC,id LIMIT 200) recent ORDER BY capability_key,version_number DESC')).rows, previews: (await client.query<TemplatePreview>('SELECT id,template_version_id,manifest_hash,account_id,environment_id,capability_id,can_enable,result,created_at FROM kff.template_previews ORDER BY created_at DESC LIMIT 200')).rows }));
+  return scoped(scope, async client => ({
+    versions: (await client.query<TemplateVersion & { enable_ready: boolean }>('SELECT recent.*,EXISTS(SELECT 1 FROM kff.template_previews p WHERE p.template_version_id=recent.id AND p.manifest_hash=recent.manifest_hash AND p.can_enable) AS enable_ready FROM (SELECT * FROM kff.template_versions ORDER BY created_at DESC,id LIMIT 200) recent ORDER BY capability_key,version_number DESC')).rows,
+    previews: (await client.query<TemplatePreview>('SELECT id,template_version_id,manifest_hash,account_id,environment_id,capability_id,can_enable,result,created_at FROM kff.template_previews ORDER BY created_at DESC LIMIT 200')).rows,
+  }));
 }

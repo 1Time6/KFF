@@ -25,14 +25,21 @@ if($Action -eq 'Start'){
         if($taskState.phase -notin @('NOT_RUNNING','STOPPED')){throw "当前状态为 $($taskState.phase)，请先检查状态和原日志，不重复启动。"}
         $taskLogDirectory=Join-Path $taskRoot '.kff\local-runtime'
         New-Item -ItemType Directory -Path $taskLogDirectory -Force | Out-Null
-        $taskStamp=[DateTime]::UtcNow.ToString('yyyyMMddTHHmmssfff')
-        $taskProcess=Start-Process -FilePath $taskNode -ArgumentList '--import','tsx','scripts/local-runtime.ts','run' -WorkingDirectory $taskRoot -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $taskLogDirectory ($taskStamp+'-host.log')) -RedirectStandardError (Join-Path $taskLogDirectory ($taskStamp+'-host-error.log'))
+        # The host is launched through the tracked Node launcher instead of Start-Process. On Windows
+        # Start-Process builds a case-insensitive child environment, so an environment carrying both
+        # `NO_PROXY` and `no_proxy` failed with "Item has already been added" and the host never
+        # started; the recovery used to be a private script under the gitignored .kff directory.
+        # Node hands the child an environment block it has already de-duplicated, so this entry works
+        # on a clean checkout. Ownership, the duplicate-start guard and the log directory stay here.
+        $taskLaunch=& $taskNode 'scripts/relaunch-local-runtime.mjs' $taskRoot $taskLogDirectory
+        if($LASTEXITCODE -ne 0 -or -not $taskLaunch){throw '启动进程未能创建，请查看 .kff/local-runtime 下本次启动日志。'}
+        $taskLauncher=$taskLaunch | Select-Object -Last 1 | ConvertFrom-Json
         $taskDeadline=[DateTime]::UtcNow.AddSeconds(75)
         do{
             Start-Sleep -Milliseconds 1000
             $taskState=Read-RuntimeStatus
             if($taskState.phase -in @('RUNNING','START_FAILED','DEGRADED','STOP_BLOCKED')){break}
-            if($taskProcess.HasExited){throw '启动进程已退出，请查看 .kff/local-runtime 下本次启动日志。'}
+            if(-not (Get-Process -Id $taskLauncher.launched_pid -ErrorAction SilentlyContinue)){throw '启动进程已退出，请查看 .kff/local-runtime 下本次启动日志。'}
         }while([DateTime]::UtcNow -lt $taskDeadline)
         if($taskState.phase -ne 'RUNNING'){throw "启动仍未就绪，当前状态：$($taskState.phase)。保留原进程，请查看状态后继续处理。"}
         Write-Output 'KFF 工作台、Worker 和 Agent 已启动。'

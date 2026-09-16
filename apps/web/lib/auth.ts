@@ -31,12 +31,25 @@ export async function requestScope(request: Request): Promise<Scope> {
   const rows = await query<Scope>('SELECT user_id,organization_id,brand_id,role FROM kff.memberships WHERE user_id=$1 AND ($2::uuid IS NULL OR brand_id=$2) ORDER BY brand_id LIMIT 1', [userId, brand ?? null]);
   requireCondition(rows.length, 'FORBIDDEN_SCOPE', '当前账号没有此品牌权限', 403); return rows[0];
 }
-const failures = new Map<string, { count: number; expires: number }>();
+import { LoginThrottle } from './login-throttle';
+/**
+ * One process-wide throttle. An attempt is reserved before the credential check, and the outcome is
+ * recorded against a freshly read bucket, so concurrent failures are all counted. The previous code
+ * captured the bucket before the `await` and wrote `bucket.count + 1` from that stale copy.
+ */
+const failures = new LoginThrottle();
 export async function login(request: Request, email: string, password: string): Promise<string> {
   checkOrigin(request);
-  const key = email.toLowerCase(); const bucket = failures.get(key);
-  requireCondition(!bucket || bucket.expires < Date.now() || bucket.count < 8, 'RATE_LIMITED', '登录尝试过多，请稍后再试', 429);
-  const fail = () => { failures.set(key, { count: bucket && bucket.expires > Date.now() ? bucket.count + 1 : 1, expires: Date.now() + 15 * 60000 }); throw new AppError('UNAUTHORIZED', '账号或密码不正确', 401); };
+  const key = email.toLowerCase();
+  const admission = failures.reserve(key);
+  if (!admission.allowed) {
+    // Report how long the window still has, instead of only refusing.
+    const limited = new AppError('RATE_LIMITED', '登录尝试过多，请稍后再试', 429) as AppError & { retry_after_ms?: number };
+    limited.retry_after_ms = admission.retry_after_ms;
+    throw limited;
+  }
+  const fail = () => { failures.fail(key); throw new AppError('UNAUTHORIZED', '账号或密码不正确', 401); };
+  const succeed = () => failures.succeed(key);
   const secure = new URL(origin).protocol === 'https:' ? '; Secure' : '';
   if ((process.env.KFF_AUTH_MODE ?? 'local') === 'supabase') {
     const url = process.env.SUPABASE_URL; const publicKey = process.env.SUPABASE_PUBLISHABLE_KEY;
@@ -44,14 +57,14 @@ export async function login(request: Request, email: string, password: string): 
     const client = createClient(url, publicKey, { auth: { persistSession: false, autoRefreshToken: false } });
     const { data, error } = await client.auth.signInWithPassword({ email, password });
     if (error || !data.session) return fail();
-    failures.delete(key); return 'kff-access=' + data.session.access_token + '; Path=/; HttpOnly; SameSite=Strict; Max-Age=' + data.session.expires_in + secure;
+    succeed(); return 'kff-access=' + data.session.access_token + '; Path=/; HttpOnly; SameSite=Strict; Max-Age=' + data.session.expires_in + secure;
   }
   localOnly(request);
   const user = (await query<{ id: string; password_hash: string }>('SELECT id,password_hash FROM kff.local_users WHERE lower(email)=$1 AND NOT disabled', [key]))[0];
   if (!user || !checkPassword(password, user.password_hash)) return fail();
   const token = randomBytes(32).toString('hex');
   await query("INSERT INTO kff.sessions(id_hash,user_id,provider,expires_at) VALUES($1,$2,'local',now()+interval '12 hours')", [digest(token), user.id]);
-  failures.delete(key); return 'kff-session=' + token + '; Path=/; HttpOnly; SameSite=Strict; Max-Age=43200' + secure;
+  succeed(); return 'kff-session=' + token + '; Path=/; HttpOnly; SameSite=Strict; Max-Age=43200' + secure;
 }
 export async function logout(request: Request) {
   checkOrigin(request); const token = cookie(request, 'kff-session');

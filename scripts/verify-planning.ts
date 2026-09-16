@@ -50,3 +50,43 @@ for (const task of ledger.tasks) {
   if (task.status === 'DONE_SCOPED' && (!task.evidence_refs.length || !task.actual_test_commands.length || !task.outputs.length)) throw new Error('Missing evidence for ' + task.task_id);
 }
 console.log(JSON.stringify({ source_hashes_unchanged: true, task_count: tasks.length, acceptance_count: acceptance.length, gates: counts, product_acceptance: 'NOT_IMPLIED' }, null, 2));
+verifyDefectLedger();
+
+/**
+ * The defect ledger is the single current work order. It is only useful while it stays consistent
+ * with itself and with the repository, so this check fails loudly instead of letting the numbers
+ * drift: counts are recomputed from the items, every referenced file must exist, an item claiming a
+ * repair must carry a test or a recorded manual verification, and anything not fully closed must
+ * say what is still open.
+ */
+function verifyDefectLedger() {
+  if (!existsSync('docs/defect-ledger.json')) throw new Error('缺少当前缺陷台账 docs/defect-ledger.json');
+  const ledger = JSON.parse(readFileSync('docs/defect-ledger.json', 'utf8')) as {
+    schema_version: string;
+    items: { id: string; status: string; category: string; changed_files: string[]; tests: string[]; unverified: string[]; verified_manually?: string[]; remaining_work?: string }[];
+    counts: { work_items: number; by_category: Record<string, number>; by_status: Record<string, number> };
+    relation_to_previous_audit: { rule: string };
+  };
+  if (ledger.schema_version !== 'kff.defect-ledger.v1') throw new Error('缺陷台账 schema_version 必须是 kff.defect-ledger.v1');
+  const items = ledger.items;
+  if (new Set(items.map(item => item.id)).size !== items.length) throw new Error('缺陷台账存在重复编号');
+  if (ledger.counts.work_items !== items.length) throw new Error(`台账 work_items=${ledger.counts.work_items} 与实际 ${items.length} 项不一致`);
+  const tally = (key: 'category' | 'status') => items.reduce<Record<string, number>>((all, item) => ({ ...all, [item[key]]: (all[item[key]] ?? 0) + 1 }), {});
+  for (const [key, declared] of [['category', ledger.counts.by_category], ['status', ledger.counts.by_status]] as const) {
+    const actual = tally(key);
+    for (const name of new Set([...Object.keys(actual), ...Object.keys(declared)])) {
+      if ((actual[name] ?? 0) !== (declared[name] ?? 0)) throw new Error(`台账 ${key} 统计 ${name} 声明 ${declared[name] ?? 0} 与实际 ${actual[name] ?? 0} 不一致`);
+    }
+  }
+  const statuses = new Set(['repaired_and_verified', 'partially_repaired', 'pending', 'blocked']);
+  for (const item of items) {
+    if (!statuses.has(item.status)) throw new Error(`${item.id} 状态无效：${item.status}`);
+    if (!Array.isArray(item.unverified)) throw new Error(`${item.id} 必须显式记录未验证范围`);
+    for (const file of [...item.changed_files, ...item.tests]) if (!existsSync(file)) throw new Error(`${item.id} 引用了不存在的文件：${file}`);
+    if (item.status === 'repaired_and_verified' && !item.tests.length && !(item.verified_manually ?? []).length) throw new Error(`${item.id} 声明已修复验证，却没有测试或人工验证记录`);
+    if (item.status === 'partially_repaired' && !item.remaining_work) throw new Error(`${item.id} 声明部分修复，必须写明剩余工作`);
+    if (item.status !== 'repaired_and_verified' && !item.unverified.length) throw new Error(`${item.id} 未完全关闭，必须列出未验证或剩余项`);
+  }
+  if (!/NOT added|不与|不得/.test(ledger.relation_to_previous_audit.rule)) throw new Error('台账必须写明与旧审计的合计口径');
+  console.log(`缺陷台账通过：${items.length} 项，均已登记状态、测试与未验证范围。`);
+}

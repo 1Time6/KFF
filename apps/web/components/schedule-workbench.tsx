@@ -1,14 +1,14 @@
 'use client';
-import {cloneElement,useCallback,useEffect,useId,useRef,useState,type ReactElement,type FormEvent} from 'react';
+import {useCallback,useEffect,useRef,useState,type FormEvent} from 'react';
 import type {Workspace} from '@kff/core/service';
 import type {ScheduleRule} from '../../../packages/contracts/src/schedule';
 import type {SchedulePreview,ScheduleRecord,ScheduleVersion,scheduleDetail,scheduleList} from '@kff/core/schedules';
 import type {ScheduleSlot} from '@kff/core/schedule-rules';
+import { Field } from './field';
 
 type Detail=Awaited<ReturnType<typeof scheduleDetail>>;
 const states={ACTIVE:'时点准备中',PAUSED:'已暂停',STOPPED:'已终止',COMPLETED:'全部时点已处理'};
 const reasons:Record<string,string>={NORMAL:'正常时刻',DST_EARLIER:'重复时刻 · 较早一次',DST_LATER:'重复时刻 · 较晚一次',DST_GAP_SHIFTED:'缺失时刻 · 按变化量后移',DST_GAP_SKIPPED:'缺失时刻 · 跳过',DST_REPEAT_SKIPPED:'重复时刻 · 跳过',ON_TIME:'容限内准备',DEFERRED_LATEST:'仅延后最近一次',CATCH_UP:'限量补准备',MISSED_SKIP:'错过后跳过',MISSED_COALESCED:'较早时点已合并跳过',CATCH_UP_LIMIT:'超过本次补准备上限',TOO_LATE:'已超过最迟准备期限',RULE_VERSION_SUPERSEDED:'规则版本已替换',SCHEDULE_STOPPED:'未来计划已终止'};
-function Field({label,children}:{label:string;children:ReactElement<{id?:string}>}){const id=useId();return <div className="field"><label htmlFor={id}>{label}</label>{cloneElement(children,{id})}</div>;}
 async function api<T>(path:string,body?:unknown):Promise<T>{const response=await fetch('/api/'+path,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined,cache:'no-store'});const value=await response.json();if(!response.ok)throw new Error(value.error?.message??'计划操作未完成');return value;}
 const localTime=(value:string|null,zone:string)=>value?new Date(value).toLocaleString('zh-CN',{timeZone:zone,hour12:false}):'—';
 function Calendar({slots}:{slots:ScheduleSlot[]}){const [page,setPage]=useState(0);return <div className="schedule-calendar"><div className="table-scroll"><table aria-label="计划 UTC 日历"><thead><tr><th>原定当地时间</th><th>时区规则处理</th><th>确定的 UTC 时点</th></tr></thead><tbody>{slots.slice(page*25,page*25+25).map(slot=><tr key={slot.key}><td>{slot.local_time.replace('T',' ')}{slot.resolved_local_time&&slot.resolved_local_time!==slot.local_time&&<small>后移至 {slot.resolved_local_time.replace('T',' ')}</small>}</td><td>{reasons[slot.decision]}<small>{slot.offset??'无实际时点'}</small></td><td className="mono">{slot.scheduled_at??'跳过，不生成准备请求'}</td></tr>)}</tbody></table></div><div className="panel-footer"><span>共 {slots.length} 个规则时点 · 第 {page+1} 页</span><div className="contact-actions"><button className="text-button" disabled={!page} onClick={()=>setPage(value=>value-1)}>上一页日历</button><button className="text-button" disabled={(page+1)*25>=slots.length} onClick={()=>setPage(value=>value+1)}>下一页日历</button></div></div></div>;}

@@ -4,6 +4,7 @@ import { copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSy
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { sourceHash } from './source-hash.mjs';
 
 // Copy the installed, locked dependency closure. Never copy the workspace or its runtime directory.
 const root = fileURLToPath(new URL('../', import.meta.url));
@@ -19,7 +20,7 @@ for (const directory of ['apps/agent/src', 'packages/contracts/src', 'packages/a
 }
 const licenseFile = `scripts/licenses/node-v${process.versions.node}.txt`;
 if (!existsSync(path.join(root, licenseFile))) throw new Error('Add the official license for this exact Node version before packaging: ' + licenseFile);
-const sourceHashes = Object.fromEntries([...sources, licenseFile, 'scripts/package-agent.mjs', 'scripts/agent-launch.mjs', 'docs/api/agent-delivery.md', 'package.json', 'tsconfig.json', 'pnpm-lock.yaml'].sort().map(file => [file, hash(readFileSync(path.join(root, file)))]));
+const sourceHashes = Object.fromEntries([...sources, licenseFile, 'scripts/package-agent.mjs', 'scripts/source-hash.mjs', 'scripts/agent-launch.mjs', 'docs/api/agent-delivery.md', 'package.json', 'tsconfig.json', 'pnpm-lock.yaml'].sort().map(file => [file, sourceHash(path.join(root, file))]));
 const nodeHash = hash(readFileSync(process.execPath));
 const licenseUrl = `https://raw.githubusercontent.com/nodejs/node/v${process.versions.node}/LICENSE`;
 const nodeLicense = readFileSync(path.join(root, licenseFile), 'utf8');

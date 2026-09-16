@@ -23,6 +23,12 @@ export interface CostRecord {
   action_id: string; permit_id: string | null; currency: string; reserved_minor: string; actual_cost_minor: string | null;
   state: 'RESERVED' | 'PENDING_RECONCILIATION' | 'SETTLED' | 'RELEASED'; version: number;
   cost_basis: string; evidence_ref: string | null; title: string; created_at: string;
+  /** The state of the action holding this reservation; decides which decisions are legal. */
+  action_state?: string;
+  /** True while any execution context for that action is still open. */
+  guardian_unclosed?: boolean;
+  /** The decisions the server accepts right now, with the reason when they are restricted. */
+  options?: { allowed_actions: ('SETTLE' | 'RELEASE' | 'PENDING' | 'ADJUST')[]; restriction: string | null; pending: boolean };
 }
 export interface CostEvent {
   id: string; action_id: string | null; currency: string;

@@ -9,6 +9,7 @@ import {pathToFileURL} from 'node:url';
 import pg from 'pg';
 import {z} from 'zod';
 import {localSupervisionProtocol} from '../packages/contracts/src/local-supervision';
+import {sourceHash} from './source-hash.mjs';
 import {saveRuntimeJson as save} from './local-runtime-state';
 
 const root=realpathSync(process.cwd()),directory=path.join(root,'.kff','local-runtime');
@@ -36,7 +37,7 @@ function verifyBuild(config?:Config){
  const check=read(path.join(root,'.kff/checks/build.json'));
  if(check.exit_code!==0||check.changed_during_check.length)throw Error('Run a successful current build first');
  for(const [file,digest] of Object.entries(check.source_hashes)){
-  if((/^(apps|packages|scripts)\//.test(file)||['package.json','pnpm-lock.yaml','tsconfig.json'].includes(file))&&hash(readFileSync(path.join(root,file)))!==digest)throw Error('Build is stale: '+file);
+  if((/^(apps|packages|scripts)\//.test(file)||['package.json','pnpm-lock.yaml','tsconfig.json'].includes(file))&&sourceHash(path.join(root,file))!==digest)throw Error('Build is stale: '+file);
  }
  const buildFile=path.join(root,'apps/web/.next-production/BUILD_ID'),buildId=readFileSync(buildFile,'utf8').trim(),buildHash=hash(readFileSync(buildFile));
  if(config&&(config.build_id!==buildId||config.build_sha256!==buildHash))throw Error('Prepared build changed; configure the runtime again');
@@ -47,7 +48,7 @@ function verifyAgent(release:string){
  const manifest=read(path.join(release,'release.json'));
  if(manifest.local_supervision_protocol!==localSupervisionProtocol)throw Error('Agent does not support graceful local supervision');
  execFileSync(path.join(release,'node.exe'),[path.join(release,'agent-launch.mjs'),'verify'],{cwd:release,windowsHide:true,stdio:['ignore','pipe','pipe']});
- for(const [file,digest] of Object.entries(manifest.source_hashes))if(/^(apps\/agent|packages\/contracts|packages\/adapters)\//.test(file)&&hash(readFileSync(path.join(root,file)))!==digest)throw Error('Installed Agent differs from the current source: '+file);
+ for(const [file,digest] of Object.entries(manifest.source_hashes))if(/^(apps\/agent|packages\/contracts|packages\/adapters)\//.test(file)&&sourceHash(path.join(root,file))!==digest)throw Error('Installed Agent differs from the current source: '+file);
  return manifest.release_id as string;
 }
 if(command==='configure'){

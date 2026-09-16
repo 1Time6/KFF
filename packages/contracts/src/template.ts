@@ -39,6 +39,9 @@ export interface TemplateVersion {
   id: string; capability_key: z.infer<typeof templateCapabilityKey>; version_number: number; version_label: string; name: string;
   manifest: TemplateManifest; manifest_hash: string; state: 'DRAFT' | 'ALLOWED' | 'DISABLED' | 'DEPRECATED';
   policy_version: number; origin: 'bundled' | 'derived'; based_on_version_id: string | null; created_at: string;
+  /** True when at least one preview with this version's manifest hash can enable it. The server
+   *  computes this over every preview, not the recent window the workspace returns. */
+  enable_ready?: boolean;
 }
 export interface TemplatePreview {
   id: string; template_version_id: string; manifest_hash: string; account_id: string; environment_id: string; capability_id: string;

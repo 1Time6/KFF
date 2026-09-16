@@ -15,7 +15,11 @@ export function renderBrowserDiscoveryFixture(raw: BrowserDiscoveryRead, records
   const request = browserDiscoveryReadSchema.parse(raw), snapshot = request.snapshot;
   requireCondition(snapshot.discovery?.browser?.template === 'fixture-discovery-dom-v1' && snapshot.browser_environment?.is_synthetic, 'FORBIDDEN_SCOPE', '此页面仅用于本地合成采集');
   const source = localDiscoveryPage({ ...request, cursor: null, limit: 100, snapshot: { ...snapshot, discovery: { ...snapshot.discovery, provider: 'LOCAL_FIXTURE', browser: undefined } } });
-  const rows = records?.map(row => collectionRecordSchema.parse(row)) ?? source.rows.map(row => ({ ...row, fields: { ...row.fields, ...(snapshot.fields.includes('created_time') ? { created_time: { kind: 'VALUE' as const, value: '2026-09-01T00:00:00Z' } } : {}) } }));
+  // The synthesised publication time is relative to the observation, exactly as the non-browser
+  // synthetic page reports it. A fixed date made this fixture decay: once it fell outside the
+  // monitor's `max_age_days` window every record was scored 0 and the collector correctly produced no
+  // leads, so a passing suite turned into a failing one with no code change at all.
+  const rows = records?.map(row => collectionRecordSchema.parse(row)) ?? source.rows.map(row => ({ ...row, fields: { ...row.fields, ...(snapshot.fields.includes('created_time') ? { created_time: { kind: 'VALUE' as const, value: new Date().toISOString() } } : {}) } }));
   requireCondition(request.cursor === null || /^offset:(0|[1-9][0-9]{0,3})$/.test(request.cursor), 'CURSOR_EXPIRED', '合成页面游标失效');
   const offset = request.cursor ? Number(request.cursor.slice(7)) : 0;
   requireCondition(offset <= rows.length, 'CURSOR_EXPIRED', '合成页面游标超过来源范围');

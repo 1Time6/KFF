@@ -4,7 +4,7 @@ import {migrate} from '../../scripts/migrate';
 import {seed} from '../../scripts/seed';
 import {query,scoped,closePool} from '../../packages/database/src/index';
 import {leadScope as scope,leadAgent as agent,seedLead,seedDestination,clearLeads,claimLead,successReport,closeCommand,leadEvent} from '../helpers/lead-fixture';
-import {updateLead,leadAnalytics,leadAudit} from '../../packages/core/src/lead-management';
+import {updateLead,leadAnalytics,leadAudit,leadAuditCursor} from '../../packages/core/src/lead-management';
 import {sendConversationReply,conversationControl,conversationReception,referralResult} from '../../packages/core/src/lead-reception';
 import {claimReception,completeReception,receptionContext} from '../../packages/core/src/reception-worker';
 import {injectFacebookFixture} from '../../packages/core/src/facebook-inbound';
@@ -22,3 +22,49 @@ it('separates actual contact from sent invitations and exposes versioned templat
 it('counts comment origins separately from private messages and manual handovers',async()=>{const lead=await seedLead();await injectFacebookFixture(scope,lead.account_id,leadEvent(lead.page,{kind:'COMMENT',body:'Interested',source:{kind:'COMMENT',page_id:lead.page,source_id:'post_comment',ref:'post',ad_id:null}}));await conversationControl(scope,lead.conversation_id,{request_id:randomUUID(),expected_version:1,mode:'HUMAN',reason:'Human follow-up'});const report=await leadAnalytics(scope,filter);expect(report.metrics.find(row=>row.group_kind==='TOTAL')).toMatchObject({new_customers:2,inbound_messages:1,handoffs:1});expect(report.metrics.filter(row=>row.group_kind==='SOURCE').map(row=>row.source).sort()).toEqual(['COMMENT','MESSENGER']);});
 it('isolates reporting, edits and audit by brand and keeps records immutable',async()=>{const lead=await seedLead(),other={...scope,brand_id:randomUUID()};expect((await leadAnalytics(other,filter)).metrics[0].new_customers).toBe(0);expect((await leadAudit(other)).events).toHaveLength(0);await expect(updateLead({...scope,role:'viewer'},lead.customer_id,input(2))).rejects.toMatchObject({code:'FORBIDDEN_SCOPE'});await expect(updateLead(other,lead.customer_id,input(2))).rejects.toMatchObject({code:'NOT_FOUND'});await expect(scoped(scope,client=>client.query("UPDATE kff.audit_events SET details='{}' WHERE object_id=$1",[lead.event_id]))).rejects.toThrow();});
 it('bounds account intake while duplicate retry returns its original receipt',async()=>{const saved=process.env.KFF_FACEBOOK_EVENTS_PER_MINUTE;process.env.KFF_FACEBOOK_EVENTS_PER_MINUTE='1';try{const lead=await seedLead();expect(await injectFacebookFixture(scope,lead.account_id,lead.event)).toMatchObject({duplicate:true});await expect(injectFacebookFixture(scope,lead.account_id,leadEvent(lead.page))).rejects.toMatchObject({code:'RATE_LIMITED'});expect((await query('SELECT count(*)::int AS n FROM kff.messages'))[0].n).toBe(1);}finally{if(saved===undefined)delete process.env.KFF_FACEBOOK_EVENTS_PER_MINUTE;else process.env.KFF_FACEBOOK_EVENTS_PER_MINUTE=saved;}});
+// A page is ordered by (created_at DESC, id DESC). Paging only by `created_at < before` drops every
+// record that shares the boundary timestamp, which is exactly what a single transaction producing
+// more than one page of events looks like. The position cursor has to carry both keys.
+it('pages same-timestamp audit events without dropping or repeating any',async()=>{
+ const stamp=new Date().toISOString(),ids:string[]=[];
+ for(let index=0;index<201;index++){
+  const id=randomUUID();
+  await query("INSERT INTO kff.audit_events(organization_id,brand_id,actor_id,event_type,object_id,details,created_at) VALUES($1,$2,$3,'lead.pagination_probe',$4,'{}'::jsonb,$5)",[scope.organization_id,scope.brand_id,scope.user_id,id,stamp]);
+  ids.push(id);
+ }
+ const first=await leadAudit(scope,'');
+ // The whole probe window shares one timestamp, so a time-only cursor would stop after the first
+ // page with the rest unreachable. Walk the cursor to the end instead of assuming a page count.
+ expect(first.events).toHaveLength(200);
+ expect(first.next_cursor).toBeTruthy();
+ expect(first.cursor_kind).toBe('POSITION');
+ const pages=[first]; let cursor=first.next_cursor;
+ // Other tests in this file keep writing audit events, so a listing read page by page can overlap;
+ // that is inherent to keyset paging and not what this test is about. The property that matters is
+ // that the boundary timestamp never hides a record.
+ while(cursor&&pages.length<12){const next=await leadAudit(scope,cursor);pages.push(next);cursor=next.next_cursor;}
+ const seen=pages.flatMap(page=>page.events).map(row=>row.object_id);
+ const probeSeen=seen.filter(id=>ids.includes(id));
+ // Every one of the 201 same-timestamp records is reachable, exactly once.
+ expect([...probeSeen].sort()).toEqual([...ids].sort());
+ expect(new Set(probeSeen).size).toBe(ids.length);
+ // More than one page was required, and the walk terminated instead of looping forever.
+ expect(pages.length).toBeGreaterThan(1);
+ expect(pages.at(-1)!.next_cursor).toBeNull();
+ // Walking the *final* page's own cursor returns nothing: the listing has a real end.
+ const beyond=await leadAudit(scope,leadAuditCursor(pages.at(-1)!.events.at(-1)!));
+ expect(beyond.events).toHaveLength(0);
+});
+// The old `before` timestamp still works, and is reported as the time-only boundary it is.
+it('keeps the legacy timestamp cursor working and labels its boundary',async()=>{
+ const stamp=new Date(Date.now()-3600000).toISOString(),ids:string[]=[];
+ for(let index=0;index<3;index++){const id=randomUUID();await query("INSERT INTO kff.audit_events(organization_id,brand_id,actor_id,event_type,object_id,details,created_at) VALUES($1,$2,$3,'lead.pagination_probe',$4,'{}'::jsonb,$5)",[scope.organization_id,scope.brand_id,scope.user_id,id,stamp]);ids.push(id);}
+ const legacy=await leadAudit(scope,new Date(Date.now()-1800000).toISOString());
+ expect(legacy.cursor_kind).toBe('LEGACY_TIMESTAMP');
+ expect(legacy.cursor_limited).toBe(true);
+ expect(legacy.events.map(row=>row.object_id).sort()).toEqual([...ids].sort());
+ // A malformed cursor is refused rather than restarting the listing from the newest record.
+ await expect(leadAudit(scope,'not-a-timestamp')).rejects.toThrow();
+ // Cross-brand reads stay blocked: another brand sees none of these events.
+ expect((await leadAudit({...scope,brand_id:randomUUID()})).events).toHaveLength(0);
+});

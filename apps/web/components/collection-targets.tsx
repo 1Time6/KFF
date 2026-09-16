@@ -1,15 +1,15 @@
 'use client';
-import {cloneElement,useEffect,useId,useRef,useState,type FormEvent,type ReactElement} from 'react';
+import {useEffect,useRef,useState,type FormEvent} from 'react';
 import type {CollectionQuery} from '@kff/contracts';
 import type {CollectionFilter} from '../../../packages/contracts/src/target-selection';
 import type {TargetPreview,TargetSnapshot} from '@kff/core/target-snapshots';
 import {saveDownload} from './import-workbench';
+import { Field } from './field';
 
 export const emptyFilter:CollectionFilter={id_prefix:'',message_contains:'',author_id:'',min_reactions:null,field_states:{}};
 const labels={message:'正文',author_id:'作者标识',reaction_count:'互动数',comment_count:'评论数',created_time:'来源时间'};
 const modes={CURRENT_PAGE:'当前页',MANUAL:'手选行',ALL_FILTERED:'全部筛选结果'};
 const reasons:Record<string,string>={SOURCE_PURPOSE_NOT_ALLOWED:'来源未允许此用途',ACTION_AND_CONTACT_QUALIFICATION_REQUIRED:'还需具体动作及联系资格验证',SOURCE_FIELD_NOT_ALLOWED:'所选字段超出来源允许范围'};
-function Field({label,children}:{label:string;children:ReactElement<{id?:string}>}){const id=useId();return <div className="field"><label htmlFor={id}>{label}</label>{cloneElement(children,{id})}</div>;}
 async function api<T>(endpoint:string,body?:unknown):Promise<T>{const response=await fetch('/api/'+endpoint,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined,cache:'no-store'});const value=await response.json();if(!response.ok)throw new Error(value.error?.message??'操作未完成');return value;}
 export function CollectionFilterForm({query,filter,onApply}:{query:CollectionQuery;filter:CollectionFilter;onApply:(value:CollectionFilter)=>void}) {
   function apply(event:FormEvent<HTMLFormElement>){event.preventDefault();const form=new FormData(event.currentTarget);const kind=String(form.get('kind'));const field=String(form.get('field'));onApply({id_prefix:String(form.get('id_prefix')??''),message_contains:String(form.get('message_contains')??''),author_id:String(form.get('author_id')??''),min_reactions:form.get('min_reactions')?Number(form.get('min_reactions')):null,field_states:kind?{[field]:kind as 'VALUE'|'DISPLAYED_TIME'|'NULL'|'NOT_RETURNED'|'HIDDEN'}:{}});}

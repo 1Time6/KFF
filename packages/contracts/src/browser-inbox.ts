@@ -23,14 +23,20 @@ export const browserInboxBatch = z.object({
 // Composer observations stay fact-only: no peer name, message text or free-form page content.
 // `placeholder` records that the observed label only repeats the directory placeholder, which
 // names nobody and therefore never counts as a foreign chat target.
+// `label_kind` must describe the region that was actually observed: ABSENT means no candidate at
+// all, AMBIGUOUS means more than one candidate was visible and none of them could be accepted as
+// the single composer. A reader that only recorded its one-input observation reported every
+// multi-input page as ABSENT, so a page with two input boxes looked like a page with none.
 export const browserInboxComposerSurface = z.object({
   stage:z.enum(['facebook-inbox-directory-composer','facebook-inbox-composer-surface']),
   candidate_count:z.number().int().min(0).max(100),
-  label_kind:z.enum(['ABSENT','EXACT_NAME','NAMED_PREFIX','BARE_PREFIX','OTHER']),
+  label_kind:z.enum(['ABSENT','AMBIGUOUS','EXACT_NAME','NAMED_PREFIX','BARE_PREFIX','OTHER']),
   label_length:z.number().int().min(0).max(120),
   placeholder:z.boolean().optional(),
   reachable:z.boolean(), hit_target:z.boolean(), role:z.enum(['textbox','combobox','none']), contenteditable:z.boolean(),
-}).strict();
+}).strict()
+  .refine(v=>v.label_kind!=='ABSENT'||v.candidate_count===0,'只有真实零候选才能记为观察不到输入框')
+  .refine(v=>v.label_kind!=='AMBIGUOUS'||v.candidate_count>1,'输入框歧义必须来自一个以上候选');
 /**
  * A read conversation keeps the source of its evidence: an accepted-chat composer or a read-only
  * thread. `read`/`message_count` stay optional on input, because the window summary and the message
@@ -51,26 +57,52 @@ export const browserInboxThreadFailure = z.object({
   stage:z.enum(['facebook-inbox-directory-thread','facebook-inbox-directory-identity','facebook-inbox-directory-composer','facebook-inbox-composer-surface','facebook-inbox-read-only','facebook-inbox-load','facebook-inbox-wait-content','facebook-inbox-parse','facebook-inbox-peer','facebook-inbox-peer-hit-target','facebook-inbox-peer-menu','facebook-inbox-recheck']),
   // THREAD_NOT_ACCEPTED stays for historical records only. A missing, unusable or foreign
   // input box is reported as its own observation and never as a Facebook business reason.
-  code:z.enum(['TIMEOUT','THREAD_NOT_ACCEPTED','THREAD_COMPOSER_ABSENT','THREAD_COMPOSER_UNVERIFIED','THREAD_INPUT_UNUSABLE','THREAD_INPUT_FOREIGN','THREAD_IDENTITY_UNVERIFIED','INBOX_SOURCE_MISMATCH','ACCOUNT_MISMATCH']),
+  // THREAD_COMPOSER_AMBIGUOUS is the multi-candidate case: more than one input box was visible and
+  // no single one of them could be accepted, which is not the same fact as an unusable one.
+  code:z.enum(['TIMEOUT','THREAD_NOT_ACCEPTED','THREAD_COMPOSER_ABSENT','THREAD_COMPOSER_AMBIGUOUS','THREAD_COMPOSER_UNVERIFIED','THREAD_INPUT_UNUSABLE','THREAD_INPUT_FOREIGN','THREAD_IDENTITY_UNVERIFIED','INBOX_SOURCE_MISMATCH','ACCOUNT_MISMATCH']),
 }).strict();
 // A conversation the window did not read. A missing composer is its own reason: it is not
 // by itself proof that the chat was never accepted, and it must not be reported as a timeout.
 export const browserInboxSkippedThread = z.object({
   thread_id: remote,
-  reason: z.enum(['THREAD_NOT_ACCEPTED','THREAD_COMPOSER_ABSENT','THREAD_COMPOSER_UNVERIFIED','THREAD_INPUT_UNUSABLE','THREAD_INPUT_FOREIGN','THREAD_IDENTITY_UNVERIFIED','THREAD_WINDOW_UNAVAILABLE','MESSAGE_LIMIT']),
+  reason: z.enum(['THREAD_NOT_ACCEPTED','THREAD_COMPOSER_ABSENT','THREAD_COMPOSER_AMBIGUOUS','THREAD_COMPOSER_UNVERIFIED','THREAD_INPUT_UNUSABLE','THREAD_INPUT_FOREIGN','THREAD_IDENTITY_UNVERIFIED','THREAD_WINDOW_UNAVAILABLE','MESSAGE_LIMIT']),
   failure:browserInboxThreadFailure.optional(), composer_surface:browserInboxComposerSurface.optional(),
 }).strict().refine(v=>!v.failure||v.reason!=='MESSAGE_LIMIT','达到消息上限不是会话读取失败')
   .refine(v=>!v.composer_surface||Boolean(v.failure),'输入框观测必须属于一次会话读取失败');
 /**
- * The window must report readable, skipped and failed conversations separately. A skipped
- * conversation is never counted as a successful read, so it can be retried by a later cycle.
+ * The window must report readable, skipped and failed conversations separately, and the three
+ * categories are disjoint:
+ *  - `threads_read` - conversations whose messages were read;
+ *  - `threads_failed` - conversations the window tried to read and could not;
+ *  - `threads_skipped` - conversations the window did not read and did not fail on, because the
+ *    message limit stopped it before it got there.
+ * `threads_attempted` is therefore the reads plus the attempted failures, and a failed conversation
+ * is never counted a second time. The defect this fixes derived `attempted` from a base of already
+ * reached conversations and then added the failures to it, so a window of two conversations
+ * reported three, failed its own contract, and the conversation that had been read successfully
+ * was discarded along with it.
  */
 export const browserInboxDiscoveryCoverage = z.object({
   threads_attempted: z.number().int().min(0).max(3),
   threads_read: z.number().int().min(0).max(3),
   threads_skipped: z.number().int().min(0).max(3),
   threads_failed: z.number().int().min(0).max(3),
-}).strict().refine(v=>v.threads_attempted===v.threads_read+v.threads_skipped+v.threads_failed,'会话覆盖计数必须与已处理会话一致');
+}).strict()
+  .refine(v=>v.threads_attempted===v.threads_read+v.threads_failed,'会话覆盖计数必须与已处理会话一致')
+  .refine(v=>v.threads_failed+v.threads_skipped<=3,'未读会话不能超过窗口上限');
+/**
+ * The one derivation of that coverage, shared by the adapter that observes the window, the
+ * contract above and the controller that accepts the page, so the three cannot drift apart.
+ */
+export function browserInboxDiscoveryCoverageFrom(
+  read: readonly unknown[],
+  skipped: readonly {reason:string}[],
+): {threads_attempted:number;threads_read:number;threads_skipped:number;threads_failed:number} {
+  const neverAttempted=skipped.filter(entry=>entry.reason==='MESSAGE_LIMIT').length;
+  const failedThreads=skipped.filter(entry=>entry.reason!=='MESSAGE_LIMIT').length;
+  const readCount=read.length;
+  return {threads_attempted:readCount+failedThreads,threads_read:readCount,threads_skipped:neverAttempted,threads_failed:failedThreads};
+}
 export const browserInboxDiscoverySummary = z.object({
   strategy: z.literal('RECENT_ACCEPTED'), visible_threads: z.number().int().min(0).max(1000), unparsed_rows: z.number().int().min(0).max(1000),
   threads: z.array(browserInboxThreadTarget).max(3),
@@ -80,7 +112,7 @@ export const browserInboxDiscoverySummary = z.object({
   coverage: browserInboxDiscoveryCoverage.optional(),
   window_limited: z.boolean(), empty_list: z.boolean(),
 }).strict().refine(v => !v.coverage||v.coverage.threads_read===v.threads.filter(t=>t.read!==false).length,'覆盖计数必须与实际读取数量一致')
-  .refine(v => !v.coverage||v.coverage.threads_skipped===v.skipped.length&&v.coverage.threads_failed<=v.skipped.length,'覆盖计数必须与实际跳过数量一致')
+  .refine(v => !v.coverage||v.coverage.threads_failed+v.coverage.threads_skipped===v.skipped.length&&v.coverage.threads_failed===v.skipped.filter(s=>s.reason!=='MESSAGE_LIMIT').length,'覆盖计数必须与实际跳过数量一致')
   .refine(v => (v.observed??[]).every(o=>v.threads.some(t=>t.thread_id===o.thread_id&&t.read!==false)),'只读观测只能属于一次已读取的会话')
   .refine(v => { const ids=[...v.threads,...v.skipped].map(t=>t.thread_id);return new Set(ids).size===ids.length&&ids.length<=v.visible_threads&&(!v.empty_list||v.visible_threads===0&&v.unparsed_rows===0&&!v.window_limited); }, '会话窗口摘要必须保持唯一身份及真实空列表边界');
 export const browserInboxBinding = z.object({ environment: browserEnvironmentSnapshot, account_version: z.number().int().positive(), target: browserInboxTarget.optional(), discovery: browserInboxDiscovery.optional() }).strict().refine(v=>!(v.target&&v.discovery),'指定会话和发现会话不可同时启用');

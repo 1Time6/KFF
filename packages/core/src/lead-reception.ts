@@ -11,7 +11,7 @@ import {digest,requireCondition} from './index';
 import {audit,requireAdmin,requireWrite,enqueueTaskInTransaction} from './service';
 import {assertContactBasisAtSubmission,grantContactPermission} from './contacts';
 import {chooseTemplateVersion,ensureBundledTemplates} from './templates';
-import {queueReceptionForConversation} from './reception-queue';
+import {queueReceptionForConversation,receptionActivationLabels,type ReceptionActivationReason} from './reception-queue';
 import {receptionDraftProviderStatus,validateReceptionDraft} from './reception-drafts';
 
 export async function ensureMessengerCapability(client:PoolClient,scope:Scope,account:{id:string;is_synthetic:boolean},transport: string = 'API'){
@@ -105,9 +105,19 @@ export async function conversationControl(scope:Scope,id:string,input:z.infer<ty
     requireCondition(conversation.control_version===value.expected_version,'VERSION_CONFLICT','会话处理权已变化，请刷新',409);
     if(value.mode==='AI'){const connection=(await client.query('SELECT transport,is_synthetic FROM kff.facebook_connections WHERE account_id=$1',[conversation.account_id])).rows[0];requireCondition(connection?.transport!=='BROWSER'||connection.is_synthetic,'SOURCE_NOT_CONFIGURED','真实浏览器回复当前需要逐条人工批准',409);requireCondition(conversation.channel_kind==='FACEBOOK_MESSENGER'&&connection?.transport!=='BROWSER'||conversation.channel_kind==='FACEBOOK_BROWSER_MESSENGER'&&connection?.transport==='BROWSER','RECEPTION_UNAVAILABLE','当前会话尚未配置对应的接待渠道',409);}
     const result=(await client.query('UPDATE kff.conversations SET handling_mode=$1,control_version=control_version+1 WHERE id=$2 RETURNING id,handling_mode,control_version',[value.mode,id])).rows[0];
-    if(value.mode==='AI')await queueReceptionForConversation(client,id);
+    // Choosing AI mode and actually running reception are different facts. The queue inspects the
+    // real gate and reports the blocker (paused connection, auto reply off, nothing pending, ...),
+    // which is returned and audited so the operator is not left believing reception resumed.
+    // Reading the reason never turns an account switch back on.
+    let reception_status:{active:boolean;reason:ReceptionActivationReason;label:string;job_id:string|null}|null=null;
+    if(value.mode==='AI'){
+      const queued=await queueReceptionForConversation(client,id);
+      // `active` is what actually happened: a job is behind this conversation. The mode alone is
+      // never reported as running reception.
+      reception_status={active:Boolean(queued.job_id),reason:queued.status.reason,label:receptionActivationLabels[queued.status.reason],job_id:queued.job_id};
+    }
     const count=(await client.query("SELECT count(*)::int AS in_flight FROM kff.actions a JOIN kff.tasks t ON t.id=a.task_id WHERE t.conversation_id=$1 AND a.state IN ('SUBMITTING','SUBMITTED','UNKNOWN_OUTCOME')",[id])).rows[0];
-    await audit(client,scope,'conversation.controlled',id,{request_id:value.request_id,request_hash:hash,reason:value.reason,previous_mode:conversation.handling_mode,result:{...result,...count}});return {...result,...count};
+    await audit(client,scope,'conversation.controlled',id,{request_id:value.request_id,request_hash:hash,reason:value.reason,previous_mode:conversation.handling_mode,reception_status,result:{...result,...count}});return {...result,...count,reception_status};
   });
 }
 type ReplyOptions={request_id:string;request_hash:string;body:string;refer_whatsapp:boolean;corrects_referral_id?:string;actor_kind:'AI'|'HUMAN';draft?:z.infer<typeof receptionDraftReference>;fixture_scenario?:z.infer<typeof replyInput>['fixture_scenario'];prepare_only?:boolean;delay_minutes?:number;contact_permission_id?:string};

@@ -87,6 +87,43 @@ export async function assertContactBasisAtSubmission(client: PoolClient, selecti
   const value = contactSelectionSchema.parse(selection); const result = await evaluateBasis(client, value, value);
   requireCondition(result.basis_eligible, result.reason_codes[0], '联系依据已不满足本次用途，停止新提交', 409); return result.selection;
 }
-export async function listContactRecords(scope: Scope) {
-  return scoped(scope, async client => ({ targets: (await client.query('SELECT * FROM kff.contact_targets ORDER BY created_at DESC,id LIMIT 200')).rows, permissions: (await client.query('SELECT * FROM kff.contact_permissions ORDER BY created_at DESC,id LIMIT 200')).rows, execution_authorized: false as const }));
+/** Stable position cursor for the contact lists, which are ordered by `created_at DESC, id DESC`. */
+export function contactCursor(row:{id:string;created_at:string}){return new Date(row.created_at).toISOString()+'|'+row.id;}
+export function parseContactCursor(value:string|undefined):{created_at:string;id:string}|null{
+  if(!value)return null;
+  const separator=value.lastIndexOf('|');
+  requireCondition(separator>0,'INVALID_INPUT','联系记录游标无效');
+  return {created_at:z.string().datetime().parse(value.slice(0,separator)),id:z.string().uuid().parse(value.slice(separator+1))};
+}
+/**
+ * List contact targets and permissions.
+ *
+ * The account filter is applied in SQL, before LIMIT. The previous version took the newest 200 rows
+ * for the whole brand and let the page filter by account afterwards, so an account whose records
+ * were older than 200 newer rows from other accounts looked empty even though its records existed.
+ * Each list pages independently with a `(created_at, id)` cursor, and `has_more` distinguishes
+ * "this account has no records" from "this page has no more records".
+ */
+export async function listContactRecords(scope: Scope, options:{account_id?:string;targets_cursor?:string;permissions_cursor?:string}={}) {
+  return scoped(scope, async client => {
+    const accountId = options.account_id ?? null;
+    requireCondition(!accountId || z.string().uuid().safeParse(accountId).success, 'INVALID_INPUT', '账号标识无效');
+    // One prepared shape for both lists: account filter first, then the position cursor.
+    const clause = 'WHERE ($1::uuid IS NULL OR account_id=$1) AND ($2::timestamptz IS NULL OR (created_at,id)<($2::timestamptz,$3::uuid)) ORDER BY created_at DESC,id DESC LIMIT 201';
+    // A permission has no account of its own; it belongs to the account through its target, so the
+    // filter is applied on the joined target before LIMIT. Cursor columns are qualified for the join.
+    const permissionClause = 'WHERE ($1::uuid IS NULL OR t.account_id=$1) AND ($2::timestamptz IS NULL OR (p.created_at,p.id)<($2::timestamptz,$3::uuid)) ORDER BY p.created_at DESC,p.id DESC LIMIT 201';
+    const targetCursor = parseContactCursor(options.targets_cursor), permissionCursor = parseContactCursor(options.permissions_cursor);
+    const targets = (await client.query('SELECT * FROM kff.contact_targets ' + clause, [accountId, targetCursor?.created_at ?? null, targetCursor?.id ?? null])).rows;
+    const permissions = (await client.query('SELECT p.* FROM kff.contact_permissions p JOIN kff.contact_targets t ON t.id=p.target_id AND t.organization_id=p.organization_id AND t.brand_id=p.brand_id ' + permissionClause, [accountId, permissionCursor?.created_at ?? null, permissionCursor?.id ?? null])).rows;
+    // One extra row is fetched only to answer "is there another page"; it is never returned.
+    const slice = (rows: { id: string; created_at: string }[]) => ({ rows: rows.slice(0, 200), next: rows.length > 200 ? contactCursor(rows[199]) : null });
+    const targetPage = slice(targets), permissionPage = slice(permissions);
+    return {
+      targets: targetPage.rows, permissions: permissionPage.rows, account_id: accountId,
+      next_targets_cursor: targetPage.next, next_permissions_cursor: permissionPage.next,
+      has_more: { targets: targetPage.next !== null, permissions: permissionPage.next !== null },
+      execution_authorized: false as const,
+    };
+  });
 }
