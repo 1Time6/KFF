@@ -203,7 +203,9 @@ export async function acceptReport(agent: AgentIdentity, input: ActionReport) {
     if (report.outcome === 'VERIFIED_SUCCEEDED' && !command.snapshot.is_synthetic && !isWrite(command.snapshot)) await client.query("UPDATE kff.accounts SET state='ACTIVE' WHERE id=$1 AND version=$2 AND credential_ref IS NOT DISTINCT FROM $3 AND state='DRAFT'", [command.snapshot.account_id, command.snapshot.account_version, command.snapshot.credential_ref]);
     await client.query('UPDATE kff.action_attempts SET state=$1,completed_at=now() WHERE id=$2', [report.outcome, command.attempt_id]);
     await client.query("UPDATE kff.agent_commands SET state='DONE' WHERE id=$1", [command.id]);
-    const quarantine = report.outcome === 'UNKNOWN_OUTCOME' || report.error_code === 'AGENT_RESTART';
+    // A no-progress termination proves the process is gone and nothing more, so its environment keeps
+    // the same isolation a lease expiry would have given it instead of being handed back as idle.
+    const quarantine = report.outcome === 'UNKNOWN_OUTCOME' || report.error_code === 'AGENT_RESTART' || report.error_code === 'GUARDIAN_NO_PROGRESS';
     for (const lease of command.leases) await client.query('UPDATE kff.resource_leases SET quarantined=$1,holder_attempt_id=CASE WHEN $1 THEN holder_attempt_id ELSE NULL END,expires_at=clock_timestamp() WHERE organization_id=$2 AND resource_type=$3 AND resource_id=$4 AND token=$5 AND holder_attempt_id=$6', [quarantine, command.organization_id, lease.resource_type, lease.resource_id, lease.token, command.attempt_id]);
     await client.query('UPDATE kff.environments SET state=$1 WHERE id=$2', [quarantine ? 'QUARANTINED' : 'IDLE', command.snapshot.environment_id]);
     const status = report.outcome === 'VERIFIED_SUCCEEDED' ? 'SUCCEEDED' : report.outcome === 'CANCELED' ? 'CANCELED' : ['UNKNOWN_OUTCOME', 'NEEDS_HUMAN'].includes(report.outcome) ? 'NEEDS_HUMAN' : 'FAILED';

@@ -1,5 +1,5 @@
-import { randomUUID } from 'node:crypto';
-import { mkdtemp, readFile } from 'node:fs/promises';
+import { randomBytes, randomUUID } from 'node:crypto';
+import { mkdir, mkdtemp, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { beforeAll, beforeEach, afterAll, it, expect } from 'vitest';
 import { migrate } from '../../scripts/migrate';
@@ -7,7 +7,7 @@ import { seed } from '../../scripts/seed';
 import { startFixtureServer } from '../../scripts/fixture-server';
 import { query, closePool } from '@kff/database';
 import { digest } from '@kff/core';
-import type { AgentCommand } from '@kff/contracts';
+import { quiescenceInput, type ActionReport, type AgentCommand } from '@kff/contracts';
 import { receptionPolicy } from '../../packages/contracts/src/lead';
 import type { BrowserFixtureEvent } from '../../packages/adapters/src/browser-message-fixture';
 import { configureFacebook } from '../../packages/core/src/facebook-inbound';
@@ -15,11 +15,13 @@ import { configureBrowserInbox, controlBrowserInbox, prepareBrowserInboxPage, sy
 import { inboxConversation } from '../../packages/core/src/inbox';
 import { sendConversationReply, conversationReception, referralResult, conversationControl } from '../../packages/core/src/lead-reception';
 import { processReceptionOne, configureReceptionPolicy } from '../../packages/core/src/reception-worker';
-import { dispatchOne, claimCommand, beginSubmission, acceptReport, agentHeartbeat } from '../../packages/core/src/execution';
+import { dispatchOne, claimCommand, beginSubmission, acceptReport, agentHeartbeat, commandStatus, recordBrowserOpened } from '../../packages/core/src/execution';
 import { recordQuiescence, reconcileSynthetic, releaseQuarantine } from '../../packages/core/src/reconciliation';
 import { adjudicateAction } from '../../packages/core/src/adjudication';
 import { runGuardian } from '../../apps/agent/src/guardian';
-import { closureProof } from '../../apps/agent/src/guardian-protocol';
+import { closureProof, noProgressProtocolVersion, readClosure, readClosureEvidence } from '../../apps/agent/src/guardian-protocol';
+import { flushActionJournal, type JournalEntry } from '../../apps/agent/src/action-journal';
+import { isProcessAlive } from '../../apps/agent/src/process-tree';
 import { browserInboxSetup, ingestBrowserBatch } from '../helpers/browser-inbox';
 import { leadScope as scope, leadAgent as agent, clearLeads, seedDestination, claimLead } from '../helpers/lead-fixture';
 
@@ -62,6 +64,17 @@ async function scan(environmentId: string) {
   const result = await finish(command); expect(result.report.outcome).toBe('VERIFIED_SUCCEEDED'); await syncBrowserInboxTasks(); return result;
 }
 const receipts = async (actionId: string) => (await (await fetch(fixture.origin + '/browser-message-receipts?action_id=' + actionId)).json()) as Array<Record<string, unknown>>;
+/**
+ * The three endpoints `main.ts` sends the journal through, wired to the real controller functions
+ * instead of a stub, so a flush in these tests proves what the production flush would do.
+ */
+const controller = async <T>(endpoint: string, data?: unknown): Promise<T> => {
+  const parts = endpoint.split('/');
+  if (endpoint === 'action-reports') return await acceptReport(agent, data as ActionReport) as T;
+  if (parts[0] === 'commands' && parts[2] === 'status') return await commandStatus(agent, parts[1]) as T;
+  if (parts[0] === 'commands' && parts[2] === 'quiescence') return await recordQuiescence(agent, parts[1], quiescenceInput.parse(data)) as T;
+  throw new Error('Unexpected controller endpoint ' + endpoint);
+};
 
 it('reads actual Inbox DOM, sends one browser WhatsApp invitation, persists the receipt and deduplicates the later echo', async () => {
   const h = await setup(false, true); await seedDestination(h.account_id); await scan(h.environment_id); const id = await conversation(h.account_id);
@@ -128,3 +141,151 @@ it('requires both thread and peer for human review of an unknown browser message
   await adjudicateAction(scope, queued.run_id, input); expect((await query('SELECT receipt FROM kff.actions WHERE id=$1', [command.action_id]))[0].receipt.thread_id).toBe('000777');
   expect((JSON.parse(await readFile(path.join(storage, 'fixture-browser-messages.json'), 'utf8')) as BrowserFixtureEvent[]).filter(row => row.action_id === command.action_id)).toHaveLength(1);
 }, 60000);
+
+/**
+ * The one path that can leave a real write genuinely unknowable. The guardian is a real child running
+ * the real browser adapter against the real fixture: it opens a real context, reaches the submission
+ * boundary, and the controller really records the submit intention. Only then does it stop making
+ * progress, so afterwards nobody can say whether the platform write happened - and the whole point of
+ * the record is that it says exactly that much and nothing more.
+ */
+it('ends a guardian that stopped answering while it held submission authority, and keeps the unknown outcome isolated', async () => {
+  const h = await setup(), id = await conversation(h.account_id);
+  await sendConversationReply(scope, id, reply());
+  const command = await claimLead();
+  const runtime = path.join(storage, '.kff', 'agent-process-tests', 'granting');
+  await mkdir(runtime, { recursive: true });
+  const value = randomBytes(32).toString('hex');
+  // The child only arms the stall for a runtime inside `<KFF_ROOT>/.kff/agent-process-tests/`, so the
+  // real root is moved onto this test's throwaway directory for the length of the run - which also
+  // keeps the browser profile it launches inside that directory - and restored immediately after.
+  const environment = process.env as Record<string, string | undefined>;
+  const previous = [['KFF_ROOT', environment.KFF_ROOT], ['NODE_ENV', environment.NODE_ENV], ['KFF_TEST_GUARDIAN_HANG_AT', environment.KFF_TEST_GUARDIAN_HANG_AT]] as const;
+  environment.KFF_ROOT = storage; environment.NODE_ENV = 'test'; environment.KFF_TEST_GUARDIAN_HANG_AT = 'before-grant';
+  const journal: Record<string, JournalEntry> = {};
+  journal[command.id] = { command_id: command.id, action_id: command.action_id, phase: 'claimed', guardian_nonce: value };
+  let guardian: number | undefined;
+  try {
+    await expect(runGuardian(command, runtime, value, {
+      signal: new AbortController().signal,
+      onSpawn: spawned => { guardian = spawned; journal[command.id].guardian_pid = spawned; },
+      onContextOpened: async () => { journal[command.id].phase = 'context_open'; if (command.snapshot.browser_environment) await recordBrowserOpened(agent, command.id); },
+      // The journal reaches `submitting` because the real controller call really happened. The phase
+      // the parent observed is still `granting`, because the grant it decided on was never delivered.
+      beforeSubmit: async () => { journal[command.id].phase = 'intent_requested'; await beginSubmission(agent, command.id); journal[command.id].phase = 'submitting'; return new Promise(() => {}); },
+      liveness: { granting: 1500, grace: 1000, force: 5000 },
+    })).rejects.toMatchObject({ code: 'GUARDIAN_NO_PROGRESS' });
+  } finally { for (const [key, stored] of previous) { if (stored === undefined) delete environment[key]; else environment[key] = stored; } }
+  expect(guardian).toBeGreaterThan(0);
+  await expect.poll(() => isProcessAlive(guardian), { timeout: 10000 }).toBe(false);
+  // Three facts, recorded as three facts: the process is proven gone, a context really was opened, and
+  // whether the platform write happened is precisely what nobody can answer any more. There is no
+  // `context_closed` to read, because ending a process never closes anything.
+  const identity = { command_id: command.id, action_id: command.action_id, guardian_nonce: value };
+  const record = readClosureEvidence(runtime, identity);
+  expect(record).toMatchObject({
+    protocol_version: noProgressProtocolVersion, command_id: command.id, action_id: command.action_id, nonce: value,
+    phase: 'granting', process_terminated: true, context_opened: true, submission_state: 'UNKNOWN', forced: true, grace_ms: 1000,
+    result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' },
+  });
+  expect(record).not.toHaveProperty('context_closed');
+  expect((record as { waited_ms: number }).waited_ms).toBeGreaterThanOrEqual(1500);
+  // A termination is not a closure, so the weaker record can never be read back as one.
+  const asClosure = (() => { try { readClosure(runtime, identity); return 'closed'; } catch (error) { return (error as { code?: string }).code; } })();
+  expect(asClosure).toBe('GUARDIAN_UNCONFIRMED');
+  // The real flush against the real controller: the same three endpoints `main.ts` uses.
+  expect(await flushActionJournal(runtime, journal, () => {}, controller)).toBe(true);
+  // The parent's own record said NEEDS_HUMAN. The action state is what corrects it: a persisted submit
+  // intention means nobody may be told this was harmless, so what actually leaves the machine is
+  // UNKNOWN_OUTCOME - never CANCELED and never VERIFIED_FAILED.
+  expect(journal[command.id].report).toMatchObject({ outcome: 'UNKNOWN_OUTCOME', error_code: 'GUARDIAN_NO_PROGRESS' });
+  expect(journal[command.id].quiesced).toBe(true);
+  expect((await query('SELECT state,error_code FROM kff.actions WHERE id=$1', [command.action_id]))[0]).toEqual({ state: 'UNKNOWN_OUTCOME', error_code: 'GUARDIAN_NO_PROGRESS' });
+  const stored = (await query('SELECT state,quiesced_at FROM kff.agent_commands WHERE id=$1', [command.id]))[0];
+  expect(stored.state).toBe('DONE'); expect(stored.quiesced_at).not.toBeNull();
+  // The command lifecycle closed, so the slot is free - and the environment is still isolated, still
+  // reporting the browser it was really running: a termination proves nothing about that browser, so
+  // nothing here may project it as closed.
+  expect(await query("SELECT 1 FROM kff.agent_commands WHERE agent_id=$1 AND state IN ('READY','CLAIMED')", [agent.id])).toHaveLength(0);
+  expect((await query('SELECT state,browser_status FROM kff.environments WHERE id=$1', [h.environment_id]))[0]).toEqual({ state: 'QUARANTINED', browser_status: 'RUNNING' });
+  const leases = await query<{ resource_type: string; quarantined: boolean }>('SELECT resource_type,quarantined FROM kff.resource_leases WHERE holder_attempt_id=$1 ORDER BY resource_type', [command.attempt_id]);
+  expect(leases.map(lease => lease.resource_type)).toEqual(['account', 'environment']);
+  expect(leases.every(lease => lease.quarantined)).toBe(true);
+  expect((await query('SELECT r.status AS run_status,t.status AS task_status FROM kff.runs r JOIN kff.tasks t ON t.id=r.task_id WHERE r.id=$1', [command.run_id]))[0]).toEqual({ run_status: 'NEEDS_HUMAN', task_status: 'NEEDS_HUMAN' });
+  // One attempt, one report, one command for this action: the terminated run is never resent.
+  expect((await query('SELECT count(*)::int AS n FROM kff.action_attempts WHERE action_id=$1', [command.action_id]))[0].n).toBe(1);
+  expect((await query("SELECT count(*)::int AS n FROM kff.audit_events WHERE event_type='action.reported' AND object_id=$1", [command.action_id]))[0].n).toBe(1);
+  expect((await query('SELECT count(*)::int AS n FROM kff.agent_commands WHERE action_id=$1', [command.action_id]))[0].n).toBe(1);
+  // The same terminal outcome reported without the no-progress fact does hand the environment back, so
+  // the isolation above comes from what the record proves rather than from a failure in general.
+  const h2 = await setup();
+  await sendConversationReply(scope, await conversation(h2.account_id), reply());
+  const other = await claimLead();
+  const held = await query<{ resource_id: string }>('SELECT resource_id FROM kff.resource_leases WHERE holder_attempt_id=$1', [other.attempt_id]);
+  expect(held.length).toBeGreaterThan(0);
+  await acceptReport(agent, { event_id: randomUUID(), command_id: other.id, outcome: 'NEEDS_HUMAN', error_code: 'EXECUTOR_ERROR', diagnostic: { step: 'executor-failed' } });
+  expect((await query('SELECT state FROM kff.environments WHERE id=$1', [h2.environment_id]))[0].state).toBe('IDLE');
+  for (const lease of held) expect((await query('SELECT quarantined FROM kff.resource_leases WHERE resource_id=$1', [lease.resource_id])).every(row => row.quarantined === false)).toBe(true);
+}, 90000);
+
+it('ends a child that went silent just after it opened a real browser, and never records that browser as closed', async () => {
+  const h = await setup(), id = await conversation(h.account_id);
+  await sendConversationReply(scope, id, reply());
+  const command = await claimLead();
+  // The premise of this case: the command really drives a browser, so the child really opens one and
+  // really reports it. Nothing about the stall below is simulated at the parent's side of the wire.
+  expect(command.snapshot.browser_environment).toBeTruthy();
+  const runtime = path.join(storage, '.kff', 'agent-process-tests', 'intent');
+  await mkdir(runtime, { recursive: true });
+  const value = randomBytes(32).toString('hex');
+  const environment = process.env as Record<string, string | undefined>;
+  const previous = [['KFF_ROOT', environment.KFF_ROOT], ['NODE_ENV', environment.NODE_ENV], ['KFF_TEST_GUARDIAN_HANG_AT', environment.KFF_TEST_GUARDIAN_HANG_AT]] as const;
+  environment.KFF_ROOT = storage; environment.NODE_ENV = 'test'; environment.KFF_TEST_GUARDIAN_HANG_AT = 'after-context';
+  const journal: Record<string, JournalEntry> = {};
+  journal[command.id] = { command_id: command.id, action_id: command.action_id, phase: 'claimed', guardian_nonce: value };
+  let guardian: number | undefined, intentRequested = false;
+  try {
+    await expect(runGuardian(command, runtime, value, {
+      signal: new AbortController().signal,
+      onSpawn: spawned => { guardian = spawned; journal[command.id].guardian_pid = spawned; },
+      // The parent only sets this phase because it really received `context-opened` from the child.
+      onContextOpened: async () => { journal[command.id].phase = 'context_open'; await recordBrowserOpened(agent, command.id); },
+      beforeSubmit: async () => { intentRequested = true; },
+      liveness: { 'awaiting-intent': 1500, grace: 1000, force: 5000 },
+    })).rejects.toMatchObject({ code: 'GUARDIAN_NO_PROGRESS' });
+  } finally { for (const [key, stored] of previous) { if (stored === undefined) delete environment[key]; else environment[key] = stored; } }
+  // A child frozen inside the callback that opens the context never asks to submit, so this run never
+  // held submission authority at any point.
+  expect(intentRequested).toBe(false);
+  expect(guardian).toBeGreaterThan(0);
+  await expect.poll(() => isProcessAlive(guardian), { timeout: 10000 }).toBe(false);
+  const identity = { command_id: command.id, action_id: command.action_id, guardian_nonce: value };
+  const record = readClosureEvidence(runtime, identity);
+  // Three separate facts, recorded as three separate facts: the process is gone, the context really
+  // opened, and no submission was ever attempted. A termination proves only the first of them.
+  expect(record).toMatchObject({ protocol_version: noProgressProtocolVersion, command_id: command.id, action_id: command.action_id, nonce: value,
+    phase: 'awaiting-intent', process_terminated: true, context_opened: true, submission_state: 'NOT_SUBMITTED', forced: true, grace_ms: 1000,
+    result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' } });
+  expect(record).not.toHaveProperty('context_closed');
+  expect((record as { waited_ms: number }).waited_ms).toBeGreaterThanOrEqual(1500);
+  const asClosure = (() => { try { readClosure(runtime, identity); return 'closed'; } catch (error) { return (error as { code?: string }).code; } })();
+  expect(asClosure).toBe('GUARDIAN_UNCONFIRMED');
+  expect(await flushActionJournal(runtime, journal, () => {}, controller)).toBe(true);
+  // The action never left PREPARING, so the outcome the parent recorded stands: the run is handed to a
+  // human, and the browser it had really opened is not written off as closed.
+  expect(journal[command.id].report).toMatchObject({ outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' });
+  expect(journal[command.id].quiesced).toBe(true);
+  expect((await query('SELECT state,error_code FROM kff.actions WHERE id=$1', [command.action_id]))[0]).toEqual({ state: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' });
+  const stored = (await query('SELECT state,quiesced_at FROM kff.agent_commands WHERE id=$1', [command.id]))[0];
+  expect(stored.state).toBe('DONE'); expect(stored.quiesced_at).not.toBeNull();
+  expect(await query("SELECT 1 FROM kff.agent_commands WHERE agent_id=$1 AND state IN ('READY','CLAIMED')", [agent.id])).toHaveLength(0);
+  // A real context was open and nothing proves it was closed, so it is not projected as closed.
+  expect((await query('SELECT state,browser_status FROM kff.environments WHERE id=$1', [h.environment_id]))[0]).toEqual({ state: 'QUARANTINED', browser_status: 'RUNNING' });
+  const leases = await query<{ resource_type: string; quarantined: boolean }>('SELECT resource_type,quarantined FROM kff.resource_leases WHERE holder_attempt_id=$1 ORDER BY resource_type', [command.attempt_id]);
+  expect(leases.map(lease => lease.resource_type)).toEqual(['account', 'environment']);
+  expect(leases.every(lease => lease.quarantined)).toBe(true);
+  expect((await query('SELECT r.status AS run_status,t.status AS task_status FROM kff.runs r JOIN kff.tasks t ON t.id=r.task_id WHERE r.id=$1', [command.run_id]))[0]).toEqual({ run_status: 'NEEDS_HUMAN', task_status: 'NEEDS_HUMAN' });
+  expect((await query('SELECT count(*)::int AS n FROM kff.action_attempts WHERE action_id=$1', [command.action_id]))[0].n).toBe(1);
+  expect((await query("SELECT count(*)::int AS n FROM kff.audit_events WHERE event_type='action.reported' AND object_id=$1", [command.action_id]))[0].n).toBe(1);
+  expect((await query('SELECT count(*)::int AS n FROM kff.agent_commands WHERE action_id=$1', [command.action_id]))[0].n).toBe(1);
+}, 90000);

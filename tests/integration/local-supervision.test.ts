@@ -1,7 +1,8 @@
 import {randomUUID} from 'node:crypto';
 import {spawn,type ChildProcess} from 'node:child_process';
 import {createServer} from 'node:http';
-import {mkdtemp,mkdir,readFile,writeFile} from 'node:fs/promises';
+import {mkdtemp,mkdir,readFile,rm,writeFile} from 'node:fs/promises';
+import os from 'node:os';
 import path from 'node:path';
 import {beforeAll,beforeEach,afterAll,it,expect} from 'vitest';
 import {migrate} from '../../scripts/migrate';
@@ -27,7 +28,8 @@ async function killOwned(child?:ChildProcess){if(child&&child.exitCode===null&&c
 const childMessages=(child:ChildProcess)=>{const states:string[]=[];child.on('message',m=>{if(typeof m==='object'&&m&&'protocol'in m&&m.protocol===localSupervisionProtocol&&'state'in m)states.push(String(m.state));});return states;};
 
 it.each(['drain','parent-disconnect'] as const)('preserves the original receipt after lost acknowledgement and %s',async(mode)=>{
- const root=await mkdtemp(path.resolve('.kff/local-supervision-'));await mkdir(path.join(root,'.kff'));
+ // The Agent under test keeps its journal, lock and browser profile in its own temporary root.
+ const root=await mkdtemp(path.join(os.tmpdir(),'kff-local-supervision-'));await mkdir(path.join(root,'.kff'));
  const fixture=await startFixtureServer(0,path.join(root,'fixture'));let hold=true,received=0,claims=0,commandId='',busy=false;const errors:string[]=[];
  const server=createServer(async(req,res)=>{try{
   const agent=await authenticateAgent(new Request('http://127.0.0.1'+req.url,{headers:{authorization:req.headers.authorization??''}}));
@@ -71,7 +73,7 @@ it.each(['drain','parent-disconnect'] as const)('preserves the original receipt 
   const proof=(await query("SELECT details->'proof' proof FROM kff.audit_events WHERE event_type='guardian.quiesced' AND object_id=$1",[commandId]))[0].proof;expect(digest(proof)).toBe(original);expect(digest(closureProof(readClosureEvidence(path.join(root,'.kff'),final[commandId])!))).toBe(original);
   expect((await query('SELECT count(*)::int AS n FROM kff.agent_commands WHERE agent_id=$1',[paired.agent.id]))[0].n).toBe(1);expect(errors).toEqual([]);
   await writeFile('.kff/checks/local-supervision-agent-'+mode+'.json',JSON.stringify({synthetic:true,real_platform:false,command_id:commandId,drained:true,original_proof_preserved:true,accepted_commands:1,mode,states},null,2));
- }finally{clearInterval(timer);await expect.poll(()=>busy).toBe(false);await killOwned(child);server.closeAllConnections();await new Promise<void>(r=>server.close(()=>r()));await fixture.close();}
+ }finally{clearInterval(timer);await expect.poll(()=>busy).toBe(false);await killOwned(child);server.closeAllConnections();await new Promise<void>(r=>server.close(()=>r()));await fixture.close();if(path.dirname(root)!==os.tmpdir()||!path.basename(root).startsWith('kff-local-supervision-'))throw new Error('Unexpected test directory');await rm(root,{recursive:true,force:true,maxRetries:5,retryDelay:200});}
 },90000);
 
 it('drains the actual Worker and closes its database pool through local IPC on Windows',async()=>{

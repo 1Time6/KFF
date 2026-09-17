@@ -69,8 +69,13 @@ async function runCommand(command: AgentCommand) {
   };
   try {
     await runGuardian(command, runtimeDir, nonce, { beforeSubmit, signal: control.signal, onSpawn: pid => { journal[command.id].guardian_pid = pid; saveJournal(); }, onContextOpened: async () => { journal[command.id].phase = 'context_open'; saveJournal(); if (command.snapshot.browser_environment) await api('commands/' + command.id + '/context-opened'); } });
-  } finally { clearInterval(timer); executionControl = null; }
-  await flushJournal();
+  } finally {
+    clearInterval(timer); executionControl = null;
+    // A guardian that failed to start has still written the closure that releases this slot, so the
+    // flush must not be skipped when the run rejects. It may never replace the original error - the
+    // loop gate below is what keeps a context without a proven closure blocking new work.
+    await flushJournal().catch(error => console.error('Agent flush after command:', error instanceof AppError ? error.code : 'CONTROL_UNAVAILABLE'));
+  }
 }
 
 console.log('KFF Agent started with persistent journal and one execution slot');

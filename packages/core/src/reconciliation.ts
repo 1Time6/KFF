@@ -16,7 +16,11 @@ export async function recordQuiescence(agent: AgentIdentity, commandId: string, 
     if (previous) requireCondition(digest(previous.details.proof) === digest(proof), 'IDEMPOTENCY_CONFLICT', '关闭证明与已记录内容不一致', 409);
     else await client.query("INSERT INTO kff.audit_events(organization_id,brand_id,actor_id,event_type,object_id,details) VALUES($1,$2,$3,'guardian.quiesced',$4,$5)", [agent.organization_id, agent.brand_id, agent.id, commandId, { actor_kind: 'agent', proof }]);
     await client.query('UPDATE kff.agent_commands SET quiesced_at=COALESCE(quiesced_at,now()) WHERE id=$1', [commandId]);
-    await client.query("UPDATE kff.environments e SET browser_status='CLOSED' FROM kff.tasks t JOIN kff.actions a ON a.task_id=t.id WHERE a.id=$1 AND t.environment_id=e.id AND t.snapshot ? 'browser_environment' AND NOT EXISTS(SELECT 1 FROM kff.resource_leases l WHERE l.resource_type='environment' AND l.resource_id=e.id AND (l.holder_control_id IS NOT NULL OR l.holder_attempt_id IS NOT NULL AND l.holder_attempt_id<>$2))", [row.action_id, row.attempt_id]);
+    // Releasing the command is what frees the execution slot and happens for either closure fact. The
+    // environment is only projected as CLOSED for a proof that a context was actually closed: a
+    // startup failure says the opposite, and clearing browser_status on its strength would record a
+    // closure that never happened.
+    if (proof.protocol_version === 'kff.guardian-closure.v1') await client.query("UPDATE kff.environments e SET browser_status='CLOSED' FROM kff.tasks t JOIN kff.actions a ON a.task_id=t.id WHERE a.id=$1 AND t.environment_id=e.id AND t.snapshot ? 'browser_environment' AND NOT EXISTS(SELECT 1 FROM kff.resource_leases l WHERE l.resource_type='environment' AND l.resource_id=e.id AND (l.holder_control_id IS NOT NULL OR l.holder_attempt_id IS NOT NULL AND l.holder_attempt_id<>$2))", [row.action_id, row.attempt_id]);
     return { quiesced: true };
   });
 }

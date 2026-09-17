@@ -30,6 +30,33 @@ const stop = () => {
 };
 process.on('disconnect', stop); process.on('SIGINT', stop); process.on('SIGTERM', stop);
 const idleTimer = setTimeout(() => process.exit(1), 10000);
+/**
+ * Sealed test-only fault injection. It exists so the liveness regression can make a real guardian
+ * child stop making progress at a chosen point of its real lifecycle instead of waiting for an
+ * intermittent hang to show up. The parent only ever sets the variable for a run whose NODE_ENV is
+ * `test` and whose runtime directory is a guardian process-test root, and this side re-checks
+ * NODE_ENV, so no production run can reach it.
+ */
+const hangPoint = process.env.NODE_ENV === 'test' ? process.env.KFF_TEST_GUARDIAN_HANG_AT : undefined;
+/**
+ * Alive and answering, simply never progressing: the child waits for something that never arrives.
+ * Bounded so that a run which armed this injection and then died cannot leave a process behind; every
+ * budget that can reach it is shorter than this.
+ */
+const hangSilently = (ms = 60000) => new Promise<never>(() => { setTimeout(() => process.exit(1), ms); });
+/**
+ * Frozen: the event loop stops running, which is exactly what a browser call that never returns does
+ * to this process. Bounded so a leaked injection can never spin forever; every budget that reaches
+ * it is far shorter than this.
+ */
+const hangFrozen = (ms = 60000) => { const until = Date.now() + ms; while (Date.now() < until) { /* frozen event loop */ } };
+/** Every executor reports its context through here, so the injection has exactly one home. */
+const onContext = (value: BrowserContext | null) => {
+  context = value;
+  if (value && process.connected) process.send?.({ type: 'context-opened' }, () => {});
+  if (value && control.signal.aborted) void value.close().catch(() => {});
+  if (value && hangPoint === 'after-context') hangFrozen();
+};
 process.on('message', async raw => {
   if (!raw || typeof raw !== 'object' || !('type' in raw)) return;
   if (raw.type === 'keepalive') { lastControl = performance.now(); return; }
@@ -44,22 +71,36 @@ process.on('message', async raw => {
   const parsed = startInput.safeParse(raw); if (!parsed.success) { process.exit(1); return; }
   const { command, runtime, nonce } = parsed.data; const start = performance.now();
   lastControl = performance.now();
+  if (hangPoint === 'before-start-ack') { await hangSilently(); return; }
+  // The parent budgets its phases on what it has actually observed, so it needs to know that `start`
+  // arrived. Without this the parent cannot tell a child that never received `start` from one that is
+  // stuck inside the browser launch it began after receiving it.
+  if (process.connected) process.send?.({ type: 'started' }, () => {});
+  if (hangPoint === 'after-start') { hangFrozen(); return; }
   const watchdog = setInterval(() => { if (performance.now() - lastControl >= 20000) stop(); }, 1000);
   let result: Omit<ActionReport, 'event_id' | 'command_id'>; let intentGranted = false;
   const beforeSubmit = async () => {
     assertControlled();
-    await new Promise<void>((resolve, reject) => { submitWait = { resolve, reject }; process.send?.({ type: 'before-submit' }, error => { if (error) { submitWait = undefined; reject(error); } }); });
+    await new Promise<void>((resolve, reject) => {
+      submitWait = { resolve, reject };
+      process.send?.({ type: 'before-submit' }, error => { if (error) { submitWait = undefined; reject(error); } });
+      // The request has to leave this process before its event loop stops, so this stall is scheduled
+      // rather than entered inline. What it models is a child that asked for authority and then froze
+      // while it waited for an answer - not a child that never asked.
+      if (hangPoint === 'before-grant') setTimeout(hangFrozen, 100);
+    });
     intentGranted = true; assertControlled();
+    if (hangPoint === 'after-grant') return hangSilently();
   };
   try {
     assertControlled();
     requireCondition(digest(command.snapshot) === command.snapshot_hash && digest(command.snapshot.body) === command.snapshot.content_hash, 'APPROVAL_STALE', '任务快照不匹配');
     requireCondition(Date.parse(command.expires_at) > Date.now(), 'LEASE_STALE', '命令已经过期');
     if (command.snapshot.is_synthetic) {
-      result = command.snapshot.inbox ? await executeBrowserInbox(command, parsed.data.profile_root ?? path.join(runtime, 'browser-environments'), { beforeSubmit, assertControlled, onContext: value => { context = value; if (value && process.connected) process.send?.({ type: 'context-opened' }, () => {}); if (value && control.signal.aborted) void value.close().catch(() => {}); } }, process.env.KFF_BROWSER_INBOX_FIXTURE_ORIGIN) : command.snapshot.collection ? await executeBrowserDiscovery(command, parsed.data.profile_root ?? path.join(runtime, 'browser-environments'), { beforeSubmit, assertControlled, onContext: value => { context = value; if (value && process.connected) process.send?.({ type: 'context-opened' }, () => {}); if (value && control.signal.aborted) void value.close().catch(() => {}); } }, process.env.KFF_BROWSER_COLLECTION_FIXTURE_ORIGIN) : command.snapshot.outreach?{outcome:'VERIFIED_SUCCEEDED',receipt:await executeSocialOutreach(command.snapshot,command.action_id,{beforeSubmit,signal:control.signal}),diagnostic:{step:'social-accepted'}}:command.snapshot.message?.browser?await executeBrowserMessage(command, parsed.data.profile_root ?? path.join(runtime, 'browser-environments'), { beforeSubmit, assertControlled, onContext: value => { context = value; if (value && process.connected) process.send?.({ type: 'context-opened' }, () => {}); if (value && control.signal.aborted) void value.close().catch(() => {}); } }, process.env.KFF_BROWSER_MESSAGE_FIXTURE_ORIGIN):command.snapshot.message?{outcome:'VERIFIED_SUCCEEDED',receipt:await executeFixtureMessage(command,{beforeSubmit,assertControlled,signal:control.signal}),diagnostic:{step:'message-accepted'}}:await executeFixture(command, command.snapshot.browser_environment ? parsed.data.profile_root ?? path.join(runtime, 'browser-environments') : path.join(runtime, 'profiles'), { beforeSubmit, assertControlled, onContext: value => { context = value; if (value && process.connected) process.send?.({ type: 'context-opened' }, () => {}); if (value && control.signal.aborted) void value.close().catch(() => {}); } });
+      result = command.snapshot.inbox ? await executeBrowserInbox(command, parsed.data.profile_root ?? path.join(runtime, 'browser-environments'), { beforeSubmit, assertControlled, onContext }, process.env.KFF_BROWSER_INBOX_FIXTURE_ORIGIN) : command.snapshot.collection ? await executeBrowserDiscovery(command, parsed.data.profile_root ?? path.join(runtime, 'browser-environments'), { beforeSubmit, assertControlled, onContext }, process.env.KFF_BROWSER_COLLECTION_FIXTURE_ORIGIN) : command.snapshot.outreach?{outcome:'VERIFIED_SUCCEEDED',receipt:await executeSocialOutreach(command.snapshot,command.action_id,{beforeSubmit,signal:control.signal}),diagnostic:{step:'social-accepted'}}:command.snapshot.message?.browser?await executeBrowserMessage(command, parsed.data.profile_root ?? path.join(runtime, 'browser-environments'), { beforeSubmit, assertControlled, onContext }, process.env.KFF_BROWSER_MESSAGE_FIXTURE_ORIGIN):command.snapshot.message?{outcome:'VERIFIED_SUCCEEDED',receipt:await executeFixtureMessage(command,{beforeSubmit,assertControlled,signal:control.signal}),diagnostic:{step:'message-accepted'}}:await executeFixture(command, command.snapshot.browser_environment ? parsed.data.profile_root ?? path.join(runtime, 'browser-environments') : path.join(runtime, 'profiles'), { beforeSubmit, assertControlled, onContext });
     } else if (['facebook.discovery.read.browser','facebook.inbox.read.browser','facebook.messenger.reply.browser','facebook.comment.reply.browser'].includes(command.snapshot.capability_key)) {
       requireCondition(command.snapshot.implementation_digest === adapterImplementationDigest(fileURLToPath(new URL('../../../',import.meta.url)), 'facebook'), 'VERSION_CONFLICT', '本机采集适配器与已审核实现不匹配');
-      result = await (command.snapshot.outreach?.browser ? executeFacebookBrowserComment : command.snapshot.message ? executeFacebookBrowserMessage : command.snapshot.inbox ? executeFacebookBrowserInbox : executeFacebookBrowserDiscovery)(command, parsed.data.profile_root ?? path.join(runtime, 'browser-environments'), { beforeSubmit, assertControlled, onContext: value => { context = value; if (value && process.connected) process.send?.({ type: 'context-opened' }, () => {}); if (value && control.signal.aborted) void value.close().catch(() => {}); } });
+      result = await (command.snapshot.outreach?.browser ? executeFacebookBrowserComment : command.snapshot.message ? executeFacebookBrowserMessage : command.snapshot.inbox ? executeFacebookBrowserInbox : executeFacebookBrowserDiscovery)(command, parsed.data.profile_root ?? path.join(runtime, 'browser-environments'), { beforeSubmit, assertControlled, onContext });
     } else {
       requireCondition(process.env.KFF_ENABLE_LIVE === 'true', 'LIVE_DISABLED', '真实执行未启用');
       requireCondition(command.snapshot.implementation_digest === adapterImplementationDigest(fileURLToPath(new URL('../../../',import.meta.url)), 'facebook'), 'VERSION_CONFLICT', '本机适配器与已审核实现不匹配');
@@ -84,4 +125,6 @@ process.on('message', async raw => {
     process.exit(0);
   } catch { process.exit(1); }
 });
-process.send?.({ type: 'ready' });
+// The idle timer would end a child that never received `start`, which is a different fact from a
+// child that is stalled, so the injection clears it and then stops progressing.
+if (hangPoint === 'before-ready') { clearTimeout(idleTimer); hangFrozen(); } else process.send?.({ type: 'ready' });

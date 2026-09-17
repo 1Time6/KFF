@@ -93,8 +93,14 @@ export const resultInput = z.object({
 }).strict();
 export const loginInput = z.object({ email: z.string().email().max(254), password: z.string().min(1).max(200) }).strict();
 export const hashSchema = z.string().regex(/^[a-f0-9]{64}$/);
+// The three closure facts a quiescence proof may carry. The original version means the child opened a
+// context and proved it closed; the startup-failed version means the command provably never opened
+// one; the no-progress version means the parent ended a child that stopped making progress and can
+// only prove the process is gone. They are kept apart so a receiver never projects an environment as
+// closed on a weaker fact.
+export const guardianClosureProtocols = ['kff.guardian-closure.v1', 'kff.guardian-closure-startup-failed.v1', 'kff.guardian-closure-no-progress.v1'] as const;
 export const quiescenceInput = z.object({
-  protocol_version: z.literal('kff.guardian-closure.v1'), command_id: uuid, action_id: uuid,
+  protocol_version: z.enum(guardianClosureProtocols), command_id: uuid, action_id: uuid,
   closed_at: z.string().datetime(), proof_sha256: hashSchema,
 }).strict();
 export const permitInput = z.object({
