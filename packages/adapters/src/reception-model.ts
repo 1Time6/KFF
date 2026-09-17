@@ -14,16 +14,43 @@ export interface ReceptionModel {name:string;decide(context:ReceptionContext):Pr
  *    enquiry such as `我想了解服务，不要再错过机会。` was read as an exit and the customer was
  *    marked OPTED_OUT. Those now require contact semantics (联系/发消息/发信息/打扰/营销/推广),
  *    so an unrelated continuation is left to human review instead of becoming a permanent exit.
+ * A third failure was fixed the same way: the bare-stop rule used `/stop$/`, so any sentence that
+ * merely ended in `stop` - `Please don't stop.`, `When will these problems stop?`, `Where is the
+ * bus stop` - was an exit. `stop` is also an intransitive verb, so the rule now accepts only an
+ * imperative that names the action to stop, or an exact standalone `stop`, and it refuses the
+ * negated and interrogative forms.
  * Note: `\p{P}` is deliberately not used here. Without the `u` flag it is not a property escape,
  * so inside a character class it silently matches a literal `p` or `{P}` instead of punctuation.
+ * A fourth failure, found while fixing the third: some branches write an optional group that contains
+ * CJK characters directly in front of a CJK literal (`(?:再|给我)?(?:发)?`), and this engine silently
+ * fails to match those literals in that shape - `别再给我发消息` was not read as an exit even though
+ * `别再发消息` was. The affected shapes are therefore written out explicitly instead of relying on the
+ * optional group. `不要再给我发广告了` is deliberately still not an exit: refusing advertising is a
+ * marketing opt-out, not the customer closing the conversation, so it stays for human review.
+ * The same work added the shape the object list had missed entirely: the customer refuses to
+ * *receive* the message (`我不想再收到你的消息了`), where 收到 is the verb the list never carried.
  */
-const optOut=/\b(unsubscribe|stop messaging|stop contacting me|stop texting|do not contact|don't contact|leave me alone|do not (?:contact|message|text) me)\b|退订|别联系|停止联系|请勿再联系|(?:不要|别|停止)(?:再|给我)?(?:发)?(?:消息|信息|私信|打扰)|(?:不要|别)(?:再|要|用|需|想)?(?:联系|发消息|发信息|私信|打扰|营销|推广)|(?:不要|别|停止)再(?:给我)?发/i;
+const optOut=/\b(unsubscribe|stop messaging|stop contacting me|stop texting|do not contact|don't contact|leave me alone|do not (?:contact|message|text) me)\b|退订|别联系|停止联系|请勿再联系|(?:不要|别|停止)(?:再|给我)?(?:发)?(?:消息|信息|私信|打扰)|(?:不要|别)(?:再|要|用|需|想)?(?:联系|发消息|发信息|私信|打扰|营销|推广)|(?:不要|别|停止)(?:再|给我)?发(?!生)|(?:不要|别|停止)再给我发(?:消息|信息|私信|打扰)|(?:不要|别)给我发(?:消息|信息|私信|打扰)|(?:我|你|他|她)?(?:不想|不要|不愿|别)(?:再|给我)?(?:收到|看到)消息|(?:我|你|他|她)?(?:不想|不要|不愿|别)再(?:要|想)?收到(?:你的)?(?:消息|信息)/i;
 /**
  * A whole message that is just `STOP` (optionally with politeness or punctuation) is an opt-out,
  * while `stop worrying` and `do not stop sending updates` are ordinary sentences. Matching the
  * normalised message instead of a bare word boundary is what keeps those two apart.
  */
-const bareStop=(text:string)=>/stop$/i.test(text.replace(/[\s\p{P}\p{S}]/gu,'').toLowerCase().replace(/please/g,''));
+const bareStop=(text:string)=>{
+  // A question is not a request: `When will these problems stop?` asks about the word, it does not
+  // issue it. `?` is deliberately tested on the original text, because a compacted English sentence
+  // starts with the same letters as some interrogatives (`isaidstop` starts with `is`).
+  if(text.includes('?'))return false;
+  const compact=text.replace(/[\s\p{P}\p{S}]/gu,'').toLowerCase().replace(/please/g,'');
+  // An unambiguous phrase stays an exit even when a negation also appears: `do not stop sending
+  // updates` is a real request, while `don't stop` is not. optOut is tested before this rule, so
+  // the phrase cases never reach this guard.
+  if(/dontstop|donotstop/.test(compact))return false;
+  // What is left is either the imperative itself or an imperative that names the action to stop.
+  if(/^(?:just|i(?:said|say|mean))?stop(?:it|this|that|now|already|ok|okay|alright|everything)?$/.test(compact)||/^stop(?:texting|messaging|contacting|calling|sending|writing)/.test(compact))return true;
+  // A bare imperative can also follow the words that introduce it: `I said stop!`, `can you stop`.
+  return /(?:isaid|imean|say|you|u|to|just|and|then|now|or|so)stop$/.test(compact);
+};
 export const explicitContactExit=(text:string)=>optOut.test(text)||bareStop(text);
 export function enforceReceptionDecision(raw:unknown,context:ReceptionContext):ReceptionDecision{
   let decision=receptionDecision.parse(raw);
@@ -39,7 +66,12 @@ export function enforceReceptionDecision(raw:unknown,context:ReceptionContext):R
   // the operator sells to the UK, so the pound sign and an ISO code written either way round
   // (`£48`, `48 GBP`, `USD 48`) have to be refused here as well. The code list is a bounded set of
   // currencies this business can quote in, so an ordinary number, year or age is never touched.
-  if(['REPLY','ASK_QUESTION'].includes(decision.action)&&(!decision.reply.trim()||/https?:|wa\.me|\b\d{7,}\b|[$€¥￥£]\s*\d|\b(?:GBP|USD|EUR|AUD|CAD|C\$|A\$|US\$|NZ\$|SGD|HKD|JPY|CNY|RMB|CHF|AED)\s*\d|\d\s*(?:GBP|USD|EUR|AUD|CAD|SGD|HKD|JPY|CNY|RMB|CHF|AED|元|美元|英镑|欧元|美金|块钱|块)|付款|收款|支付链接|checkout|pay now/i.test(decision.reply)))decision={...decision,action:'HANDOFF',reply:'',reason:'回复超出基础接待范围，交由人工确认'};
+  // A destination likewise arrives in more than one written shape: a grouped, spaced or
+  // country-prefixed phone number, a bare domain without a scheme, and an e-mail address. Those forms
+  // are refused here as well; a domain must end in a real-looking TLD and a phone number needs at
+  // least seven digits with only the usual separators between them, so an ordinary sentence, year,
+  // price or measurement is never mistaken for a destination.
+  if(['REPLY','ASK_QUESTION'].includes(decision.action)&&(!decision.reply.trim()||/https?:|wa\.me|\b\d{7,}\b|[$€¥￥£]\s*\d|\b(?:GBP|USD|EUR|AUD|CAD|C\$|A\$|US\$|NZ\$|SGD|HKD|JPY|CNY|RMB|CHF|AED)\s*\d|\d\s*(?:GBP|USD|EUR|AUD|CAD|SGD|HKD|JPY|CNY|RMB|CHF|AED|元|美元|英镑|欧元|美金|块钱|块)|付款|收款|支付链接|checkout|pay now|(?:\+?\d[\d\s().-]{5,}\d)|[\w.+-]+@[\w-]+\.[A-Za-z]{2,}|\b(?:[A-Za-z0-9-]+\.)+(?:[A-Za-z]{2,}|co\.[A-Za-z]{2}|com?\.[A-Za-z]{2})\b/i.test(decision.reply)))decision={...decision,action:'HANDOFF',reply:'',reason:'回复超出基础接待范围，交由人工确认'};
   if(decision.action==='STOP'&&!['UNSUBSCRIBE','SPAM'].includes(decision.intent))decision={...decision,action:'HANDOFF',reply:'',reason:'停止接待需要明确退出或无效咨询依据'};
   return decision;
 }

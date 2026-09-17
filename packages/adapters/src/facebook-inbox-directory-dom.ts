@@ -1,3 +1,28 @@
+const composerPrefixes=['发消息给','发信息给','sendmessageto','message'];
+const compactLabel=(value:string)=>value.replace(/\s+/g,'').toLowerCase();
+/**
+ * The one place a page label is turned into "which person does this input name". The read-only probe
+ * and the reply adapter both call this, because they must resolve the same DOM to the same element:
+ * the reader used to normalise whitespace while the reply path re-derived an exact ARIA name, so a
+ * label such as `发消息给 Alice` read successfully and then failed to be found when replying.
+ * `inspectFacebookInboxComposerDom` cannot call this: it is serialised into the page, where module
+ * scope does not exist, so it keeps a self-contained copy of the same two rules.
+ */
+export function composerLabelPerson(value:string,peer:string){
+  const compact=compactLabel(value),target=compactLabel(peer);
+  if(target&&compact==='发消息给'+target)return 'EXACT_NAME' as const;
+  for(const bound of composerPrefixes)if(compact.startsWith(bound))return compact.length>bound.length?'NAMED_PREFIX' as const:'BARE_PREFIX' as const;
+  return 'OTHER' as const;
+}
+/**
+ * A reply must address the exact element the verified read addressed. The reader normalises the
+ * label's whitespace, so a re-derived `发消息给`+display_name lookup rejects a page state that was
+ * just accepted. Only the same supported prefixes and the same peer name qualify here, and the name
+ * is matched with flexible whitespace instead of one exact string.
+ */
+export function composerNamePattern(peer:string){
+  return new RegExp('^(?:'+composerPrefixes.join('|')+')\\s*'+peer.trim().replace(/[.*+?^${}()|[\]\\]/g,'\\$&').split(/\s+/).join('\\s*')+'$');
+}
 /** Only rendered links and labels in the selected All chats list. No snippets or internal state. */
 export function inspectFacebookInboxDirectoryDom() {
   const h={visible(n:Element){return !n.closest('[hidden],[aria-hidden="true"]')&&n.getClientRects().length>0&&getComputedStyle(n).visibility!=='hidden'&&getComputedStyle(n).display!=='none';}};
@@ -33,7 +58,9 @@ export function inspectFacebookInboxDirectoryDom() {
  */
 export function inspectFacebookInboxComposerDom(expected:{display_name:string;allow_other_name:boolean;operating_identity_id:string;peer_name?:string}) {
   // TSX injects __name into arrow functions passed as callbacks, which breaks page
-  // serialization. Every helper below is an object method or a direct local call.
+  // serialization. Every helper below is an object method or a direct local call, and nothing here
+  // may call module scope: this function is serialised into the page, where that scope is gone.
+  const prefix=['发消息给','发信息给','sendmessageto','message'],squash=(value:string)=>value.replace(/\s+/g,'').toLowerCase(),peer=squash(expected.display_name),target=squash(expected.peer_name??expected.display_name);
   const h={
     visible(node:Element){
       const rect=node.getBoundingClientRect(),style=getComputedStyle(node);
@@ -45,11 +72,11 @@ export function inspectFacebookInboxComposerDom(expected:{display_name:string;al
     // EXACT_NAME means the label names the resolved peer. NAMED_PREFIX means the label names
     // somebody through a supported prefix; whether that person is the verified peer is decided
     // by `names`, never by the prefix alone. BARE_PREFIX ("发消息给", "Message") names nobody.
+    // This is the same rule as `composerLabelPerson`, which the reply adapter calls outside the page.
     kind(value:string):'EXACT_NAME'|'NAMED_PREFIX'|'BARE_PREFIX'|'OTHER' {
-      const compact=value.replace(/\s+/g,'').toLowerCase(),peer=expected.display_name.replace(/\s+/g,'').toLowerCase();
+      const compact=squash(value);
       if(peer&&compact==='发消息给'+peer)return 'EXACT_NAME';
-      const bounds=['发消息给','发信息给','sendmessageto','message'];
-      for(const bound of bounds)if(compact.startsWith(bound))return compact.length>bound.length?'NAMED_PREFIX':'BARE_PREFIX';
+      for(const bound of prefix)if(compact.startsWith(bound))return compact.length>bound.length?'NAMED_PREFIX':'BARE_PREFIX';
       return 'OTHER';
     },
     // The name a prefix-based label points at, and whether it is the verified peer. A label may
@@ -58,18 +85,18 @@ export function inspectFacebookInboxComposerDom(expected:{display_name:string;al
     names(value:string,kind:string){
       if(kind==='EXACT_NAME')return true;
       if(kind!=='NAMED_PREFIX')return false;
-      const target=(expected.peer_name??expected.display_name).replace(/\s+/g,'').toLowerCase(),compact=value.replace(/\s+/g,'').toLowerCase();
-      return ['发消息给','发信息给','sendmessageto','message'].some(bound=>compact.startsWith(bound)&&compact.slice(bound.length)===target);
+      const compact=squash(value);
+      return prefix.some(bound=>compact.startsWith(bound)&&compact.slice(bound.length)===target);
     },
     reachable(node:Element){return node.getAttribute('aria-disabled')!=='true'&&!(node as HTMLButtonElement).disabled;},
   };
   const mains=[...document.querySelectorAll('main,[role="main"]')].filter(h.visible);
-  const inputs=[] as {value:string;kind:'EXACT_NAME'|'NAMED_PREFIX'|'BARE_PREFIX'|'OTHER';reachable:boolean;hit_target:boolean;role:'textbox'|'combobox'|'none';contenteditable:boolean}[];
+  const inputs=[] as {value:string;aria:string|null;kind:'EXACT_NAME'|'NAMED_PREFIX'|'BARE_PREFIX'|'OTHER';reachable:boolean;hit_target:boolean;role:'textbox'|'combobox'|'none';contenteditable:boolean}[];
   for(const main of mains){
     for(const node of main.querySelectorAll<HTMLElement>('[contenteditable="true"],[contenteditable=""],[role="textbox"],[role="combobox"]')){
       if(!h.visible(node)||node.closest('[role="log"]'))continue;
-      const rect=node.getBoundingClientRect(),value=node.getAttribute('aria-label')??node.getAttribute('placeholder')??node.getAttribute('data-placeholder')??'';
-      inputs.push({value,kind:h.kind(value),reachable:h.reachable(node),hit_target:node.contains(document.elementFromPoint(rect.x+rect.width/2,rect.y+rect.height/2)),
+      const rect=node.getBoundingClientRect(),aria=node.getAttribute('aria-label'),value=aria??node.getAttribute('placeholder')??node.getAttribute('data-placeholder')??'';
+      inputs.push({value,aria,kind:h.kind(value),reachable:h.reachable(node),hit_target:node.contains(document.elementFromPoint(rect.x+rect.width/2,rect.y+rect.height/2)),
         role:node.getAttribute('role')==='combobox'?'combobox':node.getAttribute('role')==='textbox'?'textbox':'none',
         contenteditable:node.getAttribute('contenteditable')==='true'||node.getAttribute('contenteditable')===''});
     }
@@ -89,7 +116,9 @@ export function inspectFacebookInboxComposerDom(expected:{display_name:string;al
   const single=inputs.length===1?{label_kind:inputs[0].kind,label_length:inputs[0].value.length,placeholder:!inputs[0].value||h.placeholder(inputs[0].value),reachable:inputs[0].reachable,hit_target:inputs[0].hit_target,role:inputs[0].role,contenteditable:inputs[0].contenteditable}:null;
   const ambiguous=inputs.length>1?{label_kind:'AMBIGUOUS' as const,label_length:0,placeholder:false,reachable:false,hit_target:false,role:'none' as const,contenteditable:false}:null;
   const surface=single??ambiguous??empty;
-  return {composer:inputs.length===1&&matched.length===1?matched[0]:null,absent:!inputs.length,candidate_count:inputs.length,surface};
+  // The accepted element is returned with the label kind it was accepted under and the exact
+  // accessible name it carries, so a caller can address that same input instead of re-deriving it.
+  return {composer:inputs.length===1&&matched.length===1?{value:matched[0].value,kind:matched[0].kind,aria:matched[0].aria}:null,absent:!inputs.length,candidate_count:inputs.length,surface};
 }
 
 /** A numeric profile link in the conversation header is a candidate, then every incoming avatar is rechecked. */

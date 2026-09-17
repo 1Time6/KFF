@@ -1,0 +1,109 @@
+{
+  "schema_version": "kff.defect-ledger.v1",
+  "round": "audit-repair-round2-20260917",
+  "generated_for": "second repair round after KFF_Audit_Report_e1f5285 (5 confirmed defects) and the user-directed follow-up on the guardian watchdog case",
+  "baseline": {
+    "branch": "codex/facebook-foundation",
+    "source_commit": "e1f5285c6cdd3089515cd4edce2746179a137465",
+    "package_version": "0.1.53",
+    "note": "origin/main and this branch were both at e1f5285 when this round started. These five repairs are uncommitted until this round's commit; no release_id is claimed."
+  },
+  "counts": {
+    "work_items": 5,
+    "by_category": { "code": 4, "interaction": 1 },
+    "by_status": { "repaired_and_verified": 4, "partially_repaired": 1 }
+  },
+  "relation_to_previous_audit": {
+    "previous_document": "docs/defect-ledger.json (25 items, first repair round) and the external KFF_Audit_Report_e1f5285",
+    "rule": "This round is NOT added to the previous 25 items and no combined completion rate may be computed. It lists only the five defects this round repaired, plus one reclassification of KFF-B05.",
+    "reclassified": [
+      { "previous_item": "KFF-B05", "decision": "partially_reopened", "why": "the first round fixed the missing standalone STOP and the 不要再/别再 over-match, but the same shared rule still read `Please don't stop.`, `When will these problems stop?` and `Where is the bus stop` as permanent opt-outs. KFF-R01 closes those; the reverse-guard list is now recorded." }
+    ],
+    "unmapped_previous_items": { "count": 21, "status": "CANNOT_VERIFY", "why": "The external audit could verify only 3 of the previous 25 items and left 21 unverified. This round did not re-audit them, so they stay unverified and are not restated here." }
+  },
+  "items": [
+    {
+      "id": "KFF-R01", "priority": "P1", "category": "code", "batch": "ROUND2-01", "status": "repaired_and_verified",
+      "summary": "The shared opt-out rule read ordinary sentences as permanent exits: `/stop$/` caught `Please don't stop.`, `When will these problems stop?` and `Where is the bus stop`, and the Chinese branch caught `我希望不要再发生这种事。`; the ingestion path then wrote stage=OPTED_OUT, opted the contact target out and paused the conversation",
+      "changed_files": ["packages/adapters/src/reception-model.ts"],
+      "tests": ["tests/contracts/reception-model.test.ts"],
+      "verified_manually": ["the predicate was executed offline over 51 documented English and Chinese cases with 0 mismatches before and after the change"],
+      "unverified": [
+        "how many real customers were already written as OPTED_OUT by the old rule: the production database was not queried in this round",
+        "no real Facebook or Messenger message was ingested to confirm the corrected rule end to end"
+      ]
+    },
+    {
+      "id": "KFF-R02", "priority": "P1", "category": "code", "batch": "ROUND2-02", "status": "partially_repaired",
+      "summary": "A guardian that died before sending `ready` left a journal entry with no closure proof, so the Agent refused every later command and restarting did not clear it; the parent now records its own startup-failure record, which is deliberately distinct from a closure because no context was ever opened",
+      "changed_files": ["apps/agent/src/guardian.ts", "apps/agent/src/guardian-protocol.ts"],
+      "tests": [],
+      "verified_manually": [
+        "typecheck passes with the recovery branch in place",
+        "the narrow reader refuses the new record: readClosure throws GUARDIAN_STARTUP_FAILED instead of returning it as a closed context",
+        "the fault-injection switch was unit-checked against 14 path and environment shapes before its test was withdrawn"
+      ],
+      "remaining_work": "The process-level regression for this path does not exist yet. The fault-injection switch validates <KFF_ROOT>/.kff/agent-process-tests/ with path.relative, and in the current harness the runtime resolves there correctly, yet the switch never activates: two file-writing probes placed at the guard entry and before its return wrote nothing, also after the tsx compile cache was cleared, which shows the Agent never reaches that code in this harness. The reworked harness, its four assertions and the probes were withdrawn rather than committed as a failing or skipped test.",
+      "unverified": [
+        "the startup-failure recovery was never exercised by a real process crash in this round",
+        "no test asserts that a production runtime cannot arm the switch, only manual inspection of the guard"
+      ]
+    },
+    {
+      "id": "KFF-R03", "priority": "P2", "category": "code", "batch": "ROUND2-03", "status": "repaired_and_verified",
+      "summary": "Reading accepted a composer label after normalising whitespace while replying re-derived one exact ARIA string, so a conversation read as `发消息给 Alice` was reported as DRAFT_PRESENT when the reply tried to find its input box",
+      "changed_files": ["packages/adapters/src/facebook-inbox-directory-dom.ts", "packages/adapters/src/facebook-browser-message.ts"],
+      "tests": ["tests/browser/fixtures/facebook-composer-consistency.spec.ts", "tests/browser/fixtures/facebook-inbox-directory.spec.ts"],
+      "verified_manually": ["the real Chromium fixture confirms the previous exact selector finds 0 elements for a spaced label while the shared rule finds 1"],
+      "unverified": [
+        "no real AdsPower profile or real Facebook thread was driven; the reply path itself still requires CONTROLLED_PILOT, human actor and live enablement"
+      ]
+    },
+    {
+      "id": "KFF-R04", "priority": "P2", "category": "code", "batch": "ROUND2-04", "status": "repaired_and_verified",
+      "summary": "The application-side destination filter refused only continuous digit runs and explicit schemes, so `+44 7700 900123`, `+1 (202) 555-0123`, `www.example.com`, `example.com/pay` and `sales@example.com` all passed into a customer reply",
+      "changed_files": ["packages/adapters/src/reception-model.ts"],
+      "tests": ["tests/contracts/reception-model.test.ts"],
+      "verified_manually": ["9 destination samples were executed offline: 4 policy violations passed before the change and 0 after, with the currency and ordinary-text cases unchanged"],
+      "unverified": [
+        "no model was called to show whether a real provider would ever produce those strings",
+        "the filter is a heuristic: an unusual spelling may still pass and a legitimate dotted abbreviation may still be refused into human review"
+      ]
+    },
+    {
+      "id": "KFF-R05", "priority": "P2", "category": "interaction", "batch": "ROUND2-05", "status": "repaired_and_verified",
+      "summary": "Cancelling a run whose action was still QUEUED set action=CANCELED, job=DONE and run/task=CANCELED but never projected the linked record, so a WhatsApp invitation stayed QUEUED while reception returned it beside a cancelled action",
+      "changed_files": ["packages/core/src/service.ts"],
+      "tests": ["tests/integration/lead-reception.test.ts"],
+      "verified_manually": [
+        "reproduced on the isolated PostgreSQL database: with the projection disabled the referral still read QUEUED after the cancel, and the regression test failed with exactly that value",
+        "with the projection enabled the same test passes and both the referral and the action read CANCELED"
+      ],
+      "unverified": [
+        "no production database was read, so how many referrals are already stranded in QUEUED is unknown",
+        "the concurrent cancel-versus-dispatch race was not exercised"
+      ]
+    }
+  ],
+  "verification_this_round": {
+    "recorded_in": "docs/evidence/audit-repair-round2-20260917.json",
+    "commands": [
+      { "command": "npx tsc --noEmit", "result": "exit 0" },
+      { "command": "npx vitest run tests/unit tests/contracts", "result": "53 files, 374 tests passed" },
+      { "command": "npx tsx scripts/integration.ts", "result": "38 files, 412 tests passed on an isolated PostgreSQL database" },
+      { "command": "npx playwright test --project=fixtures", "result": "131 tests passed in the final run; one earlier full run failed the pre-existing flake named below" }
+    ],
+    "known_flake": {
+      "test": "tests/browser/fixtures/facebook-search.spec.ts:175",
+      "evidence": "a controlled A/B of three whole-file runs each: this round's tree passed 54/54, the unmodified e1f5285 tree passed 53/54 and failed the same test, so the flake predates this round",
+      "note": "it passes in isolation and fails only under whole-file concurrency"
+    }
+  },
+  "not_audited_this_round": [
+    "the 21 previous items the external audit could not verify",
+    "full migration coverage (5 of 33 migrations were read in the external audit)",
+    "the acquisition closure, import/export, per-page front-end review and concurrency/crash matrices",
+    "capacity or stability for 2, 5 or 30 real accounts",
+    "the guardian watchdog case outcome reported as BLOCKED once under full-suite load: it was not reproduced in 5 isolated runs, 4 four-way concurrent runs and a five-fold repeat, where it always produced CANCELED / STOP_REQUESTED / step=prepared with duration 20.4-23.6s"
+  ]
+}

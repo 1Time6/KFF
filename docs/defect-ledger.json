@@ -15,6 +15,11 @@
   "relation_to_previous_audit": {
     "previous_document": "docs/audit-ui-vs-server-20260916.md",
     "previous_counts": { "total": 64, "fixed": 8, "remaining": 56 },
+    "follow_up_round": {
+      "document": "docs/defect-ledger-round2-20260917.json",
+      "evidence": "docs/evidence/audit-repair-round2-20260917.json",
+      "scope": "5 defects found by the external audit of e1f5285 plus one reclassification of KFF-B05; NOT added to the 25 items above"
+    },
     "rule": "This ledger is the current work order. It is NOT added to the previous 64 and no completion rate may be computed from the previous numbers.",
     "fixed_items_reopened_or_reclassified": [
       { "previous_item": "3. 任务创建表单初始化与选项过滤条件不一致", "current_id": "KFF-B07", "decision": "reopened", "why": "initialisation and the account switch still used the old filter after the display rule was changed" },

@@ -1,0 +1,76 @@
+{
+  "kind": "REPAIR_ROUND_VERIFICATION",
+  "round": "audit-repair-round2-20260917",
+  "branch": "codex/facebook-foundation",
+  "source_commit_before_round": "e1f5285c6cdd3089515cd4edce2746179a137465",
+  "package_version": "0.1.53",
+  "machine": { "os": "Windows", "node": "v24.14.1" },
+  "commands": [
+    {
+      "command": "npx tsc --noEmit",
+      "cwd": "repository root",
+      "exit_code": 0,
+      "result": "no diagnostics"
+    },
+    {
+      "command": "npx vitest run tests/unit tests/contracts",
+      "cwd": "repository root",
+      "exit_code": 0,
+      "result": "53 test files passed, 374 tests passed",
+      "before_this_round": "53 files, 333 tests (the 41 added tests are the new opt-out, destination-filter and composer cases)"
+    },
+    {
+      "command": "npx tsx scripts/integration.ts",
+      "cwd": "repository root",
+      "exit_code": 0,
+      "result": "38 test files passed, 412 tests passed",
+      "database": "a fresh isolated database created by the script; no production database was opened"
+    },
+    {
+      "command": "npx playwright test --project=fixtures",
+      "cwd": "repository root",
+      "exit_code": 0,
+      "result": "131 tests passed",
+      "note": "offline Chromium fixtures only; no real AdsPower profile, no real Facebook thread and no real message was sent"
+    }
+  ],
+  "log_storage": "the raw command output was kept only under the ignored .kff/checks directory, so it is deliberately not referenced here; the results above are the recorded summary",
+  "flake_investigation": {
+    "test": "tests/browser/fixtures/facebook-search.spec.ts:175 retains the verified Page source when its header collapses after scrolling and rejects a changed address",
+    "method": "three whole-file runs per tree, in one controlled script, with the two composer adapter files copied aside and reverted to HEAD for the baseline leg",
+    "this_round_tree": { "passed": 54, "failed": 0 },
+    "baseline_e1f5285_tree": { "passed": 53, "failed": 1 },
+    "conclusion": "the failure reproduces on the unmodified commit, so it is a pre-existing race in that test and not a regression from this round; it passes in isolation",
+    "cleanup": "the A/B copies and the script were deleted after the measurement"
+  },
+  "watchdog_investigation": {
+    "test": "tests/browser/fixtures/agent-recovery.spec.ts:123 guardian watchdog closes the context when its owner event loop freezes with IPC still connected",
+    "assertion": "kept strict at CANCELED; an earlier relaxation to {CANCELED, BLOCKED} was withdrawn at the user's direction",
+    "reproduction_attempts": [
+      { "method": "single test in isolation, five times", "result": "5/5 CANCELED" },
+      { "method": "single test, four parallel workers, four times", "result": "4/4 CANCELED" },
+      { "method": "single test with --repeat-each=5", "result": "5/5 CANCELED" }
+    ],
+    "observed_closure": { "outcome": "CANCELED", "error_code": "STOP_REQUESTED", "diagnostic_step": "prepared", "child_duration_ms": "20450-23566", "context_closed": true, "synthetic_posts": 0 },
+    "owner_frozen_at_s": "2.7-8.1 after spawn",
+    "closure_written_at_s": "23.0-27.7 after spawn",
+    "code_path": "guardian-child.ts normalises any aborted control signal without a granted submission intent to CANCELED / STOP_REQUESTED, so BLOCKED is only reachable when the abort had not happened yet; the single BLOCKED observation under full-suite load remains unexplained and was not reproduced",
+    "observability_added": "the failure path prints the raw closure fields; the helper that formats them was withdrawn together with the injection spec"
+  },
+  "guard_hardening": {
+    "switch": "KFF_TEST_GUARDIAN_DIES_BEFORE_READY",
+    "conditions": [
+      "NODE_ENV must be exactly test",
+      "the variable must be exactly the string true",
+      "the normalised runtime directory must be inside <KFF_ROOT>/.kff/agent-process-tests/, decided by path.relative and not by a substring or prefix test"
+    ],
+    "checked_shapes": "14 path and environment shapes were asserted while the test existed, including .kff/agent-process-tests-production as a sibling that must stay sealed; that spec was withdrawn with the injection work",
+    "tsx_cache": "the tsx compile cache under %TEMP% was cleared (5351 files) and the injection still did not activate"
+  },
+  "not_verified": [
+    "no real Facebook, Instagram or WhatsApp account, message, comment or payment was touched",
+    "no production or local operator database was read",
+    "no CI run is associated with this commit",
+    "no load, so capacity for 2, 5 or 30 accounts is unknown"
+  ]
+}

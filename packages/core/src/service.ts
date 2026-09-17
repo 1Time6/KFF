@@ -9,6 +9,7 @@ import { assertEnvironmentSnapshot } from './environments';
 import { browserEnvironmentSnapshot } from '../../contracts/src/environment';
 import { requireCondition, digest, canExecute, executionEnabled, isWrite } from './index';
 import { findPermit, permitMatches, type Permit } from './permits';
+import { projectMessageOutcome } from './lead-reception';
 import { ensureBundledTemplates, chooseTemplateVersion, assertCurrentTemplate } from './templates';
 import { validateTemplateInput } from '../../adapters/src/templates';
 
@@ -154,6 +155,16 @@ export async function stopRun(scope: Scope, runId: string, reason: string) {
       await client.query("UPDATE kff.jobs SET state='DONE' WHERE action_id=$1", [action.id]);
       await client.query("UPDATE kff.runs SET status='CANCELED' WHERE id=$1", [runId]);
       await client.query("UPDATE kff.tasks SET status='CANCELED' WHERE id=$1", [run.task_id]);
+      // A cancelled action still owns the records that were created for it. A WhatsApp invitation is
+      // written as QUEUED while the reply is only prepared, so without this projection a cancelled
+      // send left the referral queued for a message that will never be sent, and the reception read
+      // returned a referral state that contradicted the action state.
+      const task = (await client.query<{ snapshot: unknown }>('SELECT snapshot FROM kff.tasks WHERE id=$1', [run.task_id])).rows[0];
+      const snapshot = taskSnapshotSchema.safeParse(task?.snapshot);
+      // A snapshot that cannot be read is reported instead of aborting the stop: the referral keeps its
+      // queued state for human review, and the cancellation the operator asked for still completes.
+      if (snapshot.success) await projectMessageOutcome(client, action.id, snapshot.data);
+      else await audit(client, scope, 'run.referral_projection_skipped', runId, { action_id: action.id, reason: 'task snapshot unavailable' });
     }
     await audit(client, scope, 'run.stop_requested', runId, { in_flight: ['SUBMITTING', 'SUBMITTED'].includes(action.state) });
     return { stop_requested: true, in_flight: ['SUBMITTING', 'SUBMITTED'].includes(action.state) ? 1 : 0 };
