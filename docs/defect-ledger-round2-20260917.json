@@ -6,7 +6,7 @@
     "branch": "codex/facebook-foundation",
     "source_commit": "e1f5285c6cdd3089515cd4edce2746179a137465",
     "package_version": "0.1.53",
-    "note": "origin/main and this branch were both at e1f5285 when this round started. These five repairs are uncommitted until this round's commit; no release_id is claimed."
+    "note": "origin/main and this branch were both at e1f5285 when this round started. The five repairs below are committed on codex/facebook-foundation; no release_id is claimed for them, because no package was built or deployed from this round."
   },
   "counts": {
     "work_items": 5,
@@ -43,7 +43,7 @@
         "the narrow reader refuses the new record: readClosure throws GUARDIAN_STARTUP_FAILED instead of returning it as a closed context",
         "the fault-injection switch was unit-checked against 14 path and environment shapes before its test was withdrawn"
       ],
-      "remaining_work": "The process-level regression for this path does not exist yet. The fault-injection switch validates <KFF_ROOT>/.kff/agent-process-tests/ with path.relative, and in the current harness the runtime resolves there correctly, yet the switch never activates: two file-writing probes placed at the guard entry and before its return wrote nothing, also after the tsx compile cache was cleared, which shows the Agent never reaches that code in this harness. The reworked harness, its four assertions and the probes were withdrawn rather than committed as a failing or skipped test.",
+      "remaining_work": "The process-level regression for this path does not exist yet, and the exact reason is not yet established. The fault-injection switch validates <KFF_ROOT>/.kff/agent-process-tests/ with path.relative, and the reworked harness did make the runtime resolve there (measured: <root>/.kff/agent-process-tests/agent-instances/<agent id>, relative path agent-instances/<id>), yet the switch still did not activate: two file-writing probes placed at the guard entry and before its return produced no file, and the result was unchanged after the tsx compile cache under %TEMP% was cleared, so the Agent does not reach that function in this harness for a reason that still has to be found. The reworked harness, its four assertions and the probes were withdrawn rather than committed as a failing or skipped test, so this item stays partially repaired until either the reachability question is answered or a different injection point is agreed.",
       "unverified": [
         "the startup-failure recovery was never exercised by a real process crash in this round",
         "no test asserts that a production runtime cannot arm the switch, only manual inspection of the guard"
