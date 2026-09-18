@@ -13,12 +13,21 @@ import type { JournalEntry } from '../../apps/agent/src/action-journal';
 // delete a directory this fixture created under the operating system's temporary directory.
 const created: string[] = [];
 function discardAfterFile(root: string) { created.push(root); }
-afterAll(() => {
+/**
+ * Removes every fixture root created since the last call. The prefix and parent checks mean this can
+ * only ever delete a directory this fixture created under the operating system's temporary directory.
+ *
+ * This module is loaded by both runners: vitest files register it with their own `afterAll`, while the
+ * Playwright fixture spec calls it from `test.afterAll`. Registering vitest's `afterAll` at module
+ * scope used to throw during Playwright collection - before a single fixture test could run.
+ */
+export function discardCollectionJournalFixtures() {
   for (const root of created.splice(0)) {
     if (path.dirname(root) !== os.tmpdir() || !path.basename(root).startsWith('kff-collection-journal-')) throw new Error('Unexpected test directory');
     try { rmSync(root, { recursive: true, force: true }); } catch { /* a held handle leaves our own temp directory behind, never project state */ }
   }
-});
+}
+try { afterAll(discardCollectionJournalFixtures); } catch { /* loaded outside a vitest run */ }
 
 /**
  * The same container, holding the record the parent writes for a child that died before `ready`.

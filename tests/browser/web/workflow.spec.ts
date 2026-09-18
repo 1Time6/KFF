@@ -143,7 +143,7 @@ test('previews, pins, executes and deprecates a derived template while preservin
   let version: TemplateVersion | undefined;
   try {
     await page.getByRole('link', { name: '模板与版本', exact: true }).click();
-    await page.getByRole('table', { name: '模板版本列表' }).getByRole('button', { name: '本地合成主页 · 文本发布', exact: true }).click();
+    await page.getByRole('table', { name: '模板版本列表' }).getByRole('button', { name: '本地合成 · 文本发布', exact: true }).click();
     const panel = page.getByRole('region', { name: '选中模板版本' });
     await panel.getByText('从此版本派生新版本', { exact: true }).click();
     await panel.getByLabel('新模板名称', { exact: true }).fill(name);

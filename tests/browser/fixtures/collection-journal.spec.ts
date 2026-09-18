@@ -4,10 +4,12 @@ import { spawn, type ChildProcess } from 'node:child_process';
 import { randomUUID, randomBytes } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { collectionJournalFixture } from '../../helpers/collection-journal';
+import { collectionJournalFixture, discardCollectionJournalFixtures } from '../../helpers/collection-journal';
 import { digest } from '../../../packages/core/src/index';
 import { resultInput, quiescenceInput, type ActionReport } from '../../../packages/contracts/src/index';
 import { closureFile, closureProof, readClosureEvidence } from '../../../apps/agent/src/guardian-protocol';
+
+test.afterAll(discardCollectionJournalFixtures);
 
 async function harness(offline: boolean, dropReply = false) {
   const h = collectionJournalFixture(), token = randomBytes(32).toString('hex');

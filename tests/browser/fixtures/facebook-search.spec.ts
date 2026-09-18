@@ -174,7 +174,10 @@ test('binds a Page with deferred tab children to its verified header link and re
 
 test('retains the verified Page source when its header collapses after scrolling and rejects a changed address',async({page})=>{
   let changeAddress=false;const requests:string[]=[];
-  await page.route('**/*',route=>{requests.push(route.request().method());return route.fulfill({contentType:'text/html; charset=utf-8',body:'<main>'+modernPageHeader+'<h2>帖子</h2>'+article('1').replaceAll('h3','h2')+'</main><script>addEventListener("wheel",()=>{document.querySelector("main>a").setAttribute("hidden","");'+(changeAddress?'history.replaceState(null,"","/profile.php?id=1111");':'')+'})</script>'});});
+  // The spacer makes "after scrolling" real; the address change is scheduled by a timer because a
+  // wheel event is delivered on the browser's input schedule, which can land after the read has
+  // already finished (observed: the handler ran after list-like completion and the assertion raced).
+  await page.route('**/*',route=>{requests.push(route.request().method());return route.fulfill({contentType:'text/html; charset=utf-8',body:'<main>'+modernPageHeader+'<h2>帖子</h2>'+article('1').replaceAll('h3','h2')+'</main><div style="height:3000px"></div><script>addEventListener("wheel",()=>{document.querySelector("main>a").setAttribute("hidden","")});'+(changeAddress?'setTimeout(()=>history.replaceState(null,"","/profile.php?id=1111"),0);':'')+'</script>'});});
   const r=request();r.limit=1;r.snapshot.fields=['message','author_id'];r.snapshot.discovery={...r.snapshot.discovery!,strategy:'PAGE',target:'https://www.facebook.com/9876/',browser:{...r.snapshot.discovery!.browser!,template:'facebook-page-dom-v1'}};
   const steps:string[]=[];expect((await readFacebookPagePage(page,r,()=>{},step=>steps.push(step))).rows[0].fields.author_id).toEqual({kind:'VALUE',value:'9876'});expect(steps).toContain('source-modern-verified');expect(steps).toContain('scope-location');expect(steps.at(-1)).toBe('final-location');expect(requests).toEqual(['GET']);
   changeAddress=true;await expect(readFacebookPagePage(page,r,()=>{})).rejects.toMatchObject({code:'COLLECTION_SOURCE_MISMATCH'});
