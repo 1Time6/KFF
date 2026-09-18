@@ -19,7 +19,9 @@ const sources=Object.keys(build.source_hashes).filter(file=>/^(apps|packages|scr
 for(const file of sources)if(hash(readFileSync(path.join(root,file)))!==build.source_hashes[file])throw Error('Build is stale: '+file);
 for(const [file,digest] of Object.entries(agentManifest.source_hashes))if(/^(apps\/agent|packages\/contracts|packages\/adapters)\//.test(file)&&hash(readFileSync(path.join(root,file)))!==digest)throw Error('Agent source differs: '+file);
 const nodeLicense=path.join(root,`scripts/licenses/node-v${process.versions.node}.txt`);if(!existsSync(nodeLicense))throw Error('Exact Node license is required');
-const extraSources=['scripts/local-runtime.ps1','docs/api/controller-delivery.md'];
+// The shipped contract reports are part of the release identity: a refreshed report must produce a
+// new release id instead of silently reusing one whose archived copy no longer matches the sources.
+const extraSources=['scripts/local-runtime.ps1','docs/api/controller-delivery.md','.kff/checks/contracts.json','.kff/checks/contracts-results.json'];
 const extraHashes=Object.fromEntries(extraSources.map(file=>[file,hash(readFileSync(path.join(root,file)))]));
 const releaseId=`kff-controller-${pkg.version}-win32-x64-${hash(JSON.stringify({sources:build.source_hashes,extra_sources:extraHashes,agent:agentManifest.release_id,node:hash(readFileSync(process.execPath)),build:readFileSync(path.join(root,'apps/web/.next-production/BUILD_ID'),'utf8')})).slice(0,12)}`;
 const destination=path.join(root,'dist',releaseId);if(existsSync(destination)||existsSync(destination+'.zip'))throw Error('Keep the existing release immutable: '+destination);

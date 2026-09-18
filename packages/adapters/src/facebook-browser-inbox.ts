@@ -8,6 +8,7 @@ import { openManagedBrowser } from './browser-profile';
 import { assertTemplateSnapshot } from './templates';
 import type { ExecutorHooks } from './fixture';
 import { inspectFacebookInboxComposerDom, inspectFacebookInboxDirectoryDom, inspectFacebookInboxHeaderDom } from './facebook-inbox-directory-dom';
+import { evaluateWithNameShim } from './page-evaluate';
 
 /**
  * Only these failures are local to one conversation. Anything else - account identity, login,
@@ -30,10 +31,10 @@ type ReadOnlyReason='THREAD_COMPOSER_ABSENT'|'THREAD_COMPOSER_UNVERIFIED'|'THREA
  */
 async function resolveThreadComposer(page:Page,target:{display_name:string;peer_id:string},identityId:string,guard:()=>Promise<void>,viaPlaceholder:boolean,deadlineMs=15000){
   const probe={display_name:target.display_name,allow_other_name:viaPlaceholder,operating_identity_id:identityId,peer_name:target.display_name};
-  let observed:ComposerProbe=await page.evaluate(inspectFacebookInboxComposerDom,probe);
+  let observed:ComposerProbe=await evaluateWithNameShim(page,inspectFacebookInboxComposerDom,probe);
   for(const started=Date.now();!observed.composer&&Date.now()-started<deadlineMs;){
     await guard();await page.waitForTimeout(500);
-    observed=await page.evaluate(inspectFacebookInboxComposerDom,probe);
+    observed=await evaluateWithNameShim(page,inspectFacebookInboxComposerDom,probe);
   }
   // The fact-only observation is always returned. It used to be dropped once a composer was accepted,
   // which meant a successfully read conversation carried no evidence of the input box it was read with.
@@ -114,16 +115,16 @@ export async function readFacebookInboxThread(page: Page, request: Pick<BrowserI
     // made the probe treat every label naming the peer as naming the operating account, so a
     // label the caller had just accepted was rejected by the same page state.
     const operating=request.binding.environment.configuration.operating_identity_id;
-    const composer=await page.evaluate(inspectFacebookInboxComposerDom,{display_name:target.display_name,allow_other_name:true,operating_identity_id:operating,peer_name:target.display_name});
+    const composer=await evaluateWithNameShim(page,inspectFacebookInboxComposerDom,{display_name:target.display_name,allow_other_name:true,operating_identity_id:operating,peer_name:target.display_name});
     // Zero input boxes stays a fact; a foreign label stays a label conflict.
     if(!composer.composer)requireCondition(composer.absent,'INBOX_SOURCE_MISMATCH','会话输入框标签与指定对象不符');
     requireCondition(composer.composer,'THREAD_COMPOSER_ABSENT','内层读取没有找到可核验的会话输入框');
   }
   else stage('facebook-inbox-read-only');
-  stage('facebook-inbox-wait-content'); let data=await page.evaluate(inspectFacebookInboxDom), stable=false;
+  stage('facebook-inbox-wait-content'); let data=await evaluateWithNameShim(page,inspectFacebookInboxDom), stable=false;
   // Our recent outgoing rows can appear before the earlier inbound row is hydrated.
   // Wait within the same bound for complete content and a verifiable sender.
-  for(let pass=0;pass<20&&(data.invalid||!data.rows.some(row=>row.direction==='INBOUND'))&&data.rows.length<=request.limit;pass++){await guard();await page.waitForTimeout(500);data=await page.evaluate(inspectFacebookInboxDom);}
+  for(let pass=0;pass<20&&(data.invalid||!data.rows.some(row=>row.direction==='INBOUND'))&&data.rows.length<=request.limit;pass++){await guard();await page.waitForTimeout(500);data=await evaluateWithNameShim(page,inspectFacebookInboxDom);}
   stage('facebook-inbox-parse');
   const verifiedSenders=new Set<string>();
   // Opening a message can render earlier rows. Verify newly rendered senders in at most three passes.
@@ -158,7 +159,7 @@ export async function readFacebookInboxThread(page: Page, request: Pick<BrowserI
     await guard();
     verifiedSenders.add(senderAnchorId);
   }
-  stage('facebook-inbox-recheck');const next=await page.evaluate(inspectFacebookInboxDom);
+  stage('facebook-inbox-recheck');const next=await evaluateWithNameShim(page,inspectFacebookInboxDom);
   if(digest(next)===digest(data)){stable=true;break;}
   requireCondition(isFacebookInboxExpansion(data,next,request.limit),'INBOX_SOURCE_MISMATCH','核验期间已有消息发生变化或页面超出读取范围');
   data=next;
@@ -175,11 +176,11 @@ export async function readFacebookInboxDirectory(page:Page,request:Pick<BrowserI
   await assertMessengerReady(page);
   try { await page.getByRole('navigation',{name:'对话列表',exact:true}).waitFor({state:'visible',timeout:20000}); } catch(error) { await assertMessengerReady(page);throw error; }
   const guard=async()=>{controlled();await assertMessengerReady(page);const u=new URL(page.url());requireCondition(/^\/messages\/(?:e2ee\/t\/[0-9]{1,128}\/)?$/.test(u.pathname)&&!u.search&&!u.hash,'INBOX_SOURCE_MISMATCH','当前页面不是聊天列表或其加密会话');};
-  let directory=await page.evaluate(inspectFacebookInboxDirectoryDom);
-  for(let pass=0;pass<10&&!directory.ready;pass++){await guard();await page.waitForTimeout(500);directory=await page.evaluate(inspectFacebookInboxDirectoryDom);}
+  let directory=await evaluateWithNameShim(page,inspectFacebookInboxDirectoryDom);
+  for(let pass=0;pass<10&&!directory.ready;pass++){await guard();await page.waitForTimeout(500);directory=await evaluateWithNameShim(page,inspectFacebookInboxDirectoryDom);}
   await guard();requireCondition(directory.ready,'INBOX_WINDOW_UNAVAILABLE','聊天列表未显示可核实会话或明确空状态');
   // An empty label must survive another render check; a loading shell is not an empty Inbox.
-  if(directory.empty){await page.waitForTimeout(500);await guard();directory=await page.evaluate(inspectFacebookInboxDirectoryDom);requireCondition(directory.ready&&directory.empty,'INBOX_WINDOW_UNAVAILABLE','聊天列表仍在变化');}
+  if(directory.empty){await page.waitForTimeout(500);await guard();directory=await evaluateWithNameShim(page,inspectFacebookInboxDirectoryDom);requireCondition(directory.ready&&directory.empty,'INBOX_WINDOW_UNAVAILABLE','聊天列表仍在变化');}
   const selected=directory.rows.slice(0,config.max_threads),messages:Awaited<ReturnType<typeof readFacebookInboxThread>>=[];
   const discovery:BrowserInboxDiscoverySummary={strategy:'RECENT_ACCEPTED',visible_threads:directory.rows.length,unparsed_rows:directory.invalid,threads:[],skipped:[],observed:[],window_limited:directory.rows.length>selected.length||directory.invalid>0,empty_list:directory.empty};
   const skippedReason=(error:unknown):ThreadSkip['reason']=>{
@@ -207,10 +208,10 @@ export async function readFacebookInboxDirectory(page:Page,request:Pick<BrowserI
       const heading=thread.display_name==='Facebook 用户'?page.getByRole('main').getByRole('heading',{level:3}).first():page.getByRole('main').getByRole('heading',{name:thread.display_name,exact:true,level:3}).first();
       await heading.waitFor({state:'visible',timeout:15000});
       threadStep('facebook-inbox-directory-identity');
-      let target=await page.evaluate(inspectFacebookInboxHeaderDom,thread);
+      let target=await evaluateWithNameShim(page,inspectFacebookInboxHeaderDom,thread);
       // Messenger can render the name/composer before hydrating the profile link.
       // Wait for the same exact identity evidence; never fall back to the name alone.
-      for(let pass=0;pass<30&&!target;pass++){await guard();await page.waitForTimeout(500);target=await page.evaluate(inspectFacebookInboxHeaderDom,thread);}
+      for(let pass=0;pass<30&&!target;pass++){await guard();await page.waitForTimeout(500);target=await evaluateWithNameShim(page,inspectFacebookInboxHeaderDom,thread);}
       requireCondition(target&&target.peer_id!==request.binding.environment.configuration.operating_identity_id,'THREAD_IDENTITY_UNVERIFIED','会话标题没有唯一且一致的发送者主页');
       const verified:{thread_id:string;peer_id:string;display_name:string}=target;
       threadStep('facebook-inbox-directory-composer');
