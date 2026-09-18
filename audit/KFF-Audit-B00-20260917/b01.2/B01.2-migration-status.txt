@@ -1,0 +1,51 @@
+# B01.2 migration status (Machine A)
+# generated: 2026-09-18T11:05:45+08:00
+
+## git branch --show-current
+codex/facebook-foundation-b01.1
+
+## git rev-parse HEAD
+c293aa77a9872270741dbe384841a3c4768327cb
+
+## git merge-base HEAD 752042bc466b10b07cad455757a41bb10bbaf39f
+752042bc466b10b07cad455757a41bb10bbaf39f
+
+## git status --short
+ M apps/agent/src/action-journal.ts
+ M apps/agent/src/guardian-protocol.ts
+ M apps/agent/src/guardian.ts
+ M apps/agent/src/main.ts
+ M apps/agent/src/process-tree.ts
+ M packages/contracts/src/index.ts
+ M packages/core/src/execution.ts
+ M packages/core/src/reconciliation.ts
+ M tests/helpers/collection-journal.ts
+ M tests/integration/agent-closure-gate.test.ts
+ M tests/integration/browser-message.test.ts
+ M tests/unit/action-journal.test.ts
+ M tests/unit/guardian-liveness.test.ts
+ M tests/unit/process-tree.test.ts
+?? audit/
+?? tests/unit/action-journal-flush-branches.test.ts
+?? tests/unit/guardian-evidence-boundary.test.ts
+?? tests/unit/guardian-evidence-upgrade.test.ts
+?? tests/unit/guardian-late-message.test.ts
+?? tests/unit/guardian-liveness-policy.test.ts
+?? tests/unit/guardian-termination-proof.test.ts
+
+## git diff --stat
+ apps/agent/src/action-journal.ts             |  36 +++-
+ apps/agent/src/guardian-protocol.ts          | 210 ++++++++++++++++++---
+ apps/agent/src/guardian.ts                   | 142 +++++++++++---
+ apps/agent/src/main.ts                       |   7 +-
+ apps/agent/src/process-tree.ts               | 268 +++++++++++++++++++++++++--
+ packages/contracts/src/index.ts              |  57 +++++-
+ packages/core/src/execution.ts               |  44 +++--
+ packages/core/src/reconciliation.ts          |  24 +++
+ tests/helpers/collection-journal.ts          |  29 ++-
+ tests/integration/agent-closure-gate.test.ts | 149 ++++++++++++++-
+ tests/integration/browser-message.test.ts    | 148 +++++++++++++--
+ tests/unit/action-journal.test.ts            |  56 +++++-
+ tests/unit/guardian-liveness.test.ts         |  32 +++-
+ tests/unit/process-tree.test.ts              | 216 ++++++++++++++++++++-
+ 14 files changed, 1294 insertions(+), 124 deletions(-)

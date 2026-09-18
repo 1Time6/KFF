@@ -1,0 +1,115 @@
+# B01.2 untracked-file manifest (Machine A migration snapshot)
+# generated: 2026-09-18T11:07:24+08:00
+# columns: SHA256  SIZE_BYTES  ADD_MODE  RELATIVE_PATH
+#   ADD_MODE = 'add-A'   -> git add -A picks it up
+#   ADD_MODE = 'add-f'   -> gitignored (matches *.log); requires explicit: git add -f <path>
+#
+# NOTE: this manifest does NOT list itself (a file cannot contain its own final hash).
+#       Its own sha256 is recorded in B01.2-migration-status.txt after the commit.
+#
+# RULE: git add -f is applied ONLY to the individual files listed below.
+#       'git add -f' on a whole directory is FORBIDDEN.
+#
+594dbfbd9196d43e9b6696ea9ff5f84d6eb3540565120bc2432e3f7d10bd0201         16941  add-A  audit/KFF-Audit-B00-20260917/b01.1/B01.1-evidence.json
+88d8a34a086f19826b45a138a44190d25be139d3df12f4e290d332d3d156a3e3          2659  add-A  audit/KFF-Audit-B00-20260917/b01.1/B01.1-push.md
+7cef817163e2a8ce13fcf15886fe919fc79295fe375bbe91a32840a26898816b         13296  add-A  audit/KFF-Audit-B00-20260917/b01.1/B01.1-state-machine.md
+2acedb6cc499b284a2af47455d68d92ea431296861545cc012b8fcf2b23a0c2f         15345  add-A  audit/KFF-Audit-B00-20260917/b01.1/B01.1-summary.md
+9f4d3790330b678a65ae9ba1e8bdb11232a87bf7d23354c3378dc981ab2dd41b         11733  add-A  audit/KFF-Audit-B00-20260917/b01.1/B01.1-test-results.md
+b808dc28fb90ad375c9aa3bdb1a699ed9a434fa78456044a0599c82f962828ab         10776  add-A  audit/KFF-Audit-B00-20260917/b01.2/B01.2-HANDOFF-SUMMARY.txt
+b92369f55fc96275700a60f821d8f77ed306c4a9be18b32db9a79f9dc254a848         76956  add-A  audit/KFF-Audit-B00-20260917/b01.2/B01.2-HANDOFF.md
+090f32e88401f27f9c9f3978e51b855ae52ca152dbf1c0e8809879c8cfb0452a         36104  add-A  audit/KFF-Audit-B00-20260917/b01.2/B01.2-R2-delivery.md
+c94113bf5a781fe3dbdfa1b398b17a1352ab8c77822d9ffe6312026240cbe0bf        205677  add-A  audit/KFF-Audit-B00-20260917/b01.2/B01.2-R2-patch.diff
+4277fd3e98d94e033d481857a9f32af65f27b59b9876b8663aaaa5eff6b44a0f         13232  add-A  audit/KFF-Audit-B00-20260917/b01.2/B01.2-R3-evidence-prereg.md
+33ef202abc4fa43a1d5828d40f6b9e6528e0060f7e497d3d5a34bdaaf5e41e76         21728  add-A  audit/KFF-Audit-B00-20260917/b01.2/B01.2-evidence.json
+5120e7d54ee2dab6e67037bc03e3e353f58263f048ce088413a7259b48f06fd5         10134  add-A  audit/KFF-Audit-B00-20260917/b01.2/B01.2-guarantee-model.md
+133b0c0f10ba2df52bd2b0e1a6079974e1823e2aa89e1ea74d1797ac245bce3e          2111  add-A  audit/KFF-Audit-B00-20260917/b01.2/B01.2-migration-status.txt
+ba8e901909ab5198aa98a19bed22a66824909cf47eecd694a15a93dc61c4c49f         31770  add-A  audit/KFF-Audit-B00-20260917/b01.2/B01.2-summary.md
+31c4f8d4a2d5c33bf983617157c915b36edbe8a808a181fc0566b28d6ef6fc23         18601  add-A  audit/KFF-Audit-B00-20260917/b01.2/B01.2-test-results.md
+4c415f55c0cfb7ca7d9263c816dece1b76a097dbd7c1bd4f039be3f1c2c7b253        149892  add-A  audit/KFF-Audit-B00-20260917/b01.2/B01.2-working-tree.patch
+8d7f84fa77f63b226edb0426b4e436b2a7a71160b7c234c2ac1ce44eaba8696c          2770  add-A  audit/KFF-Audit-B00-20260917/b01.2/b01.2-g-loop.sh
+24c1fcf4d7df44ca047428d873fb4c9d1f14cb3491368c18fa04cbc015995fad          2828  add-A  audit/KFF-Audit-B00-20260917/b01.2/b01.2-matrix.sh
+b8dbb6d8c747ae53ad5c4223f753c13ac693c261bc1d7727c9d95f2e70fbe1ab          2254  add-A  audit/KFF-Audit-B00-20260917/b01.2/b01.2-one.sh
+dd92c7d2d059aa7e2c518f3745a7cd4df06ce5aa2495b282ab1ff480e0b83b76         11099  add-A  audit/KFF-Audit-B00-20260917/b01/B01-changes.md
+e41a0273d96f287498157151378405564acf93d3f62f256d14a7826ad9f97be3         17064  add-A  audit/KFF-Audit-B00-20260917/b01/B01-evidence.json
+42f9de82b8a6e3bcf7640b847355b08680f2c0bed25f9b617336b571caa6b545         14501  add-A  audit/KFF-Audit-B00-20260917/b01/B01-state-transition.md
+0a198b7a4d7454d44d631e246660cc6e8cc7fe530e17414a93edf932796bad22         10973  add-A  audit/KFF-Audit-B00-20260917/b01/B01-summary.md
+370def6d14b220983a07640a02baa90a8f4f028c4a998cd0492e12492db13bdc         11730  add-A  audit/KFF-Audit-B00-20260917/b01/B01-test-results.md
+ef0220a886aa661807ecce1f7a9d0ee4fa13e82fb72820fd2c7a306f5b3ebd74           697  add-A  audit/KFF-Audit-B00-20260917/b01/b01-probe-guardian-2.after.json
+5e76da3ce3373790f9ec554e9abcf3931f50e54a53f614a2a1f5c2ff750fc93a          3848  add-A  audit/KFF-Audit-B00-20260917/b01/b01-probe-guardian.after.json
+78bcdd85369c25f2c076716882e58352ef5a0c5a781e0885eab3e8588720a24e           607  add-A  audit/KFF-Audit-B00-20260917/b01/b01-probe-journal.after.json
+48052469a222f0c982985058568ddd770632f27cfac2cda2a083665583a312c4          1340  add-A  audit/KFF-Audit-B00-20260917/b01/drop-retained-test-databases.cjs
+0268ebf60dd7306b9bb6fa9b840dd86a7317b3bf79c6392806c6e7ba1b238447          2867  add-A  audit/KFF-Audit-B00-20260917/b01/probe-cwd-spawn.cjs
+40411000e39dfda9b026d04cf66c4aff7cc2d552ba8fe1443a8c69d958f32cc2          3425  add-A  audit/KFF-Audit-B00-20260917/b01/probe-execpath-rename.cjs
+08ea891f9d9fe98df96fbf06071c56fb9c953e14ad9aaefb7c845df7ab234f7e         12925  add-A  audit/KFF-Audit-B00-20260917/baseline.md
+bb779a66d1de021d4c07ba5c12f3c8f62299b55726b0efc25635f3b18fdbd6f2           583  add-A  audit/KFF-Audit-B00-20260917/evidence/agent-journal-analysis-run2.json
+bb779a66d1de021d4c07ba5c12f3c8f62299b55726b0efc25635f3b18fdbd6f2           583  add-A  audit/KFF-Audit-B00-20260917/evidence/agent-journal-analysis.json
+f7598c566a6f245d8d79465afdb90d13c27971c6ce58be063b53aad93965b004           678  add-A  audit/KFF-Audit-B00-20260917/evidence/guardian-probe-2-run2.json
+45537e0f03b11ba6e0bd8fef3821f6061c7a921fe42ca01d8d7ff67d24ab402f           704  add-A  audit/KFF-Audit-B00-20260917/evidence/guardian-probe-2.json
+8430eb62f37967f8af6743f4cab3da255031e7fde7268d90cca20c815da23dc6          3123  add-A  audit/KFF-Audit-B00-20260917/evidence/guardian-probe-run2.json
+aee69cdfddb149aed4da2c391e28c735e41a7bbe50359aaa8747ea5f0a997f8d          3206  add-A  audit/KFF-Audit-B00-20260917/evidence/guardian-probe.json
+168c761ae30e1febd6002afbe6868cfb78e5c1997f688ff0c217fcf3d2c14192          9358  add-A  audit/KFF-Audit-B00-20260917/evidence/reception-probe-run2.json
+276d2b431ff3c9e697e81b0353b4163018504ed975a29294e707ddb85aa4b30f          9695  add-A  audit/KFF-Audit-B00-20260917/evidence/reception-probe.json
+5c9c234d983dc2b987f54c109c454ac6a9234e820107646c50bebcefa7b4e111         12052  add-A  audit/KFF-Audit-B00-20260917/executive-summary.md
+22f5f3f57182f0a240af53793f243de74b498ce4d0e159342b5a4fbce1be6b54          9431  add-A  audit/KFF-Audit-B00-20260917/feature-matrix.md
+d90cc33dbe2dcdf81c8e0489a940c556404ff1d8ff3df540dbae97dfc58776cb         80216  add-A  audit/KFF-Audit-B00-20260917/findings.json
+13a05dca1d0238c03e0004220e4857bebfc18a8739ee8e6d6943554d69a22d19         17724  add-A  audit/KFF-Audit-B00-20260917/historical-regression.md
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855             0  add-A  audit/KFF-Audit-B00-20260917/logs/probe-guardian-2.err
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855             0  add-A  audit/KFF-Audit-B00-20260917/logs/probe-guardian.err
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855             0  add-A  audit/KFF-Audit-B00-20260917/logs/probe-journal.err
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855             0  add-A  audit/KFF-Audit-B00-20260917/logs/probe-reception.err
+5b1ffbfb999f447337e44a36b4a764a0253d4f0e9f0d97db414185146b93d441         23341  add-A  audit/KFF-Audit-B00-20260917/migration-audit.md
+f2a45c7ecba13c82b9e5424986b1244ef3f1beed2b43ea99a30c7db7bcef2938         10371  add-A  audit/KFF-Audit-B00-20260917/module-map.md
+a88e1cbe7a855c3ccbee646ea37cbe6f7affe5c7239d1ed04b79adc93d6c45f1         41412  add-A  audit/KFF-Audit-B00-20260917/repair-plan.md
+4b6ad055266bbf44384e720be845a1b188fdcfedbd130a5bb6423a66c93e738e          6450  add-A  audit/KFF-Audit-B00-20260917/repro/add-015.cjs
+6336b734d9bb30795cb1c4b38d778d8fde5f3d924fabcf0344c2bd2fe57e3965           193  add-A  audit/KFF-Audit-B00-20260917/repro/package.json
+c1a3ef3f3a9bbea34c884ef71e0a61dc05e4a569f831e7234a5b7fe850a3889f          5909  add-A  audit/KFF-Audit-B00-20260917/repro/probe-guardian-2.ts
+e85ad9f91ec324aa2f2ed6053885904203e9529838e581815a830ae9ae707d7d         10187  add-A  audit/KFF-Audit-B00-20260917/repro/probe-guardian.ts
+4acfddc8d4e93395d35082b1c5837f0ce2665580963354f8b0df72962ccf710b          2993  add-A  audit/KFF-Audit-B00-20260917/repro/probe-journal.ts
+605a8224bcea1852666dce028816910ffa7e407d1cb85d82f4b8de24c5564333          6264  add-A  audit/KFF-Audit-B00-20260917/repro/probe-reception.ts
+27302b55c9345d8e844376ac09ee9f2675374552564ac33a5a236fee0cc4a3d2         22839  add-A  audit/KFF-Audit-B00-20260917/test-results.md
+a060db5ea0b506fea42d3a32326fe8c9e2d955bc3909193f3369aaf004f40115         11889  add-A  tests/unit/action-journal-flush-branches.test.ts
+a8cb884b8c65ebebe53a8533f7736f5aa92eb6c86f858929ba90a10f8794ed3c         13959  add-A  tests/unit/guardian-evidence-boundary.test.ts
+3a41e94e49665c3cc21b8367c86a1709841c9839df676495adb20d196e85165a         20204  add-A  tests/unit/guardian-evidence-upgrade.test.ts
+a4120cbf8ed69908f6a847b8c73bc2d7d47e46f1b3bff6d5cb13e7c0fc36eaed         10872  add-A  tests/unit/guardian-late-message.test.ts
+904af343af43d8053d669eb3ae6529dc6507f9f35abcb7be6720626d07f4ed07         11120  add-A  tests/unit/guardian-liveness-policy.test.ts
+ea60cf45d6559eab239bf7f2cf6911d9a87fcd5a9ebfcfcd0f396d674cf431d3         11931  add-A  tests/unit/guardian-termination-proof.test.ts
+495c249934b1c52d949d76572c7e3ae5796875afe4759cf74c7ba471b2848a74          6254  add-f  audit/KFF-Audit-B00-20260917/b01.1/b01.1-green.log
+84be6d1d4a5cd8e060f4eb4435710f861d7bb40e3caef016a3b40c684b390458         10251  add-f  audit/KFF-Audit-B00-20260917/b01.1/b01.1-integration-red.log
+0a149cdb946963270aacfc75d142ea113dd76c5ae7dc826c30f130ead2088b90         17209  add-f  audit/KFF-Audit-B00-20260917/b01.1/b01.1-red.log
+b8fbf78d41242c092abaf400845bd17838fe644aa69873987d72e456b8a5e9ef          5840  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-enum-matrix.log
+f95611df0895b603607154220bb42f5b68ad6123f06cc3d63d45aba86e6d227e          4232  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-enum-shapes-rerun.log
+f5c89d087ecb4c21fc659ae1eb83375d146d8c827197794267f382cc4eab638d          7833  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-enum-shapes.log
+60848141336e2ce3f6ab5f19e905c7e5c5ecc42baf194764899192c70f696086          6097  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-enum-variants.log
+0f3a4c69b8720010f655301678fd24a0923ae46c000d3a7670930326d5bd2db9          3156  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-enumeration-under-load.log
+a7fed006d3be059436804353d33f970d90a46d37aeb9b3805bb8396e709a5ce1          6879  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-fix-load-1.0x.log
+e88af934e08ec0e92b052ee6c1e98551864c2c6e8a26be6ec4eb07034ffded25          8207  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-fix-load-2.0x.log
+9512c24d25d02edc8eb68228f1264470aa10010b78f5c62a38c89e3a4d8615a4          6764  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-fix-unloaded.log
+7484a671b894c674bf1c1131f7fe931b97899173bbdc478c770fc29c55efca2d         71773  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-full-integration-fail.log
+3a71bb93dc5c0295962b349c700c7c1b7c86389fe64b5126cc96dedb8601747e          5390  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-g-repro-2.0x.log
+4c6dba0421e17ade6e47d34ad8c582481c284c20bb09b6994aa87795a668131f          7882  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-g-try1.log
+c4587e1907ef889b46af35f72230c9522bf9e31c87be7ee515953b8c134195c8          5255  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-g-try2.log
+d221d81d3e61702935806051cf845710cf523671c626e03492df3f648a3ed942          5584  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-g-try3.log
+622de3f4eb96bba513fc062a243404f1af649e802f66dbb9cbfd3554a9f8ed88          5255  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-g-try4.log
+ff85aab17c7c7ff1d962730115171a42df9224def6890144034ddd9c95409794          8148  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-g-try5.log
+82996c9de2cf8f1aefe5385991fb3287f2ace40b728a9f574aa80e332fdf0719          5255  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-g-try6.log
+6e3c76d301cce562a4515fa529d11b6a84eaaedee1dd98dafdc564f40b1feac0          5255  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-g-try7.log
+80cd039ca980c321b62dc9716283ec515b358463abfd0bfd222d52ddbce0614e          8149  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-g-try8.log
+830fbcc8e46a99fde103323825b7c943ac61345f7430b81441f2cd827ca8d562         93836  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-green.log
+05ce02ebd8212d07c9a87f36ed04969553e9e13740be1d6af45ec583c1e8a86f          4028  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-integration-red.log
+3311cb55a8d22a6ebecc478b71c2d75957eee92f1e3f39ddc31e3a9d4136683c          2268  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-kill-cost-fanout.log
+2f189092c66aed66e7725d0f1b485e06020f51ed885b272d78fec052840cb552          2170  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-kill-cost.log
+c348c67949c7de0091b4db557312a9dd39a3340f3ebb4232f5104a158845c759          6897  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-matrix-0.log
+476cb07eb307941a0ee2dd78ed2830538e8c3d0a0a1acf069aa1bb3f720611ae          6899  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-matrix-12.log
+a941a9df8e6ea18da471232d8589be96e049c16a771e08bb447ffbe62ab67936          6899  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-matrix-16.log
+748461a2b786cbf844ecf8d3d153760eee1dab549993cd949e317507eb0fd0dc          7660  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-matrix-20.log
+6384c12e8ed7f2c697b6bdfc580d94b155cb9090cc0c8df764734e6654f5de0f         10850  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-matrix-24.log
+1e83c67d3899e867d344206f786b7bc5e8f0a159eb958f1146615e24467605a4          6897  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-matrix-8.log
+5231554c95262d745c52b2c1967e083b26a9873774d43f47096ff6eacaf3c648          5896  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-probe-diag-1.5x.log
+52b2653ee74bf17652949ad537fc3b0cbb0d7833627c1340489dabd3c8eefe3a          5896  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-probe-diag-2.0x.log
+a1af29b2d2449ca3bd3bfd3045f2e7c6fd7990046b789668ec26238665cb71c1          7862  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-probe-diag-3.0x.log
+4fc48a023f7f1e3cbeef9f1c9093e46907f86b8b869acc47bcdb97a807d97043          8128  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-probe-one-1.5x.log
+55214cf5517dcd8d963f010005c7402b339b07560d8b81811822f9fa3a077e8b          8128  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-probe-one-2.0x.log
+4cbb2b37370663c3bab7f44e75771a58c8774fab1153b025dbcec2ee2a885f69         67751  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-r2-full-integration.log
+044aff465a36dabb6c826288a52b8f0b7cdfeab1923d0fb42f7b216ce50b206d          6642  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-repro-control.log
+c5a53d035b470da68c8d394545d535ababf4d75bdebe511e5baf8e65e098d60f         11262  add-f  audit/KFF-Audit-B00-20260917/b01.2/b01.2-repro-loaded.log
+2b2723e5ea4f69a51fcaaf66f6161132795061b9abbe9ade53d42727a55459b6          3932  add-f  audit/KFF-Audit-B00-20260917/b01/b01-red.log

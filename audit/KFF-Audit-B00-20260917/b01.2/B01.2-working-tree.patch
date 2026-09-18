@@ -1,0 +1,1963 @@
+diff --git a/apps/agent/src/action-journal.ts b/apps/agent/src/action-journal.ts
+index 564856f..181bd27 100644
+--- a/apps/agent/src/action-journal.ts
++++ b/apps/agent/src/action-journal.ts
+@@ -1,7 +1,7 @@
+ import { randomUUID } from 'node:crypto';
+ import type { ActionReport, ActionState } from '@kff/contracts';
+ import { AppError, digest } from '@kff/core';
+-import { closureProof, compactClosure, readClosureEvidence } from './guardian-protocol';
++import { closureProof, compactClosure, noProgressProtocolVersion, readClosureEvidence, type ClosureEvidence } from './guardian-protocol';
+ 
+ export interface JournalEntry {
+   command_id: string; action_id: string; phase: string; guardian_nonce?: string; guardian_pid?: number;
+@@ -12,6 +12,23 @@ export interface JournalEntry {
+ }
+ type Journal = Record<string, JournalEntry>;
+ type Controller = <T>(endpoint: string, data?: unknown) => Promise<T>;
++/**
++ * The part of a report that states a safety fact rather than a business result, carried across a
++ * retention redaction. It is read from the closure record rather than from the report, because the
++ * record is the authority on both facts and because the two are not always present together: retention
++ * also synthesizes a report for an entry that never received one - a restart after the page expired -
++ * and the record is then the only place the fact exists.
++ *
++ * The list is deliberately explicit: anything not named here is business state that retention owns and
++ * may replace, so adding a field means deciding, once, which half it belongs to.
++ */
++function retainedSafety(record: ClosureEvidence | null) {
++  const guardian = record && 'termination' in record ? record.termination : undefined;
++  return {
++    ...(guardian ? { guardian } : {}),
++    ...(record?.protocol_version === noProgressProtocolVersion ? { error_code: 'GUARDIAN_NO_PROGRESS' as const } : {}),
++  };
++}
+ 
+ /** Entirely local: a failed controller heartbeat must never postpone retention cleanup. */
+ export function maintainActionJournal(runtime: string, journal: Journal, save: () => void, now = Date.now()) {
+@@ -22,10 +39,19 @@ export function maintainActionJournal(runtime: string, journal: Journal, save: (
+     const expired = !entry.collection_expires_at || !(Date.parse(entry.collection_expires_at) > now);
+     if (!delivered && !expired && !entry.collection_redaction) continue;
+     if (!entry.collection_redaction) {
++      // Read before anything is mutated: a record that cannot be trusted has to stop the redaction
++      // outright rather than leave a half-applied one behind.
++      const safety = retainedSafety(delivered ? null : readClosureEvidence(runtime, entry));
+       entry.collection_redaction = { reason: delivered ? 'DELIVERED' : 'RETENTION_EXPIRED', at: new Date(now).toISOString(),
+         ...(entry.report ? { report_event_id: entry.report.event_id, report_sha256: digest(entry.report) } : {}) };
+       if (delivered) delete entry.report;
+-      else entry.report = { event_id: randomUUID(), command_id: entry.command_id, outcome: 'BLOCKED', error_code: 'RETENTION_EXPIRED', diagnostic: { step: 'collection-retention-expired' } };
++      // Retention owns the page payload and the terminal outcome, and nothing else. The safety facts
++      // come from the record, so replacing the report - as this used to do wholesale - can no longer
++      // turn "the guardian never proved this browser closed" into "the page expired, nothing was at
++      // risk", which is how a quarantined environment became an idle one the moment its payload
++      // expired. This holds for the entry that never received a report at all, which is the same
++      // restart more than one page length later.
++      else entry.report = { event_id: randomUUID(), command_id: entry.command_id, outcome: 'BLOCKED', error_code: 'RETENTION_EXPIRED', diagnostic: { step: 'collection-retention-expired' }, ...safety };
+       // Persist the redaction intent before replacing the closure. Either crash point is resumed locally.
+       save();
+     }
+@@ -51,7 +77,11 @@ export async function flushActionJournal(runtime: string, journal: Journal, save
+         if (!['READY', 'CLAIMED'].includes(status.state)) { entry.quarantined = true; save(); continue; }
+         if (!entry.report) {
+           if (!('result' in closure)) throw new AppError('GUARDIAN_UNCONFIRMED', '原始回执已经清理，缺少可发送的终止回执');
+-          const result = { ...closure.result };
++          // The process fact travels with the report whenever there is one. The receiver has to decide
++          // whether an execution slot may be freed, and it cannot make that decision from an outcome
++          // string alone: "the command stopped" and "the tree is dead" are different facts, and only
++          // the second one licenses reuse.
++          const result = { ...closure.result, ...('termination' in closure && closure.termination ? { guardian: closure.termination } : {}) };
+           if (['SUBMITTING', 'SUBMITTED'].includes(status.action_state) && result.outcome !== 'VERIFIED_SUCCEEDED') result.outcome = 'UNKNOWN_OUTCOME';
+           entry.report = { ...result, event_id: randomUUID(), command_id: entry.command_id }; save();
+         }
+diff --git a/apps/agent/src/guardian-protocol.ts b/apps/agent/src/guardian-protocol.ts
+index 75f7403..5e2c1ee 100644
+--- a/apps/agent/src/guardian-protocol.ts
++++ b/apps/agent/src/guardian-protocol.ts
+@@ -1,7 +1,7 @@
+-import { mkdirSync, readFileSync, writeFileSync, renameSync, existsSync, unlinkSync } from 'node:fs';
++import { mkdirSync, readFileSync, writeFileSync, renameSync, existsSync, unlinkSync, linkSync } from 'node:fs';
+ import path from 'node:path';
+ import { z } from 'zod';
+-import { resultInput, uuid, hashSchema, quiescenceInput } from '@kff/contracts';
++import { resultInput, uuid, hashSchema, quiescenceInput, guardianTermination, guardianTimingLimits } from '@kff/contracts';
+ import { digest, requireCondition, AppError } from '@kff/core';
+ 
+ export const guardianResult = resultInput.omit({ event_id: true, command_id: true });
+@@ -23,12 +23,18 @@ type CompactClosure = z.infer<typeof compactClosureSchema>;
+  * version: it deliberately carries no `context_closed: true`, which stays reserved for a proof the
+  * child wrote after closing what it actually opened. A child that died after `start` is a different
+  * case and still keeps its isolation.
++ *
++ * `termination` is optional because a startup failure usually needs no termination at all - the
++ * process is already gone. When the parent did have to end something, the fact it proved travels with
++ * the record instead of being dropped, so a reader can tell "never opened" from "never opened, and the
++ * process is provably gone" without having to infer it.
+  */
+ export const startupFailedProtocolVersion = 'kff.guardian-closure-startup-failed.v1';
+ const startupFailureSchema = z.object({
+   protocol_version: z.literal(startupFailedProtocolVersion),
+   command_id: uuid, action_id: uuid, nonce: hashSchema, closed_at: z.string().datetime(),
+   context_opened: z.literal(false),
++  termination: guardianTermination.optional(),
+   result: guardianResult,
+ }).strict();
+ type StartupFailure = z.infer<typeof startupFailureSchema>;
+@@ -38,6 +44,13 @@ type StartupFailure = z.infer<typeof startupFailureSchema>;
+  * are answered separately because their answers differ: `context_opened` is only what the parent
+  * observed before it stopped waiting, and `submission_state` says whether a platform write could have
+  * been reached. `context_closed` is deliberately absent: ending a process never closes a context.
++ *
++ * The old shape carried `process_terminated: boolean`, and that boolean was the defect: it could be
++ * set from a probe that only ever asked about the root pid, so a live browser could be recorded as a
++ * terminated tree. `termination` replaces it with the three-state fact and the evidence behind it -
++ * root, descendants, how many were sampled, and whether the listing was available at all. A record
++ * that cannot prove the tree is dead is still written (the truth is worth keeping), but it is no
++ * longer usable as a proof: the receiver refuses it, and the environment stays quarantined.
+  */
+ export const noProgressProtocolVersion = 'kff.guardian-closure-no-progress.v1';
+ export const guardianLivenessPhases = ['awaiting-ready', 'awaiting-start', 'awaiting-context', 'awaiting-intent', 'granting', 'submitting'] as const;
+@@ -46,43 +59,174 @@ const noProgressSchema = z.object({
+   protocol_version: z.literal(noProgressProtocolVersion),
+   command_id: uuid, action_id: uuid, nonce: hashSchema, closed_at: z.string().datetime(),
+   phase: z.enum(guardianLivenessPhases),
+-  process_terminated: z.boolean(),
++  termination: guardianTermination,
+   context_opened: z.boolean(),
+   submission_state: z.enum(['NOT_SUBMITTED', 'UNKNOWN']),
+   forced: z.boolean(),
+-  waited_ms: z.number().int().min(0).max(86400000),
+-  grace_ms: z.number().int().min(0).max(86400000),
++  // Both durations are measured, not configured, so their ceiling is the largest wait any legal policy
++  // can accumulate - the same shared bound the policy itself is validated against. Keeping the two in
++  // step is what stops a legal policy from producing evidence the schema would then reject and lose.
++  waited_ms: z.number().int().min(0).max(guardianTimingLimits.max_total_ms),
++  grace_ms: z.number().int().min(0).max(guardianTimingLimits.max_total_ms),
+   result: guardianResult,
+ }).strict();
+ type NoProgress = z.infer<typeof noProgressSchema>;
+ export type ClosureEvidence = GuardianClosure | CompactClosure | StartupFailure | NoProgress;
+ export interface ClosureIdentity { command_id: string; action_id: string; guardian_nonce?: string }
++
++/**
++ * How much a record actually proves, in the only order that matters: whether a browser context is
++ * known to be closed, known never to have opened, or merely unaccounted for behind a dead process.
++ * The rank is what the write rules below compare, and it is deliberately not the same thing as
++ * "a file exists".
++ */
++export const closureRanks: Record<'PROVEN_CLOSED' | 'NEVER_OPENED' | 'PROCESS_ONLY', number> = { PROVEN_CLOSED: 3, NEVER_OPENED: 2, PROCESS_ONLY: 1 };
++export type ClosureStrength = keyof typeof closureRanks;
++export function closureStrength(record: ClosureEvidence): ClosureStrength {
++  if (record.protocol_version === 'kff.guardian-closure.v1' || record.protocol_version === 'kff.guardian-closure-compact.v1') return 'PROVEN_CLOSED';
++  return record.protocol_version === startupFailedProtocolVersion ? 'NEVER_OPENED' : 'PROCESS_ONLY';
++}
++
+ export function closureFile(runtime: string, commandId: string) {
+   return path.join(runtime, 'agent', 'closures', uuid.parse(commandId) + '.json');
+ }
+-export function saveClosure(runtime: string, value: GuardianClosure) {
+-  const record = closureSchema.parse(value); const file = closureFile(runtime, record.command_id);
++/**
++ * Each kind of evidence writes through its own temporary file. The previous version had all of them
++ * share `<file>.tmp`, which is a race with real consequences: the child writing its closure and the
++ * parent writing a no-progress record for the same command could interleave inside one temporary file,
++ * and whichever renamed second would publish a mixture of the two. Separate names make that
++ * impossible, and they cost nothing because only the renamed file is ever read.
++ */
++const tmpSuffixes = { closure: '.closure.tmp', startup: '.startup-failed.tmp', noProgress: '.no-progress.tmp', compact: '.compact.tmp' } as const;
++type EvidenceKind = keyof typeof tmpSuffixes;
++/**
++ * Windows can refuse a metadata operation for a moment while something else - a scanner, an indexer, or
++ * the other writer touching the same directory - holds the file it is about to touch. That refusal says
++ * nothing about the evidence, and reading it as a decision is how a proven closure loses to a weak
++ * record: the writer that was told "not now" gives up, and the weaker fact that got its write in first
++ * is what stays. `saveRuntimeJson` already answers this the same way for the runtime state file; this is
++ * that answer, bounded by a deadline so a filesystem that really refuses still ends in an error rather
++ * than in a success that did not happen. Only Windows is retried: on POSIX these codes mean what they say.
++ */
++const transientFileCodes = new Set(['EPERM', 'EACCES', 'EBUSY', 'EMFILE', 'ENFILE']);
++function withTransientRetry<T>(budgetMs: number, body: () => T): T {
++  const deadline = Date.now() + budgetMs;
++  for (;;) {
++    try { return body(); } catch (error) {
++      const code = (error as NodeJS.ErrnoException).code;
++      if (process.platform !== 'win32' || !transientFileCodes.has(code ?? '') || Date.now() >= deadline) throw error;
++      // Wait without spinning the event loop: this runs inside the child's final write, where holding
++      // the thread for a moment is cheaper than losing the proof.
++      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, Math.min(20, deadline - Date.now()));
++    }
++  }
++}
++/**
++ * Cleanup, never a decision. When this runs on a published record the fact is already on disk, and on a
++ * lost race there is nothing to publish - so a cleanup that fails must not throw. It would otherwise
++ * replace the caller's "somebody else published first, retry against what is there" with a failure and
++ * abandon retries that were still available. A temporary file that survives is harmless: the next
++ * writer of the same kind removes its own before publishing.
++ */
++function removeTemp(tmp: string) {
++  try { withTransientRetry(250, () => { if (existsSync(tmp)) unlinkSync(tmp); }); } catch { /* left for the next writer of this kind */ }
++}
++/**
++ * Publishes one record. `exclusive` is for the case where the caller decided to write *because* nothing
++ * was there: a hard link is created instead of a rename, so the write either creates the file or fails
++ * because somebody else published in the meantime. A rename cannot make that distinction - it replaces
++ * whatever it finds - which is how a parent that checked "no closure yet" a few microseconds earlier
++ * could still land on top of the real closure the child had just written. Both processes write the same
++ * proof file, so the decision and the write have to be one step; when they are not, the loser of the
++ * race re-reads and applies the strength rules again. A filesystem without hard links falls back to the
++ * rename, which is the previous behaviour rather than a failure to record anything.
++ */
++function writeEvidenceFile(file: string, kind: EvidenceKind, record: ClosureEvidence, exclusive = false): boolean {
+   mkdirSync(path.dirname(file), { recursive: true });
+-  requireCondition(!existsSync(file), 'IDEMPOTENCY_CONFLICT', '关闭证明已经存在');
+-  writeFileSync(file + '.tmp', JSON.stringify(record), { mode: 0o600, flush: true }); renameSync(file + '.tmp', file);
++  const tmp = file + tmpSuffixes[kind];
++  // A crash between writing and renaming leaves this writer's own temporary file behind. Only the
++  // writer that owns the name removes it, so cleanup can never delete a concurrent writer's work.
++  removeTemp(tmp);
++  withTransientRetry(500, () => writeFileSync(tmp, JSON.stringify(record), { mode: 0o600, flush: true }));
++  if (!exclusive) { withTransientRetry(500, () => renameSync(tmp, file)); removeTemp(tmp); return true; }
++  try {
++    withTransientRetry(500, () => linkSync(tmp, file));
++    return true;
++  } catch (error) {
++    if ((error as { code?: string }).code !== 'EEXIST') { withTransientRetry(500, () => renameSync(tmp, file)); return true; }
++    return false;
++  } finally {
++    // On success the record now has two names and only the temporary one is dropped; on a lost race the
++    // temporary file is discarded so no half-written evidence is left behind.
++    removeTemp(tmp);
++  }
++}
++/** Everything except the write timestamp, which is the one field a legitimate retry is allowed to change. */
++function substance(record: ClosureEvidence) {
++  const { closed_at: _ignored, ...rest } = record as ClosureEvidence & { closed_at: string };
++  return JSON.stringify(rest);
++}
++/**
++ * The one write rule every producer goes through. It answers two questions the previous code answered
++ * with a bare existence check:
++ *
++ *  - may this record replace what is already on disk? Only a stronger fact may replace a weaker one.
++ *    A real closure upgrades a no-progress record - that is the whole point of keeping the weak record
++ *    around - while a no-progress record can never overwrite a closure that is already proven. Equal
++ *    ranks never replace each other; a replayed write of the same facts returns what is on disk, so a
++ *    retry is idempotent rather than a conflict, and a *different* write at the same rank is a genuine
++ *    conflict and is refused loudly.
++ *  - what does the caller get back? Always the record that is now on disk, which may be the existing
++ *    stronger one rather than the one it asked to write.
++ */
++function saveEvidence(runtime: string, kind: EvidenceKind, record: ClosureEvidence): ClosureEvidence {
++  const file = closureFile(runtime, record.command_id);
++  // A record can be published by the other writer between the comparison and the write, so a caller
++  // that decided to write because nothing was there retries against what it actually finds. What the
++  // retry cannot do is overwrite a fact it never read: the exclusive create simply fails, which is the
++  // only outcome that keeps a weak writer from replacing a strong record it did not see.
++  for (let attempt = 0; attempt < 4; attempt += 1) {
++    const present = existsSync(file);
++    if (!present) {
++      if (writeEvidenceFile(file, kind, record, true)) return record;
++      continue;
++    }
++    const parsed = parseEvidenceFile(file);
++    const existing = parsed.success ? parsed.data : null;
++    requireCondition(existing && existing.command_id === record.command_id, 'GUARDIAN_UNCONFIRMED', '既有执行上下文证明无法解析，拒绝覆盖');
++    requireCondition(existing.action_id === record.action_id && existing.nonce === record.nonce, 'IDEMPOTENCY_CONFLICT', '关闭证明属于另一个执行上下文');
++    // Replacing a record that is already there is a deliberate act and always a stronger fact. Two
++    // writers of the same or higher strength may still replace each other here - the platform offers no
++    // compare-and-swap to prevent it - but neither of them can be a weaker record, and a weaker writer
++    // never reaches this line at all.
++    if (closureRanks[closureStrength(record)] > closureRanks[closureStrength(existing)]) { writeEvidenceFile(file, kind, record); return record; }
++    requireCondition(substance(existing) === substance(record), 'IDEMPOTENCY_CONFLICT', '关闭证明已经存在且内容不同');
++    return existing;
++  }
++  throw new AppError('IDEMPOTENCY_CONFLICT', '关闭证明写入竞争次数过多，拒绝覆盖', 409);
++}
++function parseEvidenceFile(file: string) {
++  // A file that cannot be parsed is never treated as absent: silence about a closure proof is the same
++  // fact as a bad one, and both keep the caller's isolation.
++  try { return z.union([closureSchema, compactClosureSchema, startupFailureSchema, noProgressSchema]).safeParse(JSON.parse(readFileSync(file, 'utf8'))); }
++  catch { return { success: false as const }; }
++}
++export function saveClosure(runtime: string, value: GuardianClosure): ClosureEvidence {
++  return saveEvidence(runtime, 'closure', closureSchema.parse(value));
+ }
+ /**
+  * Written only by the parent, only while the journal phase still proves the child never executed.
+  * A child that had already been sent `start` may own a browser context, so it is never recorded
+  * here and the caller keeps its isolation.
+  */
+-export function saveStartupFailure(runtime: string, value: { command_id: string; action_id: string; nonce: string; result: z.infer<typeof guardianResult>; closed_at?: string }) {
+-  const record = startupFailureSchema.parse({ protocol_version: 'kff.guardian-closure-startup-failed.v1', closed_at: value.closed_at ?? new Date().toISOString(), command_id: value.command_id, action_id: value.action_id, nonce: value.nonce, context_opened: false, result: value.result });
+-  const file = closureFile(runtime, record.command_id);
+-  mkdirSync(path.dirname(file), { recursive: true });
+-  requireCondition(!existsSync(file), 'IDEMPOTENCY_CONFLICT', '关闭证明已经存在');
+-  writeFileSync(file + '.tmp', JSON.stringify(record), { mode: 0o600, flush: true }); renameSync(file + '.tmp', file);
+-  return record;
++export function saveStartupFailure(runtime: string, value: { command_id: string; action_id: string; nonce: string; result: z.infer<typeof guardianResult>; termination?: z.infer<typeof guardianTermination>; closed_at?: string }) {
++  const record = startupFailureSchema.parse({ protocol_version: 'kff.guardian-closure-startup-failed.v1', closed_at: value.closed_at ?? new Date().toISOString(), command_id: value.command_id, action_id: value.action_id, nonce: value.nonce, context_opened: false, termination: value.termination, result: value.result });
++  return saveEvidence(runtime, 'startup', record) as StartupFailure;
+ }
+ export function readClosureEvidence(runtime: string, entry: ClosureIdentity): ClosureEvidence | null {
+   if (!entry.guardian_nonce) return null;
+   const file = closureFile(runtime, entry.command_id); if (!existsSync(file)) return null;
+-  const parsed = z.union([closureSchema, compactClosureSchema, startupFailureSchema, noProgressSchema]).safeParse(JSON.parse(readFileSync(file, 'utf8')));
++  const parsed = parseEvidenceFile(file);
+   requireCondition(parsed.success && parsed.data.command_id === entry.command_id && parsed.data.action_id === entry.action_id && parsed.data.nonce === entry.guardian_nonce, 'GUARDIAN_UNCONFIRMED', '旧执行上下文关闭证明不匹配');
+   return parsed.data;
+ }
+@@ -90,14 +234,15 @@ export function readClosureEvidence(runtime: string, entry: ClosureIdentity): Cl
+  * Written only by the parent, only for a child it had to end itself. It is never a normal closure:
+  * `readClosure` refuses it exactly as it refuses a startup failure, because "the process is gone" is
+  * not "the context is closed". Callers that need the terminal result read `readClosureEvidence`.
++ *
++ * The termination fact is required, and required to be a real one: a caller cannot record "the
++ * process was terminated" without saying what that judgement rests on. A tree that is still `ALIVE`,
++ * or one no listing could be obtained for, is written down as exactly that - the record stays honest
++ * and the release decision is left to the receiver, which refuses it.
+  */
+-export function saveNoProgress(runtime: string, value: { command_id: string; action_id: string; nonce: string; phase: GuardianLivenessPhase; process_terminated: boolean; context_opened: boolean; submission_state: 'NOT_SUBMITTED' | 'UNKNOWN'; forced: boolean; waited_ms: number; grace_ms: number; result: z.infer<typeof guardianResult>; closed_at?: string }) {
+-  const record = noProgressSchema.parse({ protocol_version: 'kff.guardian-closure-no-progress.v1', closed_at: value.closed_at ?? new Date().toISOString(), command_id: value.command_id, action_id: value.action_id, nonce: value.nonce, phase: value.phase, process_terminated: value.process_terminated, context_opened: value.context_opened, submission_state: value.submission_state, forced: value.forced, waited_ms: value.waited_ms, grace_ms: value.grace_ms, result: value.result });
+-  const file = closureFile(runtime, record.command_id);
+-  mkdirSync(path.dirname(file), { recursive: true });
+-  requireCondition(!existsSync(file), 'IDEMPOTENCY_CONFLICT', '关闭证明已经存在');
+-  writeFileSync(file + '.tmp', JSON.stringify(record), { mode: 0o600, flush: true }); renameSync(file + '.tmp', file);
+-  return record;
++export function saveNoProgress(runtime: string, value: { command_id: string; action_id: string; nonce: string; phase: GuardianLivenessPhase; termination: z.infer<typeof guardianTermination>; context_opened: boolean; submission_state: 'NOT_SUBMITTED' | 'UNKNOWN'; forced: boolean; waited_ms: number; grace_ms: number; result: z.infer<typeof guardianResult>; closed_at?: string }) {
++  const record = noProgressSchema.parse({ protocol_version: 'kff.guardian-closure-no-progress.v1', closed_at: value.closed_at ?? new Date().toISOString(), command_id: value.command_id, action_id: value.action_id, nonce: value.nonce, phase: value.phase, termination: value.termination, context_opened: value.context_opened, submission_state: value.submission_state, forced: value.forced, waited_ms: value.waited_ms, grace_ms: value.grace_ms, result: value.result });
++  return saveEvidence(runtime, 'noProgress', record) as NoProgress;
+ }
+ export function readClosure(runtime: string, entry: ClosureIdentity): GuardianClosure | null {
+   const record = readClosureEvidence(runtime, entry);
+@@ -116,7 +261,13 @@ export function closureProof(record: ClosureEvidence): z.infer<typeof quiescence
+   // tell all three apart. A normal and a compacted record both keep the original version, which
+   // leaves every proof already on record byte-identical.
+   const version = record.protocol_version === 'kff.guardian-closure-compact.v1' ? 'kff.guardian-closure.v1' : record.protocol_version;
+-  return { protocol_version: version, command_id: record.command_id, action_id: record.action_id, closed_at: record.closed_at, proof_sha256: 'proof_sha256' in record ? record.proof_sha256 : digest(record) };
++  const base = { command_id: record.command_id, action_id: record.action_id, closed_at: record.closed_at, proof_sha256: 'proof_sha256' in record ? record.proof_sha256 : digest(record) };
++  if (version === noProgressProtocolVersion) return { protocol_version: version, ...base, process_tree: (record as NoProgress).termination.process_tree };
++  if (version === startupFailedProtocolVersion) {
++    const termination = (record as StartupFailure).termination;
++    return termination ? { protocol_version: version, ...base, process_tree: termination.process_tree } : { protocol_version: version, ...base };
++  }
++  return { protocol_version: version, ...base };
+ }
+ export function compactClosure(runtime: string, entry: ClosureIdentity, reason: CompactClosure['reason'], now = Date.now()) {
+   const record = readClosureEvidence(runtime, entry);
+@@ -126,12 +277,15 @@ export function compactClosure(runtime: string, entry: ClosureIdentity, reason:
+   // both leave this function untouched, so "a context was never opened" can never be rewritten into
+   // the `context_closed: true` that the compact schema carries.
+   if (!record || record.protocol_version !== 'kff.guardian-closure.v1') {
+-    // A crash can leave an unrenamed raw file. Removing it is never promoted to closure evidence.
+-    if (existsSync(file + '.tmp')) unlinkSync(file + '.tmp');
++    // A crash can leave an unrenamed raw file. Only the closure writer's own temporary names are swept
++    // - the plain `.tmp` a pre-split version used, and the name the child writes today - because the
++    // other kinds belong to writers that may still be running; nothing here is ever promoted to
++    // closure evidence.
++    for (const stale of [file + '.tmp', file + tmpSuffixes.closure]) if (existsSync(stale)) unlinkSync(stale);
+     return record;
+   }
+   const compact = compactClosureSchema.parse({ protocol_version: 'kff.guardian-closure-compact.v1', command_id: record.command_id, action_id: record.action_id, nonce: record.nonce, closed_at: record.closed_at, context_closed: true,
+     proof_sha256: digest(record), result_sha256: digest(record.result), page_sha256: (record.result.collection_page || record.result.inbox_page) ? digest(record.result.collection_page ?? record.result.inbox_page) : undefined, compacted_at: new Date(now).toISOString(), reason });
+-  writeFileSync(file + '.tmp', JSON.stringify(compact), { mode: 0o600, flush: true }); renameSync(file + '.tmp', file);
++  writeEvidenceFile(file, 'compact', compact);
+   return compact;
+ }
+diff --git a/apps/agent/src/guardian.ts b/apps/agent/src/guardian.ts
+index cdc6407..d4056a7 100644
+--- a/apps/agent/src/guardian.ts
++++ b/apps/agent/src/guardian.ts
+@@ -2,10 +2,10 @@ import { spawn } from 'node:child_process';
+ import path from 'node:path';
+ import { setTimeout as delay } from 'node:timers/promises';
+ import { fileURLToPath } from 'node:url';
+-import type { AgentCommand } from '@kff/contracts';
++import { guardianTimingLimits, type AgentCommand, type GuardianTermination } from '@kff/contracts';
+ import { AppError } from '@kff/core';
+ import { guardianLivenessPhases, readClosure, readClosureEvidence, saveNoProgress, saveStartupFailure, type GuardianClosure, type GuardianLivenessPhase } from './guardian-protocol';
+-import { isProcessAlive, terminateProcessTree } from './process-tree';
++import { composeTreeState, probeProcess, terminateProcessTree } from './process-tree';
+ import { browserProviderEnvironment } from './browser-provider-configuration';
+ 
+ /**
+@@ -69,26 +69,62 @@ export interface GuardianLivenessPolicy {
+   granting: number; submitting: number; grace: number; force: number;
+ }
+ const livenessDefaults: GuardianLivenessPolicy = { 'awaiting-ready': 30000, 'awaiting-start': 30000, 'awaiting-context': 120000, 'awaiting-intent': 900000, granting: 60000, submitting: 300000, grace: 15000, force: 10000 };
++/**
++ * The part of the force budget held back from the termination call, so the wait that follows it has
++ * time to observe the child's `exit`. It can be small because the wait is not doing any work: by then
++ * the tree has been signalled, and all the wait does is let the event loop deliver an event that is
++ * already queued. Sized from the same measurement as the termination split - the kill itself is a
++ * ~300 ms tool, and the settle wait after it is shorter still.
++ */
++const FORCED_SETTLE_RESERVE_MS = 1000;
+ const livenessEnvironment: Record<keyof GuardianLivenessPolicy, string> = {
+   'awaiting-ready': 'KFF_GUARDIAN_AWAITING_READY_MS', 'awaiting-start': 'KFF_GUARDIAN_AWAITING_START_MS',
+   'awaiting-context': 'KFF_GUARDIAN_AWAITING_CONTEXT_MS', 'awaiting-intent': 'KFF_GUARDIAN_AWAITING_INTENT_MS',
+   granting: 'KFF_GUARDIAN_GRANTING_MS', submitting: 'KFF_GUARDIAN_SUBMITTING_MS', grace: 'KFF_GUARDIAN_GRACE_MS', force: 'KFF_GUARDIAN_FORCE_MS',
+ };
+-/** Explicit overrides win over the environment, and a value that is not a positive integer is ignored. */
+-export function guardianLivenessPolicy(overrides: Partial<GuardianLivenessPolicy> = {}, environment: Readonly<Record<string, string | undefined>> = process.env): GuardianLivenessPolicy {
++/** Explicit overrides win over the environment. A value outside the accepted range is refused, never ignored. */
++export function guardianLivenessPolicy(overrides: Partial<GuardianLivenessPolicy> = {}, environment: Readonly<Record<string, string | undefined>> = process.env, options: { runtime?: string } = {}): GuardianLivenessPolicy {
+   const policy = { ...livenessDefaults };
++  // The regression that pins bounded liveness needs budgets two orders of magnitude below anything a
++  // production run may use, so it runs under the same seal as the fault injection: test mode, and a
++  // runtime directory inside `<KFF_ROOT>/.kff/agent-process-tests/`. Without both, the production range
++  // applies and a sub-millisecond budget is refused like any other illegal configuration.
++  const sealed = environment.NODE_ENV === 'test' && options.runtime !== undefined && insideAgentProcessTests(options.runtime, environment);
++  const minimum = sealed ? guardianTimingLimits.test_min_ms : guardianTimingLimits.min_ms;
++  let total = 0;
+   for (const key of Object.keys(policy) as (keyof GuardianLivenessPolicy)[]) {
+     const raw = overrides[key] ?? environment[livenessEnvironment[key]];
+-    if (raw === undefined) continue;
+-    const value = Number(raw);
+-    if (Number.isSafeInteger(value) && value > 0) policy[key] = value;
++    if (raw === undefined) { total += policy[key]; continue; }
++    const value = typeof raw === 'number' ? raw : Number(raw);
++    // A configuration error used to be silent: the bad value was dropped and the default took over, so
++    // an operator who mistyped a budget got the production default and no way to notice. A guardian
++    // that waits the wrong amount of time is a safety property, so the value is refused instead, and
++    // the Agent surfaces it at startup rather than at the first command that needs the watchdog.
++    requireLiveness(Number.isSafeInteger(value) && value >= minimum && value <= guardianTimingLimits.max_ms, livenessEnvironment[key], `必须是 ${minimum} 到 ${guardianTimingLimits.max_ms} 之间的整数毫秒值，实际为 ${JSON.stringify(raw)}`);
++    policy[key] = value;
++    total += value;
+   }
++  // The evidence schema records how long the run waited, so the sum of the configured budgets is what
++  // bounds that recording. Checking it here keeps a legal configuration from producing a closure proof
++  // that the schema would reject after the fact - which would lose the proof, not just the number.
++  requireLiveness(total <= guardianTimingLimits.max_total_ms, '合计', `所有阶段加上 grace / force 的和不得超过 ${guardianTimingLimits.max_total_ms} 毫秒，实际为 ${total}`);
+   return policy;
+ }
++function requireLiveness(condition: boolean, name: string, detail: string): asserts condition {
++  if (!condition) throw new AppError('GUARDIAN_LIVENESS_INVALID', `Guardian 存活预算配置非法（${name}）：${detail}`, 500);
++}
++/**
++ * Called once when the Agent starts. `guardianLivenessPolicy` already refuses an illegal value, but it
++ * only runs when a command is launched; validating the same configuration at startup is what turns a
++ * bad environment variable into a refused boot instead of a command that fails hours later.
++ */
++export function assertGuardianLivenessConfiguration(environment: Readonly<Record<string, string | undefined>> = process.env) {
++  return guardianLivenessPolicy({}, environment);
++}
+ 
+ export function runGuardian(command: AgentCommand, runtime: string, nonce: string, hooks: { beforeSubmit(): Promise<void>; signal: AbortSignal; onSpawn?(pid: number): void; onContextOpened?(): void | Promise<void>; liveness?: Partial<GuardianLivenessPolicy> }): Promise<GuardianClosure> {
+   return new Promise((resolve, reject) => {
+-    const policy = guardianLivenessPolicy(hooks.liveness);
++    const policy = guardianLivenessPolicy(hooks.liveness, process.env, { runtime });
+     // The child receives no controller token or database credentials. It cannot grant itself submission authority.
+     const env = { NODE_ENV: process.env.NODE_ENV ?? 'development', ...Object.fromEntries(Object.entries(process.env).filter(([key]) => /^(PATH|Path|SystemRoot|SYSTEMROOT|COMSPEC|ComSpec|TEMP|TMP|USERPROFILE|LOCALAPPDATA|APPDATA|PLAYWRIGHT_BROWSERS_PATH|KFF_BROWSER_MESSAGE_FIXTURE_ORIGIN|KFF_BROWSER_INBOX_FIXTURE_ORIGIN|KFF_BROWSER_COLLECTION_FIXTURE_ORIGIN|KFF_ENABLE_LIVE|KFF_ENABLE_DISCOVERY|KFF_ENABLE_BROWSER_INBOX|KFF_FACEBOOK_GRAPH_VERSION|KFF_ADSPOWER_ORIGIN|KFF_ADSPOWER_API_KEY)$/.test(key) || /^(FACEBOOK|INSTAGRAM)_[A-Z0-9_]+$/.test(key) || /^KFF_BROWSER_PROXY_[A-Z0-9_]+$/.test(key))) };
+     if (command.snapshot.browser_environment) Object.assign(env, browserProviderEnvironment(path.resolve(process.env.KFF_ROOT ?? process.cwd())));
+@@ -105,6 +141,8 @@ export function runGuardian(command: AgentCommand, runtime: string, nonce: strin
+     let phaseSince = Date.now();
+     let watchdogFired = false;
+     let forced = false;
++    /** What the termination call proved, kept so the terminal record can carry the real fact rather than a guess. */
++    let forcedTermination: GuardianTermination | undefined;
+     const progress = (next: GuardianLivenessPhase) => { phase = next; phaseSince = Date.now(); };
+     const send = (value: unknown) => { if (child.connected) child.send(value as object, () => {}); };
+     const stop = () => send({ type: 'stop' });
+@@ -120,6 +158,12 @@ export function runGuardian(command: AgentCommand, runtime: string, nonce: strin
+       clearInterval(keepalive);
+       clearInterval(watchdog);
+       hooks.signal.removeEventListener('abort', stop);
++      // Both doors the child could still use to reach this command are shut here. Detaching the message
++      // listener drops a `ready`, `context-opened` or `before-submit` that was already in flight when
++      // the decision was taken, so it cannot restart a command that has finished; disconnecting makes
++      // sure the child is never handed submission authority afterwards, even if it is still running.
++      child.off('message', onMessage);
++      try { if (child.connected) child.disconnect(); } catch { /* the channel is already gone */ }
+       try { decide(); } catch (error) { reject(error); }
+     };
+     /**
+@@ -130,19 +174,39 @@ export function runGuardian(command: AgentCommand, runtime: string, nonce: strin
+      * the environment stays quarantined. A submission that could have been reached also sets
+      * `submission_state` to UNKNOWN, which is a different fact from `context_opened`.
+      */
+-    const recordNoProgress = (processTerminated: boolean) => {
+-      const waited_ms = Math.min(Date.now() - phaseSince, 86400000);
++    /**
++     * The process fact the record will carry. The termination call's own verdict was taken at kill
++     * time, so the root is probed again here: a process that is gone now is a stronger fact than one
++     * that was gone then. When no termination was ever performed - a child that exited on its own
++     * during the grace period - the descendants stay `UNKNOWN` rather than being rounded up to `DEAD`,
++     * because nobody enumerated them. That is the honest answer, and it is also the safe one: a tree
++     * that cannot be proven dead does not license releasing the execution slot.
++     */
++    const terminationFact = (): GuardianTermination => {
++      const root = probeProcess(child.pid);
++      const base = forcedTermination ?? { process_tree: 'UNKNOWN' as const, tool: 'SKIPPED' as const, root: 'DEAD' as const, descendants: 'UNKNOWN' as const, sampled: 0, enumeration: 'UNAVAILABLE' as const, elapsed_ms: 0 };
++      return { ...base, root, process_tree: base.enumeration === 'UNAVAILABLE' ? 'UNKNOWN' : composeTreeState(root, [base.descendants]) };
++    };
++    const recordNoProgress = () => {
++      const waited_ms = Math.min(Date.now() - phaseSince, guardianTimingLimits.max_total_ms);
++      const termination = terminationFact();
+       const neverReachedExecutor = phase === 'awaiting-ready' && !started && !submitted && !contextOpened;
+-      const outcome = !processTerminated ? 'NEEDS_HUMAN' : phase === 'submitting' ? 'UNKNOWN_OUTCOME' : neverReachedExecutor ? 'CANCELED' : 'NEEDS_HUMAN';
+-      saveNoProgress(runtime, { command_id: command.id, action_id: command.action_id, nonce, phase, process_terminated: processTerminated, context_opened: contextOpened, submission_state: phase === 'granting' || phase === 'submitting' ? 'UNKNOWN' : 'NOT_SUBMITTED', forced, waited_ms, grace_ms: policy.grace, result: { outcome, error_code: 'GUARDIAN_NO_PROGRESS', diagnostic: { step: 'guardian-no-progress' } } });
++      // Only a proven dead tree earns anything better than "a human has to look". The mapping is
++      // deliberately the stricter reading of the old one: it used to key off a boolean that a root-only
++      // probe could set, so a live browser could be recorded as a terminated tree; now the same three
++      // outcomes require the tree itself to be dead, and an `ALIVE` or `UNKNOWN` tree always lands on
++      // NEEDS_HUMAN.
++      const dead = termination.process_tree === 'DEAD';
++      const outcome = !dead ? 'NEEDS_HUMAN' : phase === 'submitting' ? 'UNKNOWN_OUTCOME' : neverReachedExecutor ? 'CANCELED' : 'NEEDS_HUMAN';
++      saveNoProgress(runtime, { command_id: command.id, action_id: command.action_id, nonce, phase, termination, context_opened: contextOpened, submission_state: phase === 'granting' || phase === 'submitting' ? 'UNKNOWN' : 'NOT_SUBMITTED', forced, waited_ms, grace_ms: policy.grace, result: { outcome, error_code: 'GUARDIAN_NO_PROGRESS', diagnostic: { step: 'guardian-no-progress' } } });
+       return new AppError('GUARDIAN_NO_PROGRESS', '执行进程长期没有进展，已被终止，且没有取得关闭证明', 409);
+     };
+-    const settleTerminal = (processTerminated: boolean) => settle(() => {
++    const settleTerminal = () => settle(() => {
+       const identity = { command_id: command.id, action_id: command.action_id, guardian_nonce: nonce };
+       if (readClosureEvidence(runtime, identity)) { resolve(readClosure(runtime, identity)!); return; }
+       // A child the watchdog had to end has already had every chance to write its own proof. Nothing
+       // arriving means the proof does not exist, and the record says only what the parent knows.
+-      if (watchdogFired) throw recordNoProgress(processTerminated);
++      if (watchdogFired) throw recordNoProgress();
+       // The child is gone and never sent `ready`, so the parent never sent `start`, the executor was
+       // never reached, no browser context exists and no submission could have been requested. That is
+       // a fact the journal already proves, so it is recorded instead of leaving the command to block
+@@ -150,7 +214,10 @@ export function runGuardian(command: AgentCommand, runtime: string, nonce: strin
+       // context that nobody has proven closed.
+       if (!started && !submitted && !contextOpened) {
+         const result = { outcome: 'CANCELED' as const, error_code: 'GUARDIAN_STARTUP_FAILED', diagnostic: { step: 'guardian-startup-failed' } };
+-        saveStartupFailure(runtime, { command_id: command.id, action_id: command.action_id, nonce, result });
++        // The termination fact is attached only when a termination really happened. Nothing was ended
++        // in the ordinary startup failure, and inventing a process verdict for it would be exactly the
++        // kind of manufactured fact this record exists to avoid.
++        saveStartupFailure(runtime, { command_id: command.id, action_id: command.action_id, nonce, termination: forcedTermination, result });
+         throw new AppError('GUARDIAN_STARTUP_FAILED', '执行进程在启动阶段退出，没有浏览器上下文可以关闭', 409);
+       }
+       throw new AppError('GUARDIAN_UNCONFIRMED', '执行进程退出但没有关闭证明，资源保持隔离', 409);
+@@ -165,16 +232,33 @@ export function runGuardian(command: AgentCommand, runtime: string, nonce: strin
+      * merely stuck, rather than dead, can still close its context and write its own closure, and that
+      * real proof is always better than anything the parent could write. Only a child that stays silent
+      * through the grace period is ended, and ending it is what proves the process is gone.
++     *
++     * The termination utility runs *inside* the deadline rather than beside it. It used to be a
++     * synchronous call that could hold the event loop for as long as the tool wanted, which made the
++     * force budget a number the parent hoped for rather than one it enforced; now the call and the wait
++     * after it share the same budget, so the whole forced phase is bounded and a taskkill that never
++     * returns cannot stretch it.
+      */
+     const terminate = async () => {
+       send({ type: 'stop' });
+       if (await waitForTerminal(policy.grace)) return;
+       forced = true;
+-      terminateProcessTree(child.pid);
+-      if (await waitForTerminal(policy.force)) return;
++      const forcedUntil = Date.now() + policy.force;
++      // The termination gets everything except a small reserve, and the reserve is what is genuinely
++      // needed: once `taskkill /T /F` has returned, the child is already dead and the wait below only
++      // has to let the event loop deliver its `exit`. Holding back half the budget for that wait was
++      // the defect - the listing alone costs ~800 ms idle and ~2 s under load, so half of a 5 s force
++      // left it about one second of margin, and a starved listing reports `UNKNOWN` and quarantines a
++      // browser that nothing was wrong with. The two shares still sum to exactly `policy.force`,
++      // because `forcedUntil` was fixed before the call: this moves budget between the stages, it does
++      // not extend the total.
++      const settleReserve = Math.max(1, Math.min(Math.floor(policy.force / 5), FORCED_SETTLE_RESERVE_MS));
++      forcedTermination = await terminateProcessTree(child.pid, { deadlineMs: Math.max(1, policy.force - settleReserve) });
++      if (await waitForTerminal(Math.max(1, forcedUntil - Date.now()))) return;
+       // No event arrived even after the tree was ended. The promise still settles: leaving it pending
+-      // is the defect this watchdog exists for. Termination is only claimed if the process is gone.
+-      settleTerminal(!isProcessAlive(child.pid));
++      // is the defect this watchdog exists for. Whether the process is really gone is not decided here
++      // any more - that judgement now travels with the record, and an unproven tree keeps its isolation.
++      settleTerminal();
+     };
+     const budgets = Object.fromEntries(guardianLivenessPhases.map(name => [name, policy[name]])) as Record<GuardianLivenessPhase, number>;
+     const tick = Math.max(20, Math.min(1000, Math.floor(Math.min(...Object.values(budgets)) / 4)));
+@@ -184,13 +268,18 @@ export function runGuardian(command: AgentCommand, runtime: string, nonce: strin
+       watchdogFired = true;
+       void terminate();
+     }, tick);
+-    child.on('message', async message => {
++    // The handler is a named declaration so `settle` can detach it: once a terminal decision is taken,
++    // this function must not run again for this child, whatever is still in flight on the channel.
++    async function onMessage(message: unknown) {
++      if (settled) return;
+       if (!message || typeof message !== 'object' || !('type' in message)) return;
+       if (message.type === 'ready' && !started) {
+         started = true;
+         progress('awaiting-start');
++        // A throwing hook used to reject the promise directly and leave the watchdog and the channel
++        // running behind it. It goes through the same one-shot terminal path as everything else.
+         try { hooks.onSpawn?.(child.pid!); send({ type: 'start', command, runtime: path.resolve(runtime), profile_root: path.resolve(process.env.KFF_ROOT ?? process.cwd(), '.kff/browser-environments'), nonce }); if (hooks.signal.aborted) stop(); }
+-        catch (error) { child.disconnect(); reject(error); }
++        catch (error) { settle(() => reject(error)); }
+       }
+       // The child confirms it parsed `start`, which is the only way the parent can tell "start never
+       // arrived" apart from "start arrived and the browser launch is what is stuck".
+@@ -201,18 +290,19 @@ export function runGuardian(command: AgentCommand, runtime: string, nonce: strin
+         if (submitted || watchdogFired || hooks.signal.aborted) { stop(); return; }
+         submitted = true;
+         progress('granting');
+-        try { await hooks.beforeSubmit(); if (hooks.signal.aborted || watchdogFired) stop(); else { progress('submitting'); send({ type: 'submit-granted' }); } }
++        try { await hooks.beforeSubmit(); if (settled) return; if (hooks.signal.aborted || watchdogFired) stop(); else { progress('submitting'); send({ type: 'submit-granted' }); } }
+         catch (error) { send({ type: 'submit-rejected', code: error instanceof AppError ? error.code : 'CONTROL_UNAVAILABLE' }); }
+       }
+       if (message.type === 'context-opened') { contextOpened = true; if (phase === 'awaiting-start' || phase === 'awaiting-context') progress('awaiting-intent'); try { await hooks.onContextOpened?.(); } catch { stop(); } }
+-    });
++    }
++    child.on('message', onMessage);
+     child.once('error', error => {
+       // A missing pid means the operating system never created the process, and `exit` will never
+       // follow. A child that does have a pid may still own a context, so its own termination stays the
+       // only thing allowed to decide and the error is still reported to the caller unchanged.
+-      if (child.pid === undefined) settleTerminal(true); else settle(() => reject(error));
++      if (child.pid === undefined) settleTerminal(); else settle(() => reject(error));
+     });
+-    child.once('exit', () => settleTerminal(true));
+-    child.once('close', () => settleTerminal(true));
++    child.once('exit', () => settleTerminal());
++    child.once('close', () => settleTerminal());
+   });
+ }
+diff --git a/apps/agent/src/main.ts b/apps/agent/src/main.ts
+index ed742ff..59e8dd2 100644
+--- a/apps/agent/src/main.ts
++++ b/apps/agent/src/main.ts
+@@ -6,7 +6,7 @@ import { setTimeout as delay } from 'node:timers/promises';
+ import { agentConfig, runtimeDir } from './config';
+ import { AppError, digest, requireCondition } from '@kff/core';
+ import { agentCommandSchema, type AgentCommand } from '@kff/contracts';
+-import { runGuardian } from './guardian';
++import { runGuardian, assertGuardianLivenessConfiguration } from './guardian';
+ import { environmentRunner } from './environment-runner';
+ import type { EnvironmentCommand } from '../../../packages/contracts/src/environment';
+ import { flushActionJournal, maintainActionJournal, type JournalEntry } from './action-journal';
+@@ -14,6 +14,11 @@ import {isDrainRequest,localSupervisionProtocol} from '../../../packages/contrac
+ 
+ const origin = agentConfig.controller_origin;
+ const token = agentConfig.token;
++// Refused before the lock is even considered. An illegal watchdog budget is a safety configuration
++// error, and the previous behaviour - quietly substituting the default - meant a typo turned into a
++// guardian that waited the wrong amount of time with nobody able to tell. Failing here also means a
++// refused boot never leaves a lock file behind for the next start to trip over.
++assertGuardianLivenessConfiguration();
+ const journalDir = path.join(runtimeDir, 'agent'); mkdirSync(journalDir, { recursive: true });
+ const lockFile = path.join(journalDir, 'process.lock');
+ if (existsSync(lockFile)) {
+diff --git a/apps/agent/src/process-tree.ts b/apps/agent/src/process-tree.ts
+index 43daa7d..b890c6c 100644
+--- a/apps/agent/src/process-tree.ts
++++ b/apps/agent/src/process-tree.ts
+@@ -1,20 +1,262 @@
+-import { spawnSync } from 'node:child_process';
++import { spawn } from 'node:child_process';
++import type { GuardianTermination } from '@kff/contracts';
+ 
+ /**
+- * Ends a guardian and everything it started. A browser the guardian launched is a descendant of the
+- * guardian process, so ending only the guardian would leave that browser running with nobody left to
+- * close it. On Windows the tree-walking tool is `taskkill /T`, which follows the parent chain; on
+- * POSIX the guardian is spawned detached, so its own process group is the tree.
++ * Ending a guardian and everything it started needs two things the first version of this module did
++ * not have: a bounded termination call, and a proof that distinguishes "the process is gone" from
++ * "I could not find out". A browser the guardian launched is a descendant of the guardian process,
++ * so the root pid alone never answers the question the caller is really asking.
++ *
++ * The three states are deliberately not a boolean. `UNKNOWN` is the answer whenever the probe itself
++ * could not reach a conclusion, and callers must treat it exactly as strictly as `ALIVE`: only a
++ * proven `DEAD` tree may license releasing an execution slot.
+  */
+-export function terminateProcessTree(pid: number | undefined): boolean {
+-  if (!Number.isSafeInteger(pid) || !pid || pid! < 1) return false;
+-  if (process.platform === 'win32') return spawnSync('taskkill', ['/PID', String(pid), '/T', '/F'], { stdio: 'ignore', windowsHide: true }).status === 0;
+-  try { process.kill(-pid!, 'SIGKILL'); return true; }
+-  catch { try { process.kill(pid!, 'SIGKILL'); return true; } catch { return false; } }
++export type ProcessState = 'ALIVE' | 'DEAD' | 'UNKNOWN';
++/** What the termination tool itself did, kept apart from what the probes concluded afterwards. */
++export type ToolOutcome = 'SUCCESS' | 'FAILED' | 'TIMEOUT' | 'ERROR' | 'SKIPPED';
++/**
++ * The termination result *is* the wire contract, not a local shape that later gets copied into one:
++ * the agent records exactly the fields the receiver validates, so the two can never drift into
++ * disagreeing about what was proven.
++ */
++export type TreeTermination = GuardianTermination;
++
++/**
++ * Measured on Windows 11 (node 22, libuv): a reaped child and a pid that was never handed out both
++ * fail with ESRCH, and an inaccessible process is not reported as EPERM at all - libuv maps every
++ * Windows failure to ESRCH. POSIX does report EPERM for a live process owned by another user, and
++ * that is emphatically not death, so it is classified as UNKNOWN rather than folded into `false`.
++ */
++export function classifyProbeFailure(error: unknown): ProcessState {
++  const code = (error as NodeJS.ErrnoException | undefined)?.code;
++  if (code === 'ESRCH') return 'DEAD';
++  return 'UNKNOWN';
++}
++
++/**
++ * A signal 0 probe. It reports whether the process still exists without touching it. An unusable pid
++ * means the operating system never created the process at all, which is the one case where absence is
++ * provable without asking.
++ */
++export function probeProcess(pid: number | undefined): ProcessState {
++  if (!Number.isSafeInteger(pid) || !pid || pid! < 1) return 'DEAD';
++  try { process.kill(pid!, 0); return 'ALIVE'; }
++  // `pid 0` answering "alive" on Windows is why the guard above runs first: the probe cannot be
++  // trusted to reject a meaningless pid by itself.
++  catch (error) { return classifyProbeFailure(error); }
+ }
+ 
+-/** A signal 0 probe: it reports whether the process still exists without touching it. */
++/**
++ * Kept for callers that only need "may I treat this process as gone". It answers `true` unless death
++ * was actually proven, so an `UNKNOWN` probe fails closed instead of reading as a clean exit.
++ */
+ export function isProcessAlive(pid: number | undefined): boolean {
+-  if (!Number.isSafeInteger(pid) || !pid || pid! < 1) return false;
+-  try { process.kill(pid!, 0); return true; } catch { return false; }
++  return probeProcess(pid) !== 'DEAD';
++}
++
++/** Runs one external tool under a real deadline. The tool itself is never allowed to outlive it. */
++export async function runToolWithDeadline(file: string, args: string[], deadlineMs: number): Promise<{ outcome: ToolOutcome; code: number | null }> {
++  return new Promise(resolve => {
++    let settled = false;
++    const finish = (outcome: ToolOutcome, code: number | null) => { if (settled) return; settled = true; clearTimeout(timer); resolve({ outcome, code }); };
++    const child = spawn(file, args, { stdio: 'ignore', windowsHide: true });
++    // The deadline is the point of this function: a tool that hangs must not hold the caller, because
++    // the caller is an event loop that also has to keep heartbeats and timers running.
++    const timer = setTimeout(() => { try { child.kill('SIGKILL'); } catch { /* already gone */ } finish('TIMEOUT', null); }, Math.max(1, deadlineMs));
++    child.once('error', () => finish('ERROR', null));
++    child.once('exit', code => finish(code === 0 ? 'SUCCESS' : 'FAILED', code));
++  });
++}
++
++interface ProcessRow { pid: number; ppid: number }
++
++/**
++ * One process listing, used only to learn which processes the guardian owns. `pid 0 answering alive`
++ * and localized tool output both rule out text parsing games: only the numeric listing is read, and
++ * only the numbers are trusted.
++ *
++ * The Windows command is shaped the way it is because of where its time goes under load. Measured on
++ * this machine at idle, 1x and 2x CPU oversubscription (median of four, against a live tree):
++ *
++ *   per-object pipeline   673 / 2037 / 7956 ms
++ *   statement + one write 630 /  981 / 2166 ms
++ *
++ * The query is not the expensive part - a bare `Get-CimInstance` is roughly 350 ms of it either way -
++ * and neither is powershell's ~300 ms startup. What collapses under load is pushing each of ~370 rows
++ * through the `ForEach-Object` cmdlet and writing them one at a time, so this builds the rows with a
++ * language `foreach` and emits them in a single `-join`. The rows, the two-column text and the parser
++ * are unchanged; a cheaper *shape* is not the same as a cheaper answer, and the format is left alone
++ * precisely so the parser cannot start disagreeing with the writer.
++ *
++ * A two-list variant (both columns emitted as separate comma-joined lines) measured no faster than this
++ * one at every load level, so it was dropped rather than kept: reading the pairs back would have meant
++ * zipping two independently enumerated lists by position, which is an assumption about ordering that
++ * this shape does not need, in exchange for nothing.
++ */
++export async function listProcesses(deadlineMs: number): Promise<ProcessRow[] | null> {
++  const windows = process.platform === 'win32';
++  const file = windows ? 'powershell' : 'ps';
++  const args = windows ? ['-NoProfile', '-NonInteractive', '-Command', '$p = Get-CimInstance -ClassName Win32_Process -Property ProcessId,ParentProcessId; $s = foreach ($x in $p) { "$($x.ProcessId) $($x.ParentProcessId)" }; $s -join [char]10'] : ['-eo', 'pid=,ppid='];
++  return new Promise(resolve => {
++    let settled = false;
++    const finish = (rows: ProcessRow[] | null) => { if (settled) return; settled = true; clearTimeout(timer); resolve(rows); };
++    const child = spawn(file, args, { stdio: ['ignore', 'pipe', 'ignore'], windowsHide: true });
++    const timer = setTimeout(() => { try { child.kill('SIGKILL'); } catch { /* already gone */ } finish(null); }, Math.max(1, deadlineMs));
++    let text = '';
++    child.stdout?.on('data', chunk => { text += String(chunk); if (text.length > 4_000_000) { try { child.kill('SIGKILL'); } catch { /* already gone */ } finish(null); } });
++    child.once('error', () => finish(null));
++    child.once('exit', code => {
++      if (code !== 0) { finish(null); return; }
++      const rows = text.split('\n').map(line => line.trim().split(/\s+/)).filter(parts => parts.length === 2 && /^\d+$/.test(parts[0]) && /^\d+$/.test(parts[1])).map(parts => ({ pid: Number(parts[0]), ppid: Number(parts[1]) }));
++      finish(rows.length ? rows : null);
++    });
++  });
++}
++
++/**
++ * Every process reachable from `pid` through the parent chain. It has to be captured *before* the
++ * kill: once the root is gone the chain that identifies its children is gone with it.
++ */
++export async function listDescendants(pid: number | undefined, deadlineMs: number): Promise<{ enumeration: 'LISTED' | 'UNAVAILABLE'; pids: number[] }> {
++  if (!Number.isSafeInteger(pid) || !pid || pid! < 1) return { enumeration: 'LISTED', pids: [] };
++  const rows = await listProcesses(deadlineMs);
++  if (!rows) return { enumeration: 'UNAVAILABLE', pids: [] };
++  const pids: number[] = [];
++  const seen = new Set<number>([pid!]);
++  let frontier = [pid!];
++  while (frontier.length) {
++    const next = rows.filter(row => frontier.includes(row.ppid)).map(row => row.pid).filter(child => !seen.has(child));
++    for (const value of next) { seen.add(value); pids.push(value); }
++    frontier = next;
++  }
++  return { enumeration: 'LISTED', pids };
++}
++
++/**
++ * Composes the proof from what was actually observed. Order matters: a single survivor makes the tree
++ * alive however many processes died, and a single probe that could not conclude makes it unknown - a
++ * partial answer is never rounded up to `DEAD`.
++ */
++export function composeTreeState(root: ProcessState, descendantStates: ProcessState[]): ProcessState {
++  const all = [root, ...descendantStates];
++  if (all.includes('ALIVE')) return 'ALIVE';
++  if (all.includes('UNKNOWN')) return 'UNKNOWN';
++  return 'DEAD';
++}
++
++/**
++ * The rule that turns observations into a judgement, kept separate so it can be stated once and read
++ * directly. An unavailable listing is `UNKNOWN` no matter what the root probe said: the root probe
++ * answers a question about one process, and the question being asked here is about a tree.
++ */
++export function treeStateFrom(enumeration: 'LISTED' | 'UNAVAILABLE', root: ProcessState, descendants: ProcessState): ProcessState {
++  return enumeration === 'UNAVAILABLE' ? 'UNKNOWN' : composeTreeState(root, [descendants]);
++}
++
++/**
++ * Splitting the termination budget, and why it is not an even split.
++ *
++ * Measured on this machine (Windows 11, 8 logical cores, node 24.14) at three levels of CPU
++ * oversubscription - idle, 1x and 2x logical cores held by busy processes:
++ *
++ *   listing   801 ms /  2564 ms /  9181 ms   (median)
++ *   taskkill  305 ms /   460 ms /   966 ms   (median, against twelve detached descendants)
++ *
++ * Two conclusions are read straight off that table. The listing is about ninety percent of the cost
++ * and is the only part that collapses under load; the kill is a small, nearly load-independent tail.
++ * An even split therefore starves exactly the stage that needs the time, and leaves a stage that
++ * never uses it holding half the budget.
++ *
++ * The ordering is not negotiable either. The listing has to happen *before* the kill, because on
++ * Windows a dead parent's pid stays in its children's `ParentProcessId` field forever - Windows does
++ * not reparent orphans the way POSIX does. That stale value is also why the listing cannot simply be
++ * run afterwards and trusted: once the pid is recycled it would silently attach an unrelated
++ * process's children to the dead guardian. Listing first is what makes pid identity sound.
++ */
++const KILL_RESERVE_MAX_MS = 1500;
++/** Below this a listing process cannot even start; a smaller slice would only burn budget. */
++const MIN_ENUM_MS = 250;
++/** A failed kill is only worth repeating if this much time is still left for the retry to run. */
++const MIN_KILL_RETRY_MS = 400;
++
++/**
++ * Ends the guardian and the tree it owns, then reports what could be proven about it.
++ *
++ * Everything here runs under one deadline. The listing is capped by `killReserve` rather than handed a
++ * fixed slice, so time it does not use flows to the kill automatically, and no sub-stage floor can
++ * push the total past the caller's budget: every wait is computed from the same `deadline`, and the
++ * floors only decide whether another attempt is worth starting, never how long it may run.
++ *
++ * A listing that could not be obtained is still `UNKNOWN` rather than a comfortable `DEAD`: an
++ * unproven tree must fail closed, which costs a human review instead of a reused browser profile.
++ */
++export async function terminateProcessTree(pid: number | undefined, options: { deadlineMs: number }): Promise<TreeTermination> {
++  const started = Date.now();
++  const budget = Math.max(1, options.deadlineMs);
++  const deadline = started + budget;
++  if (!Number.isSafeInteger(pid) || !pid || pid! < 1) return { process_tree: 'DEAD', tool: 'SKIPPED', root: 'DEAD', descendants: 'DEAD', sampled: 0, enumeration: 'LISTED', elapsed_ms: 0 };
++
++  // Reserve the kill's share first, so a listing that hangs cannot consume the budget the kill needs
++  // to exist at all. Proportional for small budgets, capped for large ones.
++  const killReserve = Math.max(1, Math.min(Math.floor(budget / 3), KILL_RESERVE_MAX_MS));
++  const enumDeadline = deadline - killReserve;
++
++  let enumeration: 'LISTED' | 'UNAVAILABLE' = 'UNAVAILABLE';
++  let pids: number[] = [];
++  for (;;) {
++    const slice = enumDeadline - Date.now();
++    if (slice < MIN_ENUM_MS) break;
++    const attemptStarted = Date.now();
++    const listing = await listDescendants(pid, slice);
++    if (listing.enumeration === 'LISTED') { enumeration = 'LISTED'; pids = listing.pids; break; }
++    // Retry only a listing that ran out of time. One that failed immediately - the tool is missing, or
++    // it exited non-zero - has already given its answer, and more time will not change it. Without
++    // this distinction a tool that cannot start at all would be re-spawned until the budget ran out.
++    if (Date.now() - attemptStarted < Math.floor(slice * 0.8)) break;
++  }
++
++  // The reserve above is what actually cures a starved kill: measured `taskkill /T /F` against twelve
++  // detached descendants peaks at ~1.1 s at 2x load, so 1.5 s is a sufficient share rather than a
++  // hopeful one, and it is held back before the listing can spend it. This loop is the backstop. It
++  // guarantees an attempt happens even when the listing consumed everything, so "there was no time to
++  // try" can never be recorded as `SKIPPED` - something the tool did - and it re-asks only after a
++  // timeout, because `FAILED` and `ERROR` are answers that a second ask cannot change. On Windows a
++  // timeout consumes its whole slice, so in practice this runs once; the second chance is for callers
++  // whose tool returns early.
++  let tool: { outcome: ToolOutcome; code: number | null } = { outcome: 'SKIPPED', code: null };
++  for (let attempt = 0; ; attempt += 1) {
++    const slice = deadline - Date.now();
++    if (attempt > 0 && slice < MIN_KILL_RETRY_MS) break;
++    tool = process.platform === 'win32'
++      ? await runToolWithDeadline('taskkill', ['/PID', String(pid), '/T', '/F'], Math.max(1, slice))
++      : await runGroupKill(pid);
++    if (tool.outcome !== 'TIMEOUT') break;
++  }
++
++  const root = probeProcess(pid);
++  const descendants = pids.map(probeProcess);
++  return {
++    process_tree: treeStateFrom(enumeration, root, composeTreeState('DEAD', descendants)),
++    tool: tool.outcome,
++    root,
++    descendants: composeTreeState('DEAD', descendants),
++    sampled: pids.length,
++    enumeration,
++    elapsed_ms: Date.now() - started,
++  };
++}
++
++/**
++ * POSIX path, UNVERIFIED on this machine (the project runs on Windows 11 and the batch that added
++ * this module recorded the gap rather than claiming a Linux/macOS proof). `kill(-pid)` only reaches a
++ * process group when the guardian is a group leader, which `runGuardian` does not currently establish
++ * on POSIX, so the group kill can fail and leave descendants behind. That is exactly why the caller
++ * verifies the tree afterwards instead of trusting this call: a survivor comes back as `ALIVE`.
++ */
++async function runGroupKill(pid: number): Promise<{ outcome: ToolOutcome; code: number | null }> {
++  try { process.kill(-pid, 'SIGKILL'); return { outcome: 'SUCCESS', code: 0 }; }
++  catch {
++    try { process.kill(pid, 'SIGKILL'); return { outcome: 'SUCCESS', code: 0 }; }
++    catch { return { outcome: 'FAILED', code: null }; }
++  }
+ }
+diff --git a/packages/contracts/src/index.ts b/packages/contracts/src/index.ts
+index bb21ff3..b8d40ac 100644
+--- a/packages/contracts/src/index.ts
++++ b/packages/contracts/src/index.ts
+@@ -57,6 +57,44 @@ export const pauseInput = z.object({ paused: z.boolean(), reason: z.string().tri
+ export const agentInput = z.object({ name: z.string().trim().min(1).max(80) }).strict();
+ export const agentControlInput = z.object({ action: z.enum(['DRAIN','RESUME','REVOKE']), reason: z.string().trim().min(1).max(300) }).strict();
+ export const heartbeatInput = z.object({ command_id: uuid.optional(), protocol_version: z.literal('kff.agent.v1') }).strict();
++/**
++ * The bounds a guardian timing value has to satisfy, shared by the runtime policy that decides how
++ * long to wait and by the evidence schema that records how long it waited. They are kept in one place
++ * because the failure they prevent is silent: a legal policy that produces a duration the schema then
++ * rejects would throw away a closure proof that was already written to disk.
++ *
++ * `max_total_ms` bounds the sum of every phase budget plus `grace` and `force`, which is what a run's
++ * recorded `waited_ms` can never exceed. `test_min_ms` exists so the sealed regression can use budgets
++ * far below anything a production run should accept; it is only reachable under the same seal as the
++ * fault injection, so a production Agent still fails closed on a sub-millisecond budget.
++ */
++export const guardianTimingLimits = { min_ms: 100, max_ms: 86400000, max_total_ms: 86400000, test_min_ms: 1 } as const;
++/**
++ * How a terminated guardian process tree was judged. Three states, never a boolean: `UNKNOWN` means a
++ * probe or the process listing could not reach a conclusion, and it is treated exactly as strictly as
++ * `ALIVE`. Only a proven `DEAD` tree may license releasing an execution slot.
++ */
++export const processTreeStates = ['DEAD', 'ALIVE', 'UNKNOWN'] as const;
++export const processTreeState = z.enum(processTreeStates);
++/** What the termination tool itself did, kept apart from what the probes concluded afterwards. */
++export const terminationTools = ['SUCCESS', 'FAILED', 'TIMEOUT', 'ERROR', 'SKIPPED'] as const;
++/**
++ * One termination record, used both by the agent that performs the termination and by the contracts
++ * that carry it, so the fact recorded is exactly the fact validated - there is no second shape to keep
++ * in step. `root` and `descendants` are published separately because a dead root with an unexamined
++ * child list is not the same fact as a dead tree, and `sampled` / `enumeration` say how much of the
++ * tree the judgement actually covers.
++ */
++export const guardianTermination = z.object({
++  process_tree: processTreeState,
++  tool: z.enum(terminationTools),
++  root: processTreeState,
++  descendants: processTreeState,
++  sampled: z.number().int().min(0).max(10000),
++  enumeration: z.enum(['LISTED', 'UNAVAILABLE']),
++  elapsed_ms: z.number().int().min(0).max(guardianTimingLimits.max_total_ms),
++}).strict();
++export type GuardianTermination = z.infer<typeof guardianTermination>;
+ export const resultInput = z.object({
+   event_id: uuid,
+   command_id: uuid,
+@@ -90,6 +128,10 @@ export const resultInput = z.object({
+     inbox_discovery: browserInboxDiscoverySummary.optional(),
+     scene: z.object({ identity_count: z.number().int().min(0).max(100), submit_controls: z.number().int().min(0).max(100), result_count: z.number().int().min(0).max(100), unparsed_visible_max: z.number().int().min(0).max(1000).optional() }).strict().optional(),
+   }).strict(),
++  // The guardian's own termination fact, present whenever the parent had to end a child it had stopped
++  // waiting for. It travels with the report because the receiver has to make a decision the agent must
++  // not make alone: a report whose environment was never proven closed may not complete its command.
++  guardian: guardianTermination.optional(),
+ }).strict();
+ export const loginInput = z.object({ email: z.string().email().max(254), password: z.string().min(1).max(200) }).strict();
+ export const hashSchema = z.string().regex(/^[a-f0-9]{64}$/);
+@@ -98,11 +140,18 @@ export const hashSchema = z.string().regex(/^[a-f0-9]{64}$/);
+ // one; the no-progress version means the parent ended a child that stopped making progress and can
+ // only prove the process is gone. They are kept apart so a receiver never projects an environment as
+ // closed on a weaker fact.
++//
++// The no-progress variant is a discriminated member rather than an optional field on one shared object
++// because its process fact is not decoration: it is the whole reason the proof is admissible. Making it
++// required means a no-progress proof that cannot say what happened to the process tree is not a proof
++// the receiver will accept, instead of one it silently trusts.
+ export const guardianClosureProtocols = ['kff.guardian-closure.v1', 'kff.guardian-closure-startup-failed.v1', 'kff.guardian-closure-no-progress.v1'] as const;
+-export const quiescenceInput = z.object({
+-  protocol_version: z.enum(guardianClosureProtocols), command_id: uuid, action_id: uuid,
+-  closed_at: z.string().datetime(), proof_sha256: hashSchema,
+-}).strict();
++const quiescenceBase = { command_id: uuid, action_id: uuid, closed_at: z.string().datetime(), proof_sha256: hashSchema };
++export const quiescenceInput = z.discriminatedUnion('protocol_version', [
++  z.object({ protocol_version: z.literal('kff.guardian-closure.v1'), ...quiescenceBase }).strict(),
++  z.object({ protocol_version: z.literal('kff.guardian-closure-startup-failed.v1'), ...quiescenceBase, process_tree: processTreeState.optional() }).strict(),
++  z.object({ protocol_version: z.literal('kff.guardian-closure-no-progress.v1'), ...quiescenceBase, process_tree: processTreeState }).strict(),
++]);
+ export const permitInput = z.object({
+   task_id: uuid,
+   max_actions: z.number().int().min(1).max(10),
+diff --git a/packages/core/src/execution.ts b/packages/core/src/execution.ts
+index 1b49003..19f3bfe 100644
+--- a/packages/core/src/execution.ts
++++ b/packages/core/src/execution.ts
+@@ -202,10 +202,19 @@ export async function acceptReport(agent: AgentIdentity, input: ActionReport) {
+     await markCostPending(client, command.action_id, 'ACTION_' + report.outcome);
+     if (report.outcome === 'VERIFIED_SUCCEEDED' && !command.snapshot.is_synthetic && !isWrite(command.snapshot)) await client.query("UPDATE kff.accounts SET state='ACTIVE' WHERE id=$1 AND version=$2 AND credential_ref IS NOT DISTINCT FROM $3 AND state='DRAFT'", [command.snapshot.account_id, command.snapshot.account_version, command.snapshot.credential_ref]);
+     await client.query('UPDATE kff.action_attempts SET state=$1,completed_at=now() WHERE id=$2', [report.outcome, command.attempt_id]);
+-    await client.query("UPDATE kff.agent_commands SET state='DONE' WHERE id=$1", [command.id]);
++    // Completing the command is the database half of "this execution is over", and it is deliberately
++    // not the same question as "the guardian finished" or "the browser is closed". When the guardian
++    // had to end a child and could not prove the process tree is dead, the report is still accepted -
++    // its facts are real and the attempt is over - but the command is left where it is, so the
++    // execution slot stays occupied. Freeing it on "the command stopped" would hand the next command
++    // an environment whose browser was never accounted for, which is the exact failure this gate
++    // exists for. Recovery stays with the ordinary expiry path, which keeps the same isolation.
++    const unprovenTree = report.guardian !== undefined && report.guardian.process_tree !== 'DEAD';
++    if (!unprovenTree) await client.query("UPDATE kff.agent_commands SET state='DONE' WHERE id=$1", [command.id]);
+     // A no-progress termination proves the process is gone and nothing more, so its environment keeps
+-    // the same isolation a lease expiry would have given it instead of being handed back as idle.
+-    const quarantine = report.outcome === 'UNKNOWN_OUTCOME' || report.error_code === 'AGENT_RESTART' || report.error_code === 'GUARDIAN_NO_PROGRESS';
++    // the same isolation a lease expiry would have given it instead of being handed back as idle. An
++    // unproven tree keeps that isolation whatever the reported outcome was.
++    const quarantine = unprovenTree || report.outcome === 'UNKNOWN_OUTCOME' || report.error_code === 'AGENT_RESTART' || report.error_code === 'GUARDIAN_NO_PROGRESS';
+     for (const lease of command.leases) await client.query('UPDATE kff.resource_leases SET quarantined=$1,holder_attempt_id=CASE WHEN $1 THEN holder_attempt_id ELSE NULL END,expires_at=clock_timestamp() WHERE organization_id=$2 AND resource_type=$3 AND resource_id=$4 AND token=$5 AND holder_attempt_id=$6', [quarantine, command.organization_id, lease.resource_type, lease.resource_id, lease.token, command.attempt_id]);
+     await client.query('UPDATE kff.environments SET state=$1 WHERE id=$2', [quarantine ? 'QUARANTINED' : 'IDLE', command.snapshot.environment_id]);
+     const status = report.outcome === 'VERIFIED_SUCCEEDED' ? 'SUCCEEDED' : report.outcome === 'CANCELED' ? 'CANCELED' : ['UNKNOWN_OUTCOME', 'NEEDS_HUMAN'].includes(report.outcome) ? 'NEEDS_HUMAN' : 'FAILED';
+@@ -213,7 +222,7 @@ export async function acceptReport(agent: AgentIdentity, input: ActionReport) {
+     await client.query('UPDATE kff.tasks SET status=$1 WHERE id=$2', [status, command.task_id]);
+     const manifest = buildDiagnostic(report.diagnostic, report.error_code, agent, command.action_id, { adapter_version: command.snapshot.adapter_version, attempt_id: command.attempt_id, outcome: report.outcome });
+     await client.query('INSERT INTO kff.diagnostic_bundles(organization_id,brand_id,action_id,manifest) VALUES($1,$2,$3,$4)', [agent.organization_id, agent.brand_id, command.action_id, manifest]);
+-    await client.query('INSERT INTO kff.audit_events(organization_id,brand_id,actor_id,event_type,object_id,details) VALUES($1,$2,$3,$4,$5,$6)', [agent.organization_id, agent.brand_id, agent.id, 'action.reported', command.action_id, { outcome: report.outcome, error_code: report.error_code ?? null, evidence_kind: report.receipt?.evidence_kind ?? null }]);
++    await client.query('INSERT INTO kff.audit_events(organization_id,brand_id,actor_id,event_type,object_id,details) VALUES($1,$2,$3,$4,$5,$6)', [agent.organization_id, agent.brand_id, agent.id, 'action.reported', command.action_id, { outcome: report.outcome, error_code: report.error_code ?? null, evidence_kind: report.receipt?.evidence_kind ?? null, guardian_tree: report.guardian?.process_tree ?? null, command_completed: !unprovenTree }]);
+     return { accepted: true, duplicate: false };
+   });
+ }
+@@ -226,18 +235,27 @@ export async function recoverExpired(): Promise<number> {
+     const stillExpired = await client.query("SELECT 1 FROM kff.resource_leases l JOIN kff.agents ag ON ag.id=$2 JOIN kff.accounts ac ON ac.id=$4 JOIN kff.brands b ON b.id=ac.brand_id JOIN kff.organizations o ON o.id=ac.organization_id WHERE l.holder_attempt_id=$1 AND (l.expires_at<=clock_timestamp() OR $3::timestamptz<=clock_timestamp() OR ag.status='REVOKED' OR ($5 AND ($6 OR b.outbound_paused OR o.outbound_paused OR ac.outbound_paused OR ag.status='DRAINING')))", [command.attempt_id, command.agent_id, command.expires_at, command.snapshot.account_id, command.state === 'READY', command.stop_requested]);
+     if (!stillExpired.rowCount) return;
+     const neverClaimed = command.state === 'READY';
+-    const outcome = neverClaimed ? 'CANCELED' : ['SUBMITTING', 'SUBMITTED'].includes(command.action_state) ? 'UNKNOWN_OUTCOME' : 'NEEDS_HUMAN';
+-    assertTransition(command.action_state, outcome);
+-    await client.query('UPDATE kff.actions SET state=$1,error_code=$2 WHERE id=$3', [outcome, neverClaimed ? 'COMMAND_NOT_STARTED' : 'LEASE_EXPIRED', command.action_id]);
+-    await projectMessageOutcome(client,command.action_id,command.snapshot);
+-    await haltPilot(client, command.action_id);
+-    await markCostPending(client, command.action_id, neverClaimed ? 'COMMAND_NEVER_CLAIMED' : 'EXECUTION_LEASE_EXPIRED');
+-    await client.query("UPDATE kff.action_attempts SET state=$1,completed_at=now() WHERE id=$2", [outcome, command.attempt_id]);
++    // A claimed command whose report was already accepted leaves its action in a terminal state, and a
++    // terminal state has no outgoing transition. Asserting one here threw out of the whole recovery
++    // sweep and left the command - and the execution slot it holds - unexpirable, which is the one path
++    // that may still take it back. The report decided the action's fate; recovery takes back only the
++    // command and the leases it still holds, so a decided action is not rewritten at all: its state, its
++    // error code and its cost record are the ones the report produced.
++    const decided = !neverClaimed && ['VERIFIED_SUCCEEDED', 'VERIFIED_FAILED', 'CANCELED', 'BLOCKED', 'NEEDS_HUMAN'].includes(command.action_state);
++    const outcome = neverClaimed ? 'CANCELED' : decided ? command.action_state : ['SUBMITTING', 'SUBMITTED'].includes(command.action_state) ? 'UNKNOWN_OUTCOME' : 'NEEDS_HUMAN';
++    if (!decided) {
++      assertTransition(command.action_state, outcome);
++      await client.query('UPDATE kff.actions SET state=$1,error_code=$2 WHERE id=$3', [outcome, neverClaimed ? 'COMMAND_NOT_STARTED' : 'LEASE_EXPIRED', command.action_id]);
++      await projectMessageOutcome(client,command.action_id,command.snapshot);
++      await haltPilot(client, command.action_id);
++      await markCostPending(client, command.action_id, neverClaimed ? 'COMMAND_NEVER_CLAIMED' : 'EXECUTION_LEASE_EXPIRED');
++      await client.query("UPDATE kff.action_attempts SET state=$1,completed_at=now() WHERE id=$2", [outcome, command.attempt_id]);
++      await client.query('UPDATE kff.runs SET status=$1,updated_at=now() WHERE id=$2', [neverClaimed ? 'CANCELED' : 'NEEDS_HUMAN', command.run_id]);
++      await client.query('UPDATE kff.tasks SET status=$1 WHERE id=$2', [neverClaimed ? 'CANCELED' : 'NEEDS_HUMAN', command.task_id]);
++    }
+     await client.query("UPDATE kff.agent_commands SET state='EXPIRED',quiesced_at=CASE WHEN $1 THEN now() ELSE quiesced_at END WHERE id=$2", [neverClaimed, command.id]);
+     await client.query('UPDATE kff.resource_leases SET quarantined=NOT $1,holder_attempt_id=CASE WHEN $1 THEN NULL ELSE holder_attempt_id END,expires_at=now() WHERE holder_attempt_id=$2', [neverClaimed, command.attempt_id]);
+     await client.query("UPDATE kff.environments SET state=$1,browser_status=CASE WHEN $3 THEN CASE WHEN $4 THEN 'CLOSED' ELSE 'UNKNOWN' END ELSE browser_status END WHERE id=$2", [neverClaimed ? 'IDLE' : 'QUARANTINED', command.snapshot.environment_id, Boolean(command.snapshot.browser_environment), neverClaimed]);
+-    await client.query('UPDATE kff.runs SET status=$1,updated_at=now() WHERE id=$2', [neverClaimed ? 'CANCELED' : 'NEEDS_HUMAN', command.run_id]);
+-    await client.query('UPDATE kff.tasks SET status=$1 WHERE id=$2', [neverClaimed ? 'CANCELED' : 'NEEDS_HUMAN', command.task_id]);
+     await client.query('INSERT INTO kff.audit_events(organization_id,brand_id,actor_id,event_type,object_id,details) VALUES($1,$2,$3,$4,$5,$6)', [command.organization_id, command.brand_id, command.agent_id, neverClaimed ? 'action.canceled_before_claim' : 'action.lease_expired', command.action_id, { outcome, quarantined: !neverClaimed, closure_evidence: neverClaimed ? 'controller_never_claimed' : null }]);
+     count++;
+   });
+diff --git a/packages/core/src/reconciliation.ts b/packages/core/src/reconciliation.ts
+index a06f6cc..54a81da 100644
+--- a/packages/core/src/reconciliation.ts
++++ b/packages/core/src/reconciliation.ts
+@@ -8,6 +8,12 @@ import type { AgentIdentity } from './execution';
+ 
+ export async function recordQuiescence(agent: AgentIdentity, commandId: string, input: z.infer<typeof quiescenceInput>) {
+   const proof = quiescenceInput.parse(input);
++  // A termination record is only admissible as a quiescence proof when the process tree is proven dead.
++  // The agent is allowed to write down a tree that is still alive or that no listing could confirm -
++  // that record is honest and worth keeping - but confirming quiescence on it would let the next
++  // command inherit a browser nobody closed. The refusal is the point: it leaves the command
++  // unfinished, the environment quarantined, and the decision with a human.
++  requireCondition(proof.protocol_version !== 'kff.guardian-closure-no-progress.v1' || proof.process_tree === 'DEAD', 'GUARDIAN_UNCONFIRMED', '执行进程树没有取得死亡证明，资源保持隔离', 409);
+   return transaction(async client => {
+     const row = (await client.query('SELECT * FROM kff.agent_commands WHERE id=$1 AND agent_id=$2 FOR UPDATE', [commandId, agent.id])).rows[0];
+     requireCondition(row && ['DONE','EXPIRED'].includes(row.state), 'VERSION_CONFLICT', '执行上下文只能在命令终止后确认关闭', 409);
+@@ -90,6 +96,24 @@ export async function releaseQuarantine(scope: Scope, runId: string) {
+     }
+     const pending = await client.query("SELECT id FROM kff.agent_commands WHERE action_id=$1 AND (state NOT IN ('DONE','EXPIRED') OR quiesced_at IS NULL)", [action.id]);
+     requireCondition(!pending.rowCount, 'GUARDIAN_UNCONFIRMED', '执行器尚未确认旧上下文关闭', 409);
++    // "The command ended and something was marked quiesced" is not a reason to hand an environment
++    // back. Quiescence answers whether the execution slot may be reused; the question here is whether
++    // the browser may be, and that needs a fact about the context itself. Only two proofs carry one: a
++    // closure that a child wrote after closing what it opened, and a command that provably never opened
++    // anything. A termination record - even one whose tree is dead - proves the process is gone and
++    // says nothing about the context, so it never authorises this release. The check reads the proof
++    // rather than `quiesced_at`, which means a record written before this rule existed cannot quietly
++    // pass through the normal release path either.
++    const terminated = (await client.query("SELECT id FROM kff.agent_commands WHERE action_id=$1 AND quiesced_at IS NOT NULL", [action.id])).rows;
++    if (terminated.length) {
++      const proofs = (await client.query("SELECT object_id, details FROM kff.audit_events WHERE event_type='guardian.quiesced' AND object_id = ANY($1::uuid[])", [terminated.map(row => row.id)])).rows;
++      for (const row of terminated) {
++        const recorded = proofs.filter(proof => proof.object_id === row.id);
++        requireCondition(recorded.length === 1, 'GUARDIAN_UNCONFIRMED', '执行上下文的关闭证明缺失或不唯一，不能恢复环境', 409);
++        const version = recorded[0].details?.proof?.protocol_version;
++        requireCondition(version === 'kff.guardian-closure.v1' || version === 'kff.guardian-closure-startup-failed.v1', 'GUARDIAN_UNCONFIRMED', '旧执行上下文只有进程终止记录，没有浏览器关闭证明', 409);
++      }
++    }
+     const snapshot = run.snapshot as TaskSnapshot;
+     await client.query('UPDATE kff.resource_leases SET quarantined=false,holder_attempt_id=NULL,expires_at=now() WHERE holder_attempt_id IN (SELECT id FROM kff.action_attempts WHERE action_id=$1)', [action.id]);
+     const other = await client.query("SELECT resource_id FROM kff.resource_leases WHERE resource_id=ANY($1::uuid[]) AND (quarantined OR holder_attempt_id IS NOT NULL)", [[snapshot.account_id, snapshot.environment_id]]);
+diff --git a/tests/helpers/collection-journal.ts b/tests/helpers/collection-journal.ts
+index 00e862b..6af25ea 100644
+--- a/tests/helpers/collection-journal.ts
++++ b/tests/helpers/collection-journal.ts
+@@ -5,7 +5,7 @@ import path from 'node:path';
+ import { afterAll } from 'vitest';
+ import { digest } from '../../packages/core/src/index';
+ import type { CollectionPage } from '../../packages/contracts/src/index';
+-import { saveClosure, saveStartupFailure, closureProof, type GuardianClosure } from '../../apps/agent/src/guardian-protocol';
++import { saveClosure, saveNoProgress, saveStartupFailure, closureProof, type GuardianClosure } from '../../apps/agent/src/guardian-protocol';
+ import type { JournalEntry } from '../../apps/agent/src/action-journal';
+ 
+ // A fixture call has no teardown of its own, so every root it creates is recorded here and removed
+@@ -37,6 +37,33 @@ export function startupFailureJournalFixture() {
+   return { root, runtime, file, journal, entry, save, record, proof: closureProof(record), reload: () => JSON.parse(readFileSync(file, 'utf8')) as Record<string, JournalEntry> };
+ }
+ 
++/**
++ * The container for the other ending: a child the parent had to end itself. The record proves the
++ * process is gone and deliberately says nothing about the browser, so it is exactly the fact whose loss
++ * would hand a quarantined environment back.
++ *
++ * `withReport` is the two states a real journal is found in when a page expires. A run that produced a
++ * child outcome has a report; a restart between the forced termination and the flush has none, and the
++ * flush then derives one from the record. `tree` is the judgement the parent actually reached - the
++ * default is the one that must never release anything.
++ */
++export function noProgressJournalFixture(withReport: boolean, tree: 'DEAD' | 'UNKNOWN' = 'UNKNOWN') {
++  const root = mkdtempSync(path.join(os.tmpdir(), 'kff-collection-journal-')), runtime = path.join(root, '.kff');
++  discardAfterFile(root);
++  const entry: JournalEntry = { command_id: randomUUID(), action_id: randomUUID(), phase: 'submitting', guardian_nonce: digest(randomUUID()), collection_expires_at: new Date(Date.now() - 1000).toISOString() };
++  const record = saveNoProgress(runtime, {
++    command_id: entry.command_id, action_id: entry.action_id, nonce: entry.guardian_nonce!, phase: 'submitting',
++    termination: { process_tree: tree, tool: 'ERROR', root: 'ALIVE', descendants: 'DEAD', sampled: 0, enumeration: 'UNAVAILABLE', elapsed_ms: 30 },
++    context_opened: true, submission_state: 'UNKNOWN', forced: true, waited_ms: 900000, grace_ms: 15000,
++    result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS', diagnostic: { step: 'guardian-no-progress' } },
++  });
++  if (withReport) entry.report = { ...record.result, event_id: randomUUID(), command_id: entry.command_id, guardian: record.termination };
++  const journal = { [entry.command_id]: entry }, file = path.join(runtime, 'agent', 'journal.json');
++  const save = () => { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file + '.tmp', JSON.stringify(journal), { mode: 0o600, flush: true }); renameSync(file + '.tmp', file); };
++  save();
++  return { root, runtime, file, journal, entry, save, record, proof: closureProof(record), reload: () => JSON.parse(readFileSync(file, 'utf8')) as Record<string, JournalEntry> };
++}
++
+ export function collectionJournalFixture() {
+   // A fixture's journal, closures and profile root belong in the operating system's temporary
+   // directory: a unit test must never write runtime state into the project's real `.kff` root.
+diff --git a/tests/integration/agent-closure-gate.test.ts b/tests/integration/agent-closure-gate.test.ts
+index af9b780..4d37fac 100644
+--- a/tests/integration/agent-closure-gate.test.ts
++++ b/tests/integration/agent-closure-gate.test.ts
+@@ -1,13 +1,19 @@
+ import { randomUUID } from 'node:crypto';
++import { mkdirSync, mkdtempSync, renameSync, rmSync, writeFileSync } from 'node:fs';
++import os from 'node:os';
++import path from 'node:path';
+ import { afterAll, beforeAll, beforeEach, expect, it } from 'vitest';
++import { digest } from '../../packages/core/src/index';
+ import { migrate } from '../../scripts/migrate';
+ import { localIds, seed } from '../../scripts/seed';
+ import { closePool, query } from '../../packages/database/src/index';
+-import type { AgentCommand, Scope } from '../../packages/contracts/src/index';
++import { resultInput, quiescenceInput, uuid, type AgentCommand, type Scope } from '../../packages/contracts/src/index';
+ import { approveTask, createEnvironment, createTask, enqueueTask, stopRun } from '../../packages/core/src/service';
+-import { acceptReport, claimCommand, dispatchOne, recoverExpired, type AgentIdentity } from '../../packages/core/src/execution';
++import { acceptReport, claimCommand, commandStatus, dispatchOne, recoverExpired, type AgentIdentity } from '../../packages/core/src/execution';
+ import { claimEnvironmentCommand, completeEnvironmentCommand, configureEnvironment, queueEnvironmentOperation } from '../../packages/core/src/environments';
+ import { recordQuiescence, releaseQuarantine } from '../../packages/core/src/reconciliation';
++import { saveNoProgress } from '../../apps/agent/src/guardian-protocol';
++import { flushActionJournal, type JournalEntry } from '../../apps/agent/src/action-journal';
+ 
+ const scope: Scope = { organization_id: localIds.organization, brand_id: localIds.brand, user_id: localIds.user, role: 'admin' };
+ const agent: AgentIdentity = { id: localIds.agent, organization_id: localIds.organization, brand_id: localIds.brand, status: 'ONLINE' };
+@@ -115,3 +121,142 @@ it('refuses a legacy READY task while an environment operation holds the Agent',
+   await completeEnvironmentCommand(agent, operation.id, { context_closed: true, outcome: 'CLOSED' });
+   expect((await claimCommand(agent))?.run_id).toBe(pending.id);
+ });
++
++/**
++ * Four facts travel together and none of them implies the next: the command's lifecycle, the guardian's
++ * execution quiescence, the process tree's termination and the browser environment's closure. The three
++ * tests below pin the two implications that are easy to assume and must never hold - a quiesced guardian
++ * is not a closed browser, and an expired command is not a quiesced guardian - and they do it through the
++ * production functions the agent's own routes call. The journal test goes one step further and drives the
++ * real flush against them, because retention sits between the record and the controller and is exactly
++ * where a safety fact can be lost.
++ */
++type TreeState = 'DEAD' | 'ALIVE' | 'UNKNOWN';
++const termination = (tree: TreeState) => ({ process_tree: tree, tool: 'ERROR' as const, root: 'ALIVE' as const, descendants: 'DEAD' as const, sampled: 0, enumeration: 'UNAVAILABLE' as const, elapsed_ms: 30 });
++const noProgressProof = (command: AgentCommand, tree: TreeState) => ({ protocol_version: 'kff.guardian-closure-no-progress.v1' as const, command_id: command.id, action_id: command.action_id, closed_at: new Date().toISOString(), proof_sha256: 'a'.repeat(64), process_tree: tree });
++async function refusal(body: () => Promise<unknown>) { try { await body(); return null; } catch (error) { return error as Error & { code?: string }; } }
++async function claimed(binding = first) {
++  const run = await queue(binding);
++  expect(await dispatchOne()).toBe(true);
++  const command = await claimCommand(agent);
++  expect(command).not.toBeNull();
++  return { command: command!, run };
++}
++async function expired(binding = first) {
++  const started = await claimed(binding);
++  await query("UPDATE kff.resource_leases SET expires_at=clock_timestamp()-interval '1 second' WHERE holder_attempt_id=$1", [started.command.attempt_id]);
++  expect(await recoverExpired()).toBe(1);
++  return started;
++}
++const environmentState = async (id: string) => (await query<{ state: string }>('SELECT state FROM kff.environments WHERE id=$1', [id]))[0].state;
++const commandRow = async (id: string) => (await query<{ state: string; quiesced_at: Date | null }>('SELECT state,quiesced_at FROM kff.agent_commands WHERE id=$1', [id]))[0];
++const actionRow = async (runId: string) => (await query<{ state: string; error_code: string | null }>('SELECT state,error_code FROM kff.actions WHERE run_id=$1', [runId]))[0];
++const reported = async () => (await query<{ details: Record<string, unknown> }>("SELECT details FROM kff.audit_events WHERE event_type='action.reported'")).map(row => row.details);
++/** The transport, and only the transport: the same three calls the agent's controller routes make. */
++function controller() {
++  return async <T>(endpoint: string, data?: unknown): Promise<T> => {
++    if (endpoint === 'action-reports') return await acceptReport(agent, resultInput.parse(data)) as T;
++    const parts = endpoint.split('/');
++    if (parts.length === 3 && parts[0] === 'commands' && parts[2] === 'status') return await commandStatus(agent, uuid.parse(parts[1])) as T;
++    if (parts.length === 3 && parts[0] === 'commands' && parts[2] === 'quiescence') return await recordQuiescence(agent, uuid.parse(parts[1]), quiescenceInput.parse(data)) as T;
++    throw new Error('Unexpected endpoint ' + endpoint);
++  };
++}
++
++it('refuses to release an environment on a termination proof even when the tree was proven dead', async () => {
++  // A command the controller had to expire: nothing was reported, so the environment is quarantined.
++  const { command, run } = await expired();
++  expect(await environmentState(first.environment_id)).toBe('QUARANTINED');
++  // The agent's proof is admissible here - the tree is dead, so the slot may be reused - and that is
++  // exactly as far as it goes: the same record says nothing about the browser.
++  await recordQuiescence(agent, command.id, noProgressProof(command, 'DEAD'));
++  expect((await commandRow(command.id)).quiesced_at).not.toBeNull();
++  // Every other release gate passes: the action is terminal and no submission intent was ever recorded.
++  expect(await actionRow(run.id)).toEqual({ state: 'NEEDS_HUMAN', error_code: 'LEASE_EXPIRED' });
++  const refused = await refusal(() => releaseQuarantine(scope, run.id));
++  expect(refused?.code).toBe('GUARDIAN_UNCONFIRMED');
++  expect(await environmentState(first.environment_id)).toBe('QUARANTINED');
++  // The control: the same release path, on the same kind of run, holding a proof that a context was
++  // closed. It releases - and it releases only the environment that proof belongs to.
++  const control = await expired(second);
++  await close(control.command);
++  expect(await releaseQuarantine(scope, control.run.id)).toEqual({ released: true });
++  expect(await environmentState(second.environment_id)).toBe('IDLE');
++  expect(await environmentState(first.environment_id)).toBe('QUARANTINED');
++});
++
++/**
++ * The journal a restarted Agent finds when the parent died between a forced termination and the flush:
++ * the page is long expired and no report was ever produced, so retention has to synthesize one - from
++ * the record, which is the only place the process fact exists. The record and the journal are written by
++ * the production writers, with the command's real identity, so the flush below is the real one.
++ */
++const journalRoots: string[] = [];
++afterAll(() => {
++  for (const root of journalRoots.splice(0)) {
++    if (path.dirname(root) !== os.tmpdir() || !path.basename(root).startsWith('kff-b012-journal-')) throw new Error('Unexpected test directory');
++    rmSync(root, { recursive: true, force: true });
++  }
++});
++function expiredNoProgressJournal(command: AgentCommand, tree: TreeState) {
++  const root = mkdtempSync(path.join(os.tmpdir(), 'kff-b012-journal-')), runtime = path.join(root, '.kff');
++  journalRoots.push(root);
++  const nonce = digest(randomUUID());
++  saveNoProgress(runtime, { command_id: command.id, action_id: command.action_id, nonce, phase: 'submitting', termination: termination(tree), context_opened: true, submission_state: 'UNKNOWN', forced: true, waited_ms: 900000, grace_ms: 15000, result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS', diagnostic: { step: 'guardian-no-progress' } } });
++  const entry: JournalEntry = { command_id: command.id, action_id: command.action_id, phase: 'submitting', guardian_nonce: nonce, collection_expires_at: new Date(Date.now() - 1000).toISOString() };
++  const journal = { [command.id]: entry }, file = path.join(runtime, 'agent', 'journal.json');
++  const save = () => { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file + '.tmp', JSON.stringify(journal), { mode: 0o600, flush: true }); renameSync(file + '.tmp', file); };
++  save();
++  return { runtime, entry, journal, save };
++}
++
++it('keeps a no-progress termination quarantined through retention expiry and recovery', async () => {
++  const { command, run } = await claimed();
++  const journal = expiredNoProgressJournal(command, 'UNKNOWN');
++  const failure = await refusal(() => flushActionJournal(journal.runtime, journal.journal, journal.save, controller()));
++  // The report was accepted. The proof was not: an unproven tree may not free the execution slot, and
++  // the refusal is what leaves the journal entry unfinished instead of silently releasing the browser.
++  expect(failure?.code).toBe('GUARDIAN_UNCONFIRMED');
++  expect(journal.entry).toMatchObject({ acknowledged: true });
++  expect(journal.entry.quiesced).toBeUndefined();
++  expect(journal.entry.collection_redaction?.reason).toBe('RETENTION_EXPIRED');
++  expect(journal.entry.report?.collection_page).toBeUndefined();
++  // What the controller recorded is the process fact and not the retention story. This is the assertion
++  // that fails when retention replaces the report without carrying the guardian's termination across:
++  // the page expires, the report becomes a generic BLOCKED, and the environment is handed back IDLE.
++  const events = await reported();
++  expect(events).toHaveLength(1);
++  expect(events[0]).toMatchObject({ outcome: 'BLOCKED', error_code: 'GUARDIAN_NO_PROGRESS', guardian_tree: 'UNKNOWN', command_completed: false });
++  expect(await commandRow(command.id)).toEqual({ state: 'CLAIMED', quiesced_at: null });
++  expect(await environmentState(first.environment_id)).toBe('QUARANTINED');
++  // The worker still owns the command's lifecycle: it may expire it. That is not quiescence, and it is
++  // not a reason to hand the environment back, so `quiesced_at` stays null and the environment stays
++  // where the report left it. The action keeps the outcome and the error code the report gave it.
++  expect(await recoverExpired()).toBe(1);
++  expect(await commandRow(command.id)).toEqual({ state: 'EXPIRED', quiesced_at: null });
++  expect(await actionRow(run.id)).toEqual({ state: 'BLOCKED', error_code: 'GUARDIAN_NO_PROGRESS' });
++  expect(await environmentState(first.environment_id)).toBe('QUARANTINED');
++  // Even after the command is terminal, the same proof is still refused, and the ordinary release path
++  // is shut. It shuts early here - the retention report left the action BLOCKED, which is not a state
++  // the release path accepts at all - and the proof gate behind it, the one that refuses a termination
++  // record even for a NEEDS_HUMAN action, is what the test above exercises.
++  expect((await refusal(() => recordQuiescence(agent, command.id, noProgressProof(command, 'UNKNOWN'))))?.code).toBe('GUARDIAN_UNCONFIRMED');
++  expect((await refusal(() => releaseQuarantine(scope, run.id)))?.code).toBe('SUBMISSION_UNCERTAIN');
++  expect(await environmentState(first.environment_id)).toBe('QUARANTINED');
++});
++
++it('completes a command on a proven-dead tree and still refuses to release its environment', async () => {
++  const { command, run } = await claimed();
++  await acceptReport(agent, { event_id: randomUUID(), command_id: command.id, outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS', guardian: termination('DEAD'), diagnostic: { step: 'guardian-no-progress' } });
++  // A proven-dead tree is what licenses reusing the slot, so the command completes - and it is the only
++  // thing that changed: a termination record never claims a browser was closed.
++  expect(await commandRow(command.id)).toEqual({ state: 'DONE', quiesced_at: null });
++  expect(await environmentState(first.environment_id)).toBe('QUARANTINED');
++  const events = await reported();
++  expect(events).toHaveLength(1);
++  expect(events[0]).toMatchObject({ outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS', guardian_tree: 'DEAD', command_completed: true });
++  await recordQuiescence(agent, command.id, noProgressProof(command, 'DEAD'));
++  expect((await commandRow(command.id)).quiesced_at).not.toBeNull();
++  expect((await refusal(() => releaseQuarantine(scope, run.id)))?.code).toBe('GUARDIAN_UNCONFIRMED');
++  expect(await environmentState(first.environment_id)).toBe('QUARANTINED');
++});
+diff --git a/tests/integration/browser-message.test.ts b/tests/integration/browser-message.test.ts
+index b325168..41dc2c1 100644
+--- a/tests/integration/browser-message.test.ts
++++ b/tests/integration/browser-message.test.ts
+@@ -6,7 +6,7 @@ import { migrate } from '../../scripts/migrate';
+ import { seed } from '../../scripts/seed';
+ import { startFixtureServer } from '../../scripts/fixture-server';
+ import { query, closePool } from '@kff/database';
+-import { digest } from '@kff/core';
++import { AppError, digest } from '@kff/core';
+ import { quiescenceInput, type ActionReport, type AgentCommand } from '@kff/contracts';
+ import { receptionPolicy } from '../../packages/contracts/src/lead';
+ import type { BrowserFixtureEvent } from '../../packages/adapters/src/browser-message-fixture';
+@@ -76,6 +76,118 @@ const controller = async <T>(endpoint: string, data?: unknown): Promise<T> => {
+   throw new Error('Unexpected controller endpoint ' + endpoint);
+ };
+ 
++/**
++ * The liveness ladder the two stall cases run under. Production uses `force: 10000`; these cases pin a
++ * shorter one so a single case does not spend ten seconds waiting on a decision that is already made.
++ *
++ * The override exists so the §7 capacity matrix can measure the *production* budget under load without
++ * the two configurations drifting apart in any other respect. It changes no default - an unset variable
++ * reproduces the pinned value exactly - and it is read here rather than plumbed through the policy so
++ * that a mis-set variable fails loudly instead of silently running a ladder nobody asked for.
++ */
++const livenessForce = () => {
++  const raw = process.env.KFF_TEST_LIVENESS_FORCE;
++  if (raw === undefined) return 5000;
++  const value = Number(raw);
++  if (!Number.isSafeInteger(value) || value < 1000) throw new Error('KFF_TEST_LIVENESS_FORCE must be an integer >= 1000, got ' + raw);
++  return value;
++};
++const liveness = (phase: 'granting' | 'awaiting-intent') => ({ [phase]: 1500, grace: 1000, force: livenessForce() });
++
++/**
++ * §8-G: a recording wrapper around the controller. It appends to an array and does nothing else - it
++ * does not retry, reorder, delay or swallow - so the flush it observes runs as close to unperturbed as
++ * an observation can be. What it buys is that a failure carries its own explanation: which endpoint
++ * refused and with which domain code, instead of another load run spent guessing at it.
++ */
++function recordingController() {
++  const log: Array<{ endpoint: string; error?: string }> = [];
++  const wrapped = async <T>(endpoint: string, data?: unknown): Promise<T> => {
++    try { const value = await controller<T>(endpoint, data); log.push({ endpoint }); return value; }
++    catch (error) { log.push({ endpoint, error: error instanceof AppError ? error.code : String((error as Error)?.message ?? error) }); throw error; }
++  };
++  return { wrapped, log };
++}
++
++/**
++ * §8-G: what the machine looked like at the moment the flush refused. Printed rather than asserted,
++ * because the run this exists to explain is the failing one, and the assertions that would describe it
++ * are downstream of the failure. The five facts are the ones a reader needs to place the refusal: the
++ * command's lifecycle and its quiescence, the action's adjudicated state, the leases and whether they
++ * had aged out, the journal entry the flush was working from, and the guardian proof it read.
++ */
++async function flushDiagnostics(command: AgentCommand, runtime: string, journal: Record<string, JournalEntry>, identity: { command_id: string; action_id: string; guardian_nonce: string }, calls: unknown[]) {
++  const report = async (label: string, body: () => Promise<unknown>) => { try { return await body(); } catch (error) { return { 'read_error': (error as { code?: string }).code ?? String(error) }; } };
++  const evidence = await report('proof', async () => readClosureEvidence(runtime, identity));
++  console.log('[§8-G] flush refused: ' + JSON.stringify({
++    calls,
++    // `since_claim` is the number this whole question turns on: the resource leases are issued for 30s
++    // at dispatch and are renewed only by a heartbeat, so the flush's distance from the claim is what
++    // decides whether `validateLeases` still finds them live.
++    command: await report('command', async () => (await query('SELECT state, quiesced_at, expires_at, created_at, claimed_at, clock_timestamp() AS now, clock_timestamp() - claimed_at AS since_claim FROM kff.agent_commands WHERE id=$1', [command.id]))[0]),
++    action: await report('action', async () => (await query('SELECT state, error_code FROM kff.actions WHERE id=$1', [command.action_id]))[0]),
++    attempt: await report('attempt', async () => (await query('SELECT state, leases FROM kff.action_attempts WHERE id=$1', [command.attempt_id]))[0]),
++    // Column names here are the schema's, not the words the prose uses: there is no `held` column and
++    // the environment is reached through `resource_id`. The three conditions of `validateLeases` are
++    // evaluated explicitly so the refusal is read off the row rather than inferred from the code.
++    leases: await report('leases', async () => await query('SELECT resource_type, resource_id, token, expires_at, quarantined, expires_at < clock_timestamp() AS expired, clock_timestamp() AS now FROM kff.resource_leases WHERE holder_attempt_id=$1 ORDER BY resource_type', [command.attempt_id])),
++    lease_gate: await report('lease_gate', async () => (await query("SELECT (SELECT state='CLAIMED' FROM kff.agent_commands WHERE id=$1) AS command_claimed, (SELECT expires_at>clock_timestamp() FROM kff.agent_commands WHERE id=$1) AS command_unexpired, (SELECT jsonb_array_length(leases)=2 FROM kff.action_attempts WHERE id=$2) AS leases_complete", [command.id, command.attempt_id]))[0]),
++    environment: await report('environment', async () => (await query("SELECT state, browser_status FROM kff.environments WHERE id=(SELECT resource_id FROM kff.resource_leases WHERE holder_attempt_id=$1 AND resource_type='environment' LIMIT 1)", [command.attempt_id]))[0]),
++    journal: journal[command.id],
++    proof: evidence,
++  }, null, 2));
++}
++
++type EvidenceRef = { command_id: string; action_id: string; guardian_nonce: string };
++
++/**
++ * §7-A: the record a failing run needs, read from the run that is already failing.
++ *
++ * The case asserts two things in order - the process is gone, then the tree was proven dead - and both
++ * assertions sit *upstream* of the read that would explain them, so the run that would answer the
++ * question is the one run that cannot reach the answer. This reads it anyway. The fresh probe is the
++ * part the ruling's open question turns on: a record saying `DEAD` beside a pid that is alive again is
++ * what a reused pid looks like, and without both readings the two cannot be told apart.
++ *
++ * Every read here is guarded, the liveness probe included. A diagnostic that throws would replace the
++ * failure it was written to explain, and a substituted error is worse than no diagnostic at all: it
++ * would send the reader after a fault in the instrument.
++ */
++async function explainTree(pid: number | undefined, runtime: string, identity: EvidenceRef) {
++  const read = (body: () => unknown) => { try { return body(); } catch (error) { return { 'read_error': (error as { code?: string }).code ?? String(error) }; } };
++  read(() => console.log('[§7-A] failure diagnostics: ' + JSON.stringify({
++    guardian_pid: pid, pid_alive_now: read(() => isProcessAlive(pid)), record: read(() => readClosureEvidence(runtime, identity)),
++  }, null, 2)));
++}
++/**
++ * §7-A: runs an assertion, and when it fails records the process facts before rethrowing the original
++ * error unchanged. The error is rethrown rather than replaced, so the case still fails exactly where it
++ * failed before - this adds an explanation, not a verdict.
++ */
++async function withTreeDiagnostics<T>(pid: number | undefined, runtime: string, identity: EvidenceRef, body: () => Promise<T>): Promise<T> {
++  try { return await body(); } catch (error) {
++    try { await explainTree(pid, runtime, identity); } catch (diagnostic) { console.log('[§7-A] diagnostics themselves failed: ' + String(diagnostic)); }
++    throw error;
++  }
++}
++
++/**
++ * §8-G: the flush, observed. The assertion is unchanged - `true` or the case fails - so nothing here
++ * widens what the batch accepts; it only makes a refusal legible when it happens.
++ *
++ * The controller is wrapped rather than replaced, so the flush talks to the real endpoints and every
++ * call it makes is recorded on the way past - a refusal is only placeable if the sequence that led to
++ * it is known. The wrapper rethrows untouched, so the real refusal still propagates as itself.
++ */
++async function flushObserved(command: AgentCommand, runtime: string, journal: Record<string, JournalEntry>, identity: { command_id: string; action_id: string; guardian_nonce: string }) {
++  const { wrapped, log } = recordingController();
++  const flushed = await flushActionJournal(runtime, journal, () => {}, wrapped);
++  if (!flushed) {
++    try { await flushDiagnostics(command, runtime, journal, identity, log); } catch (diagnostic) { console.log('[§8-G] diagnostics themselves failed: ' + String(diagnostic)); }
++  }
++  return flushed;
++}
++
+ it('reads actual Inbox DOM, sends one browser WhatsApp invitation, persists the receipt and deduplicates the later echo', async () => {
+   const h = await setup(false, true); await seedDestination(h.account_id); await scan(h.environment_id); const id = await conversation(h.account_id);
+   const input = { ...reply(), body: '', refer_whatsapp: true }, queued = await sendConversationReply(scope, id, input);
+@@ -173,28 +285,34 @@ it('ends a guardian that stopped answering while it held submission authority, a
+       // The journal reaches `submitting` because the real controller call really happened. The phase
+       // the parent observed is still `granting`, because the grant it decided on was never delivered.
+       beforeSubmit: async () => { journal[command.id].phase = 'intent_requested'; await beginSubmission(agent, command.id); journal[command.id].phase = 'submitting'; return new Promise(() => {}); },
+-      liveness: { granting: 1500, grace: 1000, force: 5000 },
++      liveness: liveness('granting'),
+     })).rejects.toMatchObject({ code: 'GUARDIAN_NO_PROGRESS' });
+   } finally { for (const [key, stored] of previous) { if (stored === undefined) delete environment[key]; else environment[key] = stored; } }
+   expect(guardian).toBeGreaterThan(0);
+-  await expect.poll(() => isProcessAlive(guardian), { timeout: 10000 }).toBe(false);
++  const identity = { command_id: command.id, action_id: command.action_id, guardian_nonce: value };
++  await withTreeDiagnostics(guardian, runtime, identity, () => expect.poll(() => isProcessAlive(guardian), { timeout: 10000 }).toBe(false));
+   // Three facts, recorded as three facts: the process is proven gone, a context really was opened, and
+   // whether the platform write happened is precisely what nobody can answer any more. There is no
+   // `context_closed` to read, because ending a process never closes anything.
+-  const identity = { command_id: command.id, action_id: command.action_id, guardian_nonce: value };
+   const record = readClosureEvidence(runtime, identity);
+-  expect(record).toMatchObject({
++  await withTreeDiagnostics(guardian, runtime, identity, async () => expect(record).toMatchObject({
+     protocol_version: noProgressProtocolVersion, command_id: command.id, action_id: command.action_id, nonce: value,
+-    phase: 'granting', process_terminated: true, context_opened: true, submission_state: 'UNKNOWN', forced: true, grace_ms: 1000,
++    phase: 'granting', context_opened: true, submission_state: 'UNKNOWN', forced: true, grace_ms: 1000,
++    // What the parent proved about the process is a three-state fact with its observations, not the
++    // boolean this file used to assert. The tree here really was enumerated and really was killed, and
++    // the probes afterwards are what let the command be completed at all - so the state is asserted,
++    // not tolerated: `UNKNOWN` or `ALIVE` would leave the command unfinished and the environment
++    // isolated, which the assertions below depend on.
++    termination: { process_tree: 'DEAD', root: 'DEAD', descendants: 'DEAD', enumeration: 'LISTED', tool: expect.any(String), sampled: expect.any(Number), elapsed_ms: expect.any(Number) },
+     result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' },
+-  });
++  }));
+   expect(record).not.toHaveProperty('context_closed');
+   expect((record as { waited_ms: number }).waited_ms).toBeGreaterThanOrEqual(1500);
+   // A termination is not a closure, so the weaker record can never be read back as one.
+   const asClosure = (() => { try { readClosure(runtime, identity); return 'closed'; } catch (error) { return (error as { code?: string }).code; } })();
+   expect(asClosure).toBe('GUARDIAN_UNCONFIRMED');
+   // The real flush against the real controller: the same three endpoints `main.ts` uses.
+-  expect(await flushActionJournal(runtime, journal, () => {}, controller)).toBe(true);
++  expect(await flushObserved(command, runtime, journal, identity)).toBe(true);
+   // The parent's own record said NEEDS_HUMAN. The action state is what corrects it: a persisted submit
+   // intention means nobody may be told this was harmless, so what actually leaves the machine is
+   // UNKNOWN_OUTCOME - never CANCELED and never VERIFIED_FAILED.
+@@ -251,26 +369,28 @@ it('ends a child that went silent just after it opened a real browser, and never
+       // The parent only sets this phase because it really received `context-opened` from the child.
+       onContextOpened: async () => { journal[command.id].phase = 'context_open'; await recordBrowserOpened(agent, command.id); },
+       beforeSubmit: async () => { intentRequested = true; },
+-      liveness: { 'awaiting-intent': 1500, grace: 1000, force: 5000 },
++      liveness: liveness('awaiting-intent'),
+     })).rejects.toMatchObject({ code: 'GUARDIAN_NO_PROGRESS' });
+   } finally { for (const [key, stored] of previous) { if (stored === undefined) delete environment[key]; else environment[key] = stored; } }
+   // A child frozen inside the callback that opens the context never asks to submit, so this run never
+   // held submission authority at any point.
+   expect(intentRequested).toBe(false);
+   expect(guardian).toBeGreaterThan(0);
+-  await expect.poll(() => isProcessAlive(guardian), { timeout: 10000 }).toBe(false);
+   const identity = { command_id: command.id, action_id: command.action_id, guardian_nonce: value };
++  await withTreeDiagnostics(guardian, runtime, identity, () => expect.poll(() => isProcessAlive(guardian), { timeout: 10000 }).toBe(false));
+   const record = readClosureEvidence(runtime, identity);
+   // Three separate facts, recorded as three separate facts: the process is gone, the context really
+   // opened, and no submission was ever attempted. A termination proves only the first of them.
+-  expect(record).toMatchObject({ protocol_version: noProgressProtocolVersion, command_id: command.id, action_id: command.action_id, nonce: value,
+-    phase: 'awaiting-intent', process_terminated: true, context_opened: true, submission_state: 'NOT_SUBMITTED', forced: true, grace_ms: 1000,
+-    result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' } });
++  await withTreeDiagnostics(guardian, runtime, identity, async () => expect(record).toMatchObject({ protocol_version: noProgressProtocolVersion, command_id: command.id, action_id: command.action_id, nonce: value,
++    phase: 'awaiting-intent', context_opened: true, submission_state: 'NOT_SUBMITTED', forced: true, grace_ms: 1000,
++    // Same three-state fact as the case above: the process tree was enumerated, killed, and probed.
++    termination: { process_tree: 'DEAD', root: 'DEAD', descendants: 'DEAD', enumeration: 'LISTED', tool: expect.any(String), sampled: expect.any(Number), elapsed_ms: expect.any(Number) },
++    result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' } }));
+   expect(record).not.toHaveProperty('context_closed');
+   expect((record as { waited_ms: number }).waited_ms).toBeGreaterThanOrEqual(1500);
+   const asClosure = (() => { try { readClosure(runtime, identity); return 'closed'; } catch (error) { return (error as { code?: string }).code; } })();
+   expect(asClosure).toBe('GUARDIAN_UNCONFIRMED');
+-  expect(await flushActionJournal(runtime, journal, () => {}, controller)).toBe(true);
++  expect(await flushObserved(command, runtime, journal, identity)).toBe(true);
+   // The action never left PREPARING, so the outcome the parent recorded stands: the run is handed to a
+   // human, and the browser it had really opened is not written off as closed.
+   expect(journal[command.id].report).toMatchObject({ outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' });
+diff --git a/tests/unit/action-journal.test.ts b/tests/unit/action-journal.test.ts
+index 60af5bf..eab9f95 100644
+--- a/tests/unit/action-journal.test.ts
++++ b/tests/unit/action-journal.test.ts
+@@ -3,7 +3,7 @@ import { expect, it } from 'vitest';
+ import { digest } from '../../packages/core/src/index';
+ import { flushActionJournal, maintainActionJournal } from '../../apps/agent/src/action-journal';
+ import { closureFile, closureProof, readClosureEvidence, startupFailedProtocolVersion } from '../../apps/agent/src/guardian-protocol';
+-import { collectionJournalFixture, startupFailureJournalFixture } from '../helpers/collection-journal';
++import { collectionJournalFixture, noProgressJournalFixture, startupFailureJournalFixture } from '../helpers/collection-journal';
+ 
+ const offline = () => { throw new Error('Controller unavailable'); };
+ function expectRedacted(h: ReturnType<typeof collectionJournalFixture>) {
+@@ -166,3 +166,57 @@ it('does not transmit a raw page that expires while waiting for command status',
+   expect(await flushActionJournal(h.runtime, h.journal, h.save, api)).toBe(false);
+   expect(calls).toEqual(['commands/' + h.entry.command_id + '/status']); expectRedacted(h);
+ });
++
++/**
++ * Retention answers exactly one question - may this payload be kept - and the guardian's process fact
++ * is not part of it. These three cases pin the boundary from both sides: a fact that exists is carried
++ * through the expiry, a fact that exists only in the record is restored from it, and a record that
++ * proves nothing gains nothing. The last one is as important as the first: an invented termination fact
++ * would be indistinguishable from a measured one downstream.
++ */
++it('carries the guardian process fact through retention expiry instead of replacing the report', async () => {
++  const h = noProgressJournalFixture(true, 'UNKNOWN'), reports: unknown[] = [];
++  const api = async <T>(endpoint: string, data?: unknown): Promise<T> => {
++    if (endpoint.endsWith('/status')) return { state: 'CLAIMED', action_state: 'SUBMITTING' } as T;
++    if (endpoint === 'action-reports') { reports.push(structuredClone(data)); return { accepted: true } as T; }
++    expect(data).toEqual(h.proof); return {} as T;
++  };
++  maintainActionJournal(h.runtime, h.journal, h.save);
++  // The page is gone, the outcome is the retention one, and the safety fact is untouched.
++  expect(h.entry.report).toMatchObject({ outcome: 'BLOCKED', error_code: 'GUARDIAN_NO_PROGRESS', guardian: { process_tree: 'UNKNOWN', tool: 'ERROR' } });
++  expect(h.entry.report?.collection_page).toBeUndefined();
++  expect(JSON.stringify(h.entry)).not.toContain('Synthetic raw page marker');
++  expect(h.entry.collection_redaction?.reason).toBe('RETENTION_EXPIRED');
++  expect(await flushActionJournal(h.runtime, h.journal, h.save, api)).toBe(true);
++  // The same fact is what the receiver is handed, unchanged by the second redaction round.
++  expect(reports).toHaveLength(1);
++  expect(reports[0]).toMatchObject({ outcome: 'BLOCKED', error_code: 'GUARDIAN_NO_PROGRESS', guardian: { process_tree: 'UNKNOWN', tool: 'ERROR', enumeration: 'UNAVAILABLE' } });
++  expect(h.entry.quiesced).toBe(true);
++});
++
++it('restores the guardian process fact from the record when retention had to synthesize the report', async () => {
++  const h = noProgressJournalFixture(false, 'UNKNOWN'), reports: unknown[] = [];
++  // A restart between the forced termination and the flush: no page, and no report either.
++  expect(h.entry.report).toBeUndefined();
++  maintainActionJournal(h.runtime, h.journal, h.save);
++  expect(h.entry.collection_redaction?.reason).toBe('RETENTION_EXPIRED');
++  expect(h.entry.report).toMatchObject({ outcome: 'BLOCKED', error_code: 'GUARDIAN_NO_PROGRESS', guardian: { process_tree: 'UNKNOWN' } });
++  const api = async <T>(endpoint: string, data?: unknown): Promise<T> => {
++    if (endpoint.endsWith('/status')) return { state: 'CLAIMED', action_state: 'SUBMITTING' } as T;
++    if (endpoint === 'action-reports') { reports.push(structuredClone(data)); return { accepted: true } as T; }
++    expect(data).toEqual(h.proof); return {} as T;
++  };
++  expect(await flushActionJournal(h.runtime, h.journal, h.save, api)).toBe(true);
++  expect(reports).toHaveLength(1);
++  expect(reports[0]).toMatchObject({ outcome: 'BLOCKED', error_code: 'GUARDIAN_NO_PROGRESS', guardian: { process_tree: 'UNKNOWN', tool: 'ERROR' } });
++});
++
++it('invents no process fact for a record that proves the context was closed', async () => {
++  const h = collectionJournalFixture();
++  h.entry.collection_expires_at = new Date(0).toISOString();
++  maintainActionJournal(h.runtime, h.journal, h.save);
++  expect(h.entry.report).toMatchObject({ outcome: 'BLOCKED', error_code: 'RETENTION_EXPIRED' });
++  expect(h.entry.report).not.toHaveProperty('guardian');
++  expect(h.entry.report).not.toHaveProperty('process_tree');
++  expect(h.entry.quiesced).toBeUndefined();
++});
+diff --git a/tests/unit/guardian-liveness.test.ts b/tests/unit/guardian-liveness.test.ts
+index 01264e4..cd12ebf 100644
+--- a/tests/unit/guardian-liveness.test.ts
++++ b/tests/unit/guardian-liveness.test.ts
+@@ -31,15 +31,26 @@ function closureCommand(): AgentCommand { return { ...fixtureCommand(), snapshot
+  * larger. `startup` is the one budget that cannot be shortened to a test-scale number: it has to
+  * cover a real interpreter booting the real guardian child, which is over a second, so a budget
+  * below that would fire before the child could ever report and would measure nothing.
++ *
++ * `force` is not a style choice either, and the arithmetic is worth stating because it is easy to get
++ * wrong. The termination call gets `force` less a 1000ms reserve for the settle wait, and the listing
++ * inside it gets that less a 1500ms reserve for the kill: at `force: 24000` the listing's share is
++ * 21500ms. The margin has to be that wide because the listing is what load destroys - it costs ~0.7s on
++ * an idle machine and ~8s with every logical core busy, a spread of more than ten times - and a share
++ * too small for the load turns these cases into `UNKNOWN` trees: the fail-closed answer, but not the
++ * fact these assertions are about. A budget in the low seconds does exactly that. Under the previous
++ * even split `force: 24000` gave the listing 5000ms and a 5000ms `force` gave it 1250ms, which half the
++ * measured attempts at 1x load already exceeded.
+  */
+-const phaseBudget = 700, terminationGrace = 600, forceKill = 3000;
++const phaseBudget = 700, terminationGrace = 600, forceKill = 24000;
+ const startupBudget = 10000, hungBeforeReady = 4000;
+ /**
+  * The deadline that turns a guardian which never settles into a failure instead of a hung suite. The
+- * slowest healthy case spends its whole phase budget plus the termination grace, so this sits well
+- * above the healthy worst case and well below anything a human would wait for.
++ * slowest healthy case spends its whole phase budget, the termination grace, and the forced phase that
++ * now covers a real process listing, so this sits well above the healthy worst case and well below
++ * anything a human would wait for.
+  */
+-const caseDeadline = 12000;
++const caseDeadline = 45000;
+ const budgets = (startup: number) => ({ 'awaiting-ready': startup, 'awaiting-start': phaseBudget, 'awaiting-context': phaseBudget, 'awaiting-intent': phaseBudget, granting: phaseBudget, submitting: phaseBudget, grace: terminationGrace, force: forceKill });
+ 
+ function injectionRoot(point: string) {
+@@ -86,9 +97,12 @@ it('ends a child that never became ready, and records only that the process is g
+   const hung = await runHung('before-ready', closureCommand(), { budgets: budgets(hungBeforeReady) });
+   expect(hung.outcome).toEqual({ kind: 'rejected', code: 'GUARDIAN_NO_PROGRESS' });
+   // Nothing downstream of `ready` can have happened here, so this is the one phase that is cancelled.
++  // The record no longer carries a boolean: it carries the fact the boolean was standing in for, which
++  // is the whole tree and how much of it was actually examined.
+   expect(hung.evidence).toEqual({
+     protocol_version: 'kff.guardian-closure-no-progress.v1', command_id: hung.command.id, action_id: hung.command.action_id,
+-    nonce: hung.value, closed_at: expect.any(String), phase: 'awaiting-ready', process_terminated: true,
++    nonce: hung.value, closed_at: expect.any(String), phase: 'awaiting-ready',
++    termination: { process_tree: 'DEAD', tool: expect.any(String), root: 'DEAD', descendants: 'DEAD', sampled: expect.any(Number), enumeration: 'LISTED', elapsed_ms: expect.any(Number) },
+     context_opened: false, submission_state: 'NOT_SUBMITTED', forced: true, waited_ms: expect.any(Number), grace_ms: terminationGrace,
+     result: { outcome: 'CANCELED', error_code: 'GUARDIAN_NO_PROGRESS', diagnostic: { step: 'guardian-no-progress' } },
+   });
+@@ -104,7 +118,7 @@ it('ends a child that received start but never confirmed it, keeping the environ
+   expect(hung.outcome).toEqual({ kind: 'rejected', code: 'GUARDIAN_NO_PROGRESS' });
+   // `start` was sent and never acknowledged: the parent must not treat this as a browser that failed
+   // to launch, because it has no evidence that the launch was even attempted.
+-  expect(hung.evidence).toMatchObject({ phase: 'awaiting-start', process_terminated: true, context_opened: false, submission_state: 'NOT_SUBMITTED', forced: true, result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' } });
++  expect(hung.evidence).toMatchObject({ phase: 'awaiting-start', termination: { process_tree: 'DEAD' }, context_opened: false, submission_state: 'NOT_SUBMITTED', forced: true, result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' } });
+   expect(hung.evidence).not.toHaveProperty('context_closed');
+   expect(hung.gone).toBe(true);
+   expect(hung.closed).toBe('GUARDIAN_UNCONFIRMED');
+@@ -113,7 +127,7 @@ it('ends a child that received start but never confirmed it, keeping the environ
+ it('ends a child that stalled before the context it was launching ever reported, keeping the environment isolated', async () => {
+   const hung = await runHung('after-start', closureCommand());
+   expect(hung.outcome).toEqual({ kind: 'rejected', code: 'GUARDIAN_NO_PROGRESS' });
+-  expect(hung.evidence).toMatchObject({ phase: 'awaiting-context', process_terminated: true, context_opened: false, submission_state: 'NOT_SUBMITTED', forced: true, result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' } });
++  expect(hung.evidence).toMatchObject({ phase: 'awaiting-context', termination: { process_tree: 'DEAD' }, context_opened: false, submission_state: 'NOT_SUBMITTED', forced: true, result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' } });
+   expect(hung.evidence).not.toHaveProperty('context_closed');
+   expect(hung.gone).toBe(true);
+ }, caseDeadline);
+@@ -121,7 +135,7 @@ it('ends a child that stalled before the context it was launching ever reported,
+ it('ends a child that stalled while asking for submission authority, and never claims a submission did not happen', async () => {
+   const hung = await runHung('before-grant', submitBoundaryCommand(), { submit: () => new Promise(() => {}) });
+   expect(hung.outcome).toEqual({ kind: 'rejected', code: 'GUARDIAN_NO_PROGRESS' });
+-  expect(hung.evidence).toMatchObject({ phase: 'granting', process_terminated: true, context_opened: false, submission_state: 'UNKNOWN', forced: true, result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' } });
++  expect(hung.evidence).toMatchObject({ phase: 'granting', termination: { process_tree: 'DEAD' }, context_opened: false, submission_state: 'UNKNOWN', forced: true, result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' } });
+   expect(hung.evidence).not.toHaveProperty('context_closed');
+   expect(hung.gone).toBe(true);
+ }, caseDeadline);
+@@ -129,7 +143,7 @@ it('ends a child that stalled while asking for submission authority, and never c
+ it('ends a child that stalled after the submission it was granted, and reports an unknown outcome', async () => {
+   const hung = await runHung('after-grant', submitBoundaryCommand());
+   expect(hung.outcome).toEqual({ kind: 'rejected', code: 'GUARDIAN_NO_PROGRESS' });
+-  expect(hung.evidence).toMatchObject({ phase: 'submitting', process_terminated: true, submission_state: 'UNKNOWN', result: { outcome: 'UNKNOWN_OUTCOME', error_code: 'GUARDIAN_NO_PROGRESS' } });
++  expect(hung.evidence).toMatchObject({ phase: 'submitting', termination: { process_tree: 'DEAD' }, submission_state: 'UNKNOWN', result: { outcome: 'UNKNOWN_OUTCOME', error_code: 'GUARDIAN_NO_PROGRESS' } });
+   expect(hung.evidence).not.toHaveProperty('context_closed');
+   expect(hung.gone).toBe(true);
+ }, caseDeadline);
+diff --git a/tests/unit/process-tree.test.ts b/tests/unit/process-tree.test.ts
+index 08da4e4..18e76ed 100644
+--- a/tests/unit/process-tree.test.ts
++++ b/tests/unit/process-tree.test.ts
+@@ -1,6 +1,6 @@
+ import { spawn, type ChildProcess } from 'node:child_process';
+-import { expect, it } from 'vitest';
+-import { isProcessAlive, terminateProcessTree } from '../../apps/agent/src/process-tree';
++import { describe, expect, it } from 'vitest';
++import { classifyProbeFailure, composeTreeState, isProcessAlive, listDescendants, probeProcess, runToolWithDeadline, terminateProcessTree, treeStateFrom } from '../../apps/agent/src/process-tree';
+ 
+ // The guardian is spawned detached and the browser it launches is a descendant of it, so ending the
+ // guardian alone would leave that browser running with nobody left to close it. What that costs is
+@@ -9,21 +9,48 @@ import { isProcessAlive, terminateProcessTree } from '../../apps/agent/src/proce
+ // Every process here is a copy of the interpreter this test already runs on, started with `-e`, and
+ // each of them exits on its own after 60 seconds so a failed assertion cannot leak a process.
+ 
+-/** A real parent that spawns a real grandchild and reports its pid, then stays alive itself. */
+-async function spawnTree(): Promise<{ guardian: number; descendant: number; child: ChildProcess }> {
+-  const inner = "const {spawn}=require('node:child_process');const grandchild=spawn(process.execPath,['-e','setTimeout(()=>process.exit(0),60000)'],{stdio:'ignore'});console.log(grandchild.pid);setTimeout(()=>process.exit(0),60000);";
++/**
++ * A real parent that spawns a real grandchild and reports its pid, then stays alive itself.
++ *
++ * `detachedDescendant` decides whether the grandchild survives its parent, and the difference is
++ * measured rather than assumed: on Windows a descendant that shares the dying process's console is
++ * terminated with it (observed: gone within 150ms of the parent's death), while a descendant started
++ * detached keeps running. The second form is the one a survivor test needs, and it is also the honest
++ * model of a browser that outlives the guardian which launched it.
++ */
++async function spawnTree(detachedDescendant = false): Promise<{ guardian: number; descendant: number; child: ChildProcess }> {
++  const grandchild = "spawn(process.execPath,['-e','setTimeout(()=>process.exit(0),60000)'],{stdio:'ignore'" + (detachedDescendant ? ",detached:true,windowsHide:true" : '') + '})';
++  const inner = `const {spawn}=require('node:child_process');const grandchild=${grandchild};console.log(grandchild.pid);setTimeout(()=>process.exit(0),60000);`;
+   // The pid is read back through a pipe, and a shell that exports FORCE_COLOR makes the child decorate
+   // its own output, so both the child's environment and the parsing have to be made independent of it.
+   const child = spawn(process.execPath, ['-e', inner], { stdio: ['ignore', 'pipe', 'ignore'], windowsHide: true, detached: process.platform === 'win32', env: { ...process.env, NO_COLOR: '1', FORCE_COLOR: '0' } });
+   const descendant = await new Promise<number>((resolve, reject) => {
+     let raw = '';
+-    child.stdout?.on('data', chunk => { raw += String(chunk); const match = /^(\d+)/.exec(raw.replace(/\[[0-9;]*m/g, '').trim()); if (match) resolve(Number(match[1])); });
++    child.stdout?.on('data', chunk => { raw += String(chunk); const match = /^(\d+)/.exec(raw.replace(/\[[0-9;]*m/g, '').trim()); if (match) resolve(Number(match[1])); });
+     child.once('error', reject);
+     child.once('exit', () => reject(new Error('The process tree exited before it reported its descendant')));
+   });
+   return { guardian: child.pid!, descendant, child };
+ }
++/** A lone process with no children of its own, so a termination of it can never drag in a bystander. */
++async function spawnSleeper(): Promise<number> {
++  const child = spawn(process.execPath, ['-e', 'setTimeout(() => {}, 60000)'], { stdio: 'ignore', windowsHide: true });
++  await expect.poll(() => probeProcess(child.pid), { timeout: 10000 }).toBe('ALIVE');
++  return child.pid!;
++}
+ const reap = (pid: number) => { try { process.kill(pid, 'SIGKILL'); } catch { /* already gone */ } };
++/**
++ * Runs the body with no executable search path, so every tool the module spawns by name fails to
++ * start. Nothing in the code under test is replaced: the platform call is left exactly as it is and
++ * only the operating system's ability to find the program is removed, which is the same condition a
++ * machine without the utility would present.
++ */
++async function withoutToolPath<T>(body: () => Promise<T>): Promise<T> {
++  const environment = process.env as Record<string, string | undefined>;
++  const saved = [['PATH', environment.PATH], ['Path', environment.Path]] as const;
++  delete environment.PATH; delete environment.Path;
++  try { return await body(); } finally { for (const [key, value] of saved) { if (value === undefined) delete environment[key]; else environment[key] = value; } }
++}
+ 
+ it('reports liveness only for a process that really exists', () => {
+   expect(isProcessAlive(undefined)).toBe(false);
+@@ -33,9 +60,78 @@ it('reports liveness only for a process that really exists', () => {
+   // A pid that has already been reaped is a different fact from a pid that was never valid, and the
+   // probe has to report both as gone rather than throwing.
+   expect(isProcessAlive(2147483646)).toBe(false);
+-  expect(terminateProcessTree(undefined)).toBe(false);
+ });
+ 
++it('answers with three states, not a boolean', () => {
++  expect(probeProcess(process.pid)).toBe('ALIVE');
++  expect(probeProcess(2147483646)).toBe('DEAD');
++  // `pid 0` answers "alive" to a signal-0 probe on Windows (measured), so the guard has to reject a
++  // meaningless pid before the probe is even attempted. It is the one absence that is provable without
++  // asking the operating system, because no process was ever given that id.
++  expect(probeProcess(0)).toBe('DEAD');
++  expect(probeProcess(undefined)).toBe('DEAD');
++});
++
++it('refuses to read death out of a probe failure it cannot interpret', () => {
++  // ESRCH is the one answer that means the process is gone. Everything else - EPERM on a process owned
++  // by another user, a malformed pid, an unknown errno - is a failure to find out, and calling that
++  // death is how a live browser gets released by mistake.
++  expect(classifyProbeFailure(Object.assign(new Error('no such process'), { code: 'ESRCH' }))).toBe('DEAD');
++  expect(classifyProbeFailure(Object.assign(new Error('operation not permitted'), { code: 'EPERM' }))).toBe('UNKNOWN');
++  expect(classifyProbeFailure(new Error('something else'))).toBe('UNKNOWN');
++  expect(classifyProbeFailure(undefined)).toBe('UNKNOWN');
++});
++
++it('never rounds a partial answer up to dead', () => {
++  expect(composeTreeState('DEAD', ['DEAD', 'DEAD'])).toBe('DEAD');
++  expect(composeTreeState('DEAD', ['ALIVE'])).toBe('ALIVE');
++  expect(composeTreeState('DEAD', ['UNKNOWN'])).toBe('UNKNOWN');
++  expect(composeTreeState('ALIVE', ['DEAD'])).toBe('ALIVE');
++  expect(composeTreeState('UNKNOWN', ['ALIVE'])).toBe('ALIVE');
++  // And an unreadable listing outranks every probe: whatever the root looks like, nobody looked at the
++  // rest of the tree, so the tree state cannot be claimed.
++  expect(treeStateFrom('UNAVAILABLE', 'DEAD', 'DEAD')).toBe('UNKNOWN');
++  expect(treeStateFrom('LISTED', 'DEAD', 'DEAD')).toBe('DEAD');
++  expect(treeStateFrom('LISTED', 'DEAD', 'ALIVE')).toBe('ALIVE');
++});
++
++it('classifies a termination of an unusable pid as nothing to do', async () => {
++  const termination = await terminateProcessTree(undefined, { deadlineMs: 1000 });
++  expect(termination.process_tree).toBe('DEAD');
++  expect(termination.tool).toBe('SKIPPED');
++  expect(termination.sampled).toBe(0);
++});
++
++/**
++ * The deadline is the reason this function exists. A tool that hangs must not hold the caller, because
++ * the caller is an event loop that still has to emit heartbeats and run the watchdog, so a real
++ * interpreter that sleeps for a minute is asked to finish in a fraction of a second.
++ */
++it('ends a tool that outlives its deadline instead of waiting for it', async () => {
++  const started = Date.now();
++  const slow = await runToolWithDeadline(process.execPath, ['-e', 'setTimeout(() => {}, 60000)'], 400);
++  expect(slow.outcome).toBe('TIMEOUT');
++  expect(Date.now() - started).toBeLessThan(10000);
++  const failed = await runToolWithDeadline(process.execPath, ['-e', 'process.exit(3)'], 10000);
++  expect(failed.outcome).toBe('FAILED');
++  expect(failed.code).toBe(3);
++  const succeeded = await runToolWithDeadline(process.execPath, ['-e', 'process.exit(0)'], 10000);
++  expect(succeeded.outcome).toBe('SUCCESS');
++  // A tool that does not exist is an error, not a silent success: a missing taskkill may not read as a
++  // terminated process.
++  const missing = await runToolWithDeadline('kff-no-such-tool-9d1f', [], 10000);
++  expect(missing.outcome).toBe('ERROR');
++});
++
++it('lists the descendants of a real process before anything is killed', async () => {
++  const tree = await spawnTree();
++  try {
++    const listing = await listDescendants(tree.guardian, 5000);
++    expect(listing.enumeration).toBe('LISTED');
++    expect(listing.pids).toContain(tree.descendant);
++  } finally { reap(tree.guardian); reap(tree.descendant); }
++}, 30000);
++
+ /**
+  * The reason the utility exists. Killing the direct child is not enough: the grandchild was never this
+  * process's child, so nothing about the guardian's own death reaches it.
+@@ -52,13 +148,115 @@ it('leaves a descendant running when only the direct child is killed', async ()
+ }, 30000);
+ 
+ /** And the reason it works: the tree walk reaches a process the guardian never owned directly. */
+-it('ends the guardian and everything it started', async () => {
++it('ends the guardian and everything it started, and says so', async () => {
+   const tree = await spawnTree();
+   try {
+     expect(isProcessAlive(tree.guardian)).toBe(true);
+     expect(isProcessAlive(tree.descendant)).toBe(true);
+-    expect(terminateProcessTree(tree.guardian)).toBe(true);
++    const termination = await terminateProcessTree(tree.guardian, { deadlineMs: 15000 });
++    // The judgement is only worth having if it is the composed one: the descendant had to be listed
++    // before the kill, or "the root is gone" would be reported as "the tree is gone".
++    expect(termination.process_tree).toBe('DEAD');
++    expect(termination.enumeration).toBe('LISTED');
++    expect(termination.sampled).toBeGreaterThanOrEqual(1);
++    expect(termination.root).toBe('DEAD');
++    expect(termination.elapsed_ms).toBeLessThan(60000);
+     await expect.poll(() => isProcessAlive(tree.guardian), { timeout: 15000 }).toBe(false);
+     await expect.poll(() => isProcessAlive(tree.descendant), { timeout: 15000 }).toBe(false);
+   } finally { reap(tree.guardian); reap(tree.descendant); }
+ }, 40000);
++
++/**
++ * The case that decides whether an execution slot may be reused. A guardian whose own pid is gone
++ * proves nothing about the browser it launched: the descendant was started detached, so nothing about
++ * the parent's death reaches it, and the enumeration still finds it.
++ */
++it('reports ALIVE when the root is gone but a descendant it started is still running', async () => {
++  const tree = await spawnTree(true);
++  try {
++    reap(tree.guardian);
++    await expect.poll(() => probeProcess(tree.guardian), { timeout: 10000 }).toBe('DEAD');
++    expect(probeProcess(tree.descendant)).toBe('ALIVE');
++    const termination = await terminateProcessTree(tree.guardian, { deadlineMs: 9000 });
++    // The root probe really says DEAD and the tool really ran; the tree is still ALIVE, because the
++    // process that is actually holding the browser profile was listed and answered a probe.
++    expect(termination).toMatchObject({ process_tree: 'ALIVE', root: 'DEAD', descendants: 'ALIVE', enumeration: 'LISTED' });
++    expect(termination.sampled).toBeGreaterThanOrEqual(1);
++    // Windows `taskkill` on a pid that no longer exists exits non-zero (measured: 128), so the tool is
++    // recorded as failed. That is the whole point of keeping the two apart: a failed tool and a dead
++    // root together still do not add up to a dead tree.
++    expect(termination.tool).toBe('FAILED');
++    expect(probeProcess(tree.descendant)).toBe('ALIVE');
++  } finally { reap(tree.descendant); }
++}, 30000);
++
++/**
++ * Both halves of the bounded-liveness requirement in one call: the tool is killed at its deadline
++ * instead of being waited for, and a tree nobody managed to enumerate is `UNKNOWN` rather than dead.
++ */
++it('proves nothing about a tree it could not enumerate, and ends the tool at its deadline', async () => {
++  const victim = await spawnSleeper();
++  try {
++    const started = Date.now();
++    const termination = await terminateProcessTree(victim, { deadlineMs: 2 });
++    expect(Date.now() - started).toBeLessThan(2000);
++    expect(termination.tool).toBe('TIMEOUT');
++    expect(termination.enumeration).toBe('UNAVAILABLE');
++    expect(termination.process_tree).toBe('UNKNOWN');
++    // The victim is untouched, and that is the point: a tool that timed out did not terminate anything.
++    expect(probeProcess(victim)).toBe('ALIVE');
++    const tool = await runToolWithDeadline('taskkill', ['/PID', String(victim), '/T', '/F'], 1);
++    expect(tool.outcome).toBe('TIMEOUT');
++  } finally { reap(victim); }
++}, 30000);
++
++/**
++ * `tool success`, `root dead` and `tree dead` are three different facts, and the record has to keep
++ * them apart. Here the tool fails and the root is dead: the tree judgement still comes from the
++ * probes, and it is DEAD for a reason nobody can mistake for the tool's answer.
++ */
++it('separates what the termination tool did from what the probes proved', async () => {
++  const victim = await spawnSleeper();
++  reap(victim);
++  await expect.poll(() => probeProcess(victim), { timeout: 10000 }).toBe('DEAD');
++  const termination = await terminateProcessTree(victim, { deadlineMs: 9000 });
++  expect(termination).toMatchObject({ tool: 'FAILED', root: 'DEAD', descendants: 'DEAD', process_tree: 'DEAD', enumeration: 'LISTED', sampled: 0 });
++}, 30000);
++
++/**
++ * A termination utility that cannot even be started is an error, not a termination. This is the shape
++ * of failure that used to be indistinguishable from success: the caller asked for a kill, the call
++ * returned, and nothing had happened.
++ */
++it('never records a termination when the termination utility itself could not run', async () => {
++  const victim = await spawnSleeper();
++  try {
++    const termination = await withoutToolPath(() => terminateProcessTree(victim, { deadlineMs: 6000 }));
++    expect(termination.tool).toBe('ERROR');
++    expect(termination.process_tree).not.toBe('DEAD');
++    expect(probeProcess(victim)).toBe('ALIVE');
++  } finally { reap(victim); }
++}, 30000);
++
++/** A dead root is one fact; a tree that was never listed is another, and the second one fails closed. */
++it('refuses to infer a dead tree from a dead root when no listing was obtained', async () => {
++  expect(treeStateFrom('UNAVAILABLE', 'DEAD', 'DEAD')).toBe('UNKNOWN');
++  const victim = await spawnSleeper();
++  reap(victim);
++  await expect.poll(() => probeProcess(victim), { timeout: 10000 }).toBe('DEAD');
++  const termination = await terminateProcessTree(victim, { deadlineMs: 2 });
++  expect(termination.root).toBe('DEAD');
++  expect(termination.enumeration).toBe('UNAVAILABLE');
++  expect(termination.process_tree).toBe('UNKNOWN');
++}, 30000);
++
++/**
++ * POSIX process-group termination stays UNVERIFIED in this batch and is written down as such: the
++ * machine runs Windows 11, `runGroupKill` is never reached here, and nothing observed on Windows may
++ * be extrapolated to it. These are the acceptance items the next round has to cover on a real Linux
++ * or macOS host - they are skipped rather than passed, so no test result can be read as a proof.
++ */
++describe('POSIX process-group termination (UNVERIFIED on this machine)', () => {
++  it.skip('ends a detached descendant through the process group', () => {});
++  it.skip('reports ALIVE for a descendant the group kill missed', () => {});
++});

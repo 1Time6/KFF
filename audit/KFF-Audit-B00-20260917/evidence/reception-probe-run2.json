@@ -1,0 +1,334 @@
+{
+  "probe": "reception",
+  "repo": "C:/Users/17731/Desktop/KFF",
+  "local_rules_model_name": "LOCAL_RULES",
+  "groups": [
+    {
+      "group": "A. English phrases the brief asks about",
+      "expect": "explicit refusal must stop contact; a request to CONTINUE must not",
+      "items": [
+        "Don't message me again.",
+        "Please don't contact me again.",
+        "Please don’t contact me again.",
+        "No more messages please.",
+        "Please don't stop messaging me.",
+        "Do not stop texting me.",
+        "STOP",
+        "When will these problems stop?",
+        "Where is the bus stop?"
+      ]
+    },
+    {
+      "group": "B. Chinese phrases the brief asks about",
+      "expect": "explicit refusal must stop contact; ordinary sentences must not",
+      "items": [
+        "我不想再收到你的消息",
+        "别再联系我",
+        "不要再给我发消息",
+        "不要再给我发广告",
+        "我希望不要再发生这种事"
+      ]
+    },
+    {
+      "group": "C. Existing regression guards (must NOT regress)",
+      "expect": "shipped contract test already asserts these",
+      "items": [
+        "我想了解服务，不要再错过机会。",
+        "Please don’t stop.",
+        "Please don't stop.",
+        "do not stop sending updates",
+        "I want to know more, do not stop sending updates",
+        "STOP texting me",
+        "Can you stop messaging me?"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "text": "Don't message me again.",
+      "exit": false,
+      "action": "ASK_QUESTION",
+      "intent": "OTHER",
+      "reason": "需要进一步了解客户需求"
+    },
+    {
+      "text": "Please don't contact me again.",
+      "exit": true,
+      "action": "STOP",
+      "intent": "UNSUBSCRIBE",
+      "reason": "客户明确要求停止联系"
+    },
+    {
+      "text": "Please don’t contact me again.",
+      "exit": false,
+      "action": "ASK_QUESTION",
+      "intent": "OTHER",
+      "reason": "需要进一步了解客户需求"
+    },
+    {
+      "text": "No more messages please.",
+      "exit": false,
+      "action": "ASK_QUESTION",
+      "intent": "OTHER",
+      "reason": "需要进一步了解客户需求"
+    },
+    {
+      "text": "Please don't stop messaging me.",
+      "exit": true,
+      "action": "STOP",
+      "intent": "UNSUBSCRIBE",
+      "reason": "客户明确要求停止联系"
+    },
+    {
+      "text": "Do not stop texting me.",
+      "exit": true,
+      "action": "STOP",
+      "intent": "UNSUBSCRIBE",
+      "reason": "客户明确要求停止联系"
+    },
+    {
+      "text": "STOP",
+      "exit": true,
+      "action": "STOP",
+      "intent": "UNSUBSCRIBE",
+      "reason": "客户明确要求停止联系"
+    },
+    {
+      "text": "When will these problems stop?",
+      "exit": false,
+      "action": "ASK_QUESTION",
+      "intent": "OTHER",
+      "reason": "需要进一步了解客户需求"
+    },
+    {
+      "text": "Where is the bus stop?",
+      "exit": false,
+      "action": "ASK_QUESTION",
+      "intent": "OTHER",
+      "reason": "需要进一步了解客户需求"
+    },
+    {
+      "text": "我不想再收到你的消息",
+      "exit": true,
+      "action": "STOP",
+      "intent": "UNSUBSCRIBE",
+      "reason": "客户明确要求停止联系"
+    },
+    {
+      "text": "别再联系我",
+      "exit": true,
+      "action": "STOP",
+      "intent": "UNSUBSCRIBE",
+      "reason": "客户明确要求停止联系"
+    },
+    {
+      "text": "不要再给我发消息",
+      "exit": true,
+      "action": "STOP",
+      "intent": "UNSUBSCRIBE",
+      "reason": "客户明确要求停止联系"
+    },
+    {
+      "text": "不要再给我发广告",
+      "exit": false,
+      "action": "ASK_QUESTION",
+      "intent": "OTHER",
+      "reason": "需要进一步了解客户需求"
+    },
+    {
+      "text": "我希望不要再发生这种事",
+      "exit": false,
+      "action": "ASK_QUESTION",
+      "intent": "OTHER",
+      "reason": "需要进一步了解客户需求"
+    },
+    {
+      "text": "我想了解服务，不要再错过机会。",
+      "exit": false,
+      "action": "ASK_QUESTION",
+      "intent": "PRODUCT",
+      "reason": "客户有明确产品咨询，按接待轮次引导"
+    },
+    {
+      "text": "Please don’t stop.",
+      "exit": false,
+      "action": "ASK_QUESTION",
+      "intent": "OTHER",
+      "reason": "需要进一步了解客户需求"
+    },
+    {
+      "text": "Please don't stop.",
+      "exit": false,
+      "action": "ASK_QUESTION",
+      "intent": "OTHER",
+      "reason": "需要进一步了解客户需求"
+    },
+    {
+      "text": "do not stop sending updates",
+      "exit": false,
+      "action": "ASK_QUESTION",
+      "intent": "OTHER",
+      "reason": "需要进一步了解客户需求"
+    },
+    {
+      "text": "I want to know more, do not stop sending updates",
+      "exit": false,
+      "action": "ASK_QUESTION",
+      "intent": "OTHER",
+      "reason": "需要进一步了解客户需求"
+    },
+    {
+      "text": "STOP texting me",
+      "exit": true,
+      "action": "STOP",
+      "intent": "UNSUBSCRIBE",
+      "reason": "客户明确要求停止联系"
+    },
+    {
+      "text": "Can you stop messaging me?",
+      "exit": true,
+      "action": "STOP",
+      "intent": "UNSUBSCRIBE",
+      "reason": "客户明确要求停止联系"
+    }
+  ],
+  "filter_groups": [
+    {
+      "group": "D. Destinations that MUST be filtered (leak = P1/P2)",
+      "expect": "action must become HANDOFF",
+      "items": [
+        "Visit 例子.中国",
+        "Visit example.com",
+        "Visit www.example.com",
+        "Call ＋４４ ７７００ ９００１２３",
+        "Call +44 7700 900123",
+        "Call 07700 900123",
+        "Mail sales@example.com",
+        "Add wa.me/15550001111",
+        "Pay at https://example.test",
+        "The price is £48.",
+        "It is 48 USD."
+      ]
+    },
+    {
+      "group": "E. Ordinary text that must NOT be filtered (false positive = P2)",
+      "expect": "action must stay REPLY and text must survive",
+      "items": [
+        "Your appointment is on 2026-09-17.",
+        "We have been open since 1998.",
+        "Happy birthday! Is it the 48th?",
+        "The package includes 2 items.",
+        "Sure, I can help with that.",
+        "Version 1.2.3 was released.",
+        "I am 34 years old.",
+        "That costs 2.5 percent more."
+      ]
+    }
+  ],
+  "filter_cases": [
+    {
+      "text": "Visit 例子.中国",
+      "action": "REPLY",
+      "reason": "Greeting"
+    },
+    {
+      "text": "Visit example.com",
+      "action": "HANDOFF",
+      "reason": "回复超出基础接待范围，交由人工确认"
+    },
+    {
+      "text": "Visit www.example.com",
+      "action": "HANDOFF",
+      "reason": "回复超出基础接待范围，交由人工确认"
+    },
+    {
+      "text": "Call ＋４４ ７７００ ９００１２３",
+      "action": "REPLY",
+      "reason": "Greeting"
+    },
+    {
+      "text": "Call +44 7700 900123",
+      "action": "HANDOFF",
+      "reason": "回复超出基础接待范围，交由人工确认"
+    },
+    {
+      "text": "Call 07700 900123",
+      "action": "HANDOFF",
+      "reason": "回复超出基础接待范围，交由人工确认"
+    },
+    {
+      "text": "Mail sales@example.com",
+      "action": "HANDOFF",
+      "reason": "回复超出基础接待范围，交由人工确认"
+    },
+    {
+      "text": "Add wa.me/15550001111",
+      "action": "HANDOFF",
+      "reason": "回复超出基础接待范围，交由人工确认"
+    },
+    {
+      "text": "Pay at https://example.test",
+      "action": "HANDOFF",
+      "reason": "回复超出基础接待范围，交由人工确认"
+    },
+    {
+      "text": "The price is £48.",
+      "action": "HANDOFF",
+      "reason": "回复超出基础接待范围，交由人工确认"
+    },
+    {
+      "text": "It is 48 USD.",
+      "action": "HANDOFF",
+      "reason": "回复超出基础接待范围，交由人工确认"
+    },
+    {
+      "text": "Your appointment is on 2026-09-17.",
+      "action": "HANDOFF",
+      "reason": "回复超出基础接待范围，交由人工确认"
+    },
+    {
+      "text": "We have been open since 1998.",
+      "action": "REPLY",
+      "reason": "Greeting"
+    },
+    {
+      "text": "Happy birthday! Is it the 48th?",
+      "action": "REPLY",
+      "reason": "Greeting"
+    },
+    {
+      "text": "The package includes 2 items.",
+      "action": "REPLY",
+      "reason": "Greeting"
+    },
+    {
+      "text": "Sure, I can help with that.",
+      "action": "REPLY",
+      "reason": "Greeting"
+    },
+    {
+      "text": "Version 1.2.3 was released.",
+      "action": "REPLY",
+      "reason": "Greeting"
+    },
+    {
+      "text": "I am 34 years old.",
+      "action": "REPLY",
+      "reason": "Greeting"
+    },
+    {
+      "text": "That costs 2.5 percent more.",
+      "action": "REPLY",
+      "reason": "Greeting"
+    }
+  ],
+  "marketing_refusal": {
+    "text": "不要再给我发广告了",
+    "explicit_contact_exit": false,
+    "local_rules_action": "ASK_QUESTION",
+    "local_rules_intent": "OTHER",
+    "local_rules_reason": "需要进一步了解客户需求",
+    "enforce_action_on_model_reply": "REPLY",
+    "note": "explicitContactExit=false only means \"not a global opt-out\". The question is whether the product routes it to a human."
+  }
+}

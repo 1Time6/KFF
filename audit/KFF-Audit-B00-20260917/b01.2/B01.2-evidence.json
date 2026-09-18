@@ -1,0 +1,206 @@
+{
+  "batch": "B01.2",
+  "title": "Guardian safety closure：command lifecycle / execution quiescence / process tree termination / browser closure 四事实拆分",
+  "date": "2026-09-17",
+  "scope": {
+    "handled": ["P1-01", "P1-02", "P1-03", "P1-04", "P2-01", "P2-03"],
+    "recorded_not_handled": ["P2-02", "P2-04", "P2-05", "P3-01"],
+    "touched_one_out_of_scope_item": "P2-05（onSpawn 抛错路径改为 settle(() => reject(error))，一行；理由与回退见 B01.2-summary.md §6.3）",
+    "out_of_scope_untouched": ["Reception", "Acquisition", "Inbox", "UI", "新功能", "架构重构"],
+    "prohibited_actions_not_performed": ["commit", "push", "merge", "修改 main 基线", "deploy"]
+  },
+  "baseline": {
+    "base_sha": "752042bc466b10b07cad455757a41bb10bbaf39f",
+    "start_head": "c293aa77a9872270741dbe384841a3c4768327cb",
+    "end_head": "c293aa77a9872270741dbe384841a3c4768327cb",
+    "branch": "codex/facebook-foundation-b01.1",
+    "changed_during_batch": false,
+    "committed": false,
+    "note": "工作区同时承载 B01 / B01.1 / B01.2 三批未提交改动；本轮未提交、未合并、未推送。"
+  },
+  "guarantees": {
+    "four_independent_facts": {
+      "F1_command_lifecycle": "kff.agent_commands.state ∈ {QUEUED,CLAIMED,DONE,EXPIRED} —— execution.ts acceptReport/recoverExpired",
+      "F2_execution_quiescence": "quiesced_at + guardian.quiesced 审计 proof —— reconciliation.ts recordQuiescence",
+      "F3_process_tree_termination": "evidence.termination.process_tree ∈ {ALIVE,DEAD,UNKNOWN} —— process-tree.ts",
+      "F4_browser_environment_closure": "environments.state / browser_status / resource_leases.quarantined —— reconciliation.ts releaseQuarantine"
+    },
+    "non_implications": [
+      "EXPIRED ⊬ guardian_quiesced=true（recoverExpired 只在 neverClaimed 分支写 quiesced_at）",
+      "guardian_quiesced=true ⊬ browser_closed=true（releaseQuarantine 的证明版本门槛）",
+      "root_pid_dead=true ⊬ process_tree_dead=true（treeStateFrom: 枚举不可得 ⇒ UNKNOWN）",
+      "no-progress ⊬ environment releasable（三层门槛：acceptReport 不写 DONE / recordQuiescence 拒绝 / releaseQuarantine 拒绝）"
+    ],
+    "process_state_semantics": {
+      "DEAD": "枚举成功且 root 与全部后代探测均为 DEAD；允许形成 execution quiescence proof，但仍不放行 environment",
+      "ALIVE": "至少一个被观测进程存活；禁止 quiescence proof；environment 保持 QUARANTINED",
+      "UNKNOWN": "探测或枚举无法得出结论（含 EPERM、工具失败、枚举不可得）；与 ALIVE 同等严格，fail-closed"
+    },
+    "environment_release_gate": [
+      "action ∈ {VERIFIED_SUCCEEDED, VERIFIED_FAILED, NEEDS_HUMAN}",
+      "NEEDS_HUMAN 且已有 submitted_at 的尝试 ⇒ SUBMISSION_UNCERTAIN",
+      "无 pending 命令（state ∉ {DONE,EXPIRED} 或 quiesced_at IS NULL）",
+      "每条已 quiesce 的命令有且仅有一条 guardian.quiesced 证明，且 protocol_version ∈ {kff.guardian-closure.v1, kff.guardian-closure-startup-failed.v1}",
+      "资源未被其他运行占用",
+      "终止记录（kff.guardian-closure-no-progress.v1）永不满足第 4 条"
+    ],
+    "evidence_upgrade_rules": {
+      "strength": { "PROVEN_CLOSED": 3, "NEVER_OPENED": 2, "PROCESS_ONLY": 1 },
+      "tmp_suffix_by_kind": { "closure": ".closure.tmp", "startup": ".startup-failed.tmp", "noProgress": ".no-progress.tmp", "compact": ".compact.tmp" },
+      "rules": [
+        "独占创建：linkSync(tmp, final)（EEXIST 即已存在），失败回退 renameSync；最多重试 4 次",
+        "新证据更强 ⇒ 覆盖",
+        "新证据更弱 ⇒ 拒绝",
+        "同强度同实质（substance() 忽略 closed_at）⇒ 幂等，返回磁盘上那份",
+        "同强度不同实质 ⇒ IDEMPOTENCY_CONFLICT",
+        "无法解析的既有文件 ≠ 不存在，不被弱证据覆盖"
+      ],
+      "known_gap": "两个 writer 在同一时刻写入时，胜者由文件系统独占创建决定；两条路径都不会写出错误事实，但谁赢不可预测（LEDGER-NEW-05）"
+    },
+    "retention_preserves_safety_facts": {
+      "implementation": "apps/agent/src/action-journal.ts retainedSafety() + maintainActionJournal 先读记录再整体决定",
+      "preserved_fields": ["termination", "error_code=GUARDIAN_NO_PROGRESS"],
+      "end_to_end_evidence": "集成用例 keeps a no-progress termination quarantined through retention expiry and recovery：合成回执仍带 guardian_tree=UNKNOWN / command_completed=false；命令 EXPIRED 且 quiesced_at IS NULL；environment 仍 QUARANTINED"
+    },
+    "liveness_policy": {
+      "limits": { "min_ms": 100, "max_ms": 86400000, "max_total_ms": 86400000, "test_min_ms": 1 },
+      "shared_by": ["apps/agent/src/guardian.ts guardianLivenessPolicy", "packages/contracts/src/index.ts Zod schema"],
+      "invalid_value_behaviour": "refused with AppError('GUARDIAN_LIVENESS_INVALID')，不再静默回退默认值",
+      "startup_fail_fast": "apps/agent/src/main.ts 在取 process.lock 之前调用 assertGuardianLivenessConfiguration()",
+      "test_seal": "NODE_ENV=test 且 runtime 位于 <KFF_ROOT>/.kff/agent-process-tests/（路径比较）"
+    },
+    "windows_taskkill_deadline": {
+      "implementation": "process-tree.ts runToolWithDeadline（spawn + setTimeout → SIGKILL → TIMEOUT）+ guardian.ts terminate()（forcedUntil = now + policy.force；终止调用 ≤ force/2，其后等待 ≤ 剩余）",
+      "measured": [
+        "真实 60s 睡眠进程在 400ms deadline 下 → tool TIMEOUT，总耗时 < 10s",
+        "真实 taskkill 在 1ms deadline 下 → TIMEOUT",
+        "terminateProcessTree(pid, {deadlineMs: 2}) → < 2s 返回，tool TIMEOUT、enumeration UNAVAILABLE、process_tree UNKNOWN，且目标进程仍存活"
+      ],
+      "honest_bound": "kill(pid,0) 探测是同步 O(1)，理论上可在预算之外多花极少时间；未观测到超预算实例"
+    }
+  },
+  "defects_fixed": [
+    {
+      "id": "NEW-B012-01",
+      "title": "recoverExpired 对已终局 action 调 assertTransition，抛出并中断整轮 recovery，命令与执行槽位永久无法过期",
+      "found_in_batch": true,
+      "pre_existing_at_base": false,
+      "location": "packages/core/src/execution.ts recoverExpired",
+      "fix": "decided 判定：action 已终局时 recovery 只回收命令与租约，不重写 action 状态/错误码/成本记录",
+      "evidence": "集成用例在修复前于 packages/core/src/execution.ts:239 抛 AppError('当前动作状态不允许此变更')；修复后通过"
+    },
+    {
+      "id": "NEW-B012-02",
+      "title": "证据写入的临时文件清理抛出会顶掉独占创建失败时的 return false，中止 saveEvidence 的重试循环，使已证明的 closure 输给 weak 记录",
+      "found_in_batch": true,
+      "pre_existing_at_base": true,
+      "location": "apps/agent/src/guardian-protocol.ts writeEvidenceFile 的 finally 分支",
+      "fix": "① withTransientRetry（Windows 瞬态 EPERM/EACCES/EBUSY/EMFILE/ENFILE 有界重试，与 scripts/local-runtime-state.ts 的 saveRuntimeJson 同法同码）；② removeTemp（清理失败不抛出，只留一个无害临时文件）；永久性拒绝仍抛出",
+      "evidence": "修复前 10 次复现中失败 2 次（子进程 exit=1、残留 453B .closure.tmp、盘上仍是 weak 记录）；修复后 16/16 得到 kff.guardian-closure.v1 且无残留；全量单测 19 文件全绿",
+      "gap": "瞬态路径无确定性回归测试（需可注入 fs 故障层）；本机可确定性构造的只有 EISDIR/EACCES 永久形态，走另一分支"
+    }
+  ],
+  "files": {
+    "production": {
+      "apps/agent/src/process-tree.ts": { "sha256": "58acf233495bb37e23f9a415c02c4a4882e4f56a52aa226e85f45662caebf0c5", "role": "三态 ProcessState、classifyProbeFailure、runToolWithDeadline、listDescendants、composeTreeState/treeStateFrom、terminateProcessTree" },
+      "apps/agent/src/guardian.ts": { "sha256": "f84b1d8c60bd7436e133b122b4fb0e614382b80097e873680816350190cedb2d", "role": "settle 关闭 IPC+摘监听、onMessage settled 守卫、terminationFact、recordNoProgress 只认 DEAD、terminate 预算化、liveness 拒绝式校验、assertGuardianLivenessConfiguration" },
+      "apps/agent/src/guardian-protocol.ts": { "sha256": "76a69345373e20039c64520b2bb5268fa34bc3fe5ec6d3141920e50b8483e204", "role": "termination 三态 schema 取代 process_terminated、closureStrength、按 kind 的 tmp 后缀、独占创建 + 重试、parseEvidenceFile、substance；NEW-B012-02 修复：withTransientRetry + removeTemp" },
+      "apps/agent/src/action-journal.ts": { "sha256": "4b9e6e99e881c3cc3332adb4d2bdb73d9108470a3508708660f3d3d2f950d01a", "role": "retainedSafety、retention 合成回执保留安全事实、flush 携带 guardian 事实" },
+      "apps/agent/src/main.ts": { "sha256": "850cfd26cbc58a6acdde46d15e3b843e2309c2a3aeb8607715141dc76e9e74a8", "role": "启动即校验 liveness 配置（取锁之前）" },
+      "packages/contracts/src/index.ts": { "sha256": "dc249d066657e406666d2228d66d4ba05b09824eb48831c25e5a6f39c01bd74f", "role": "guardianTimingLimits、processTreeStates、guardianTermination、resultInput.guardian、quiescenceInput no-progress 变体要求 process_tree" },
+      "packages/core/src/execution.ts": { "sha256": "be27986d8850c8c2d3d92b573e48c7a646d5769a7adc4c874911b47782e92ebb", "role": "acceptReport 的 unprovenTree 门槛 + guardian_tree/command_completed 审计；recoverExpired 的 decided 分支" },
+      "packages/core/src/reconciliation.ts": { "sha256": "84d126e56edf7bad88f8b3b3a9c66d58452a09ecba9adc77a4e5eb6d7f746066", "role": "recordQuiescence 拒绝非 DEAD 的 no-progress；releaseQuarantine 的证明版本门槛" }
+    },
+    "tests": {
+      "tests/unit/process-tree.test.ts": { "sha256": "29b878e4ee7c73500edb51f0519917a76564dc8546ebd3603c32fd63b89e1e85", "tests": 16, "skipped": 2 },
+      "tests/unit/guardian-liveness.test.ts": { "sha256": "ba9a62ba35debffc8a4e5e3123a8b40b8fc0cadf8be5dce5bfd97ee8f4ade8ee", "tests": 6, "note": "终止预算 force 5000 -> 24000（枚举份额 1250ms -> 5000ms 上限），使 DEAD 断言在本机稳定；断言本身未放宽" },
+      "tests/unit/action-journal.test.ts": { "sha256": "0fe35192c76e9e4f5987d45753cc624c24b408ce63b162283be12de20cf9df72", "tests": 14 },
+      "tests/unit/guardian-termination-proof.test.ts": { "sha256": "ea60cf45d6559eab239bf7f2cf6911d9a87fcd5a9ebfcfcd0f396d674cf431d3", "tests": 3, "new": true },
+      "tests/unit/guardian-late-message.test.ts": { "sha256": "a4120cbf8ed69908f6a847b8c73bc2d7d47e46f1b3bff6d5cb13e7c0fc36eaed", "tests": 3, "new": true },
+      "tests/unit/guardian-evidence-upgrade.test.ts": { "sha256": "3a41e94e49665c3cc21b8367c86a1709841c9839df676495adb20d196e85165a", "tests": 8, "new": true },
+      "tests/unit/guardian-liveness-policy.test.ts": { "sha256": "904af343af43d8053d669eb3ae6529dc6507f9f35abcb7be6720626d07f4ed07", "tests": 6, "new": true },
+      "tests/integration/agent-closure-gate.test.ts": { "sha256": "d2d57d9e89c678757daec0ee69d7857d6dff2d4c1333ce63b31cb1ccd36519d2", "tests": 5 },
+      "tests/integration/browser-message.test.ts": { "sha256": "adb10a8b5ab4e4e2ab34e1b6c8dd799511b3ee769dee42c9478438ca786bdf85", "diff": "+10 / -2 (断言)" , "role": "两条 force-kill 用例的断言由已删除的 process_terminated 布尔量改为三态 termination 对象（语义等价且更强，见 B01.2-test-results.md §5.1）" },
+      "tests/helpers/collection-journal.ts": { "sha256": "17ba46c31a8b675cf8d576222290e2f2e4c0a5a5ce9d5daa9a4642e6927d9218", "role": "记录工厂改为三态 termination" }
+    }
+  },
+  "red_green": {
+    "run_1_full_integration": {
+      "raw_log": "b01.2-integration-red.log",
+      "result": "Test Files 1 failed | 38 passed (39) / Tests 2 failed | 418 passed (420) / Duration 1509.47s",
+      "failures": ["tests/integration/browser-message.test.ts:186", "tests/integration/browser-message.test.ts:266"],
+      "cause": "两条用例仍在断言 B01.2 已删除的 process_terminated 布尔量（AssertionError: expected {…(13)} to match object {…(11)}，- \"process_terminated\": true）",
+      "not_a_production_regression": "同一次运行中其余 38 个集成文件全部通过，含 guardian-recovery / whatsapp-correction / agent-closure-gate",
+      "fix": "改写为三态 termination 断言（process_tree/root/descendants = DEAD、enumeration = LISTED + tool/sampled/elapsed_ms），语义等价且更强；未放宽为 ALIVE|DEAD|UNKNOWN 的宽松匹配，因为下游 DONE / quiesced_at 断言只在 DEAD 时成立"
+    },
+    "run_2_full_integration_open": {
+      "raw_log": "b01.2-full-integration-fail.log",
+      "result": "Test Files 1 failed | 38 passed (39) / Tests 2 failed | 418 passed (420) / Duration 1651.50s",
+      "same_two_tests": true,
+      "shape": "enumeration=UNAVAILABLE ⇒ process_tree=UNKNOWN（tool=SUCCESS、root=DEAD），即 §三 裁定的 root_pid_dead ⊬ process_tree_dead",
+      "cause": "负载下 Get-CimInstance 枚举超时；失败分支为 TIMEOUT。用例 liveness.force=5000 ⇒ budget=2500ms ⇒ enumerateMs=1250ms。",
+      "isolation_evidence": "同一份冻结代码上，该文件单独跑通过（browser-message-exit=0），39 worker 并发跑失败 ⇒ 负载相关",
+      "status": "未修，交付待规划端裁定（LEDGER-NEW-08）；未以任何方式改绿"
+    },
+    "unit_red_then_green": {
+      "observed": "2 failed | 118 passed | 2 skipped（tests/unit，19 文件；冻结工作树后的验证链首跑）",
+      "failures": [
+        "tests/unit/guardian-evidence-upgrade.test.ts:190 expected 'GUARDIAN_UNCONFIRMED' to be 'kff.guardian-closure.v1' ⇒ 不是负载抖动，是生产缺陷 NEW-B012-02（证据写入的清理抛错中止重试）",
+        "tests/unit/guardian-liveness.test.ts:132 process_tree: 'UNKNOWN' vs 'DEAD' ⇒ 不是负载抖动，是测试预算错配：枚举份额 force/4 = 1250ms，而本机 CIM 列举实测 1.7–2.5s"
+      ],
+      "fixes": ["guardian-protocol.ts: withTransientRetry + removeTemp（NEW-B012-02）", "guardian-liveness.test.ts: forceKill 5000 -> 24000（枚举份额 1250ms -> 5000ms 上限）；断言未放宽"],
+      "after_fix": "见 test_results（本文件同批）"
+    },
+    "development_period": [
+      "packages/core/src/execution.ts:239 抛 AppError('当前动作状态不允许此变更')，中断整轮 recoverExpired（新发现缺陷 NEW-B012-01，已修）",
+      "tsc --noEmit: guardian-termination-proof.test.ts 的 process_tree 属性访问（已改为 toMatchObject）",
+      "eslint: runGroupKill 未使用的 deadlineMs、两个未使用的 codeOf helper（已删）"
+    ]
+  },
+  "test_results": {
+    "command": "bash b012-verify.sh（六个阶段顺序执行，冻结工作树 HEAD c293aa77…，开工/收工 SHA 相同）",
+    "raw_log": "b01.2-green.log",
+    "unit": { "files": 19, "passed": 120, "skipped": 2, "exit": 0 },
+    "contracts": { "files": 43, "passed": 316, "exit": 0 },
+    "tsc": { "exit": 0 },
+    "eslint_repo_wide": { "exit": 0 },
+    "integration_single_file_browser_message": { "exit": 0, "note": "全量集成失败的那两条用例，在同一份代码上单独跑通过" },
+    "integration_full": { "files": 39, "passed": 418, "failed": 2, "duration_s": 1651.5, "exit": 1 },
+    "failures": [
+      { "test": "ends a guardian that stopped answering while it held submission authority, and keeps the unknown outcome isolated", "file": "tests/integration/browser-message.test.ts", "line": 186, "actual": { "enumeration": "UNAVAILABLE", "process_tree": "UNKNOWN", "root": "DEAD", "descendants": "DEAD", "sampled": 0, "tool": "SUCCESS", "elapsed_ms": 1736 }, "expected": { "enumeration": "LISTED", "process_tree": "DEAD" } },
+      { "test": "ends a child that went silent just after it opened a real browser, and never records that browser as closed", "file": "tests/integration/browser-message.test.ts", "line": 272, "actual": { "enumeration": "UNAVAILABLE", "process_tree": "UNKNOWN", "root": "DEAD", "descendants": "DEAD", "sampled": 0, "tool": "SUCCESS", "elapsed_ms": 1767 }, "expected": { "enumeration": "LISTED", "process_tree": "DEAD" } }
+    ],
+    "failure_classification": "负载相关的枚举超时，不是逻辑回归、不是断言形状问题。失败分支为 TIMEOUT（非 spawn error / 非非零退出 / 非空输出），listProcesses 折叠为 null ⇒ enumeration UNAVAILABLE ⇒ treeStateFrom ⇒ UNKNOWN。",
+    "not_weakened": "既未把断言放宽成 /ALIVE|DEAD|UNKNOWN/，也未调大该用例的 force 使其过关；发现问题后停止并报告（LEDGER-NEW-08）。",
+    "raw_failure_log": "b01.2-full-integration-fail.log"
+  },
+  "coverage_gaps": [
+    { "item": "§五-5 settle 后晚到 context-opened", "status": "NO_END_TO_END_TEST", "structural_only": "settle() child.off('message') + onMessage 顶部 settled 守卫；列为下一轮浏览器级验收项，不得写成 PASS" },
+    { "item": "P2-02 POSIX", "status": "UNVERIFIED", "detail": "runGroupKill / 进程组组长 / ps 枚举 / POSIX EPERM / POSIX deadline 全部 UNVERIFIED；2 条 it.skip 不是 PASS" },
+    { "item": "负载下枚举可靠性（LEDGER-NEW-08）", "status": "REPRODUCED_OPEN", "detail": "全量集成 418/420，两条失败即此；负载实测 2500ms 份额 0/12。生产默认落在该区间 ⇒ 未解决，交付待裁定" },
+    { "item": "NEW-B012-02 瞬态路径的确定性回归", "status": "NO_DETERMINISTIC_TEST", "detail": "需可注入 fs 故障层；本机可确定性构造的只有永久形态（EISDIR/EACCES），走另一分支" }
+  ],
+  "ledger": [
+    { "id": "LEDGER-P2-02", "content": "POSIX 进程组终止未验证；runGuardian 未在 POSIX 建立进程组", "action": "下一轮真实 Linux/macOS 验收" },
+    { "id": "LEDGER-P2-04", "content": "start 之后异常死亡且无关闭证明（无 watchdog）⇒ GUARDIAN_UNCONFIRMED 拒绝，不写记录，只能靠租约过期收口", "action": "记录" },
+    { "id": "LEDGER-P2-05", "content": "onSpawn 抛错路径改为 settle(() => reject(error))（一行，非本批范围）", "action": "需规划端裁定准/不准，可单独回退" },
+    { "id": "LEDGER-P2-05b", "content": "main.ts process.lock catch-all / EPERM 同类问题", "action": "记录（P2-01 明确要求先记录）" },
+    { "id": "LEDGER-P3-01", "content": "symlink / junction 逃逸：枚举与终止都可能被重定向绕过", "action": "记录" },
+    { "id": "LEDGER-NEW-02", "content": "被 BLOCKED action 隔离的环境没有自动放行路径，需要人工 override 设计", "action": "待规划端裁定（fail-closed 是有意的）" },
+    { "id": "LEDGER-NEW-03", "content": "retention 合成的 BLOCKED 回执对已进入 SUBMITTING 的 action 是非法转移，目前由 flushActionJournal 的 outcome 改写兜住", "action": "BASE 已存在，未改；失败模式为反复拒收（fail-closed）" },
+    { "id": "LEDGER-NEW-04", "content": "被拒绝的 no-progress quiescence 证明会在每个 maintenance tick 重试，无退避与终结标记", "action": "记录" },
+    { "id": "LEDGER-NEW-05", "content": "weak/strong 并发写入的胜者由文件系统独占创建决定，不可预测（不产生错误事实）", "action": "记录" },
+    { "id": "LEDGER-NEW-06", "content": "§五-5 无端到端用例", "action": "下一轮浏览器级验收" },
+    { "id": "LEDGER-NEW-07", "content": "guardian-protocol.ts:198-201 注释称同/更高强度 writer 可互相替换，:202 代码实际要求严格更强才替换（注释比代码宽松，非安全风险，但会误导复审）", "action": "工作树已冻结未改，下一轮订正" },
+    { "id": "LEDGER-NEW-08", "content": "枚举份额 = force/4（enumerateMs = max(1, min(5000, floor((force/2)/2)))），生产默认 force=10000 ⇒ 2500ms。空载实测该 CIM 列举 1.7–2.5s（~375 进程）；负载实测（24 满载进程，b01.2-enumeration-under-load.log）2500ms 份额 12/12 超时（0 成功）、5000ms 份额 6/12 成功（中位 5012ms）。已在项目自己的全量集成中复现：418/420，两条因 enumeration=UNAVAILABLE ⇒ process_tree=UNKNOWN 失败，同文件单独跑通过。后果 fail-closed（不写 DONE、不 quiesce、环境留 QUARANTINED），无安全后果，但繁忙机器上『证明树已死』不可靠，把可自动收口的运行推给人工。", "action": "本轮未改（策略决定，先报告）。候选方向：枚举份额下界 ≥5000ms（需 force ≥ 20000）、或改用更廉价的枚举工具（tasklist /FO CSV、NtQuerySystemInformation）。集成用例的 force:5000 也是测试预算，调大只能缓解不能解决——生产默认值本身落在 0/12 区间。" }
+  ],
+  "independent_review_recommended": true,
+  "review_focus": [
+    "【第一项】LEDGER-NEW-08：全量集成 418/420 的两条失败如何处置——本轮内改（换廉价枚举工具 / 给枚举份额设下界）还是记下一轮？不裁定则交付停在 418/420。证据见 B01.2-test-results.md §5.2 与 b01.2-enumeration-under-load.log",
+    "releaseQuarantine 的证明版本门槛是否过严到产生运营死锁（LEDGER-NEW-02）",
+    "recoverExpired 的 decided 分支是否漏掉某个本应被改写的 action 状态（SUBMITTING/SUBMITTED 与终局的边界）",
+    "weak/strong 升级规则是否存在两个 writer 都认为自己赢的可观测状态（LEDGER-NEW-05）",
+    "retention 合成回执对 SUBMITTING 的非法转移是否应升格为本轮内修复（LEDGER-NEW-03）",
+    "P2-05 一行改动的准/不准裁定"
+  ]
+}

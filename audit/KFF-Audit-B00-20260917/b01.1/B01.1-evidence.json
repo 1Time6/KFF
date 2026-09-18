@@ -1,0 +1,197 @@
+{
+  "batch": "B01.1",
+  "title": "Guardian 无进展终止与恢复（bounded liveness）",
+  "date": "2026-09-17",
+  "scope": {
+    "handled": ["KFF-B01-NEW-01"],
+    "out_of_scope_untouched": ["B02", "Reception", "Inbox", "Acquisition", "WhatsApp referral", "历史 OPTED_OUT"],
+    "prohibited_actions_not_performed": ["commit", "push", "merge", "deploy"]
+  },
+  "baseline": {
+    "head": "752042bc466b10b07cad455757a41bb10bbaf39f",
+    "origin_codex_facebook_foundation": "752042bc466b10b07cad455757a41bb10bbaf39f",
+    "branch": "codex/facebook-foundation",
+    "changed_during_batch": false,
+    "note": "HEAD 早于 B01 与本轮，工作区同时承载两批未提交改动。RED 期间临时替换 apps/agent/src/guardian.ts，换入/换出均记录 sha256 并校验还原。"
+  },
+  "defect": {
+    "id": "KFF-B01-NEW-01",
+    "status": "FIXED",
+    "pre_fix_symptom": {
+      "trigger": "child 发过 ready、收过 start 后卡住；error / exit / close / IPC 均不出现",
+      "runGuardian": "promise 永不 settle",
+      "main_ts_finally": "永不执行",
+      "flush": "永不执行",
+      "command": "CLAIMED, quiesced_at IS NULL",
+      "action": "PREPARING",
+      "lease": "永不释放",
+      "environment": "browser_status 停在 RUNNING",
+      "quarantine": "无",
+      "execution_slot": "永久占用，重启不自愈"
+    },
+    "handoff_source": "KFF-Audit-B00-20260917/b01/B01-state-transition.md §10c（B01 明确标注本轮修复覆盖不到，需规划端裁定）"
+  },
+  "files": {
+    "production": {
+      "apps/agent/src/guardian.ts": { "sha256": "c70ff1a56535c6bcbe0d254d500a883293f0ead477414ad8a76d09c6a0d0c2c3", "role": "阶段/预算、watchdog、终止阶梯、recordNoProgress、settleTerminal" },
+      "apps/agent/src/guardian-child.ts": { "sha256": "3cc925b1a1686eba4c8679183c670dd5bb53da0a564e6d1ea8504cd00c59d798", "role": "封印式 hang 注入（6 点）、onContext 单一上报点" },
+      "apps/agent/src/guardian-protocol.ts": { "sha256": "d438d9efa9a74f851b2c61ce4e037ea20a1d57d0f7b99a1aedad1ab9d4cd5209", "role": "no-progress schema、guardianLivenessPhases、saveNoProgress；readClosure 对 no-progress 抛 GUARDIAN_UNCONFIRMED" },
+      "apps/agent/src/process-tree.ts": { "sha256": "f0fbe4183538f53c951f700407fc839b1bc26cccbc9ca8f6e685b500d260a652", "role": "新增：terminateProcessTree + isProcessAlive（本项目最小实现，无 supervisor 框架）" },
+      "packages/contracts/src/index.ts": { "sha256": "ad68aabeb8535c9f32e5b8467d69ef9e13719326d8027342357f3dd7782d32ad", "role": "guardianClosureProtocols 三值 enum 驱动 quiescenceInput" },
+      "packages/core/src/execution.ts": { "sha256": "5f938621c5af29ef624cfed170b35fed801382785ea8ae81be68ca07575c9e85", "role": "acceptReport quarantine 判定加入 GUARDIAN_NO_PROGRESS" },
+      "packages/core/src/reconciliation.ts": { "sha256": "50dd8213717b5d180a927b3efad6b60d7b3cdb9ebe6b640f5f5ea4943f43352f", "role": "只有 v1 证明才把 browser_status 置 CLOSED" },
+      "scripts/integration.ts": { "sha256": "552df928cbaf33ecbb8e199dac52198ede1e46b3420f97386f304ae3819e9c2e", "role": "尊重外部传入的 KFF_ROOT" }
+    },
+    "unchanged_this_batch": {
+      "apps/agent/src/main.ts": "唯一未提交改动属 B01（flushJournal 移入 finally）；本轮靠它成立 settle→finally→flush 链条"
+    },
+    "tests_added": {
+      "tests/unit/guardian-liveness.test.ts": { "sha256": "5d58cda62ad1affefa6273d166a8d213a36789269b98ae2d2a6174c36bdbe71d", "cases": 6 },
+      "tests/unit/process-tree.test.ts": { "sha256": "918e975b5f696bd750c1f18f76130abc1761206ce58adbe2e451b2060391f69d", "cases": 3 }
+    },
+    "tests_modified": {
+      "tests/integration/browser-message.test.ts": { "sha256": "27b69b61ca56f7510e4ec78c80295d15a5772eafee79eff02a64b334566ffcaf", "added_cases": ["granting 阶段 with 真实浏览器 + 已持久化提交意图", "awaiting-intent 阶段 with 真实浏览器冻结"] },
+      "tests/integration/guardian-recovery.test.ts": { "sha256": "a2bfed76695f0ce53d44220b96447b57957ca65af46504e6af4947ba990b4240", "changes": ["场景 2 强化（真实导航停滞、残留进程扫描、端点序列、Command 2 真实执行）", "新增场景 3（lost-ack + recovery 中重启）"] },
+      "tests/unit/guardian-termination.test.ts": { "changes": ["仅 lint：删除未使用的 randomUUID 导入"] }
+    },
+    "tests_reused_from_b01": ["tests/unit/guardian-closure-proof.test.ts", "tests/unit/guardian-startup-fault-injection.test.ts", "tests/helpers/commands.ts", "tests/helpers/collection-journal.ts", "tests/unit/action-journal.test.ts", "tests/integration/local-supervision.test.ts"]
+  },
+  "liveness": {
+    "phases": ["awaiting-ready", "awaiting-start", "awaiting-context", "awaiting-intent", "granting", "submitting"],
+    "production_defaults_ms": { "awaiting-ready": 30000, "awaiting-start": 30000, "awaiting-context": 120000, "awaiting-intent": 900000, "granting": 60000, "submitting": 300000, "grace": 15000, "force": 10000 },
+    "environment_overrides": ["KFF_GUARDIAN_AWAITING_READY_MS", "KFF_GUARDIAN_AWAITING_START_MS", "KFF_GUARDIAN_AWAITING_CONTEXT_MS", "KFF_GUARDIAN_AWAITING_INTENT_MS", "KFF_GUARDIAN_GRANTING_MS", "KFF_GUARDIAN_SUBMITTING_MS", "KFF_GUARDIAN_GRACE_MS", "KFF_GUARDIAN_FORCE_MS"],
+    "precedence": ["hooks.liveness", "environment", "production default"],
+    "tick_ms": "max(20, min(1000, floor(min(phase budgets)/4)))",
+    "progress_refresh": "每个观察到的 progress 事件只重置其自身阶段的 phaseSince",
+    "test_values_are_not_production_defaults": true
+  },
+  "outcome_mapping": {
+    "formula": "!processTerminated -> NEEDS_HUMAN; phase==='submitting' -> UNKNOWN_OUTCOME; neverReachedExecutor -> CANCELED; else NEEDS_HUMAN",
+    "neverReachedExecutor": "phase==='awaiting-ready' && !started && !submitted && !contextOpened",
+    "submission_state": "phase in {granting, submitting} ? UNKNOWN : NOT_SUBMITTED",
+    "per_phase": {
+      "awaiting-ready": { "outcome": "CANCELED", "context_opened": false, "submission_state": "NOT_SUBMITTED" },
+      "awaiting-start": { "outcome": "NEEDS_HUMAN", "context_opened": false, "submission_state": "NOT_SUBMITTED" },
+      "awaiting-context": { "outcome": "NEEDS_HUMAN", "context_opened": false, "submission_state": "NOT_SUBMITTED" },
+      "awaiting-intent": { "outcome": "NEEDS_HUMAN", "context_opened": true, "submission_state": "NOT_SUBMITTED" },
+      "granting": { "outcome": "NEEDS_HUMAN", "submission_state": "UNKNOWN" },
+      "submitting": { "outcome": "UNKNOWN_OUTCOME", "submission_state": "UNKNOWN" },
+      "not_terminated": { "outcome": "NEEDS_HUMAN" }
+    },
+    "never_uniformly_startup_failed": true,
+    "never_uniformly_canceled": true
+  },
+  "facts_kept_separate": {
+    "process_terminated": "父进程确认 guardian pid 不存在",
+    "context_opened": "父进程确实收到 context-opened",
+    "submission_state": "NOT_SUBMITTED | UNKNOWN",
+    "context_closed": "no-progress 记录中不存在该字段，无法被当作关闭证明"
+  },
+  "protocol_versions": {
+    "kff.guardian-closure.v1": { "writer": "child", "context_closed": true, "may_project_environment_closed": true },
+    "kff.guardian-closure-compact.v1": { "writer": "retention/compactClosure", "context_closed": true, "may_project_environment_closed": true },
+    "kff.guardian-closure-startup-failed.v1": { "writer": "parent", "context_opened": false, "may_project_environment_closed": false },
+    "kff.guardian-closure-no-progress.v1": { "writer": "parent", "fields": ["phase", "process_terminated", "context_opened", "submission_state", "forced", "waited_ms", "grace_ms", "result"], "may_project_environment_closed": false }
+  },
+  "termination_ladder": ["send stop", "waitForTerminal(grace)", "forced=true + terminateProcessTree(pid)", "waitForTerminal(force)", "settleTerminal(!isProcessAlive(pid))"],
+  "settle_terminal_order": ["readClosureEvidence -> resolve 真实 closure", "watchdogFired -> recordNoProgress", "!started && !submitted && !contextOpened -> GUARDIAN_STARTUP_FAILED", "else GUARDIAN_UNCONFIRMED"],
+  "deterministic_reproduction": {
+    "variant": {
+      "guardian_ts": "HEAD 版本 sha256 78c0c9931176d0ba8da2b86547593bb45dd3a2e76636adf4b0ac32ba00779bf1",
+      "added": "仅 3 段与存活判定无关的 fixture arming（guardianHangPoints / insideAgentProcessTests / guardianHangInjection + 把点写入 child 环境的两行）",
+      "rationale": "child 环境是白名单且 arming 位于被回退文件内；该 shim 不含任何 liveness 判定",
+      "not_reachable_in_production": true
+    },
+    "cases": [
+      { "case": "awaiting-ready (before-ready)", "level": "unit", "deadline_ms": 12000, "red": "timeout 12012ms", "green_ms": 5082 },
+      { "case": "awaiting-start (before-start-ack)", "level": "unit", "deadline_ms": 12000, "red": "timeout 12011ms", "green_ms": 2862 },
+      { "case": "awaiting-context (after-start)", "level": "unit", "deadline_ms": 12000, "red": "timeout 12012ms", "green_ms": 2988 },
+      { "case": "granting (before-grant)", "level": "unit", "deadline_ms": 12000, "red": "timeout 12001ms", "green_ms": 2771 },
+      { "case": "submitting (after-grant)", "level": "unit", "deadline_ms": 12000, "red": "timeout 12002ms", "green_ms": 2762 },
+      { "case": "clean stop prefers real closure", "level": "unit", "deadline_ms": 12000, "red": "timeout 12001ms", "green_ms": 1914 },
+      { "case": "granting + real browser + persisted submit intention", "level": "integration", "deadline_ms": 90000, "red": "timeout 91966ms", "green_ms": 7908 },
+      { "case": "awaiting-intent + real browser frozen", "level": "integration", "deadline_ms": 90000, "red": "assertion failure at 64650ms: resolved with child-written v1 closure (duration_ms 60792, CANCELED/STOP_REQUESTED @ prepare) instead of rejecting GUARDIAN_NO_PROGRESS", "green_ms": 7409 }
+    ],
+    "red_totals": { "unit": "6/6 failed in 72.05s", "integration": "2/2 failed in 161.15s" },
+    "green_totals": { "unit": "6/6 passed in 19.06s", "integration": "2/2 passed in 17.33s" },
+    "log_files": ["b01.1-red.log", "b01.1-green.log", "b01.1-integration-red.log"],
+    "honest_limitations": [
+      "第 8 例的 RED 需要记录在案的 arming shim，因为 arming 本身在被回退的父进程文件内；不加 shim 时该例不会停滞（反而以 VERIFIED_SUCCEEDED 完成），这反证了生产不可触发。",
+      "该例的停滞由 fixture 的 60s 上界（hangFrozen(60000)）自行解冻，因此 RED 表现为断言失败而非挂到 deadline；其余 7 例表现为永不 settle。"
+    ]
+  },
+  "matrix": [
+    { "row": 1, "name": "pre-spawn ENOENT（B01 路径不回归）", "tests": ["tests/unit/guardian-termination.test.ts A-F", "tests/unit/guardian-startup-fault-injection.test.ts", "tests/integration/guardian-recovery.test.ts 场景 1"], "tier": "TESTED_SYNTHETIC", "result": "pass" },
+    { "row": 2, "name": "READY 后永久 hang", "tests": ["guardian-liveness before-start-ack"], "tier": "TESTED_SYNTHETIC", "result": "pass" },
+    { "row": 3, "name": "START 后 CONTEXT_OPENED 前永久 hang", "tests": ["guardian-liveness after-start"], "tier": "TESTED_SYNTHETIC", "result": "pass" },
+    { "row": 4, "name": "CONTEXT_OPENED 后永久 hang", "tests": ["browser-message 用例 5 (awaiting-intent, 真实浏览器冻结)", "guardian-recovery 场景 2 (真实停滞但 child 仍能应答)"], "tier": "TESTED_ISOLATED_DB / REAL_EVIDENCE", "result": "pass", "unknown_preserved": true },
+    { "row": 5, "name": "INTENT_REQUESTED 前后的 hang", "tests": ["guardian-liveness before-grant", "browser-message 用例 4"], "tier": "TESTED_SYNTHETIC / TESTED_ISOLATED_DB", "result": "pass", "unknown_preserved": true },
+    { "row": 6, "name": "INTENT_GRANTED / SUBMITTING 后的 hang", "tests": ["guardian-liveness after-grant", "browser-message 用例 4"], "tier": "TESTED_SYNTHETIC / TESTED_ISOLATED_DB", "result": "pass", "unknown_preserved": true, "outcome": "UNKNOWN_OUTCOME" },
+    { "row": 7, "name": "watchdog 与正常 closure 几乎同时", "tests": ["guardian-liveness clean-stop case"], "tier": "TESTED_SYNTHETIC", "result": "pass" },
+    { "row": 8, "name": "watchdog 与 child exit 几乎同时", "tests": ["guardian-termination D/E"], "tier": "TESTED_SYNTHETIC", "result": "pass" },
+    { "row": 9, "name": "watchdog 重复触发", "tests": ["watchdogFired/settled 守卫", "closures 目录仅 1 文件", "1 report / 1 attempt / 1 command"], "tier": "TESTED_SYNTHETIC + TESTED_ISOLATED_DB", "result": "pass" },
+    { "row": 10, "name": "Agent 在 timeout recovery 中重启", "tests": ["guardian-recovery 场景 3"], "tier": "REAL_EVIDENCE", "result": "pass" },
+    { "row": 11, "name": "journal 重复 flush", "tests": ["quiesced 标记", "recordQuiescence 摘要幂等", "tests/unit/action-journal.test.ts"], "tier": "TESTED_SYNTHETIC", "result": "pass" },
+    { "row": 12, "name": "recovery 后第二合法 command", "tests": ["guardian-recovery 场景 2 (真实 claim -> VERIFIED_SUCCEEDED)", "browser-message 用例 4 尾段"], "tier": "REAL_EVIDENCE", "result": "pass" }
+  ],
+  "db_level_assertions": {
+    "no_progress_termination": {
+      "actions": "NEEDS_HUMAN | UNKNOWN_OUTCOME + error_code GUARDIAN_NO_PROGRESS",
+      "agent_commands": "state=DONE, quiesced_at not null",
+      "slot": "no READY/CLAIMED rows for the agent",
+      "environments": "state=QUARANTINED, browser_status=RUNNING (never projected CLOSED)",
+      "resource_leases": "account + environment both quarantined=true",
+      "runs_tasks": "NEEDS_HUMAN",
+      "replay": "1 action_attempt, 1 action.reported audit event, 1 agent_command per action"
+    },
+    "contrast_case": "same NEEDS_HUMAN without the no-progress fact -> environment IDLE, leases released"
+  },
+  "regression": {
+    "order": [
+      { "step": 1, "run": "guardian-recovery", "result": "3/3 pass, 36.2s" },
+      { "step": 2, "run": "agent-closure-gate", "result": "8/8 pass" },
+      { "step": 3, "run": "local-supervision", "result": "3/3 pass" },
+      { "step": 4, "run": "execution", "result": "28/28 pass" },
+      { "step": 5, "run": "browser-message", "result": "12/12 pass, 85.07s" },
+      { "step": 6, "run": "durability", "result": "4/4 pass" },
+      { "step": 7, "run": "environments", "result": "11/11 pass" },
+      { "step": 8, "run": "npm run test:unit", "result": "15 files / 86 tests pass, 37.40s" },
+      { "step": 9, "run": "npm run test:contracts", "result": "43 files / 316 tests pass, 48.74s" },
+      { "step": 10, "run": "npm run lint", "result": "clean" },
+      { "step": 11, "run": "npx tsc --noEmit", "result": "exit 0" }
+    ],
+    "re_run_on_final_tree": ["guardian-recovery", "browser-message", "test:unit", "test:contracts", "lint", "tsc"],
+    "deferred_to_b04": ["完整全仓 fixtures", "UI", "build"]
+  },
+  "windows_process_tree": {
+    "utility": "apps/agent/src/process-tree.ts（本轮新增，最小实现）",
+    "measured": {
+      "child_kill_alone": "直接子进程消失，孙进程仍存活 -> 不足",
+      "terminateProcessTree": "父子两级都消失（taskkill /PID /T /F）",
+      "isProcessAlive": "已回收 / 从未存在的 pid 返回 false 且不抛错"
+    },
+    "test": "tests/unit/process-tree.test.ts (3/3, 714ms)",
+    "residual_after_recovery": "guardian pid 不存在；guardian-recovery 场景 2 的 nothingLeftRunning(root) 为空（含真实浏览器），扫描前用见证进程证明其可见性"
+  },
+  "sealed_injection": {
+    "conditions": ["NODE_ENV=test", "runtime 目录位于 <KFF_ROOT>/.kff/agent-process-tests/（path.relative 判定，非子串）", "环境变量命名已知 hang point"],
+    "points": ["before-ready", "before-start-ack", "after-start", "after-context", "before-grant", "after-grant"],
+    "child_rechecks_node_env": true,
+    "structurally_unreachable_from_main": "main.ts 的 runtimeDir 恒为 <KFF_ROOT>/.kff 或 <KFF_ROOT>/.kff/agent-instances/<id>，不可能落在 agent-process-tests 下"
+  },
+  "residuals": {
+    "retained_failed_test_databases": ["kff_test_7a73d010281f661d09a1", "kff_test_8f30aeb8f207b05d0175"],
+    "note": "RED 运行按 runner 设计保留，仅测试库，可随时 drop"
+  },
+  "new_defects": { "p0": 0, "p1": 0 },
+  "observations": [
+    "awaiting-intent 生产默认 900000ms：慢 executor 最长占用 slot 15 分钟才被终止；有意的 liveness 上界，可用 KFF_GUARDIAN_AWAITING_INTENT_MS 调整",
+    "无进展终止后 QUARANTINED + browser_status=RUNNING 是正确组合（终止不等于关闭），需人工复核后释放",
+    "FORCE_COLOR=3 的 shell 会让子进程输出染色导致测试解析失败（测试自身缺陷，已用 NO_COLOR/FORCE_COLOR=0 + ANSI 剥离修复）"
+  ],
+  "recommendation": {
+    "enter_b02": true,
+    "prerequisite": "规划端确认 awaiting-intent 生产预算（900s）是否符合业务预期",
+    "stop_conditions_met": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  }
+}
