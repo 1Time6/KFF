@@ -12,6 +12,8 @@ const hash=value=>createHash('sha256').update(value).digest('hex'),read=file=>JS
 if(process.platform!=='win32'||process.arch!=='x64'||!values['agent-release'])throw Error('Windows x64 and --agent-release are required');
 const agent=realpathSync(values['agent-release']),agentManifest=read(path.join(agent,'release.json')),build=read(path.join(root,'.kff/checks/build.json')),pkg=read(path.join(root,'package.json'));
 if(agentManifest.version!==pkg.version||build.exit_code!==0||build.changed_during_check.length)throw Error('A matching Agent and successful current build are required');
+const contracts=read(path.join(root,'.kff/checks/contracts.json')),contractReport=read(path.join(root,'.kff/checks/contracts-results.json'));
+if(contracts.exit_code!==0||contractReport.success!==true||contractReport.numFailedTests!==0||contractReport.numPendingTests!==0||contractReport.numTotalTests<1)throw Error('A passing current contract run is required before packaging');
 execFileSync(path.join(agent,'node.exe'),[path.join(agent,'agent-launch.mjs'),'verify'],{cwd:agent,windowsHide:true,stdio:'inherit'});
 const sources=Object.keys(build.source_hashes).filter(file=>/^(apps|packages|scripts|supabase)\//.test(file)||['package.json','pnpm-lock.yaml','tsconfig.json'].includes(file));
 for(const file of sources)if(hash(readFileSync(path.join(root,file)))!==build.source_hashes[file])throw Error('Build is stale: '+file);
@@ -45,6 +47,9 @@ for(const directory of ['apps/web/public'])if(existsSync(path.join(root,director
 tree(path.join(root,'apps/web/.next-production'),'apps/web/.next-production');tree(agent,'agent');
 copy(process.execPath,'node.exe');copy(nodeLicense,'NODE-LICENSE.txt');copy(path.join(root,'scripts/controller-launch.mjs'),'controller-launch.mjs');copy(path.join(root,'docs/api/controller-delivery.md'),'README.md');
 copy(path.join(root,'.kff/checks/build.json'),'release-build.json');
+copy(path.join(root,'.kff/checks/contracts.json'),'docs/evidence/contracts.json');
+copy(path.join(root,'.kff/checks/contracts-results.json'),'docs/evidence/contracts-results.json');
+tree(path.join(root,'tests/contracts'),'tests/contracts');
 if(existsSync(path.join(root,'docs/evidence/facebook-contracts.json')))copy(path.join(root,'docs/evidence/facebook-contracts.json'),'docs/evidence/facebook-contracts.json');
 writeFileSync(path.join(destination,'controller.cmd'),'@echo off\r\n"%~dp0node.exe" "%~dp0controller-launch.mjs" %*\r\nexit /b %errorlevel%\r\n');
 

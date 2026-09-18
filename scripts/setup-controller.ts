@@ -8,6 +8,7 @@ import {digest,hashPassword} from '../packages/core/src/index';
 import {startDatabase} from './database';
 import {migrate} from './migrate';
 import {ensureBundledTemplates} from '../packages/core/src/templates';
+import {registerFacebookContractEvidence} from './facebook-contract-evidence';
 
 const {values}=parseArgs({options:{'database-port':{type:'string'}}}),root=realpathSync(projectRoot),data=path.join(root,'.kff'),port=Number(values['database-port']??55432);
 if(process.platform!=='win32'||process.arch!=='x64'||root!==realpathSync(process.cwd())||process.env.DATABASE_URL||existsSync(data))throw Error('Fresh Windows installation required; existing data and external database overrides are refused');
@@ -21,6 +22,11 @@ if(port!==55432){const url=new URL(config.database_url);url.port=String(port);co
 let database:Awaited<ReturnType<typeof startDatabase>>|undefined;
 try{
  database=await startDatabase(path.join(data,'postgres'),port);await migrate();
+ // The shipped controller carries the contract reports and their test files; registering them here
+ // is what lets a fresh installation attach local capability evidence without a developer checkout.
+ // The document goes under the mutable .kff runtime directory: setup must not add files to the
+ // release tree, because every later start re-verifies that tree against the release manifest.
+ const contractEvidence=await registerFacebookContractEvidence(root,{documentPath:path.join(data,'evidence/facebook-contracts.json')});
  await transaction(async client=>{
   const organization='11111111-1111-4111-8111-111111111111',brand='22222222-2222-4222-8222-222222222222',user='33333333-3333-4333-8333-333333333333',agent='66666666-6666-4666-8666-666666666666';
   if((await client.query('SELECT id FROM kff.organizations LIMIT 1')).rowCount)throw Error('Existing organization refused');
@@ -35,5 +41,5 @@ try{
  mkdirSync(path.join(data,'checks'),{recursive:true});writeFileSync(path.join(data,'checks/build.json'),readFileSync(path.join(root,'release-build.json')));
  execFileSync(process.execPath,['--import','tsx','scripts/local-runtime.ts','configure','--agent-release',path.join(root,'agent'),'--discovery','--inbox'],{cwd:root,windowsHide:true,stdio:['ignore','pipe','pipe'],env:process.env});
  writeFileSync(path.join(data,'本地登录.txt'),'地址：http://127.0.0.1:3000\n账号：operator@kff.local\n密码：'+config.operator_password+'\n仅用于这台本机，勿分享此文件。\n',{mode:0o600});
- console.log(JSON.stringify({configured:true,empty_workspace:true,synthetic_accounts_created:0,live_sending_enabled:false,login_file:path.join(data,'本地登录.txt')}));
+ console.log(JSON.stringify({configured:true,empty_workspace:true,synthetic_accounts_created:0,live_sending_enabled:false,contract_evidence:contractEvidence,login_file:path.join(data,'本地登录.txt')}));
 }finally{await closePool();await database?.stop();}
