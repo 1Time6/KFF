@@ -151,9 +151,18 @@ export async function readFacebookInboxThread(page: Page, request: Pick<BrowserI
     }
     requireCondition(clickable,'INBOX_SOURCE_MISMATCH','发送者头像被遮挡或不可点击');
     stage('facebook-inbox-peer-menu');
-    await avatar.click({force:true,timeout:10000});
     const profile=page.getByRole('menuitem',{name:'查看个人主页',exact:true});
-    await profile.waitFor({state:'visible',timeout:10000});
+    // A click can be dropped while the row is still hydrating, and the AdsPower-hosted browser stalls
+    // animation frames, so one lost click used to end the whole read as an executor error. The same
+    // click is re-issued within a small bound; the acceptance rule below is unchanged, because a menu
+    // that never opens must still leave the sender unverified instead of reading an unverified peer.
+    const openProfileMenu=async()=>{try{await avatar.click({force:true,timeout:10000});return await profile.waitFor({state:'visible',timeout:10000}).then(()=>true,()=>false);}catch{return false;}};
+    let opened=false;
+    for(let pass=0;pass<3&&!opened;pass++){
+      if(pass){await page.keyboard.press('Escape').catch(()=>{});await guard();await avatar.evaluate(element=>element.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'}));}
+      opened=await openProfileMenu();
+    }
+    requireCondition(opened,'INBOX_SOURCE_MISMATCH','发送者入口没有打开可核验的个人主页菜单');
     requireCondition(await profile.count()===1 && await profile.getAttribute('href')==='/'+target.peer_id+'/', 'ACCOUNT_MISMATCH', '消息发送者个人主页与指定 ID 不符');
     await page.keyboard.press('Escape'); await profile.waitFor({state:'hidden',timeout:10000});
     await guard();

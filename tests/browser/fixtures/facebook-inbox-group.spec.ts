@@ -106,3 +106,25 @@ test('rejects a consecutive run whose final avatar points to another numeric pro
  await page.route('https://www.facebook.com/**',route=>route.fulfill({contentType:'text/html; charset=utf-8',body:shell(content)}));
  await expect(readFacebookInboxThread(page,{...request(),limit:10},()=>{})).rejects.toMatchObject({code:'ACCOUNT_MISMATCH'});
 });
+
+// A sender-avatar click can be dropped while the row is still hydrating; the read used to end as a
+// raw executor error. These two fixtures pin both halves of the bounded retry: one dropped click is
+// re-issued and the thread is still read, and a menu that never opens still refuses the sender.
+const gatedAvatar=(opensOn:number)=>'<div role="button" aria-haspopup="dialog" style="width:30px;height:30px" onclick="const n=Number(document.body.dataset.avatarClicks||0)+1;document.body.dataset.avatarClicks=String(n);if(n>='+opensOn+')document.body.insertAdjacentHTML(\'beforeend\',\'<a role=menuitem href=/1122/>查看个人主页</a>\')"><span aria-hidden="true"><img alt="Peer Fullname" style="width:20px;height:20px"></span></div>';
+const gatedThread=(opensOn:number)=>shell(group('<div><div role="article"><div data-message-id="incoming" aria-label="03:57，Peer：Original inquiry"><div dir="auto">Original inquiry</div>'+gatedAvatar(opensOn)+'</div></div></div>'));
+
+test('re-issues a dropped sender-avatar click inside its bound instead of failing the read',async({page})=>{
+ await page.route('https://www.facebook.com/**',route=>route.fulfill({contentType:'text/html; charset=utf-8',body:gatedThread(2)}));
+ const rows=await readFacebookInboxThread(page,request(),()=>{});
+ expect(rows.map(r=>[r.message_id,r.direction,r.peer_id])).toEqual([['incoming','INBOUND','1122']]);
+ expect(await page.locator('body').getAttribute('data-avatar-clicks')).toBe('2');
+});
+
+test('fails the sender check closed when the profile menu never opens',async({page})=>{
+ test.setTimeout(120000);
+ await page.route('https://www.facebook.com/**',route=>route.fulfill({contentType:'text/html; charset=utf-8',body:gatedThread(99)}));
+ await expect(readFacebookInboxThread(page,request(),()=>{})).rejects.toMatchObject({code:'INBOX_SOURCE_MISMATCH'});
+ // Three attempts are the whole bound: the reader never keeps clicking and never accepts a sender
+ // whose own profile menu it could not see.
+ expect(await page.locator('body').getAttribute('data-avatar-clicks')).toBe('3');
+});
