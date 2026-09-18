@@ -105,7 +105,9 @@ it('D: a child that had started and left no proof keeps its isolation instead of
   const running = runGuardian(command, runtime, value, { beforeSubmit: async () => {}, signal: new AbortController().signal, onSpawn: spawned => { pid = spawned; } });
   const settled = running.then(() => 'resolved', error => (error as { code?: string }).code);
   while (pid === undefined) await new Promise(resolve => setTimeout(resolve, 25));
-  process.kill(pid, 'SIGKILL');
+  // Under load the child can exit between the spawn callback and this line; that is still the
+  // scenario under test (a started child left no proof), and the assertions below are the point.
+  try { process.kill(pid, 'SIGKILL'); } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ESRCH') throw error; }
   expect(await settled).toBe('GUARDIAN_UNCONFIRMED');
   expect(readClosureEvidence(runtime, identity(command, value))).toBeNull();
 }, 60000);

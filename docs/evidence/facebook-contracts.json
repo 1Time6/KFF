@@ -1,7 +1,7 @@
 {
   "kind": "CODE_CONTRACT_ONLY",
   "adapter_version": "facebook-graph-v1",
-  "implementation_digest": "cce85f411ab99ed5033d85c8445b5a2fe074824b304c32d18a853222105cef23",
+  "implementation_digest": "d47cdfbe1695f015487acac829b162179e0d7f6b4b7df2e0c27c910e4fd4506a",
   "source_hashes": {
     "packages/adapters/src/facebook.ts": "e1bcdc6768ebab56d07f35b7fdae3ffc1a51383e8b0f8d197ded3e45d538a318",
     "packages/adapters/src/templates.ts": "07f469a5b33a0e0ce0d1e60a551a172f6f7a4024df31bfd1a2ed4b6b85db1bd3",
@@ -21,7 +21,7 @@
     "packages/adapters/src/facebook-comment-reply-dom.ts": "3d311e29277bb958362dedd28991647116460b7cd4c2ec89172666e6c09e318d",
     "packages/adapters/src/facebook-browser-message.ts": "1b24822d79c462ca391d0506435a39ccb0cefbf1126711641b5e30eadcf5ba60",
     "packages/adapters/src/facebook-message-result-dom.ts": "aba5efd1db2c6ddc6b1099c1384ed2e824a4301200fb38229b1c50ab5fab6c44",
-    "packages/adapters/src/facebook-browser-inbox.ts": "d7902330a0e93baf34bde624a186e702e8087c14aa9fa18538d4260ca81f1ef5",
+    "packages/adapters/src/facebook-browser-inbox.ts": "026a36dc1a7c0e8329fd9a8f6a1fd70656b47993fa7483f2e7998871664d17e1",
     "packages/adapters/src/facebook-inbox-dom.ts": "687fb1d3808eb604653f1266cbe6f1f8066d9ddf3f3b728f18067756dce6d8f6",
     "packages/contracts/src/browser-inbox.ts": "7534042e12b7255a6f5ecf72804518c0637f408f6b3e373815e7af1539a0876a",
     "packages/adapters/src/facebook-browser-identity.ts": "6211d659fc62551837c813ef1c5af2d634c2082e0574ef63c11cb2b32122abc8",
@@ -45,8 +45,8 @@
   "test_count": 316,
   "facebook_test_count": 12,
   "exit_code": 0,
-  "started_at": "2026-09-18T11:08:41.201Z",
-  "ended_at": "2026-09-18T11:09:15.497Z",
+  "started_at": "2026-09-18T12:01:02.725Z",
+  "ended_at": "2026-09-18T12:01:38.487Z",
   "real_calls": 0,
   "real_verification": "PENDING"
 }
