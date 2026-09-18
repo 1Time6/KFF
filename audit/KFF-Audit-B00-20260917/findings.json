@@ -1,0 +1,1017 @@
+{
+  "schema_version": "kff.b00-findings.v1",
+  "round": "B00-independent-audit-and-verification-gap-closure",
+  "audit_sha": "752042bc466b10b07cad455757a41bb10bbaf39f",
+  "branch": "codex/facebook-foundation",
+  "package_version": "0.1.53",
+  "audit_date": "2026-09-17",
+  "auditor": "执行端 (execution side)",
+  "nature": "Independent audit and verification-gap closure. NOT a full repository acceptance. NOT a pilot authorization.",
+  "status_definitions": {
+    "CONFIRMED": "Reproduced by executing the real source at the audit SHA with a repeatable probe; raw evidence recorded.",
+    "HIGH_CONFIDENCE": "Established from source facts plus documented runtime semantics, but the end-to-end runtime behaviour was not directly reproduced.",
+    "NEEDS_RUNTIME_VERIFICATION": "Cannot be settled without a real process/database/browser; explicitly NOT counted as a bug.",
+    "CANNOT_VERIFY": "Not counted as a bug. Recorded as an open verification gap only."
+  },
+  "historical_status_definitions": {
+    "FIXED": "The prior round's claim holds at this SHA.",
+    "PARTIALLY_FIXED": "Part of the prior claim holds; a stated part does not.",
+    "NOT_FIXED": "The prior claim does not hold at this SHA.",
+    "REGRESSED": "A previously correct property is now wrong or stale.",
+    "OBSOLETE": "No longer applies.",
+    "CANNOT_VERIFY": "No basis to judge at this SHA."
+  },
+  "counts": {
+    "P0": 0,
+    "P1": 3,
+    "P2": 8,
+    "P3": 4,
+    "total": 15,
+    "by_status": {
+      "CONFIRMED": 14,
+      "HIGH_CONFIDENCE": 1,
+      "NEEDS_RUNTIME_VERIFICATION": 0
+    },
+    "cannot_verify_items_not_counted_as_bugs": 11
+  },
+  "p0_statement": "本轮未发现 P0。判据：未发现可直接导致「错误账号或错误客户真实操作 / 越权 / 重复外发 / 数据损坏 / 错误解除未知隔离」的可达路径。注意：本结论受本轮范围限制——未审计真实账号、真实数据库、全部迁移与前端，见 cannot_verify。",
+  "findings": [
+    {
+      "id": "KFF-B00-001",
+      "title": "AI 接待退订规则：弯引号漏判 + 否定句误判为永久退订",
+      "severity": "P1",
+      "status": "CONFIRMED",
+      "historical_status": "PARTIALLY_FIXED",
+      "prior_audit_id": "KFF-IA-001",
+      "batch": "B02",
+      "category": "code",
+      "file": "packages/adapters/src/reception-model.ts",
+      "function": "optOut (L33) / bareStop (L39-53) / explicitContactExit (L54)",
+      "line": "L33, L39-53, L54",
+      "trigger_conditions": [
+        "客户发送含中文弯引号 U+2019 的英文退订句（手机键盘与 Facebook 默认产出该字符）",
+        "客户发送 'Don't message me again.'",
+        "客户发送 'No more messages please.'",
+        "客户发送以 'don't stop' / 'do not stop' + 联系类动词结尾的句子"
+      ],
+      "actual_behavior": {
+        "Please don’t contact me again. (U+2019)": {
+          "explicitContactExit": false,
+          "action": "ASK_QUESTION"
+        },
+        "Don't message me again.": {
+          "explicitContactExit": false,
+          "action": "ASK_QUESTION"
+        },
+        "No more messages please.": {
+          "explicitContactExit": false,
+          "action": "ASK_QUESTION"
+        },
+        "Please don't stop messaging me.": {
+          "explicitContactExit": true,
+          "action": "STOP"
+        },
+        "Do not stop texting me.": {
+          "explicitContactExit": true,
+          "action": "STOP"
+        },
+        "Please don't contact me again. (ASCII apostrophe)": {
+          "explicitContactExit": true,
+          "action": "STOP"
+        }
+      },
+      "expected_behavior": {
+        "Please don’t contact me again.": "STOP / OPTED_OUT（与 ASCII 撇号版本行为一致）",
+        "Don't message me again.": "STOP / OPTED_OUT",
+        "No more messages please.": "STOP / OPTED_OUT",
+        "Please don't stop messaging me.": "不得判为退订（客户要求继续联系）",
+        "Do not stop texting me.": "不得判为退订（客户要求继续联系）"
+      },
+      "root_cause": {
+        "apostrophe": "optOut 的正则使用 ASCII 撇号 U+0027，全文没有对 U+2019 / U+02BC 等排版撇号做归一化。同一句话仅因撇号字符不同而结果相反。",
+        "internal_inconsistency": "bareStop 在 L48 带有 `if(/dontstop|donotstop/.test(compact))return false;` 否定守卫，optOut 没有对应守卫；而 optOut 的 `stop texting` 分支先于任何否定判断命中，故 'Do not stop texting me.' 被 optOut 捕获为退订。这是同一文件内部的规则不一致，不是主观判断问题。",
+        "missing_phrases": "'message me again' / 'no more messages' 不在 optOut 短语表中。"
+      },
+      "cross_module_effect": "packages/core/src/facebook-inbound.ts L105-110 在摄入侧直接消费 explicitContactExit：命中即写 stage=BLOCKED / OPTED_OUT / PAUSED，并 opt out contact_targets。因此误判方向（把要求继续的客户判为退订）会写库并永久丢弃该客户；漏判方向（明确拒绝未识别）会让 AI 继续接待。",
+      "impact_scope": {
+        "wrong_direction_loss": "把「请继续联系我」的客户永久写成 OPTED_OUT —— 客户资产损失，且写库不可自动回滚。",
+        "miss_direction": "客户明确说「别再联系我」后系统仍继续接待，符合用户 P1 定义「明确拒绝后仍继续联系」。",
+        "reachability_bound": "见 KFF-B00-007：真实浏览器试点路径对 AI 自动回复有四重封堵。本条在 V1 真实浏览器试点路径上为潜伏态；对 transport !== 'BROWSER' 的连接与合成账号可达。",
+        "already_written_rows": "UNVERIFIED —— 生产库未被查询，已有多少客户被旧/当前规则误写为 OPTED_OUT 属未测量。"
+      },
+      "minimal_reproduction": {
+        "command": "node node_modules/.bin/tsx ../KFF-Audit-B00-20260917/repro/probe-reception.ts",
+        "note": "探针以 file:/// 动态 import 被审 SHA 的真实 reception-model.ts 与 lead.ts，不复制、不改写被测逻辑。",
+        "result": "见 evidence/reception-probe.json"
+      },
+      "evidence_path": "C:\\Users\\17731\\Desktop\\KFF-Audit-B00-20260917\\evidence\\reception-probe.json",
+      "probe_source": "C:\\Users\\17731\\Desktop\\KFF-Audit-B00-20260917\\repro\\probe-reception.ts",
+      "existing_test_gap": "tests/contracts/reception-model.test.ts L18-37 的既有回归守卫本轮全部仍然通过（未回归）。但既有用例只覆盖 ASCII 撇号与显式短语，未覆盖 U+2019，也未覆盖 'don't stop + 动词' 这一否定形态。",
+      "tests_to_add": [
+        "U+2019 与 U+02BC 撇号形式的退订句必须与 ASCII 形式同判",
+        "'Don't/Do not stop <verb>ing me' 一律不得判为退订",
+        "'Don't message me again' / 'No more messages please' 必须判为退订",
+        "对 optOut 与 bareStop 施加同一组否定守卫参数化用例，防止两者再次分叉"
+      ],
+      "minimal_fix": "在 explicitContactExit 入口对文本做一次撇号归一化（U+2019/U+02BC → U+0027）；把 bareStop 的 dontstop/donotstop 否定守卫提升为 optOut 与 bareStop 共用的前置判断；补齐 'message me again' 与 'no more messages' 短语。",
+      "files_allowed_to_change": [
+        "packages/adapters/src/reception-model.ts",
+        "tests/contracts/reception-model.test.ts"
+      ],
+      "dependencies": "无外部依赖。纯函数改动，不涉及数据库或迁移。",
+      "risk": "放宽或收紧短语表都会改变已有客户的退订判定。风险集中在过度收紧导致真实退订被漏判。",
+      "rollback": "单文件纯函数改动，git revert 即可；无数据迁移、无 schema 变更。",
+      "acceptance_criteria": [
+        "上述 5 条 actual_behavior 全部翻转为 expected_behavior",
+        "tests/contracts/reception-model.test.ts L18-37 既有守卫全部保持通过（不得回归）",
+        "新增参数化用例覆盖撇号形态与否定形态",
+        "对「已写库的 OPTED_OUT 是否需要人工复核」给出明确处置意见（本轮不执行数据修复）"
+      ],
+      "divergence_from_prior_audit": "GPT 侧 IA-001 标为 P1 CONFIRMED / PARTIALLY_FIXED，方向正确但根因描述为「短语表不全」。本轮实测把根因收窄为两点：弯引号未归一化（同一句话仅因字符不同而结果相反），以及 optOut 缺少 bareStop 已有的否定守卫（同文件内部不一致）。后者使本条成为可证缺陷而非主观判断。同时本轮补充了 GPT 未记录的严重性边界（KFF-B00-007 的四重封堵），既降低真实试点路径的实际严重性，也说明该缺陷无法在真实路径上被端到端测试暴露。"
+    },
+    {
+      "id": "KFF-B00-002",
+      "title": "Guardian spawn 失败走 error 分支：终止证据全部绕过，Agent 永久拒绝接单且重启不自愈",
+      "severity": "P1",
+      "status": "CONFIRMED",
+      "historical_status": "NOT_FIXED",
+      "prior_audit_id": "KFF-IA-002",
+      "batch": "B01",
+      "category": "code",
+      "file": "apps/agent/src/guardian.ts",
+      "function": "runGuardian",
+      "line": "L37 (spawn) / L59 (child.once('error')) / L60-78 (child.once('exit') 终止证据逻辑) / L71-75 (启动失败记录写入)",
+      "trigger_conditions": [
+        "child_process.spawn 因任何原因无法派生进程 —— 实测触发：spawn 的 cwd (L37 `cwd: process.cwd()`) 指向不存在的路径，产生真实的 libuv ENOENT",
+        "其他同类触发：node.exe 被替换或被杀软隔离（EACCES/ENOENT）、目录被改名或删除、文件描述符耗尽（EMFILE/ENFILE）",
+        "Node 文档另规定：向子进程 send 消息失败时亦在子进程上发出 error —— 即子进程已成功派生并可能持有打开浏览器上下文时，L40 的 child.send 失败也会走 L59"
+      ],
+      "actual_behavior": {
+        "spawn_events_emitted": [
+          "error:ENOENT",
+          "close:-4058"
+        ],
+        "exit_event_emitted": false,
+        "caller_rejected_with": {
+          "code": "ENOENT",
+          "name": "Error",
+          "message": "spawn C:\\Program Files\\nodejs\\node.exe ENOENT"
+        },
+        "startup_failure_record_written": false,
+        "journal_after": {
+          "phase": "claimed",
+          "guardian_nonce": "present",
+          "report": null
+        },
+        "flushActionJournal_result": false,
+        "controller_calls_made": []
+      },
+      "expected_behavior": "spawn 失败时，与「子进程在启动阶段退出」走同一处置：写入 kff.guardian-closure-startup-failed.v1 记录（context_opened:false），使 journal 条目可以获得终止证据并 quiesce，Agent 不被永久阻塞。",
+      "root_cause": {
+        "event_divergence": "Node 在 spawn 失败时发出 error 与 close，但**不发出 exit**（本轮实测 exit_event_emitted: false）。guardian.ts 的全部终止证据逻辑挂在 L60 的 child.once('exit') 上，L71-75 的启动失败记录写入位于该回调内部。因此走 L59 error 分支时，启动失败记录永不写入。",
+        "flush_is_skipped": "apps/agent/src/main.ts L73 的 `await flushJournal();` 位于 L70-72 的 try/finally **之外**。runGuardian 拒绝时异常直接在 L71 抛出，先执行 finally（清理 timer 与 executionControl），随后**跳过 L73**，异常继续向上传播。",
+        "permanent_block_loop": "main.ts L100 `await runCommand(command)` 的异常在 L102 被 catch 并仅记录日志；循环回到 L82 `requireCondition(await flushJournal(), 'GUARDIAN_UNCONFIRMED', ...)`。flushActionJournal 在 action-journal.ts L42 `if (!closure) return false;` 返回 false，requireCondition 抛 GUARDIAN_UNCONFIRMED，再次被 L102 捕获。该条目在磁盘上持久保留 phase='claimed' 且无对应 closure 文件，故**每次重启后仍然失败**。",
+        "probe_control": "作为对照，同一故障下 first-party 开关路径工作正常（L38 child.kill('SIGKILL') 会产生 exit）。这证明本轮探针隔离出的是真实的 error 分支分歧，而不是探针本身失效。"
+      },
+      "cross_module_effect": "Agent 停止接单后，Worker 仍在运行、命令仍在入队，但没有任何执行端消费。控制端侧命令保持在 CLAIMED 直到租约到期。controller 全程未被通知（controller_calls_made 为空），因此控制端无法自行发现该状态。",
+      "impact_scope": {
+        "availability": "主业务链永久阻塞：采集、受控互动、Inbox 回复全部停止，且重启不自愈，需人工删除 journal 条目或补齐 closure 文件才能恢复。",
+        "second_direction_high_confidence": "当 error 由 L40 的 child.send 失败触发（子进程存活）时，守护子进程在 win32 上是 detached 的，且没有任何路径去终止它或证明其浏览器上下文已关闭 —— 形成孤儿守护进程与未关闭的浏览器上下文。此方向为 HIGH_CONFIDENCE（依据 Node 文档的 error 触发条件与 L40 代码），本轮未直接复现存活子进程的 send 失败。",
+        "real_world_history": "本机 386 个 closure 文件中 startup-failed 记录为 0，说明该路径在真实运行中尚未触发过；但触发条件（cwd 消失、node.exe 被替换）在 Windows 上是现实故障模式。"
+      },
+      "minimal_reproduction": {
+        "command": "node node_modules/.bin/tsx ../KFF-Audit-B00-20260917/repro/probe-guardian.ts",
+        "method": "把探针进程的 process.cwd 覆盖为不存在的路径，再调用真实的 runGuardian，使真实的 spawn(..., {cwd: process.cwd()}) 产生 libuv ENOENT。**未对被测模块打补丁，未引入第二套执行系统**：spawn 调用、事件接线、closure 写入器全部是出货代码。",
+        "then": "用真实的 flushActionJournal 询问该命令能否被关闭。"
+      },
+      "evidence_path": "C:\\Users\\17731\\Desktop\\KFF-Audit-B00-20260917\\evidence\\guardian-probe.json",
+      "probe_source": "C:\\Users\\17731\\Desktop\\KFF-Audit-B00-20260917\\repro\\probe-guardian.ts",
+      "existing_test_gap": "tests/browser/fixtures/agent-recovery.spec.ts 的 6 个用例全部通过 exit 路径制造故障（stopOwned 用 child.kill('SIGKILL')；第三个用例用 process.kill(guardian_pid,'SIGKILL')），**从不产生 error 事件**。因此 guardian.ts L59 的 error 分支在整套测试中零覆盖。",
+      "tests_to_add": [
+        "spawn 失败（error 分支）后必须写入 startup-failure 记录，且 flushActionJournal 返回 true",
+        "同一故障下 Agent 必须能够继续接单（不得永久阻塞）",
+        "重启后该条目必须已 quiesce（不得重复阻塞）",
+        "存活子进程 send 失败方向：必须证明子进程被终止或浏览器上下文被证明关闭"
+      ],
+      "minimal_fix": "把 L60 exit 回调中的终止证据逻辑提取为可复用的 handleTermination()，并在 L59 的 error 回调中一并调用；error 分支需先判定子进程是否已成功派生，以区分「未派生」与「已派生但通信失败」两种情形。",
+      "files_allowed_to_change": [
+        "apps/agent/src/guardian.ts"
+      ],
+      "dependencies": "无。不涉及数据库、迁移或控制端协议。",
+      "risk": "error 分支若被错误地当作「启动失败」处理，可能在子进程仍持有浏览器上下文时提前释放隔离。必须在 error 回调内区分 child.pid 是否存在。",
+      "rollback": "单文件改动，git revert 即可。改错方向的后果是隔离被提前释放，因此回退优先级高。",
+      "acceptance_criteria": [
+        "error 分支后 startup-failure 记录存在且 context_opened:false",
+        "flushActionJournal 返回 true，Agent 继续接单",
+        "子进程已派生但 send 失败时，必须证明其浏览器上下文已关闭或子进程已终止",
+        "新增用例在 CI 中真实产生 error 事件（而非 exit）"
+      ],
+      "divergence_from_prior_audit": "GPT 侧 IA-002 标为 P1 HIGH CONFIDENCE。本轮把它提升为 CONFIRMED，因为已用真实 spawn ENOENT 端到端复现，并测出三个此前未记录的精确事实：(1) spawn 失败时 exit 事件**从不**发出；(2) flushActionJournal 返回 false 且向 controller 发出 0 次调用；(3) 该阻塞跨重启持续。GPT 未识别 main.ts L73 的 flush 位于 try/finally 之外这一关键跳过点。"
+    },
+    {
+      "id": "KFF-B00-003",
+      "title": "启动失败证据在 closureProof 与 compactClosure 中被洗白为「已关闭的上下文」",
+      "severity": "P2",
+      "status": "CONFIRMED",
+      "historical_status": "PARTIALLY_FIXED",
+      "prior_audit_id": "KFF-IA-003",
+      "batch": "B01",
+      "category": "code",
+      "file": "apps/agent/src/guardian-protocol.ts",
+      "function": "closureProof (L76-78) / compactClosure (L79-91)",
+      "line": "L76-78, L79-91",
+      "trigger_conditions": [
+        "存在一条 kff.guardian-closure-startup-failed.v1 记录（context_opened:false，即从未打开过浏览器上下文）",
+        "该命令随后经 flushActionJournal 发送 quiescence（closureProof 改写协议版本）",
+        "该命令为 collection/inbox 形状，从而被 maintainActionJournal 的 action-journal.ts L19 守卫放行并压缩"
+      ],
+      "actual_behavior": {
+        "closureProof_output": {
+          "protocol_version": "kff.guardian-closure.v1",
+          "note": "启动失败记录的 protocol_version 是 ...-startup-failed.v1，经 closureProof 后变为普通的 kff.guardian-closure.v1，context_opened:false 字段丢失"
+        },
+        "compactClosure_output": {
+          "protocol_version": "kff.guardian-closure-compact.v1",
+          "context_closed": true,
+          "reason": "DELIVERED"
+        },
+        "compaction_reachability_message_command": {
+          "reached_compaction": false
+        },
+        "compaction_reachability_collection_command": {
+          "reached_compaction": true,
+          "context_closed_after": true,
+          "reason": "RETENTION_EXPIRED"
+        }
+      },
+      "expected_behavior": "「从未打开上下文」这一事实应当在其证据被传输与压缩后依然可辨；压缩后的记录不应声称 context_closed:true。",
+      "root_cause": "closureProof 无条件把任意记录（包括 startup-failed 记录）的 protocol_version 改写为 'kff.guardian-closure.v1'，仅搬运 command_id/action_id/closed_at/proof_sha256，丢弃 context_opened。compactClosure 对非 compact 记录硬编码 context_closed: true。",
+      "cross_module_effect": "packages/core/src/reconciliation.ts recordQuiescence L19 依据该证据把 kff.environments.browser_status 置为 CLOSED。对一条从未打开过上下文的命令而言，该状态在事实上无害，但破坏了取证可辨性。",
+      "impact_scope": "取证/审计完整性，而非运行安全。round2 的既定意图正是「deliberately distinct from a closure because no context was ever opened」（docs/defect-ledger-round2-20260917.json L38），该区分在传输与压缩后被销毁。",
+      "minimal_reproduction": {
+        "command": "node node_modules/.bin/tsx ../KFF-Audit-B00-20260917/repro/probe-guardian-2.ts",
+        "note": "对 message 形状与 collection 形状条目分别跑真实的 maintainActionJournal，测量压缩可达性。"
+      },
+      "evidence_path": [
+        "C:\\Users\\17731\\Desktop\\KFF-Audit-B00-20260917\\evidence\\guardian-probe.json",
+        "C:\\Users\\17731\\Desktop\\KFF-Audit-B00-20260917\\evidence\\guardian-probe-2.json"
+      ],
+      "probe_source": [
+        "C:\\Users\\17731\\Desktop\\KFF-Audit-B00-20260917\\repro\\probe-guardian.ts",
+        "C:\\Users\\17731\\Desktop\\KFF-Audit-B00-20260917\\repro\\probe-guardian-2.ts"
+      ],
+      "important_narrowing": "本轮必须记录一个对 GPT 结论的收窄：在压缩**之前**，readClosure 是**正确**的 —— 实测对未压缩的启动失败记录抛 GUARDIAN_STARTUP_FAILED，而不是把它当作已关闭上下文返回。GPT 侧只测到压缩之后的状态，因而把该区分描述为已完全丢失。实际是：区分在写入时正确，在传输（closureProof）与压缩（compactClosure）两个环节被销毁，且压缩**仅对 collection/inbox 形状的命令可达**（message 形状被 action-journal.ts L19 守卫跳过）。",
+      "tests_to_add": [
+        "closureProof 对 startup-failed 记录必须保留「从未打开」语义或拒绝处理",
+        "compactClosure 不得把 context_opened:false 的记录压成 context_closed:true",
+        "collection 形状的启动失败记录压缩后仍可辨认为从未打开上下文"
+      ],
+      "minimal_fix": "在 closureProof 中拒绝 startup-failed 记录（或在输出中保留 context_opened 字段）；compactClosure 依据源记录的 context_opened 决定 context_closed 的取值，而不是硬编码 true。",
+      "files_allowed_to_change": [
+        "apps/agent/src/guardian-protocol.ts",
+        "apps/agent/src/action-journal.ts",
+        "tests/unit/action-journal.test.ts"
+      ],
+      "dependencies": "与 KFF-B00-004 同属启动失败证据链，建议同批修复。",
+      "risk": "改动 closureProof 的输出形状会影响 packages/core/src/reconciliation.ts 的 quiescence 校验；须同步确认 zod schema（guardian-protocol.ts L27-32 的 startupFailureSchema 与 quiescenceInput）兼容。",
+      "rollback": "单文件改动，git revert 即可。",
+      "acceptance_criteria": [
+        "任意路径产生的启动失败记录，在传输与压缩后 context_opened:false 仍可辨",
+        "压缩后的记录不再对从未打开上下文的命令声称 context_closed:true",
+        "reconciliation 的 quiescence 校验仍通过"
+      ]
+    },
+    {
+      "id": "KFF-B00-004",
+      "title": "启动失败路径零测试覆盖；源码注释声明一个并不存在的 unit contract，且注入开关的安全边界已无人钉住",
+      "severity": "P2",
+      "status": "CONFIRMED",
+      "historical_status": "PARTIALLY_FIXED",
+      "prior_audit_id": null,
+      "batch": "B01",
+      "category": "verification-gap",
+      "file": "apps/agent/src/guardian.ts",
+      "function": "guardianStartupFaultInjection (L19-26) / guardianStartupFaultInjectionEnabled (L28)",
+      "line": "L27-28",
+      "trigger_conditions": [
+        "静态事实，无需触发条件 —— 全仓库 grep 可复现"
+      ],
+      "actual_behavior": {
+        "source_comment_L27": "/** Exported for the unit contract that pins every condition this switch must satisfy. */",
+        "tests_referencing_the_switch": "0 —— tests/ 全目录对 guardianStartupFaultInjection 与 guardianStartupFaultInjectionEnabled 零引用（grep 实测）",
+        "tests_referencing_saveStartupFailure": "0 —— saveStartupFailure 仅出现在 guardian-protocol.ts:50（定义）与 guardian.ts:73（调用），无测试导入",
+        "tests_asserting_startup_failed_protocol": "0 —— 无任何测试断言 kff.guardian-closure-startup-failed.v1",
+        "real_machine_records": "本机 .kff/agent/closures 共 386 个文件，startup-failed 记录 0 个",
+        "self_admission": "docs/evidence/audit-repair-round2-20260917.json L67 自述该 spec 'was withdrawn with the injection work'；L68 自述清除 tsx 缓存 5351 个文件后 'the injection still did not activate'"
+      },
+      "expected_behavior": "L27 的注释要么对应一个真实存在的测试，要么应删除；guardianStartupFaultInjection 的三个安全条件应有测试钉住。",
+      "root_cause": "round2 的注入 spec 因注入未能激活而被撤回（未作为 failing 或 skipped 测试提交），但导出与注释留在源码中，形成「声称有契约、实际无契约」的陈旧声明。",
+      "cross_module_effect": "guardianStartupFaultInjection 的三个条件中包含一个**安全边界**：runtime 必须位于 <KFF_ROOT>/.kff/agent-process-tests/ 之内，且必须用 path.relative 判定而非子串/前缀判定，以便让 .kff/agent-process-tests-production 这类兄弟目录保持封死。该边界目前无任何测试保护；若将来有人改动此函数（例如换成 startsWith），没有测试会失败。",
+      "impact_scope": "验证缺口与安全边界失去回归保护。同时解释了 KFF-B00-002 为何长期未被发现：整条启动失败路径（写入、读取、压缩、阻塞）都没有测试。",
+      "minimal_reproduction": {
+        "command": "grep -rn 'guardianStartupFaultInjection\\|saveStartupFailure\\|startup-failed' apps packages tests docs",
+        "expected": "tests/ 下零命中"
+      },
+      "evidence_path": "本轮 grep 实测输出见 test-results.md 的「覆盖缺口取证」小节；自述见 docs/evidence/audit-repair-round2-20260917.json L60-69",
+      "tests_to_add": [
+        "guardianStartupFaultInjection 三个条件各自的反例（NODE_ENV≠test / 变量≠'true' / runtime 在 tests 根之外均须为 false）",
+        ".kff/agent-process-tests-production 作为兄弟目录必须保持封死（path.relative 语义）",
+        "启动失败路径的端到端进程级回归（写入 → 读取 → flush → quiesce）",
+        "KFF-B00-002 的 error 分支回归"
+      ],
+      "minimal_fix": "优先修复 KFF-B00-002 并补上进程级回归；随后或在同一批中恢复被撤回的条件测试，或删除 L27-28 的导出与注释，使源码声明与实际一致。",
+      "files_allowed_to_change": [
+        "apps/agent/src/guardian.ts",
+        "tests/unit/",
+        "tests/browser/fixtures/agent-recovery.spec.ts"
+      ],
+      "dependencies": "与 KFF-B00-002、KFF-B00-003 同批；先修行为再补测试，避免把当前错误行为固化成断言。",
+      "risk": "若为通过测试而放宽断言，会把错误行为固化。撰写测试前必须先确定 KFF-B00-002 的修复方向。",
+      "rollback": "不适用（不改变生产行为）。",
+      "acceptance_criteria": [
+        "L27 的注释与实际测试一致",
+        "guardianStartupFaultInjection 的三个条件均有测试且包含兄弟目录反例",
+        "启动失败路径有进程级端到端回归"
+      ],
+      "divergence_from_prior_audit": "本轮新增（GPT 侧未列出）。该缺口是解释 IA-002/IA-003 为何长期存在的结构性原因，且包含一个真实的安全边界失去保护。"
+    },
+    {
+      "id": "KFF-B00-005",
+      "title": "docs/current-status.md 自称唯一入口，却声明了一个比审计基线更早的提交，且完全未引用 round2 台账",
+      "severity": "P2",
+      "status": "CONFIRMED",
+      "historical_status": "REGRESSED",
+      "prior_audit_id": "KFF-IA-005",
+      "batch": "B01",
+      "category": "documentation-integrity",
+      "file": "docs/current-status.md",
+      "function": "n/a（文档）",
+      "line": "L10（声明 SHA）/ L18（唯一台账指向）/ L27（统计声明）/ L3（自称唯一入口）",
+      "trigger_conditions": [
+        "静态事实；`git rev-list` 与 `grep` 可复现"
+      ],
+      "actual_behavior": {
+        "declared_commit_L10": "891f399a9c81aafb2d960046f1e3214dd893bf68",
+        "audit_sha": "752042bc466b10b07cad455757a41bb10bbaf39f",
+        "distance": "落后 3 个提交",
+        "relationship": "891f399 是 e1f5285（审计基线，即 origin/main 与被审分支的合并基点）的**父提交**。实测：git rev-list --count 891f399..HEAD = 3；git log e1f5285..HEAD 仅含 0ddd8d1 与 752042b 两个提交，故 891f399 必为 e1f5285 的祖先且为其直接父提交。",
+        "consequence": "该页声明的树比外部审计所审的基线 e1f5285 **还早一代**，因此它描述的既不是当前代码，也不是被审计的代码。",
+        "omits_round2": "该页 L18 只指向 docs/defect-ledger.json（25 项），全文未出现 defect-ledger-round2-20260917.json，也未出现 KFF-R01..R05 中任何一项。",
+        "contradiction_L27": "该页 L27 声明「25 项 = 已修复并验证 25」（即 100%），而 docs/defect-ledger-round2-20260917.json L22 自述外部审计**只能核实 25 项中的 3 项**，其余 21 项为 CANNOT_VERIFY；L20 另记录 KFF-B05 为 partially_reopened。两份文件对同一批 25 项的结论不一致。"
+      },
+      "expected_behavior": "唯一入口页声明的源码提交应与实际 HEAD 一致；应引用或明确排除 round2 台账；统计声明不应与另一份当前台账矛盾。",
+      "root_cause": {
+        "no_automated_check": "scripts/verify-planning.ts L63-70 只校验 docs/defect-ledger.json 的存在与 schema_version，**从不读取 docs/current-status.md**，也不校验该页声明的源码提交。L34 的 git rev-parse HEAD 仅用于自身记录，未与页面声明比对。因此该页变陈旧时没有任何检查会失败。",
+        "no_round2_reference": "verify-planning.ts 全文不含 defect-ledger-round2 或 current-status 字样。"
+      },
+      "cross_module_effect": "接手人员被明确要求以该页为唯一入口（L3），因此 round2 的 5 项修复与 KFF-R02「部分修复、进程级回归尚不存在」这一事实，从唯一入口不可见。这与 KFF-B00-002/004 构成闭环：缺陷被修复得不完整，且不完整这件事也不可见。",
+      "impact_scope": "接手指引失真与验证债不可见。不直接影响运行安全运行时行为，但直接影响任何后续审计或发布决策所依赖的事实基础。",
+      "minimal_reproduction": {
+        "commands": [
+          "git -C <repo> merge-base --is-ancestor 891f399 HEAD && git -C <repo> rev-list --count 891f399..HEAD",
+          "grep -n 'round2\\|current-status' scripts/verify-planning.ts"
+        ],
+        "results": [
+          "is-ancestor: YES；count: 3",
+          "无命中"
+        ]
+      },
+      "evidence_path": "见 test-results.md 的「文档基线一致性实测」小节",
+      "tests_to_add": [
+        "verify-planning 增加：current-status.md 声明的源码提交必须等于 git rev-parse HEAD（或其声明的基线必须是 HEAD 的祖先且显式说明差异）",
+        "verify-planning 增加：若存在 defect-ledger-round2-*.json，current-status.md 必须引用或显式声明排除",
+        "verify-planning 增加：current-status.md 的统计声明必须与该页所指向的台账计算结果一致"
+      ],
+      "minimal_fix": "更新 current-status.md 的源码提交为当前 HEAD；显式登记 round2 台账的存在与 KFF-R02 的未完成状态；把上述三项检查加入 verify-planning.ts，使该页变陈旧时构建失败。",
+      "files_allowed_to_change": [
+        "docs/current-status.md",
+        "scripts/verify-planning.ts"
+      ],
+      "dependencies": "若在修 KFF-B00-002 之前更新 SHA，修复后需再次更新。建议在 B01 修复批次合并后再定稿该页。",
+      "risk": "把 SHA 更新为 752042bc 会使该页描述一个 round2 尚未通过验证的树。必须同时登记 round2 的未验证范围，否则会用准确 SHA 包装出不准确的完成度。",
+      "rollback": "纯文档与校验脚本，git revert 即可。",
+      "acceptance_criteria": [
+        "current-status.md 声明的提交等于 HEAD（或显式声明差异与理由）",
+        "round2 台账与该轮未完成项在唯一入口可见",
+        "25 项统计声明不再与 round2 台账矛盾",
+        "verify-planning 能在该页陈旧时失败"
+      ],
+      "divergence_from_prior_audit": "GPT 侧 IA-005 标为 P2 CONFIRMED / REGRESSED，结论成立。本轮把「基线未更新」精确化为「声明的是审计基线的父提交，比被审树更早一代」，并实测出机制层原因（verify-planning.ts 完全不读该页），且补充了 GPT 未记录的统计矛盾（25/25 全绿 vs 21 项 CANNOT_VERIFY + B05 partially_reopened）。"
+    },
+    {
+      "id": "KFF-B00-006",
+      "title": "营销类拒绝语被判为「需要进一步了解客户需求」，未进入人工接管分支",
+      "severity": "P1",
+      "status": "CONFIRMED",
+      "historical_status": "CANNOT_VERIFY",
+      "prior_audit_id": "KFF-IA-006",
+      "batch": "B02",
+      "category": "code",
+      "file": "packages/adapters/src/reception-model.ts",
+      "function": "localReceptionRules (L78-88) / enforceReceptionDecision (L55-77)",
+      "line": "L78-88",
+      "trigger_conditions": [
+        "客户发送「不要再给我发广告了」这一类**限定类型的拒绝**（拒绝广告，但未要求停止全部联系）"
+      ],
+      "actual_behavior": {
+        "text": "不要再给我发广告了",
+        "explicit_contact_exit": false,
+        "local_rules_action": "ASK_QUESTION",
+        "local_rules_intent": "OTHER",
+        "local_rules_reason": "需要进一步了解客户需求",
+        "enforce_action_on_model_reply": "REPLY"
+      },
+      "expected_behavior": "客户的负面偏好表达应至少进入人工接管（HANDOFF），而不是被判为「需要进一步了解客户需求」并由 AI 继续接待。",
+      "root_cause": "localReceptionRules 只识别「全局退订」（explicitContactExit）与显式 HANDOFF 触发词，对「限定类型的拒绝」没有分支，因此落入默认的 ASK_QUESTION 分支。",
+      "cross_module_effect": "packages/core/src/reception-worker.ts completeReception L70 —— 除 STALE/STOPPED/DRAFT_READY/DECIDED 之外的一切分支都调用 queueConversationReply。因此 ASK_QUESTION 会排入一条回复，而非转人工。",
+      "impact_scope": {
+        "product": "客户明确表达「别再给我发广告」后，系统以「需要进一步了解客户需求」继续接触，符合用户 P1 定义「明确拒绝后仍继续联系」。",
+        "policy_dependency": "这是否构成缺陷取决于产品政策对「限定类型拒绝」的判定。本轮把**可执行行为**标为 CONFIRMED；把**是否应按退订处理的政策判定**留给规划侧。",
+        "reachability_bound": "见 KFF-B00-007，真实浏览器试点路径上 AI 自动回复被封堵，本条在该路径为潜伏态。"
+      },
+      "minimal_reproduction": {
+        "command": "node node_modules/.bin/tsx ../KFF-Audit-B00-20260917/repro/probe-reception.ts",
+        "result_field": "reception-probe.json 的 marketing_refusal 块"
+      },
+      "evidence_path": "C:\\Users\\17731\\Desktop\\KFF-Audit-B00-20260917\\evidence\\reception-probe.json",
+      "probe_source": "C:\\Users\\17731\\Desktop\\KFF-Audit-B00-20260917\\repro\\probe-reception.ts",
+      "existing_test_gap": "tests/contracts/reception-model.test.ts L40 的用例名称为 'keeps a marketing-only Chinese opt-out for human review: %s'，断言却只有 expect(explicitContactExit(text)).toBe(false)。**用例名声称的行为（for human review）没有任何断言**，该断言只证明了「不是全局退订」。这使一条名称与内容不符的用例长期给出虚假覆盖感。",
+      "tests_to_add": [
+        "「不要再给我发广告了」必须产生 HANDOFF（或经政策确认后的其他明确分支），而不是 ASK_QUESTION",
+        "断言必须覆盖用例名所声称的行为，而非仅断言 explicitContactExit===false",
+        "同类限定拒绝的参数化用例（如「别再给我推销」「不要发促销」）"
+      ],
+      "minimal_fix": "在 localReceptionRules 中增加「限定类型的拒绝」分支并路由到 HANDOFF；同时修正 L40 的用例，使其断言实际声称的行为。",
+      "files_allowed_to_change": [
+        "packages/adapters/src/reception-model.ts",
+        "tests/contracts/reception-model.test.ts"
+      ],
+      "dependencies": "需要规划侧先确认政策：限定类型的拒绝应路由到 HANDOFF，还是应升级为全局退订。两者对客户资产的影响不同。",
+      "risk": "若把限定拒绝升级为全局退订，会过度丢弃客户；若只转人工，则依赖人工及时处理。方向须由规划侧决定。",
+      "rollback": "单文件纯函数改动，git revert 即可。",
+      "acceptance_criteria": [
+        "「不要再给我发广告了」不再产生 ASK_QUESTION",
+        "用例名与实际断言一致",
+        "既有 L18-37 回归守卫保持通过"
+      ],
+      "divergence_from_prior_audit": "GPT 侧 IA-006 标为 P1 HIGH CONFIDENCE / historical CANNOT_VERIFY，理由未能确定。本轮通过执行把决策层行为提升为 CONFIRMED（ASK_QUESTION 可直接观测），并补充了两个 GPT 未记录的要点：(1) completeReception L70 的默认分支使 ASK_QUESTION 实际排入回复，因此这不是纯规则问题；(2) 出货测试 L40 的名称与断言不符，正是该缺陷长期未被发现的原因。"
+    },
+    {
+      "id": "KFF-B00-007",
+      "title": "真实浏览器试点路径对 AI 自动回复存在四重封堵 —— 既限定接待类缺陷的实际严重性，也说明这些缺陷无法在真实路径上被端到端暴露",
+      "severity": "P2",
+      "status": "CONFIRMED",
+      "historical_status": "OBSOLETE",
+      "prior_audit_id": null,
+      "batch": "B02",
+      "category": "verification-gap",
+      "file": "packages/core/src/facebook-inbound.ts",
+      "function": "configureFacebook (L25) / canReply (L61) / 摄入排队 (L116)",
+      "line": "L25, L61, L116",
+      "trigger_conditions": [
+        "账号为非合成的真实 AdsPower 浏览器账号（account.is_synthetic === false 且 transport === 'BROWSER'）"
+      ],
+      "actual_behavior": {
+        "lock_1_configure": "facebook-inbound.ts L25 —— 真实 BROWSER 账号必须满足 account_type==='profile' && driver==='adspower' && **!value.auto_reply** && policy_ref==='kff.facebook-browser.explicit-consent.v1'。真实浏览器账号不得开启 auto_reply。",
+        "lock_2_can_reply": "facebook-inbound.ts L61 —— canReply 对非合成 BROWSER 连接为 false，故 L116 不会为该会话排队接待任务。",
+        "lock_3_conversation_control": "lead-reception.ts L106 —— conversationControl 对非合成 BROWSER 账号拒绝 AI 模式，抛 SOURCE_NOT_CONFIGURED。",
+        "lock_4_queue_reply": "lead-reception.ts L136-137 —— queueConversationReply 对 realBrowser 要求 requireCondition(!realBrowser || options.prepare_only && options.actor_kind==='HUMAN' && options.contact_permission_id && account.account_type==='profile', 'CONTACT_BASIS_MISSING', 409)。"
+      },
+      "expected_behavior": "n/a —— 这是对现状的测量，不是缺陷主张。四重封堵是**正确的安全设计**。",
+      "root_cause": "n/a",
+      "cross_module_effect": "该测量有两个后果：(1) 它把 KFF-B00-001 与 KFF-B00-006 在真实浏览器试点路径上的实际严重性限定为潜伏态 —— 这两条对 transport !== 'BROWSER' 的连接（API/Webhook）与合成账号仍可达。(2) 它意味着接待类规则缺陷**不可能**在真实浏览器路径上被端到端测试暴露，因此「真实路径已验收」不能作为这些规则的证据。",
+      "impact_scope": "严重性判定与验证策略。GPT 侧把 IA-001 单纯标为 P1 而未记录该边界；本轮认为必须记录，否则会把潜伏态缺陷误判为真实路径上的活跃风险，也会错误地期待真实试点能覆盖它们。",
+      "minimal_reproduction": {
+        "commands": [
+          "grep -n 'canReply\\|auto_reply\\|is_synthetic' packages/core/src/facebook-inbound.ts",
+          "grep -n 'realBrowser\\|prepare_only\\|CONTACT_BASIS_MISSING\\|SOURCE_NOT_CONFIGURED' packages/core/src/lead-reception.ts"
+        ]
+      },
+      "evidence_path": "源码事实，见 baseline.md 与 module-map.md 的接待链路一节",
+      "tests_to_add": [
+        "断言真实 BROWSER 账号不得开启 AI 自动回复（防止未来有人移除某一道封堵）",
+        "断言四道封堵中任意一道被移除时测试失败 —— 当前四道各自独立，无测试保证它们同时存在"
+      ],
+      "minimal_fix": "n/a（不是缺陷）。建议将四重封堵固化为显式断言，避免未来被无意移除。",
+      "files_allowed_to_change": [
+        "tests/"
+      ],
+      "dependencies": "无。",
+      "risk": "无（仅补测试）。",
+      "rollback": "不适用。",
+      "acceptance_criteria": [
+        "四道封堵均有测试钉住"
+      ],
+      "divergence_from_prior_audit": "本轮新增（GPT 侧未记录）。这是本轮对 GPT 结论最重要的一处收窄：它同时降低了 IA-001/IA-006 在真实试点路径上的严重性，并说明为何不能期待真实试点覆盖这些规则。"
+    },
+    {
+      "id": "KFF-B00-008",
+      "title": "AI 输出安全过滤：Unicode 全角/IDN 联系方式泄漏，且普通日期被误判",
+      "severity": "P2",
+      "status": "CONFIRMED",
+      "historical_status": "PARTIALLY_FIXED",
+      "prior_audit_id": "KFF-IA-004",
+      "batch": "B02",
+      "category": "code",
+      "file": "packages/adapters/src/reception-model.ts",
+      "function": "enforceReceptionDecision",
+      "line": "L74",
+      "trigger_conditions": [
+        "AI 回复中出现全角 Unicode 电话号码或 IDN 域名 / AI 回复中出现 ISO 日期"
+      ],
+      "actual_behavior": {
+        "leaks": {
+          "Visit 例子.中国": "REPLY（未被过滤，IDN 域名泄漏）",
+          "Call ＋４４ ７７００ ９００１２３": "REPLY（未被过滤，全角 Unicode 电话泄漏）"
+        },
+        "false_positive": {
+          "Your appointment is on 2026-09-17.": "HANDOFF（被误判为联系方式）"
+        },
+        "passing_cases": [
+          "We have been open since 1998.",
+          "Happy birthday! Is it the 48th?",
+          "The package includes 2 items.",
+          "Sure, I can help with that.",
+          "Version 1.2.3 was released.",
+          "I am 34 years old.",
+          "That costs 2.5 percent more."
+        ],
+        "correctly_filtered": [
+          "example.com",
+          "www.example.com",
+          "+44 7700 900123",
+          "07700 900123",
+          "sales@example.com",
+          "wa.me/15550001111",
+          "https://example.test",
+          "£48",
+          "48 USD"
+        ]
+      },
+      "expected_behavior": {
+        "Visit 例子.中国": "HANDOFF（不得进入客户可见的回复）",
+        "Call ＋４４ ７７００ ９００１２３": "HANDOFF",
+        "Your appointment is on 2026-09-17.": "REPLY（普通日期不得被当作联系方式）"
+      },
+      "root_cause": {
+        "leak": "过滤规则基于 ASCII 数字区间与显式 scheme，未对全角数字（U+FF10–U+FF19）与全角加号（U+FF0B）做归一化；域名判定不覆盖 IDN（非 ASCII 标签 + 非 ASCII TLD）。",
+        "false_positive": "2026-09-17 的分段数字形态落入电话号码判定。这正是用户点名要求重点检查的情形。"
+      },
+      "cross_module_effect": "误判方向（日期 → HANDOFF）的代价是把回复转人工，是**安全方向**，损失的是人工注意力而非正确性。泄漏方向会把联系方式送进客户回复。",
+      "impact_scope": "泄漏方向的现实影响取决于 provider 是否真会产出全角形态（未验证：本轮未调用任何真实模型）。误判方向是可确认的即时成本。",
+      "minimal_reproduction": {
+        "command": "node node_modules/.bin/tsx ../KFF-Audit-B00-20260917/repro/probe-reception.ts",
+        "result_fields": "reception-probe.json 的 filter_cases 中 'Visit 例子.中国'、'Call ＋４４ ７７００ ９００１２３'、'Your appointment is on 2026-09-17.'"
+      },
+      "evidence_path": "C:\\Users\\17731\\Desktop\\KFF-Audit-B00-20260917\\evidence\\reception-probe.json",
+      "probe_source": "C:\\Users\\17731\\Desktop\\KFF-Audit-B00-20260917\\repro\\probe-reception.ts",
+      "existing_test_gap": "tests/contracts/reception-model.test.ts L46-48 覆盖了 ASCII 目的地与普通文本，未覆盖全角数字、IDN 域名，也未覆盖 ISO 日期这一误判形态。",
+      "tests_to_add": [
+        "全角数字与全角加号归一化后必须被过滤",
+        "IDN 域名必须被过滤",
+        "ISO 日期、版本号、年龄、小数、订单号必须不被过滤",
+        "既有 ASCII 用例全部保持通过（本轮已复测，无回归）"
+      ],
+      "minimal_fix": "在过滤前对全角数字/符号做 NFKC 归一化；域名判定扩展至 IDN；在电话号码判定中排除 ISO 日期形态（如 \\d{4}-\\d{2}-\\d{2}）。",
+      "files_allowed_to_change": [
+        "packages/adapters/src/reception-model.ts",
+        "tests/contracts/reception-model.test.ts"
+      ],
+      "dependencies": "无外部依赖。",
+      "risk": "过滤是启发式的。收紧会提高误判（把合法文本转人工），放宽会提高泄漏。NFKC 归一化可能改变其他规则对同一文本的判定，需回归全部既有用例。",
+      "rollback": "单文件纯函数改动，git revert 即可。",
+      "acceptance_criteria": [
+        "两条泄漏用例翻转为 HANDOFF",
+        "日期误判翻转为 REPLY",
+        "九条已正确过滤的用例保持过滤",
+        "七条普通文本保持 REPLY",
+        "既有回归守卫全部通过"
+      ],
+      "divergence_from_prior_audit": "GPT 侧 IA-004 标为 P2 CONFIRMED，方向正确，含日期误判这一用户点名项。本轮独立复测确认，并量化了两侧：9 条已正确处理、2 条泄漏、1 条误判，七条普通文本全部通过。未发现 GPT 遗漏项。"
+    },
+    {
+      "id": "KFF-B00-009",
+      "title": "dist/ 中存在不完整的构建产物（有 .sha256 而无 .zip，或有 .zip 而无目录）",
+      "severity": "P3",
+      "status": "HIGH_CONFIDENCE",
+      "historical_status": "OBSOLETE",
+      "prior_audit_id": null,
+      "batch": "B04",
+      "category": "packaging",
+      "file": "dist/",
+      "function": "n/a（产物目录）",
+      "line": "n/a",
+      "trigger_conditions": [
+        "列目录即可复现"
+      ],
+      "actual_behavior": {
+        "kff-controller-0.1.53-win32-x64-2c82a35912bf": "只有 .zip.sha256，无 .zip 也无目录",
+        "kff-controller-0.1.53-win32-x64-e3d87581551d": "只有 .zip.sha256，无 .zip 也无目录",
+        "kff-controller-0.1.53-win32-x64-984bc7dad026": "有 .zip 与 .zip.sha256，无解包目录"
+      },
+      "expected_behavior": "校验和文件应对应一个可验证的产物；或不应保留孤立的 .sha256。",
+      "root_cause": "UNVERIFIED —— 可能是构建中断、手工清理或刻意保留。本轮未调查成因。",
+      "cross_module_effect": "与 KFF-B00-005 同属「产物/文档基线歧义」：本机同时存在 8 个不同 hash 的 kff-agent-0.1.53 构建，无法从版本号判断现场装的是哪一个。",
+      "impact_scope": "交付与验收时的产物辨识。不直接影响运行。",
+      "minimal_reproduction": {
+        "command": "ls dist/*0.1.53*"
+      },
+      "evidence_path": "baseline.md 第 2.1 节",
+      "tests_to_add": [
+        "发布脚本应校验每个 .sha256 都有对应产物，或构建时清理孤立校验和"
+      ],
+      "minimal_fix": "确认成因后清理孤立 .sha256，或在构建脚本中加入产物-校验和配对检查。",
+      "files_allowed_to_change": [
+        "scripts/",
+        "dist/（清理，需用户确认）"
+      ],
+      "dependencies": "需先确认这些 hash 是否已被任何现场环境引用。",
+      "risk": "删除 dist/ 内容属对用户环境的实质改动。**本轮未执行任何 dist/ 写操作。**",
+      "rollback": "不适用（本轮未改动）。",
+      "acceptance_criteria": [
+        "每个 .sha256 都有对应产物，或孤立项已被明确登记"
+      ],
+      "divergence_from_prior_audit": "本轮新增（GPT 侧未记录）。属低优先级产物卫生问题，记录以备交付阶段核对。"
+    },
+    {
+      "id": "KFF-B00-010",
+      "title": "输入框「不存在」与「已有草稿」被合并进同一个条件，导致误报 DRAFT_PRESENT",
+      "severity": "P3",
+      "status": "CONFIRMED",
+      "historical_status": "OBSOLETE",
+      "prior_audit_id": null,
+      "batch": "B03",
+      "category": "code",
+      "file": "packages/adapters/src/facebook-browser-message.ts",
+      "function": "executeFacebookBrowserMessage",
+      "line": "L32",
+      "trigger_conditions": [
+        "写路径定位器 editor.count() 为 0 —— 成因可能是输入框确实不存在、读侧接受的 role 与写侧不一致（read 接受 role=combobox 或无 role 的 contenteditable，而 write 只认 getByRole('textbox')）、或英文界面下写侧正则大小写不匹配",
+        "或 count===1 但输入框内已有文本（这一种报告是正确的）"
+      ],
+      "actual_behavior": {
+        "code": "requireCondition(await editor.count()===1&&!(await editor.innerText()).trim(),'DRAFT_PRESENT','原会话已有草稿，请先人工处理');",
+        "on_count_zero": "条件为 false（count()===1 不成立）→ 抛出 DRAFT_PRESENT「原会话已有草稿，请先人工处理」",
+        "consequence": "操作员被要求去清理一个并不存在的草稿；照做无法解决问题，且系统不提供真实原因"
+      },
+      "expected_behavior": "输入框不存在或定位器无法寻址时应报出可辨原因（如 THREAD_COMPOSER_ABSENT / 定位器不匹配），与「已有草稿」区分开。",
+      "root_cause": "两条语义不同的前置条件被 && 合并进一个 requireCondition，并共用同一个错误码与提示文案。count===0 与「有草稿」在布尔上无法区分。",
+      "cross_module_effect": "与 KFF-B00-011 同源：读侧的接受集合（combobox / 无 role / 大小写不敏感）严格宽于写侧的定位器，因此读侧认为「输入框存在且可用」的页面，写侧可能 count()===0，并由本条报出误导性原因。两者叠加时，操作员会看到一个既无法解释也无法处理的死胡同。",
+      "impact_scope": "诊断与人工处置效率。方向安全（一律阻塞，不会误发），但会把「系统拒绝」变成「操作员不知道为何被拒绝」。",
+      "minimal_reproduction": {
+        "method": "源码事实，无需运行：读 L32 即可。亦可对 editor.count()===0 的分支做单元级隔离验证。",
+        "note": "本轮未构造真实 Messenger 页面复现；结论来自 L32 的布尔语义分析。"
+      },
+      "evidence_path": "packages/adapters/src/facebook-browser-message.ts:32（本轮已回读确认）",
+      "tests_to_add": [
+        "count===0 时必须抛出专门错误码，不得为 DRAFT_PRESENT",
+        "count===1 且已填文本时仍必须为 DRAFT_PRESENT",
+        "两种情形在测试中必须可区分"
+      ],
+      "minimal_fix": "拆成两个 requireCondition：先断言 count()===1（失败报 THREAD_COMPOSER_ABSENT），再断言无草稿（失败报 DRAFT_PRESENT）。",
+      "files_allowed_to_change": [
+        "packages/adapters/src/facebook-browser-message.ts",
+        "tests/contracts/facebook-browser-message.test.ts"
+      ],
+      "dependencies": "建议与 KFF-B00-011 同批处理，否则只改错误码仍会让操作员面对「读侧说可用、写侧说没有」的矛盾。",
+      "risk": "改动会改变操作员可见的错误码，若控制端或文档按错误码分支需同步。",
+      "rollback": "单文件改动，git revert 即可。",
+      "acceptance_criteria": [
+        "count===0 与有草稿产生不同的错误码",
+        "既有 DRAFT_PRESENT 语义在真正有草稿时保持不变"
+      ]
+    },
+    {
+      "id": "KFF-B00-011",
+      "title": "读探针与写定位器的接受集合不一致：role 范围更宽、大小写敏感度不同，英文界面下写侧无法寻址",
+      "severity": "P2",
+      "status": "CONFIRMED",
+      "historical_status": "OBSOLETE",
+      "prior_audit_id": null,
+      "batch": "B03",
+      "category": "code",
+      "file": "packages/adapters/src/facebook-inbox-directory-dom.ts",
+      "function": "inspectFacebookInboxComposerDom (L94-101) / composerNamePattern (L23-25) 与 facebook-browser-message.ts L30 的定位器",
+      "line": "facebook-inbox-directory-dom.ts L23-25, L63, L94-101；facebook-browser-message.ts L30",
+      "trigger_conditions": [
+        "真实 Messenger 的输入框以 role=combobox 暴露，或以裸 contenteditable 暴露而无 textbox 角色",
+        "Facebook 界面语言为英文（composer 标签形如 'Message Alice'）"
+      ],
+      "actual_behavior": {
+        "read_accepts": "L96 查询 [contenteditable=\"true\"],[contenteditable=\"\"],[role=\"textbox\"],[role=\"combobox\"]；L63 用 squash=value.replace(/\\s+/g,'').toLowerCase() 做大小写与空白归一化",
+        "write_accepts": "L30 只有 page.locator('main').getByRole('textbox',{name:composerNamePattern(...)})；L23-25 的 composerNamePattern 构造 RegExp 时**未加 i 标志**",
+        "role_divergence": "读侧接受 combobox 与无 role 的 contenteditable，写侧 getByRole('textbox') 均不匹配 → 写侧 count()===0",
+        "case_divergence": "读侧 squash 后 'MessageAlice' 命中 'messagealice'；写侧正则 ^(?:...|message)\\s*Alice$ 对 'Message Alice' 不匹配（'M' ≠ 'm'）→ 写侧 count()===0",
+        "observed_direction": "两个分歧都**fail-closed**：写侧阻塞，然后由 KFF-B00-010 报出误导性的 DRAFT_PRESENT。不会误发到错误线程。"
+      },
+      "expected_behavior": "读侧与写侧对「哪个输入框是目标」必须给出同一答案；若写侧无法寻址读侧已接受的输入框，应报出定位器分歧本身，而不是草稿存在。",
+      "root_cause": "读侧与写侧各自实现了同一规则的**两份**代码：读侧是 DOM 遍历 + 归一化比较，写侧是 Playwright role 定位器 + 未归一化的正则。文件 L4-10 的注释声称两者共用同一套规则，但共用的是**前缀表与 peer 名**，role 范围与大小写敏感度并未共用。",
+      "cross_module_effect": "英文界面下，环境 locale 校验（environment-child.ts L32-35 要求 navigator.language 等于 configuration.locale）不会阻止 Facebook 自身以英文渲染 —— 仓库内已有实例：某真实 profile 配置为 locale en-US 但抓到的标签是中文（docs/evidence/c-inbox-fixed-043-20260914.json:31），说明 Facebook UI 语言与浏览器 locale 相互独立。因此英文形态是现实可达的。",
+      "impact_scope": "英文界面或 combobox 形态下，**整个发送能力不可用**（阻塞而非误发）。由于 KFF 的既定目标市场包含中文与英文客户，这是功能性缺口而非纯诊断问题。",
+      "minimal_reproduction": {
+        "read_only_fixture": "tests/browser/fixtures/facebook-inbox-directory.spec.ts:205 已有一条英文读侧用例（'Message Peer Fullname'），但**写侧无对应用例**",
+        "note": "本轮未对真实 Messenger 页面复现；结论来自两侧源码的接受集合比对。"
+      },
+      "evidence_path": "本轮回读证据：facebook-inbox-directory-dom.ts:23-25/63/96-101 与 facebook-browser-message.ts:30",
+      "existing_test_gap": "tests/browser/fixtures/facebook-composer-consistency.spec.ts 的 7 条用例**全部为中文标签**（发消息给/发信息给/搜索/其他姓名），唯一一条英文用例在 facebook-inbox-directory.spec.ts:205 且只覆盖读侧。该 fixture 用手写 <main> 合成 DOM，不覆盖真实 Messenger 的 role 形态。",
+      "tests_to_add": [
+        "读侧接受组合中的每一种（combobox、无 role 的 contenteditable、textbox）都必须能被写侧定位器寻址，否则必须报出定位器分歧",
+        "英文标签 'Message Peer' 的写侧定位器用例（当前仅读侧有）",
+        "该 fixture 的既有中文用例不得回归"
+      ],
+      "minimal_fix": "让写侧复用读侧的接受集合：或给 composerNamePattern 加 i 标志并对 peer 与前缀做同一套 squash，或改为按读侧同一套 DOM 探针定位元素。",
+      "files_allowed_to_change": [
+        "packages/adapters/src/facebook-inbox-directory-dom.ts",
+        "packages/adapters/src/facebook-browser-message.ts",
+        "tests/browser/fixtures/facebook-composer-consistency.spec.ts"
+      ],
+      "dependencies": "与 KFF-B00-010 同批。修复方向需先确定真实 Messenger 的输入框 role（**当前仓库无该证据**，见 cannot_verify）。",
+      "risk": "放宽写侧定位会降低「不唯一即拒绝」的严格性；必须保持 count>1 时仍然拒绝（THREAD_COMPOSER_AMBIGUOUS）。",
+      "rollback": "单文件改动，git revert 即可。改错方向会导致定位到非目标输入框，回退优先级高。",
+      "acceptance_criteria": [
+        "读侧接受的任一 role 形态，写侧均能寻址或明确报出分歧",
+        "英文标签下写侧可寻址",
+        "count>1 仍然拒绝，不得退化为「取第一个」",
+        "既有中文 fixture 用例全部保持通过"
+      ],
+      "divergence_from_prior_audit": "本轮新增（GPT 侧未记录）。来源为本轮新增的 Inbox/Messenger 专项审计，结论已由本审计方独立回读源码复核确认（见 evidence_path）。"
+    },
+    {
+      "id": "KFF-B00-012",
+      "title": "命名为 real-browser-message 的测试从不执行浏览器执行器；composer 一致性 fixture 亦不证明真实 Messenger",
+      "severity": "P2",
+      "status": "CONFIRMED",
+      "historical_status": "OBSOLETE",
+      "prior_audit_id": null,
+      "batch": "B04",
+      "category": "verification-gap",
+      "file": "tests/integration/real-browser-message.test.ts",
+      "function": "n/a（测试文件）",
+      "line": "全文件（本轮实测）",
+      "trigger_conditions": [
+        "静态事实；grep 可复现"
+      ],
+      "actual_behavior": {
+        "executor_invocations": "grep -c 'executeFacebookBrowserMessage' tests/integration/real-browser-message.test.ts → **0**",
+        "imports": "该测试只 import scripts/migrate、scripts/seed、@kff/database、@kff/contracts、@kff/core、以及 packages/core/src 下的领域函数（service/environments/browser-inbox/facebook-inbound/lead-reception/contacts/permits/costs/capabilities/execution/reconciliation）。**没有任何 packages/adapters 的导入。**",
+        "what_it_actually_tests": "纯 Postgres 契约测试：手工构造 inbox_page 报告对象与 browser_message 回执对象，再断言数据库管线（许可、acceptReport 校验、echo 归并、幂等去重、UNKNOWN_OUTCOME 隔离、adjudication）",
+        "same_for": "tests/integration/messenger-pilot.test.ts 同为纯数据库姿态（自设 KFF_FACEBOOK_APP_SECRET 伪造已签名 webhook）",
+        "only_executor_test": "tests/contracts/facebook-browser-message.test.ts:21-24，仅断言 KFF_ENABLE_LIVE 关闭时执行器以 LIVE_DISABLED 拒绝"
+      },
+      "expected_behavior": "测试名称应反映其真实覆盖范围；或补充真正调用执行器的测试。",
+      "root_cause": "测试按「真实业务流程」命名（real-browser-message），但其隔离手段是**替换掉浏览器**、只保留数据库半段。这是合理的测试策略，但名称使读者以为浏览器侧被覆盖。",
+      "cross_module_effect": "与 KFF-B00-007、KFF-B00-011 构成同一结论：**浏览器交互路径的自动化覆盖几乎全部来自手写 DOM fixture，而非真实页面**。因此 (1) 接待类规则缺陷不可能被真实路径端到端暴露（KFF-B00-007）；(2) 读/写定位器分歧（KFF-B00-011）不会被任何现有测试发现；(3) 全项目历史上只有 1 次自动验证成功的真实发送。",
+      "impact_scope": "验收与发布决策所依赖的证据基础。任何以「有 real-browser-message 测试」为由认定浏览器链路已验收的判断都不成立。",
+      "minimal_reproduction": {
+        "command": "grep -c 'executeFacebookBrowserMessage' tests/integration/real-browser-message.test.ts",
+        "expected": "0"
+      },
+      "evidence_path": "本轮实测：导入清单与 grep 计数（见 test-results.md）",
+      "tests_to_add": [
+        "若保留该名称，应至少有 1 条测试真实调用 executeFacebookBrowserMessage（哪怕是 fail-closed 断言）",
+        "或将其重命名为 tests/integration/browser-message-pipeline.test.ts，使名称与覆盖范围一致",
+        "对 facebook-composer-consistency.spec.ts 显式标注「合成 DOM，不证明真实 Messenger」"
+      ],
+      "minimal_fix": "重命名或在文件头显式声明覆盖边界；不建议为此引入真实浏览器依赖（那属于 B05 受控试点的范围）。",
+      "files_allowed_to_change": [
+        "tests/integration/real-browser-message.test.ts",
+        "tests/integration/messenger-pilot.test.ts",
+        "tests/browser/fixtures/facebook-composer-consistency.spec.ts"
+      ],
+      "dependencies": "无。",
+      "risk": "重命名会影响 CI 脚本与 package.json 中的套件划分，需同步。",
+      "rollback": "重命名可逆。",
+      "acceptance_criteria": [
+        "测试名称与其真实覆盖范围一致，或存在真实调用执行器的用例"
+      ]
+    },
+    {
+      "id": "KFF-B00-013",
+      "title": "RLS 只是 scoped() 路径的局部防线：query()/transaction() 出口完全绕过 RLS，且该边界无任何自动检查",
+      "severity": "P2",
+      "status": "CONFIRMED",
+      "historical_status": "OBSOLETE",
+      "prior_audit_id": null,
+      "batch": "B04",
+      "category": "verification-gap",
+      "file": "packages/database/src/index.ts",
+      "function": "query (L11) / transaction (L12-17) / scoped (L18-24)",
+      "line": "L11, L12-17, L18-24（隔离开关在 L21 的 SET LOCAL ROLE kff_app）",
+      "trigger_conditions": [
+        "任何新增或修改的代码用 query() 或 transaction() 读写租户数据，而非 scoped()",
+        "无触发条件即可静态复现（grep 统计出口使用分布）"
+      ],
+      "actual_behavior": {
+        "three_exits": "只有 scoped() 执行 SET LOCAL ROLE kff_app；query() 与 transaction() 均以 DATABASE_URL 用户身份运行",
+        "pool_options": "L8 的连接参数 options 仅为 '-c timezone=UTC'，不含 role",
+        "measured_distribution": "scoped() 190+ 处（覆盖 core 域层人驱动路径）；裸 transaction() 32 处；裸 query() 14 处",
+        "audited_usage": "32 处 transaction() 全部属于「worker 跨租户认领队列」；14 处 query() 全部属于「作用域尚不存在的前置解析（agent token、webhook page_id、channelScope、支付连接）」。**本轮未发现误用。**",
+        "no_check": "不存在任何测试、lint 或运行时断言，能够发现「本应使用 scoped() 却用了 query()/transaction()」的新代码"
+      },
+      "expected_behavior": "三出口的使用边界应有自动约束，使误用无法静默通过。",
+      "root_cause": "隔离依赖三个导出函数的**约定**，而非类型或运行时不变量。scope 参数在类型上无法被强制要求。",
+      "cross_module_effect": "这解释了「RLS 保护了系统」这一笼统说法的边界：88/91 张表确实启用了 RLS，但 RLS 只在那 190+ 个 scoped() 调用点上生效。RLS 是纵深防御层，不是全局兜底；全局兜底仍是每个查询里手写的 WHERE organization_id=... AND brand_id=...。",
+      "impact_scope": "架构性风险与验证缺口，**不是已发生的缺陷**。本轮逐点核对未发现越权实例（见 migration-audit.md 第 4、7 节）。记录此条是为了让未来的新增代码不能悄悄绕过。",
+      "minimal_reproduction": {
+        "command": "grep -rn \"(^|[^.\\\\w])(query|transaction|scoped)\\\\s*[(<]\" packages/core/src apps",
+        "note": "按出口统计分布，对照是否所有租户数据访问都在 scoped() 内"
+      },
+      "evidence_path": "migration-audit.md 第 4 节（含完整出口分布表）",
+      "tests_to_add": [
+        "M1：以租户 A 的 scope 经 scoped() 读取租户 B 的对象，必须得到空结果（这是唯一能证明 RLS 生效的测试）",
+        "M2：断言 kff_app 对 audit_events / approval_decisions / content_versions / inbound_events 四表的 UPDATE 被拒绝",
+        "M3：静态守卫测试 —— 断言处理租户数据的模块必须经 scoped()（可做成 lint 规则或源码断言）",
+        "M7：断言 agent_single_execution_slot 部分唯一索引生效"
+      ],
+      "minimal_fix": "n/a（不是缺陷）。建议补 M1-M3 三项测试；M1 是「RLS 真的生效」目前唯一缺失的直接证据。",
+      "files_allowed_to_change": [
+        "tests/"
+      ],
+      "dependencies": "M1/M2/M7 需要独立测试数据库（KFF_TEST_DATABASE 且库名匹配 /^kff_test_[a-f0-9]{20}$/）。本轮未执行。",
+      "risk": "无（仅补测试）。",
+      "rollback": "不适用。",
+      "acceptance_criteria": [
+        "存在直接断言 RLS 越权读取返回空结果的测试",
+        "四表 UPDATE 回收有断言",
+        "三出口误用存在自动检测"
+      ]
+    },
+    {
+      "id": "KFF-B00-014",
+      "title": "冻结支付模块：人工确认闸位于入队时刻，worker 之后会自动发起 Stripe 调用",
+      "severity": "P3",
+      "status": "CONFIRMED",
+      "historical_status": "OBSOLETE",
+      "prior_audit_id": null,
+      "batch": "B04",
+      "category": "design-tradeoff",
+      "file": "packages/core/src/payment-worker.ts",
+      "function": "Checkout 创建 (L81) / Refund 发起 (refund-worker.ts L40)",
+      "line": "payment-worker.ts L81；refund-worker.ts L40",
+      "trigger_conditions": [
+        "管理员在 /orders 段发起退款或结账并入队，且 worker 正在运行，且 Stripe 连接非 TEST 模式（或 KFF_ENABLE_LIVE==='true'）"
+      ],
+      "actual_behavior": {
+        "gate_position": "人工确认发生在**入队时刻**（管理员操作）。之后 worker 取出队列项即调用 Stripe，**没有第二次人工确认**",
+        "checkout": "payment-worker.ts:81 自动创建 Stripe Checkout Session",
+        "refund": "refund-worker.ts:40 自动发起 Refund",
+        "mitigation": "cancelUnsubmittedRefund（refunds.ts:57，admin 门控）可在未提交前取消；窗口为入队到 worker 取件之间",
+        "safety_gate": "payments.ts:25 LIVE_DISABLED —— 要求 connection.mode==='TEST' 或 KFF_ENABLE_LIVE==='true'。默认关闭"
+      },
+      "expected_behavior": "n/a —— 属设计取舍（队列即授权），非缺陷主张。记录以备产品决策。",
+      "root_cause": "n/a",
+      "cross_module_effect": "不影响 Facebook V1：独立表、独立队列、独立 worker 循环，无共享状态。冻结状态属实。",
+      "impact_scope": "「钱」的路径上的操作可逆性。管理员在入队后反悔的时间窗很短。这不是 Facebook 试点的前置条件（用户已明确不要把支付重构列为前置）。",
+      "minimal_reproduction": {
+        "commands": [
+          "grep -n 'LIVE_DISABLED' packages/core/src/payments.ts",
+          "grep -n 'checkout.sessions.create' packages/core/src/payment-worker.ts"
+        ]
+      },
+      "evidence_path": "packages/core/src/payment-worker.ts:81、refund-worker.ts:40、payments.ts:25（本轮静态核查）",
+      "tests_to_add": [
+        "断言 KFF_ENABLE_LIVE 未开启时 worker 无法对真实连接发起调用",
+        "断言 cancelUnsubmittedRefund 在 worker 取件后确实无法再取消（明确边界）"
+      ],
+      "minimal_fix": "n/a（不建议在 Facebook 试点前改动）。若产品要求，可在 worker 发起前增加二次确认标志。",
+      "files_allowed_to_change": [
+        "packages/core/src/payment-worker.ts",
+        "packages/core/src/refund-worker.ts"
+      ],
+      "dependencies": "属范围 A 冻结模块。**不应作为 B01-B05 的前置条件。**",
+      "risk": "改动支付路径风险高且不在本轮范围。",
+      "rollback": "n/a（本轮未改动）。",
+      "acceptance_criteria": [
+        "产品侧明确接受或拒绝当前闸位；本轮不执行改动"
+      ]
+    },
+    {
+      "id": "KFF-B00-015",
+      "title": "集成测试的数据库确已隔离,但运行目录仍落回真实项目 .kff/",
+      "severity": "P3",
+      "status": "CONFIRMED",
+      "historical_status": null,
+      "prior_audit_id": null,
+      "batch": "B04",
+      "category": "verification-integrity / test-isolation",
+      "file": "scripts/integration.ts, tests/integration/local-supervision.test.ts, tests/integration/existing-database.test.ts",
+      "function": "integration runner env injection / it(drains the actual Worker) / it(starts only an existing cluster)",
+      "line": "scripts/integration.ts:13; tests/integration/local-supervision.test.ts:73,78; tests/integration/existing-database.test.ts:31",
+      "trigger_conditions": "运行 pnpm test:integration(或 node --import tsx scripts/integration.ts)执行整个集成套件",
+      "actual_behavior": "数据库隔离成立:scripts/integration.ts:13 向子进程显式注入 DATABASE_URL(指向 kff_test_<20hex>)与 KFF_TEST_DATABASE,退出码为 0 时 DROP 该库 —— 任何测试都不会写用户日常库。但同一行的 env 还把 KFF_ROOT 显式设为真实项目根 path.resolve(.)。于是 local-supervision.test.ts:78 用 env: process.env 派生的真实 Worker(apps/worker/src/main.ts)继承到 KFF_ROOT=真实根,其运行目录就是用户日常的 .kff/(会读取真实 .kff/agent-config.json);而同文件 L51 的 Agent 用例却把 KFF_ROOT 显式钉到临时目录 —— 同一文件内两个用例的环境一致性策略不一致。此外 local-supervision.test.ts:73 与 existing-database.test.ts:31 均以固定文件名把报告写进真实 .kff/checks/(local-supervision-agent-<mode>.json、existing-database.json),而该目录是仓库约定的共享证据目录(docs/tasks/ledger.json 的 --outputFile=.kff/checks/...、docs/api/database-recovery.md 的 backup-restore-UUID.json)。",
+      "expected_behavior": "集成测试的全部运行期写入(运行目录 + 证据报告)应限制在临时目录内;或至少在文档中明确声明本套件会写入真实 .kff/ 并要求先停用户日常 Worker。",
+      "root_cause": "隔离机制只覆盖了数据库这一维(DATABASE_URL/KFF_TEST_DATABASE),未覆盖运行目录维。KFF_ROOT 被显式设为真实根,本意是让测试读到真实 .kff/local-config.json,副作用是运行目录也一并落回真实根。",
+      "cross_module_effect": "若用户日常 Worker 正在运行,该用例会向同一 .kff/ 运行目录派生第二个 Worker。两者是否互斥取决于 Worker 侧是否持有 process.lock —— Agent 侧确有(apps/agent/src/main.ts),Worker 侧本轮未核实(见 CV-11)。",
+      "impact_scope": "仅影响测试与审计的可复现性/隔离性,不影响生产运行路径,不写用户日常库。需要强调的是:这是本轮判定「不能执行集成套件」的具体依据,而依据不是数据库。",
+      "minimal_reproduction": "只读静态事实,无需运行:scripts/integration.ts:13、tests/integration/local-supervision.test.ts:73,78、tests/integration/existing-database.test.ts:31。",
+      "evidence_path": "源码行号(本轮为静态核对,未运行该套件);.kff/checks/ 的实际内容本轮未读取(属用户工作区)。",
+      "probe_source": "静态核对;由迁移审计子代理提出的「test:contracts 是否触库」UNVERIFIED 项触发追查,追查中反转出本条。",
+      "existing_test_gap": "无任何测试断言「集成套件不得写入真实 .kff/ 运行目录」。",
+      "tests_to_add": "① 断言集成测试的全部运行期写入位于 mkdtemp 根内(目录快照比对,或对 KFF_ROOT 加守卫);② 若确需写入共享证据目录,断言文件名含 synthetic 或唯一后缀,以免覆盖既有报告。",
+      "minimal_fix": "把 local-supervision.test.ts:78 的 env 改为显式构造(与 L51 一致,把 KFF_ROOT 钉到临时根);两处报告写入改到临时根,或文件名加 -synthetic-<uuid> 后缀。",
+      "files_allowed_to_change": "tests/integration/local-supervision.test.ts, tests/integration/existing-database.test.ts, scripts/integration.ts",
+      "dependencies": "无。",
+      "risk": "把 L78 的 KFF_ROOT 钉到临时根后,Worker 将读取临时根下的 agent-config.json;该文件可能不存在(临时根下只有测试自己建的内容),可能导致该用例直接失败 —— 这是修复前必须先验证的点。",
+      "rollback": "纯测试文件改动,git revert。",
+      "acceptance_criteria": "① 集成套件运行前后,真实 .kff/ 无新增或改动文件;② local-supervision 两个用例的 KFF_ROOT 处理一致;③ 该用例仍能验证 Worker 的 RUNNING→DRAINING→DRAINED 协议。",
+      "divergence_from_prior_audit": "前轮未记录。本轮先怀疑该用例会写用户日常库,随后被 scripts/integration.ts:13 的 DATABASE_URL 注入否证 —— 数据库隔离成立,故降级为 P3,并明确它不属于数据安全缺陷。"
+    }
+  ],
+  "cannot_verify": [
+    {
+      "id": "CV-01",
+      "item": "已有多少真实客户被旧退订规则或当前规则误写为 OPTED_OUT",
+      "why": "需查询生产库。本轮按用户约束未打开任何数据库。",
+      "not_a_bug": true
+    },
+    {
+      "id": "CV-02",
+      "item": "AI 输出过滤的泄漏方向在真实 provider 下是否可达",
+      "why": "需调用真实模型（DeepSeek 等）。本轮未发起任何外部模型调用。",
+      "not_a_bug": true
+    },
+    {
+      "id": "CV-03",
+      "item": "真实 Messenger composer 路径是否与 fixture 语义一致",
+      "why": "需真实 AdsPower profile 与真实 Facebook 会话。本轮 fixture 层未执行（见 test-results.md 的隔离说明）。",
+      "not_a_bug": true
+    },
+    {
+      "id": "CV-04",
+      "item": "WhatsApp referral 的并发 cancel-versus-dispatch 竞态",
+      "why": "round2 自述未覆盖该竞态；本轮未执行集成测试（无法证明数据库隔离）。",
+      "not_a_bug": true
+    },
+    {
+      "id": "CV-05",
+      "item": "2 / 5 / 30 账号并发容量与稳定性",
+      "why": "需真实账号与负载。round2 自述 no load。",
+      "not_a_bug": true
+    },
+    {
+      "id": "CV-06",
+      "item": "KFF-B00-002 的「存活子进程 send 失败」方向（孤儿守护 + 未关闭浏览器上下文）",
+      "why": "依据 Node 文档的 error 触发条件与 guardian.ts L40 代码推定为 HIGH_CONFIDENCE，本轮未直接复现存活子进程的 send 失败。已并入 KFF-B00-002 的 impact_scope，未单列为独立缺陷。",
+      "not_a_bug": true
+    },
+    {
+      "id": "CV-07",
+      "item": "发送前最后一个校验点到 send.click({force:true}) 之间的亚秒级窗口是否可被利用",
+      "why": "facebook-browser-message.ts 的 current() 在 L39 做 URL + DOM 指纹校验，L41 做按钮命中检查，L42 执行 send.click({force:true})，**两点之间没有进一步校验**。若 Facebook 在该窗口内切换线程，且新线程存在同形状元素，则无法在那一瞬间区分。元素若已脱离则抛错 → UNKNOWN_OUTCOME（安全方向）。本轮无法在真实页面重现该窗口，未构造复现，**不计为缺陷**。只在源码层确认「该校验点不存在」这一事实。",
+      "not_a_bug": true
+    },
+    {
+      "id": "CV-08",
+      "item": "正文含 NBSP 或不规则空白时是否会被误判为 APPROVAL_STALE",
+      "why": "facebook-browser-message.ts L38/L40 用 (await editor.innerText()).trim()===snapshot.body 做全等比较，而 innerText 会重排空白。含 NBSP 的正文可能无法通过该全等 → 拒绝发送（安全方向）。标签侧的空白归一化已有 fixture 覆盖（facebook-composer-consistency.spec.ts:13），**正文侧无覆盖，本轮亦未对真实编辑器验证**。",
+      "not_a_bug": true
+    },
+    {
+      "id": "CV-09",
+      "item": "真实 Messenger 输入框的 role 实际是什么（textbox / combobox / 无 role）",
+      "why": "KFF-B00-011 的修复方向取决于此，而**仓库内没有任何真实 composer 的 role 证据**——所有 composer 证据都来自手写 fixture。本轮未接触真实 Facebook 页面，无法取得。这是 KFF-B00-011 从 CONFIRMED 走向可修复之间的唯一未知量。",
+      "not_a_bug": true
+    },
+    {
+      "id": "CV-10",
+      "item": "真实页面上「多个输入框」与「英文界面」两种形态的行为",
+      "why": "facebook-inbox-directory.spec.ts 对多输入框与英文标签均有合成 DOM 用例，但真实页面上的这两种形态从未被演练。本轮未接触真实页面。",
+      "not_a_bug": true
+    },
+    {
+      "id": "CV-11",
+      "item": "Worker 侧是否持有 process.lock(决定第二个 Worker 能否与用户日常 Worker 并存)",
+      "why": "本轮只静态确认 Agent 侧有 process.lock(apps/agent/src/main.ts),未读 Worker 侧源码,也未运行任何 Worker 进程。",
+      "not_a_bug": "无法核实的运行时行为。KFF-B00-015 的「派生第二个 Worker」后果因此标为未定。"
+    }
+  ],
+  "round2_self_reported_items_not_independently_confirmed": [
+    {
+      "item": "KFF-R01 已修复并验证",
+      "b00_finding": "KFF-B00-001 证明 optOut 与 bareStop 仍存在漏判与否定误判，实测 U+2019 形态与 'do not stop texting' 均不正确。R01 声称关闭了 'Please don\\'t stop.' 等案例（本轮复测确认这些确实已修复），但同一规则族仍存在新形态缺陷。判定 PARTIALLY_FIXED。"
+    },
+    {
+      "item": "KFF-R02 已修复并验证",
+      "b00_finding": "round2 自述为 partially_repaired 且进程级回归不存在。本轮把未覆盖的原因定位到 guardian.ts L59 的 error 分支（KFF-B00-002），并确认导出与注释声称的 unit contract 不存在（KFF-B00-004）。"
+    },
+    {
+      "item": "KFF-R04 已修复并验证",
+      "b00_finding": "本轮复测确认 R04 声称的 5 类 ASCII 目的地（+44 7700 900123、+1 (202) 555-0123、www.example.com、example.com/pay、sales@example.com）确实已被过滤。但全角与 IDN 形态仍泄漏（KFF-B00-008）。判定 PARTIALLY_FIXED。"
+    },
+    {
+      "item": "round2 的全部验证数字（374 unit、412 integration、131 fixtures）",
+      "b00_finding": "docs/evidence/audit-repair-round2-20260917.json L37 自述原始输出只留在被忽略的 .kff/checks 目录，因此**该证据不可从仓库独立复现**，只能采信其记录摘要。本轮不把这些数字当作本轮结果，也不重复执行产生它们的套件（见 test-results.md）。"
+    }
+  ],
+  "next_batch_recommendation": {
+    "proceed_to_b01": true,
+    "reason": "发现 3 项 P1，其中 KFF-B00-002 是可复现的主业务链永久阻塞且重启不自愈，属必须在试点前修复的项。KFF-B00-001 与 KFF-B00-006 虽在真实浏览器路径上为潜伏态，但修复成本低且误判方向会永久丢弃客户资产。",
+    "b01_scope_proposal": [
+      "KFF-B00-002：error 分支纳入终止证据逻辑（最高优先，唯一影响可用性的 P1）",
+      "KFF-B00-004：恢复启动失败路径的进程级回归与开关条件测试",
+      "KFF-B00-003：closureProof / compactClosure 保留「从未打开」语义",
+      "KFF-B00-005：更新唯一入口页并在 verify-planning 中加入陈旧检测（建议在 B01 代码合并后定稿，避免 SHA 再次漂移）"
+    ],
+    "do_not_start_this_round": "用户明确指示本轮只执行 B00，完成即停止，不得自行进入 B01。以上仅为建议，需由规划侧下发。"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "kff-b00-repro",
+  "private": true,
+  "type": "module",
+  "description": "B00 isolated verification probes. Read-only: loads the frozen KFF modules, never modifies the checkout."
+}

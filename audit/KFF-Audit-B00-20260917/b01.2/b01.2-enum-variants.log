@@ -1,0 +1,100 @@
+===== variants under load =====
+start=2026-09-18T08:40:17+08:00
+ENUM-VARIANTS load=8 trials=4 cap=8000ms logical_cpus=8
+synthetic tree: root=10512 mid=26620 leaf=29740  (mid.ppid must be root, leaf.ppid must be mid)
+load armed: 8 spinners (1.00x logical cores)
+A-current     ok=4/4  median=2002ms  p90=2019ms  max=2019ms  rows=344
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=0/4 2500ms=4/4 5000ms=4/4  fails=none
+             现行实现：Get-CimInstance + 字符串插值
+B-cim-props   ok=4/4  median=2285ms  p90=2417ms  max=2417ms  rows=344
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=0/4 2500ms=4/4 5000ms=4/4  fails=none
+             只取两个属性，去掉插值
+C-cim-join    ok=4/4  median=2160ms  p90=2512ms  max=2512ms  rows=346
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=0/4 2500ms=3/4 5000ms=4/4  fails=none
+             一次管道取回后内存拼行
+D-wmi         ok=4/4  median=2197ms  p90=2243ms  max=2243ms  rows=345
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=0/4 2500ms=4/4 5000ms=4/4  fails=none
+             旧 API Get-WmiObject
+E-wmic        ok=0/4  median=4ms  p90=5ms  max=5ms  rows=0
+             parent_child: no_rows
+             finish_in: 1250ms=4/4 2500ms=4/4 5000ms=4/4  fails=SPAWN_ERROR
+             wmic CSV（新版本可能已移除）
+F-tasklist    ok=0/4  median=8017ms  p90=8024ms  max=8024ms  rows=0
+             parent_child: no_rows
+             finish_in: 1250ms=0/4 2500ms=0/4 5000ms=0/4  fails=TIMEOUT
+             tasklist：须实测是否含 PPID 列
+H-cim-query   ok=4/4  median=1173ms  p90=1703ms  max=1703ms  rows=0
+             parent_child: not_applicable(no_parent_data)
+             finish_in: 1250ms=3/4 2500ms=4/4 5000ms=4/4  fails=none
+             只做 CIM 查询不格式化：分离查询与格式化成本
+G-startup     ok=0/4  median=529ms  p90=648ms  max=648ms  rows=0
+             parent_child: not_applicable(no_parent_data)
+             finish_in: 1250ms=4/4 2500ms=4/4 5000ms=4/4  fails=EMPTY_OUTPUT
+             空 powershell 启动成本下界
+I-currentHi   ok=4/4  median=1802ms  p90=1847ms  max=1847ms  rows=345
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=0/4 2500ms=4/4 5000ms=4/4  fails=none
+             现行实现 + 自身 PriorityClass=High
+J-propsHi     ok=4/4  median=1333ms  p90=1428ms  max=1428ms  rows=345
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=0/4 2500ms=4/4 5000ms=4/4  fails=none
+             B 的命令 + PriorityClass=High
+K-startupHi   ok=0/4  median=621ms  p90=716ms  max=716ms  rows=0
+             parent_child: not_applicable(no_parent_data)
+             finish_in: 1250ms=4/4 2500ms=4/4 5000ms=4/4  fails=EMPTY_OUTPUT
+             空 powershell + High：高优先级能否改善启动下界
+load stopped, synthetic tree ended
+
+ENUM-VARIANTS load=16 trials=3 cap=12000ms logical_cpus=8
+synthetic tree: root=27888 mid=19428 leaf=21232  (mid.ppid must be root, leaf.ppid must be mid)
+load armed: 16 spinners (2.00x logical cores)
+A-current     ok=3/3  median=8499ms  p90=10511ms  max=10511ms  rows=359
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=0/3 2500ms=0/3 5000ms=0/3  fails=none
+             现行实现：Get-CimInstance + 字符串插值
+B-cim-props   ok=2/3  median=8642ms  p90=12065ms  max=12065ms  rows=359
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=0/3 2500ms=0/3 5000ms=0/3  fails=TIMEOUT
+             只取两个属性，去掉插值
+C-cim-join    ok=3/3  median=7206ms  p90=8134ms  max=8134ms  rows=360
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=0/3 2500ms=0/3 5000ms=0/3  fails=none
+             一次管道取回后内存拼行
+D-wmi         ok=3/3  median=5315ms  p90=8927ms  max=8927ms  rows=360
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=0/3 2500ms=0/3 5000ms=1/3  fails=none
+             旧 API Get-WmiObject
+E-wmic        ok=0/3  median=17ms  p90=18ms  max=18ms  rows=0
+             parent_child: no_rows
+             finish_in: 1250ms=3/3 2500ms=3/3 5000ms=3/3  fails=SPAWN_ERROR
+             wmic CSV（新版本可能已移除）
+F-tasklist    ok=0/3  median=12037ms  p90=12041ms  max=12041ms  rows=0
+             parent_child: no_rows
+             finish_in: 1250ms=0/3 2500ms=0/3 5000ms=0/3  fails=TIMEOUT
+             tasklist：须实测是否含 PPID 列
+H-cim-query   ok=3/3  median=1654ms  p90=1809ms  max=1809ms  rows=0
+             parent_child: not_applicable(no_parent_data)
+             finish_in: 1250ms=0/3 2500ms=3/3 5000ms=3/3  fails=none
+             只做 CIM 查询不格式化：分离查询与格式化成本
+G-startup     ok=0/3  median=962ms  p90=1034ms  max=1034ms  rows=0
+             parent_child: not_applicable(no_parent_data)
+             finish_in: 1250ms=3/3 2500ms=3/3 5000ms=3/3  fails=EMPTY_OUTPUT
+             空 powershell 启动成本下界
+I-currentHi   ok=3/3  median=3322ms  p90=3364ms  max=3364ms  rows=356
+             parent_child: mid->root=MISSING leaf->mid=MISSING dup_pids=0
+             finish_in: 1250ms=0/3 2500ms=0/3 5000ms=3/3  fails=none
+             现行实现 + 自身 PriorityClass=High
+J-propsHi     ok=3/3  median=3225ms  p90=3248ms  max=3248ms  rows=355
+             parent_child: mid->root=MISSING leaf->mid=MISSING dup_pids=0
+             finish_in: 1250ms=0/3 2500ms=0/3 5000ms=3/3  fails=none
+             B 的命令 + PriorityClass=High
+K-startupHi   ok=0/3  median=905ms  p90=909ms  max=909ms  rows=0
+             parent_child: not_applicable(no_parent_data)
+             finish_in: 1250ms=3/3 2500ms=3/3 5000ms=3/3  fails=EMPTY_OUTPUT
+             空 powershell + High：高优先级能否改善启动下界
+load stopped, synthetic tree ended
+end=2026-09-18T08:44:41+08:00

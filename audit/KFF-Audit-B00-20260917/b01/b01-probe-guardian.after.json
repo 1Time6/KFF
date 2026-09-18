@@ -1,0 +1,100 @@
+﻿{
+  "probe": "guardian",
+  "repo": "C:/Users/17731/Desktop/KFF",
+  "spawn_event_observation": {
+    "events": [
+      "error:ENOENT",
+      "close:-4058"
+    ],
+    "cwd_used": "C:\\Users\\17731\\AppData\\Local\\Temp\\kff-b00-does-not-exist-b0025cae-d196-44e8-a975-767d4b6c28cc",
+    "exit_event_emitted": false
+  },
+  "guardian_real_spawn_error": {
+    "injected_failure": "spawn cwd does not exist (real ENOENT from libuv)",
+    "caller_rejected_with": {
+      "code": "GUARDIAN_STARTUP_FAILED",
+      "name": "AppError",
+      "message": "执行进程在启动阶段退出，没有浏览器上下文可以关闭"
+    },
+    "startup_failure_record_written": true,
+    "record_contents": {
+      "protocol_version": "kff.guardian-closure-startup-failed.v1",
+      "command_id": "a2c1257a-7084-4735-86e3-502d082b08ea",
+      "action_id": "69f593fc-092a-4c29-8fbe-635b3f764f29",
+      "nonce": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "closed_at": "2026-09-17T09:51:42.084Z",
+      "context_opened": false,
+      "result": {
+        "outcome": "CANCELED",
+        "error_code": "GUARDIAN_STARTUP_FAILED",
+        "diagnostic": {
+          "step": "guardian-startup-failed"
+        }
+      }
+    },
+    "journal_after": {
+      "command_id": "a2c1257a-7084-4735-86e3-502d082b08ea",
+      "action_id": "69f593fc-092a-4c29-8fbe-635b3f764f29",
+      "phase": "claimed",
+      "guardian_nonce": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "quarantined": true
+    },
+    "flushActionJournal_result": false,
+    "flushActionJournal_threw": null,
+    "controller_calls_made": [
+      "commands/a2c1257a-7084-4735-86e3-502d082b08ea/status"
+    ]
+  },
+  "guardian_intended_fault_switch": {
+    "fault_switch_active": true,
+    "caller_rejected_with": {
+      "code": "GUARDIAN_STARTUP_FAILED",
+      "message": "执行进程在启动阶段退出，没有浏览器上下文可以关闭"
+    },
+    "startup_failure_record_written": true,
+    "record_contents": {
+      "protocol_version": "kff.guardian-closure-startup-failed.v1",
+      "command_id": "4c4ca575-c0d5-4f3b-899a-4be9f4d47c2b",
+      "action_id": "8665386b-b006-4f87-8861-ad0641915557",
+      "nonce": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "closed_at": "2026-09-17T09:51:42.113Z",
+      "context_opened": false,
+      "result": {
+        "outcome": "CANCELED",
+        "error_code": "GUARDIAN_STARTUP_FAILED",
+        "diagnostic": {
+          "step": "guardian-startup-failed"
+        }
+      }
+    }
+  },
+  "evidence_semantics": {
+    "startup_record_protocol": "kff.guardian-closure-startup-failed.v1",
+    "startup_record_context_opened": false,
+    "closureProof_for_startup_failure": {
+      "protocol_version": "kff.guardian-closure-startup-failed.v1",
+      "command_id": "4c4ca575-c0d5-4f3b-899a-4be9f4d47c2b",
+      "action_id": "8665386b-b006-4f87-8861-ad0641915557",
+      "closed_at": "2026-09-17T09:51:42.113Z",
+      "proof_sha256": "a88d3940a163c90a206f1fa4f66008c95660c8c4d72144ed94cecb28fa35c09a"
+    },
+    "compacted_from_startup_failure": {
+      "protocol_version": "kff.guardian-closure-startup-failed.v1",
+      "command_id": "4c4ca575-c0d5-4f3b-899a-4be9f4d47c2b",
+      "action_id": "8665386b-b006-4f87-8861-ad0641915557",
+      "nonce": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "closed_at": "2026-09-17T09:51:42.113Z",
+      "context_opened": false,
+      "result": {
+        "outcome": "CANCELED",
+        "error_code": "GUARDIAN_STARTUP_FAILED",
+        "diagnostic": {
+          "step": "guardian-startup-failed"
+        }
+      }
+    },
+    "readClosure_on_startup_failure": {
+      "threw": "GUARDIAN_STARTUP_FAILED"
+    }
+  }
+}

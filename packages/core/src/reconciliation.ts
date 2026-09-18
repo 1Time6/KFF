@@ -8,6 +8,12 @@ import type { AgentIdentity } from './execution';
 
 export async function recordQuiescence(agent: AgentIdentity, commandId: string, input: z.infer<typeof quiescenceInput>) {
   const proof = quiescenceInput.parse(input);
+  // A termination record is only admissible as a quiescence proof when the process tree is proven dead.
+  // The agent is allowed to write down a tree that is still alive or that no listing could confirm -
+  // that record is honest and worth keeping - but confirming quiescence on it would let the next
+  // command inherit a browser nobody closed. The refusal is the point: it leaves the command
+  // unfinished, the environment quarantined, and the decision with a human.
+  requireCondition(proof.protocol_version !== 'kff.guardian-closure-no-progress.v1' || proof.process_tree === 'DEAD', 'GUARDIAN_UNCONFIRMED', '执行进程树没有取得死亡证明，资源保持隔离', 409);
   return transaction(async client => {
     const row = (await client.query('SELECT * FROM kff.agent_commands WHERE id=$1 AND agent_id=$2 FOR UPDATE', [commandId, agent.id])).rows[0];
     requireCondition(row && ['DONE','EXPIRED'].includes(row.state), 'VERSION_CONFLICT', '执行上下文只能在命令终止后确认关闭', 409);
@@ -90,6 +96,24 @@ export async function releaseQuarantine(scope: Scope, runId: string) {
     }
     const pending = await client.query("SELECT id FROM kff.agent_commands WHERE action_id=$1 AND (state NOT IN ('DONE','EXPIRED') OR quiesced_at IS NULL)", [action.id]);
     requireCondition(!pending.rowCount, 'GUARDIAN_UNCONFIRMED', '执行器尚未确认旧上下文关闭', 409);
+    // "The command ended and something was marked quiesced" is not a reason to hand an environment
+    // back. Quiescence answers whether the execution slot may be reused; the question here is whether
+    // the browser may be, and that needs a fact about the context itself. Only two proofs carry one: a
+    // closure that a child wrote after closing what it opened, and a command that provably never opened
+    // anything. A termination record - even one whose tree is dead - proves the process is gone and
+    // says nothing about the context, so it never authorises this release. The check reads the proof
+    // rather than `quiesced_at`, which means a record written before this rule existed cannot quietly
+    // pass through the normal release path either.
+    const terminated = (await client.query("SELECT id FROM kff.agent_commands WHERE action_id=$1 AND quiesced_at IS NOT NULL", [action.id])).rows;
+    if (terminated.length) {
+      const proofs = (await client.query("SELECT object_id, details FROM kff.audit_events WHERE event_type='guardian.quiesced' AND object_id = ANY($1::uuid[])", [terminated.map(row => row.id)])).rows;
+      for (const row of terminated) {
+        const recorded = proofs.filter(proof => proof.object_id === row.id);
+        requireCondition(recorded.length === 1, 'GUARDIAN_UNCONFIRMED', '执行上下文的关闭证明缺失或不唯一，不能恢复环境', 409);
+        const version = recorded[0].details?.proof?.protocol_version;
+        requireCondition(version === 'kff.guardian-closure.v1' || version === 'kff.guardian-closure-startup-failed.v1', 'GUARDIAN_UNCONFIRMED', '旧执行上下文只有进程终止记录，没有浏览器关闭证明', 409);
+      }
+    }
     const snapshot = run.snapshot as TaskSnapshot;
     await client.query('UPDATE kff.resource_leases SET quarantined=false,holder_attempt_id=NULL,expires_at=now() WHERE holder_attempt_id IN (SELECT id FROM kff.action_attempts WHERE action_id=$1)', [action.id]);
     const other = await client.query("SELECT resource_id FROM kff.resource_leases WHERE resource_id=ANY($1::uuid[]) AND (quarantined OR holder_attempt_id IS NOT NULL)", [[snapshot.account_id, snapshot.environment_id]]);

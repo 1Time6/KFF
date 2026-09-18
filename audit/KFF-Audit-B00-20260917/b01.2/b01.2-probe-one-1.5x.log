@@ -1,0 +1,164 @@
+===== ONE-TEST PROBE load=1.50x =====
+preflight_spinners=0
+spinners_running=12
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.0 [39m[90mC:/Users/17731/Desktop/KFF[39m
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911164326_g1_execution_core.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911173241_g1_permits_reconciliation.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911175249_g1_capability_evidence.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911175746_g1_agent_slot_guard.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911181005_g1_stop_and_agent_management.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911185039_g1_contact_eligibility.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911190913_g2_cost_ledger.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911194100_g1_action_adjudication.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911200056_g2_template_versions.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911203355_g2_collection_checkpoints.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911213439_g2_import_export.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911221017_g2_target_snapshots.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911224129_g2_schedule_rules.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911235946_g3_owned_inbound.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912003348_g3_owned_order_snapshots.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912012250_g3_stripe_payments.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912022322_g3_stripe_refunds.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912031707_facebook_lead_inbound.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912032804_lead_reception_execution.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912034626_lead_automation_rules.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912040653_lead_metrics_and_ingress_limits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912061549_acquisition_automation.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912121030_acquisition_external_sources.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912131442_browser_environment_runtime.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912151353_browser_collection_tasks.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912162852_browser_inbox_identity.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912164913_browser_inbox_polling.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912172904_browser_message_transport.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913012544_real_browser_collection_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913042407_real_browser_inbox_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913052626_real_browser_message_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913154300_browser_comment_outreach.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260915022051_acquisition_source_continuation.sql
+
+ [31m❯[39m tests/integration/browser-message.test.ts [2m([22m[2m12 tests[22m[2m | [22m[31m1 failed[39m[2m | [22m[33m11 skipped[39m[2m)[22m[33m 33891[2mms[22m[39m
+   [2m[90m↓[39m[22m reads actual Inbox DOM, sends one browser WhatsApp invitation, persists the receipt and deduplicates the later echo
+   [2m[90m↓[39m[22m retains an unknown browser submission, rejects the wrong thread or peer and reconciles the original message once
+   [2m[90m↓[39m[22m blocks wrong_account before a persisted submit intention or browser write
+   [2m[90m↓[39m[22m blocks login_expired before a persisted submit intention or browser write
+   [2m[90m↓[39m[22m blocks duplicate_control before a persisted submit intention or browser write
+   [2m[90m↓[39m[22m blocks new-visible-message before a persisted submit intention or browser write
+   [2m[90m↓[39m[22m invalidates a claimed reply on new-inbound through the shared submit gate
+   [2m[90m↓[39m[22m invalidates a claimed reply on transport-change through the shared submit gate
+   [2m[90m↓[39m[22m uses the existing AI preparation queue for browser replies and respects human takeover of a later prepared reply
+   [2m[90m↓[39m[22m requires both thread and peer for human review of an unknown browser message
+[31m   [31m×[31m ends a guardian that stopped answering while it held submission authority, and keeps the unknown outcome isolated[39m[33m 28382[2mms[22m[39m
+   [2m[90m↓[39m[22m ends a child that went silent just after it opened a real browser, and never records that browser as closed
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/browser-message.test.ts[2m > [22mends a guardian that stopped answering while it held submission authority, and keeps the unknown outcome isolated
+[31m[1mAssertionError[22m: expected { …(13) } to match object { …(11) }
+(2 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -13,12 +13,12 @@[39m
+[2m    },[22m
+[2m    "submission_state": "UNKNOWN",[22m
+[2m    "termination": {[22m
+[2m      "descendants": "DEAD",[22m
+[2m      "elapsed_ms": 3808,[22m
+[32m-     "enumeration": "LISTED",[39m
+[32m-     "process_tree": "DEAD",[39m
+[31m+     "enumeration": "UNAVAILABLE",[39m
+[31m+     "process_tree": "UNKNOWN",[39m
+[2m      "root": "DEAD",[22m
+[2m      "sampled": 0,[22m
+[2m      "tool": "SUCCESS",[22m
+[2m    },[22m
+[2m  }[22m
+
+[36m [2m❯[22m tests/integration/browser-message.test.ts:[2m186:18[22m[39m
+    [90m184|[39m   const identity = { command_id: command.id, action_id: command.action…
+    [90m185|[39m   const record = readClosureEvidence(runtime, identity);
+    [90m186|[39m   expect(record).toMatchObject({
+    [90m   |[39m                  [31m^[39m
+    [90m187|[39m     protocol_version: noProgressProtocolVersion, command_id: command.i…
+    [90m188|[39m     phase: 'granting', context_opened: true, submission_state: 'UNKNOW…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[33m11 skipped[39m[90m (12)[39m
+[2m   Start at [22m 09:14:11
+[2m   Duration [22m 39.99s[2m (tests 86%, transform 12%, import 2%)[22m
+
+
+===== PROBE_DATABASE_NAME=kff_test_dd4fb1994b605cbf5637 exit=1 =====
+exit=1
+post_run_spinners=0

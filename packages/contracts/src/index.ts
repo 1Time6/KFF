@@ -57,6 +57,44 @@ export const pauseInput = z.object({ paused: z.boolean(), reason: z.string().tri
 export const agentInput = z.object({ name: z.string().trim().min(1).max(80) }).strict();
 export const agentControlInput = z.object({ action: z.enum(['DRAIN','RESUME','REVOKE']), reason: z.string().trim().min(1).max(300) }).strict();
 export const heartbeatInput = z.object({ command_id: uuid.optional(), protocol_version: z.literal('kff.agent.v1') }).strict();
+/**
+ * The bounds a guardian timing value has to satisfy, shared by the runtime policy that decides how
+ * long to wait and by the evidence schema that records how long it waited. They are kept in one place
+ * because the failure they prevent is silent: a legal policy that produces a duration the schema then
+ * rejects would throw away a closure proof that was already written to disk.
+ *
+ * `max_total_ms` bounds the sum of every phase budget plus `grace` and `force`, which is what a run's
+ * recorded `waited_ms` can never exceed. `test_min_ms` exists so the sealed regression can use budgets
+ * far below anything a production run should accept; it is only reachable under the same seal as the
+ * fault injection, so a production Agent still fails closed on a sub-millisecond budget.
+ */
+export const guardianTimingLimits = { min_ms: 100, max_ms: 86400000, max_total_ms: 86400000, test_min_ms: 1 } as const;
+/**
+ * How a terminated guardian process tree was judged. Three states, never a boolean: `UNKNOWN` means a
+ * probe or the process listing could not reach a conclusion, and it is treated exactly as strictly as
+ * `ALIVE`. Only a proven `DEAD` tree may license releasing an execution slot.
+ */
+export const processTreeStates = ['DEAD', 'ALIVE', 'UNKNOWN'] as const;
+export const processTreeState = z.enum(processTreeStates);
+/** What the termination tool itself did, kept apart from what the probes concluded afterwards. */
+export const terminationTools = ['SUCCESS', 'FAILED', 'TIMEOUT', 'ERROR', 'SKIPPED'] as const;
+/**
+ * One termination record, used both by the agent that performs the termination and by the contracts
+ * that carry it, so the fact recorded is exactly the fact validated - there is no second shape to keep
+ * in step. `root` and `descendants` are published separately because a dead root with an unexamined
+ * child list is not the same fact as a dead tree, and `sampled` / `enumeration` say how much of the
+ * tree the judgement actually covers.
+ */
+export const guardianTermination = z.object({
+  process_tree: processTreeState,
+  tool: z.enum(terminationTools),
+  root: processTreeState,
+  descendants: processTreeState,
+  sampled: z.number().int().min(0).max(10000),
+  enumeration: z.enum(['LISTED', 'UNAVAILABLE']),
+  elapsed_ms: z.number().int().min(0).max(guardianTimingLimits.max_total_ms),
+}).strict();
+export type GuardianTermination = z.infer<typeof guardianTermination>;
 export const resultInput = z.object({
   event_id: uuid,
   command_id: uuid,
@@ -90,6 +128,10 @@ export const resultInput = z.object({
     inbox_discovery: browserInboxDiscoverySummary.optional(),
     scene: z.object({ identity_count: z.number().int().min(0).max(100), submit_controls: z.number().int().min(0).max(100), result_count: z.number().int().min(0).max(100), unparsed_visible_max: z.number().int().min(0).max(1000).optional() }).strict().optional(),
   }).strict(),
+  // The guardian's own termination fact, present whenever the parent had to end a child it had stopped
+  // waiting for. It travels with the report because the receiver has to make a decision the agent must
+  // not make alone: a report whose environment was never proven closed may not complete its command.
+  guardian: guardianTermination.optional(),
 }).strict();
 export const loginInput = z.object({ email: z.string().email().max(254), password: z.string().min(1).max(200) }).strict();
 export const hashSchema = z.string().regex(/^[a-f0-9]{64}$/);
@@ -98,11 +140,18 @@ export const hashSchema = z.string().regex(/^[a-f0-9]{64}$/);
 // one; the no-progress version means the parent ended a child that stopped making progress and can
 // only prove the process is gone. They are kept apart so a receiver never projects an environment as
 // closed on a weaker fact.
+//
+// The no-progress variant is a discriminated member rather than an optional field on one shared object
+// because its process fact is not decoration: it is the whole reason the proof is admissible. Making it
+// required means a no-progress proof that cannot say what happened to the process tree is not a proof
+// the receiver will accept, instead of one it silently trusts.
 export const guardianClosureProtocols = ['kff.guardian-closure.v1', 'kff.guardian-closure-startup-failed.v1', 'kff.guardian-closure-no-progress.v1'] as const;
-export const quiescenceInput = z.object({
-  protocol_version: z.enum(guardianClosureProtocols), command_id: uuid, action_id: uuid,
-  closed_at: z.string().datetime(), proof_sha256: hashSchema,
-}).strict();
+const quiescenceBase = { command_id: uuid, action_id: uuid, closed_at: z.string().datetime(), proof_sha256: hashSchema };
+export const quiescenceInput = z.discriminatedUnion('protocol_version', [
+  z.object({ protocol_version: z.literal('kff.guardian-closure.v1'), ...quiescenceBase }).strict(),
+  z.object({ protocol_version: z.literal('kff.guardian-closure-startup-failed.v1'), ...quiescenceBase, process_tree: processTreeState.optional() }).strict(),
+  z.object({ protocol_version: z.literal('kff.guardian-closure-no-progress.v1'), ...quiescenceBase, process_tree: processTreeState }).strict(),
+]);
 export const permitInput = z.object({
   task_id: uuid,
   max_actions: z.number().int().min(1).max(10),

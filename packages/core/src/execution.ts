@@ -202,10 +202,19 @@ export async function acceptReport(agent: AgentIdentity, input: ActionReport) {
     await markCostPending(client, command.action_id, 'ACTION_' + report.outcome);
     if (report.outcome === 'VERIFIED_SUCCEEDED' && !command.snapshot.is_synthetic && !isWrite(command.snapshot)) await client.query("UPDATE kff.accounts SET state='ACTIVE' WHERE id=$1 AND version=$2 AND credential_ref IS NOT DISTINCT FROM $3 AND state='DRAFT'", [command.snapshot.account_id, command.snapshot.account_version, command.snapshot.credential_ref]);
     await client.query('UPDATE kff.action_attempts SET state=$1,completed_at=now() WHERE id=$2', [report.outcome, command.attempt_id]);
-    await client.query("UPDATE kff.agent_commands SET state='DONE' WHERE id=$1", [command.id]);
+    // Completing the command is the database half of "this execution is over", and it is deliberately
+    // not the same question as "the guardian finished" or "the browser is closed". When the guardian
+    // had to end a child and could not prove the process tree is dead, the report is still accepted -
+    // its facts are real and the attempt is over - but the command is left where it is, so the
+    // execution slot stays occupied. Freeing it on "the command stopped" would hand the next command
+    // an environment whose browser was never accounted for, which is the exact failure this gate
+    // exists for. Recovery stays with the ordinary expiry path, which keeps the same isolation.
+    const unprovenTree = report.guardian !== undefined && report.guardian.process_tree !== 'DEAD';
+    if (!unprovenTree) await client.query("UPDATE kff.agent_commands SET state='DONE' WHERE id=$1", [command.id]);
     // A no-progress termination proves the process is gone and nothing more, so its environment keeps
-    // the same isolation a lease expiry would have given it instead of being handed back as idle.
-    const quarantine = report.outcome === 'UNKNOWN_OUTCOME' || report.error_code === 'AGENT_RESTART' || report.error_code === 'GUARDIAN_NO_PROGRESS';
+    // the same isolation a lease expiry would have given it instead of being handed back as idle. An
+    // unproven tree keeps that isolation whatever the reported outcome was.
+    const quarantine = unprovenTree || report.outcome === 'UNKNOWN_OUTCOME' || report.error_code === 'AGENT_RESTART' || report.error_code === 'GUARDIAN_NO_PROGRESS';
     for (const lease of command.leases) await client.query('UPDATE kff.resource_leases SET quarantined=$1,holder_attempt_id=CASE WHEN $1 THEN holder_attempt_id ELSE NULL END,expires_at=clock_timestamp() WHERE organization_id=$2 AND resource_type=$3 AND resource_id=$4 AND token=$5 AND holder_attempt_id=$6', [quarantine, command.organization_id, lease.resource_type, lease.resource_id, lease.token, command.attempt_id]);
     await client.query('UPDATE kff.environments SET state=$1 WHERE id=$2', [quarantine ? 'QUARANTINED' : 'IDLE', command.snapshot.environment_id]);
     const status = report.outcome === 'VERIFIED_SUCCEEDED' ? 'SUCCEEDED' : report.outcome === 'CANCELED' ? 'CANCELED' : ['UNKNOWN_OUTCOME', 'NEEDS_HUMAN'].includes(report.outcome) ? 'NEEDS_HUMAN' : 'FAILED';
@@ -213,7 +222,7 @@ export async function acceptReport(agent: AgentIdentity, input: ActionReport) {
     await client.query('UPDATE kff.tasks SET status=$1 WHERE id=$2', [status, command.task_id]);
     const manifest = buildDiagnostic(report.diagnostic, report.error_code, agent, command.action_id, { adapter_version: command.snapshot.adapter_version, attempt_id: command.attempt_id, outcome: report.outcome });
     await client.query('INSERT INTO kff.diagnostic_bundles(organization_id,brand_id,action_id,manifest) VALUES($1,$2,$3,$4)', [agent.organization_id, agent.brand_id, command.action_id, manifest]);
-    await client.query('INSERT INTO kff.audit_events(organization_id,brand_id,actor_id,event_type,object_id,details) VALUES($1,$2,$3,$4,$5,$6)', [agent.organization_id, agent.brand_id, agent.id, 'action.reported', command.action_id, { outcome: report.outcome, error_code: report.error_code ?? null, evidence_kind: report.receipt?.evidence_kind ?? null }]);
+    await client.query('INSERT INTO kff.audit_events(organization_id,brand_id,actor_id,event_type,object_id,details) VALUES($1,$2,$3,$4,$5,$6)', [agent.organization_id, agent.brand_id, agent.id, 'action.reported', command.action_id, { outcome: report.outcome, error_code: report.error_code ?? null, evidence_kind: report.receipt?.evidence_kind ?? null, guardian_tree: report.guardian?.process_tree ?? null, command_completed: !unprovenTree }]);
     return { accepted: true, duplicate: false };
   });
 }
@@ -226,18 +235,27 @@ export async function recoverExpired(): Promise<number> {
     const stillExpired = await client.query("SELECT 1 FROM kff.resource_leases l JOIN kff.agents ag ON ag.id=$2 JOIN kff.accounts ac ON ac.id=$4 JOIN kff.brands b ON b.id=ac.brand_id JOIN kff.organizations o ON o.id=ac.organization_id WHERE l.holder_attempt_id=$1 AND (l.expires_at<=clock_timestamp() OR $3::timestamptz<=clock_timestamp() OR ag.status='REVOKED' OR ($5 AND ($6 OR b.outbound_paused OR o.outbound_paused OR ac.outbound_paused OR ag.status='DRAINING')))", [command.attempt_id, command.agent_id, command.expires_at, command.snapshot.account_id, command.state === 'READY', command.stop_requested]);
     if (!stillExpired.rowCount) return;
     const neverClaimed = command.state === 'READY';
-    const outcome = neverClaimed ? 'CANCELED' : ['SUBMITTING', 'SUBMITTED'].includes(command.action_state) ? 'UNKNOWN_OUTCOME' : 'NEEDS_HUMAN';
-    assertTransition(command.action_state, outcome);
-    await client.query('UPDATE kff.actions SET state=$1,error_code=$2 WHERE id=$3', [outcome, neverClaimed ? 'COMMAND_NOT_STARTED' : 'LEASE_EXPIRED', command.action_id]);
-    await projectMessageOutcome(client,command.action_id,command.snapshot);
-    await haltPilot(client, command.action_id);
-    await markCostPending(client, command.action_id, neverClaimed ? 'COMMAND_NEVER_CLAIMED' : 'EXECUTION_LEASE_EXPIRED');
-    await client.query("UPDATE kff.action_attempts SET state=$1,completed_at=now() WHERE id=$2", [outcome, command.attempt_id]);
+    // A claimed command whose report was already accepted leaves its action in a terminal state, and a
+    // terminal state has no outgoing transition. Asserting one here threw out of the whole recovery
+    // sweep and left the command - and the execution slot it holds - unexpirable, which is the one path
+    // that may still take it back. The report decided the action's fate; recovery takes back only the
+    // command and the leases it still holds, so a decided action is not rewritten at all: its state, its
+    // error code and its cost record are the ones the report produced.
+    const decided = !neverClaimed && ['VERIFIED_SUCCEEDED', 'VERIFIED_FAILED', 'CANCELED', 'BLOCKED', 'NEEDS_HUMAN'].includes(command.action_state);
+    const outcome = neverClaimed ? 'CANCELED' : decided ? command.action_state : ['SUBMITTING', 'SUBMITTED'].includes(command.action_state) ? 'UNKNOWN_OUTCOME' : 'NEEDS_HUMAN';
+    if (!decided) {
+      assertTransition(command.action_state, outcome);
+      await client.query('UPDATE kff.actions SET state=$1,error_code=$2 WHERE id=$3', [outcome, neverClaimed ? 'COMMAND_NOT_STARTED' : 'LEASE_EXPIRED', command.action_id]);
+      await projectMessageOutcome(client,command.action_id,command.snapshot);
+      await haltPilot(client, command.action_id);
+      await markCostPending(client, command.action_id, neverClaimed ? 'COMMAND_NEVER_CLAIMED' : 'EXECUTION_LEASE_EXPIRED');
+      await client.query("UPDATE kff.action_attempts SET state=$1,completed_at=now() WHERE id=$2", [outcome, command.attempt_id]);
+      await client.query('UPDATE kff.runs SET status=$1,updated_at=now() WHERE id=$2', [neverClaimed ? 'CANCELED' : 'NEEDS_HUMAN', command.run_id]);
+      await client.query('UPDATE kff.tasks SET status=$1 WHERE id=$2', [neverClaimed ? 'CANCELED' : 'NEEDS_HUMAN', command.task_id]);
+    }
     await client.query("UPDATE kff.agent_commands SET state='EXPIRED',quiesced_at=CASE WHEN $1 THEN now() ELSE quiesced_at END WHERE id=$2", [neverClaimed, command.id]);
     await client.query('UPDATE kff.resource_leases SET quarantined=NOT $1,holder_attempt_id=CASE WHEN $1 THEN NULL ELSE holder_attempt_id END,expires_at=now() WHERE holder_attempt_id=$2', [neverClaimed, command.attempt_id]);
     await client.query("UPDATE kff.environments SET state=$1,browser_status=CASE WHEN $3 THEN CASE WHEN $4 THEN 'CLOSED' ELSE 'UNKNOWN' END ELSE browser_status END WHERE id=$2", [neverClaimed ? 'IDLE' : 'QUARANTINED', command.snapshot.environment_id, Boolean(command.snapshot.browser_environment), neverClaimed]);
-    await client.query('UPDATE kff.runs SET status=$1,updated_at=now() WHERE id=$2', [neverClaimed ? 'CANCELED' : 'NEEDS_HUMAN', command.run_id]);
-    await client.query('UPDATE kff.tasks SET status=$1 WHERE id=$2', [neverClaimed ? 'CANCELED' : 'NEEDS_HUMAN', command.task_id]);
     await client.query('INSERT INTO kff.audit_events(organization_id,brand_id,actor_id,event_type,object_id,details) VALUES($1,$2,$3,$4,$5,$6)', [command.organization_id, command.brand_id, command.agent_id, neverClaimed ? 'action.canceled_before_claim' : 'action.lease_expired', command.action_id, { outcome, quarantined: !neverClaimed, closure_evidence: neverClaimed ? 'controller_never_claimed' : null }]);
     count++;
   });

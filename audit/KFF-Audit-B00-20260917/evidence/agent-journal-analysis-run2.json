@@ -1,0 +1,21 @@
+{
+  "probe": "journal",
+  "journal_path": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\agent\\journal.json",
+  "entry_count": 399,
+  "phase_histogram": {
+    "reported": 13,
+    "submitting": 138,
+    "context_open": 244,
+    "claimed": 4
+  },
+  "closures_dir": "C:\\Users\\17731\\Desktop\\KFF\\.kff\\agent\\closures",
+  "closure_file_count": 386,
+  "closure_protocol_histogram": {
+    "kff.guardian-closure-compact.v1": 187,
+    "kff.guardian-closure.v1": 199
+  },
+  "startup_failure_records": [],
+  "stranded_entries": [],
+  "stranded_count": 0,
+  "entries_without_closure_record": []
+}

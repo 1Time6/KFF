@@ -1,0 +1,68 @@
+===== L/M/N re-run (fixed harness: long-lived tree + liveness check) =====
+
+########## load=0 (0.00x) ##########
+ENUM-VARIANTS load=0 trials=4 cap=12000ms logical_cpus=8
+synthetic tree: root=3628 mid=13692 leaf=21284  (mid.ppid must be root, leaf.ppid must be mid)
+A-current     ok=4/4  median=673ms  p90=746ms  max=746ms  rows=330
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=4/4 2500ms=4/4 5000ms=4/4  fails=none
+             现行实现：Get-CimInstance + 字符串插值
+L-foreach-stmt  ok=4/4  median=630ms  p90=638ms  max=638ms  rows=329
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=4/4 2500ms=4/4 5000ms=4/4  fails=none
+             foreach 语言语句 + 单次 -join 输出（不用 ForEach-Object cmdlet）
+M-member-enum  ok=4/4  median=610ms  p90=635ms  max=635ms  rows=329
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=4/4 2500ms=4/4 5000ms=4/4  fails=none
+             成员枚举两行输出（最快但依赖两条列表顺序一致）
+N-currentAbove  ok=4/4  median=666ms  p90=668ms  max=668ms  rows=330
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=4/4 2500ms=4/4 5000ms=4/4  fails=none
+             现行实现 + AboveNormal（比 High 温和的优先级）
+load stopped, synthetic tree ended
+
+########## load=8 (1.00x) ##########
+ENUM-VARIANTS load=8 trials=4 cap=12000ms logical_cpus=8
+synthetic tree: root=13824 mid=3740 leaf=2816  (mid.ppid must be root, leaf.ppid must be mid)
+load armed: 8 spinners (1.00x logical cores)
+A-current     ok=4/4  median=2037ms  p90=3475ms  max=3475ms  rows=348
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=0/4 2500ms=3/4 5000ms=4/4  fails=none
+             现行实现：Get-CimInstance + 字符串插值
+L-foreach-stmt  ok=4/4  median=981ms  p90=988ms  max=988ms  rows=348
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=4/4 2500ms=4/4 5000ms=4/4  fails=none
+             foreach 语言语句 + 单次 -join 输出（不用 ForEach-Object cmdlet）
+M-member-enum  ok=4/4  median=976ms  p90=1009ms  max=1009ms  rows=347
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=4/4 2500ms=4/4 5000ms=4/4  fails=none
+             成员枚举两行输出（最快但依赖两条列表顺序一致）
+N-currentAbove  ok=4/4  median=1484ms  p90=1527ms  max=1527ms  rows=347
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=0/4 2500ms=4/4 5000ms=4/4  fails=none
+             现行实现 + AboveNormal（比 High 温和的优先级）
+load stopped, synthetic tree ended
+
+########## load=16 (2.00x) ##########
+ENUM-VARIANTS load=16 trials=4 cap=12000ms logical_cpus=8
+synthetic tree: root=29744 mid=19864 leaf=5284  (mid.ppid must be root, leaf.ppid must be mid)
+load armed: 16 spinners (2.00x logical cores)
+A-current     ok=4/4  median=7956ms  p90=8391ms  max=8391ms  rows=370
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=0/4 2500ms=0/4 5000ms=0/4  fails=none
+             现行实现：Get-CimInstance + 字符串插值
+L-foreach-stmt  ok=4/4  median=2166ms  p90=2233ms  max=2233ms  rows=376
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=0/4 2500ms=4/4 5000ms=4/4  fails=none
+             foreach 语言语句 + 单次 -join 输出（不用 ForEach-Object cmdlet）
+M-member-enum  ok=4/4  median=2179ms  p90=2467ms  max=2467ms  rows=376
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=0/4 2500ms=4/4 5000ms=4/4  fails=none
+             成员枚举两行输出（最快但依赖两条列表顺序一致）
+N-currentAbove  ok=4/4  median=3380ms  p90=3585ms  max=3585ms  rows=376
+             parent_child: mid->root=OK leaf->mid=OK dup_pids=0
+             finish_in: 1250ms=0/4 2500ms=0/4 5000ms=4/4  fails=none
+             现行实现 + AboveNormal（比 High 温和的优先级）
+load stopped, synthetic tree ended
+
+end=2026-09-18T08:53:30+08:00

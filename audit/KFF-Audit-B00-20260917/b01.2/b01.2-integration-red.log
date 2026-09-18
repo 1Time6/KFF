@@ -1,0 +1,62 @@
+   [33m[2m✓[22m[39m fences concurrent imports and preserves review state across a newer run[33m 412[2mms[22m[39m
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+[41m[1m FAIL [22m[49m tests/integration/browser-message.test.ts[2m > [22mends a guardian that stopped answering while it held submission authority, and keeps the unknown outcome isolated
+[31m[1mAssertionError[22m: expected { …(13) } to match object { …(11) }
+(10 matching properties omitted from actual)[39m
+[32m- Expected[39m
+[31m+ Received[39m
+[33m@@ -4,11 +4,10 @@[39m
+[2m    "context_opened": true,[22m
+[2m    "forced": true,[22m
+[2m    "grace_ms": 1000,[22m
+[2m    "nonce": "576e466d115948e91daa53dc84b67b07efd4625382d1c0abc74bc74f1381338e",[22m
+[2m    "phase": "granting",[22m
+[32m-   "process_terminated": true,[39m
+[2m    "protocol_version": "kff.guardian-closure-no-progress.v1",[22m
+[2m    "result": {[22m
+[2m      "error_code": "GUARDIAN_NO_PROGRESS",[22m
+[2m      "outcome": "NEEDS_HUMAN",[22m
+[2m    },[22m
+[36m [2m❯[22m tests/integration/browser-message.test.ts:[2m186:18[22m[39m
+    [90m184|[39m   const identity = { command_id: command.id, action_id: command.action…
+    [90m185|[39m   const record = readClosureEvidence(runtime, identity);
+    [90m186|[39m   expect(record).toMatchObject({
+    [90m   |[39m                  [31m^[39m
+    [90m187|[39m     protocol_version: noProgressProtocolVersion, command_id: command.i…
+    [90m188|[39m     phase: 'granting', process_terminated: true, context_opened: true,…
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+[41m[1m FAIL [22m[49m tests/integration/browser-message.test.ts[2m > [22mends a child that went silent just after it opened a real browser, and never records that browser as closed
+[31m[1mAssertionError[22m: expected { …(13) } to match object { …(11) }
+(10 matching properties omitted from actual)[39m
+[32m- Expected[39m
+[31m+ Received[39m
+[33m@@ -4,11 +4,10 @@[39m
+[2m    "context_opened": true,[22m
+[2m    "forced": true,[22m
+[2m    "grace_ms": 1000,[22m
+[2m    "nonce": "98b085d4c74f6ea80819567574acaf8500bcc3365d72342299b67da6d6d29096",[22m
+[2m    "phase": "awaiting-intent",[22m
+[32m-   "process_terminated": true,[39m
+[2m    "protocol_version": "kff.guardian-closure-no-progress.v1",[22m
+[2m    "result": {[22m
+[2m      "error_code": "GUARDIAN_NO_PROGRESS",[22m
+[2m      "outcome": "NEEDS_HUMAN",[22m
+[2m    },[22m
+[36m [2m❯[22m tests/integration/browser-message.test.ts:[2m266:18[22m[39m
+    [90m264|[39m   // Three separate facts, recorded as three separate facts: the proce…
+    [90m265|[39m   // opened, and no submission was ever attempted. A termination prove…
+    [90m266|[39m   expect(record).toMatchObject({ protocol_version: noProgressProtocolV…
+    [90m   |[39m                  [31m^[39m
+    [90m267|[39m     phase: 'awaiting-intent', process_terminated: true, context_opened…
+    [90m268|[39m     result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRES…
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m38 passed[39m[22m[90m (39)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m418 passed[39m[22m[90m (420)[39m
+[2m   Start at [22m 23:17:44
+[2m   Duration [22m 1509.47s[2m (tests 95%, import 5%)[22m
+[2m    Isolate [22m [33m39 workers spawned[39m[2m · ~423ms startup each (spawn + environment, per file)[22m
+[2m            [22m [2mat least ~16.07s faster with [22m[33misolate: false[39m[2m — reuses workers across files instead of one per file[22m
+JSON report written to C:/Users/17731/Desktop/KFF/.kff/checks/integration-results.json
+Retained isolated failed-test database: kff_test_42840b2e28db49b0595c
+
+[exited with code 0]

@@ -1,0 +1,190 @@
+=== B01.1 integration-level deterministic RED ===
+date: 2026-09-17T21:04:02+08:00
+HEAD: 752042bc466b10b07cad455757a41bb10bbaf39f
+apps/agent/src/guardian.ts sha256 (HEAD version, watchdog absent): 78c0c9931176d0ba8da2b86547593bb45dd3a2e76636adf4b0ac32ba00779bf1
+selection: -t "ends a" (the two liveness cases: granting / awaiting-intent)
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.0 [39m[90mC:/Users/17731/Desktop/KFF[39m
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911164326_g1_execution_core.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911173241_g1_permits_reconciliation.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911175249_g1_capability_evidence.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911175746_g1_agent_slot_guard.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911181005_g1_stop_and_agent_management.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911185039_g1_contact_eligibility.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911190913_g2_cost_ledger.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911194100_g1_action_adjudication.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911200056_g2_template_versions.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911203355_g2_collection_checkpoints.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911213439_g2_import_export.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911221017_g2_target_snapshots.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911224129_g2_schedule_rules.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911235946_g3_owned_inbound.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912003348_g3_owned_order_snapshots.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912012250_g3_stripe_payments.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912022322_g3_stripe_refunds.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912031707_facebook_lead_inbound.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912032804_lead_reception_execution.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912034626_lead_automation_rules.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912040653_lead_metrics_and_ingress_limits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912061549_acquisition_automation.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912121030_acquisition_external_sources.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912131442_browser_environment_runtime.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912151353_browser_collection_tasks.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912162852_browser_inbox_identity.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912164913_browser_inbox_polling.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912172904_browser_message_transport.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913012544_real_browser_collection_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913042407_real_browser_inbox_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913052626_real_browser_message_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913154300_browser_comment_outreach.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260915022051_acquisition_source_continuation.sql
+
+ [31m❯[39m tests/integration/browser-message.test.ts [2m([22m[2m12 tests[22m[2m | [22m[31m2 failed[39m[2m | [22m[33m10 skipped[39m[2m)[22m[33m 98530[2mms[22m[39m
+   [2m[90m↓[39m[22m reads actual Inbox DOM, sends one browser WhatsApp invitation, persists the receipt and deduplicates the later echo
+   [2m[90m↓[39m[22m retains an unknown browser submission, rejects the wrong thread or peer and reconciles the original message once
+   [2m[90m↓[39m[22m blocks wrong_account before a persisted submit intention or browser write
+   [2m[90m↓[39m[22m blocks login_expired before a persisted submit intention or browser write
+   [2m[90m↓[39m[22m blocks duplicate_control before a persisted submit intention or browser write
+   [2m[90m↓[39m[22m blocks new-visible-message before a persisted submit intention or browser write
+   [2m[90m↓[39m[22m invalidates a claimed reply on new-inbound through the shared submit gate
+   [2m[90m↓[39m[22m invalidates a claimed reply on transport-change through the shared submit gate
+   [2m[90m↓[39m[22m uses the existing AI preparation queue for browser replies and respects human takeover of a later prepared reply
+   [2m[90m↓[39m[22m requires both thread and peer for human review of an unknown browser message
+[31m   [31m×[31m ends a guardian that stopped answering while it held submission authority, and keeps the unknown outcome isolated[39m[33m 91572[2mms[22m[39m
+[31m   [31m×[31m ends a child that went silent just after it opened a real browser, and never records that browser as closed[39m[33m 4798[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/browser-message.test.ts[2m > [22mends a guardian that stopped answering while it held submission authority, and keeps the unknown outcome isolated
+[31m[1mError[22m: Test timed out in 90000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m tests/integration/browser-message.test.ts:[2m152:1[22m[39m
+    [90m150|[39m  * the record is that it says exactly that much and nothing more.
+    [90m151|[39m  */
+    [90m152|[39m it('ends a guardian that stopped answering while it held submission au…
+    [90m   |[39m [31m^[39m
+    [90m153|[39m   const h = await setup(), id = await conversation(h.account_id);
+    [90m154|[39m   await sendConversationReply(scope, id, reply());
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/browser-message.test.ts[2m > [22mends a child that went silent just after it opened a real browser, and never records that browser as closed
+[31m[1mAssertionError[22m: promise resolved "{ …(7) }" instead of rejecting[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Error {[39m
+[32m-   "message": "rejected promise",[39m
+[31m+ {[39m
+[31m+   "action_id": "a9492ea4-4076-4990-8e21-3d09ebca6689",[39m
+[31m+   "closed_at": "2026-09-17T13:05:46.755Z",[39m
+[31m+   "command_id": "90ae5c17-7552-4647-b8c5-bbcf7b29fab5",[39m
+[31m+   "context_closed": true,[39m
+[31m+   "nonce": "3f7de2a9c0ec797ac0f7209398e9d2bf7d3a62cc41b5d1e58f0b6cd45ffe1606",[39m
+[31m+   "protocol_version": "kff.guardian-closure.v1",[39m
+[31m+   "result": {[39m
+[31m+     "diagnostic": {[39m
+[31m+       "browser_version": "153.0.8010.12",[39m
+[31m+       "duration_ms": 1378,[39m
+[31m+       "executor_version": "kff-agent-0.1.0_node-24.14.1",[39m
+[31m+       "step": "browser-message-verified",[39m
+[31m+     },[39m
+[31m+     "outcome": "VERIFIED_SUCCEEDED",[39m
+[31m+     "receipt": {[39m
+[31m+       "actual_account_id": "23103676871851457929110165674751824426",[39m
+[31m+       "content_hash": "5947ab9851d2b5fb480648a8ac75618839916baff7ef0e6adfda9d6e99adabc0",[39m
+[31m+       "evidence_kind": "synthetic_message",[39m
+[31m+       "observed_at": "2026-09-17T13:05:46.663Z",[39m
+[31m+       "recipient_id": "999888777666555",[39m
+[31m+       "remote_id": "synthetic_7db84d98-507d-4b46-bcf9-6facfb7a4a67",[39m
+[31m+       "thread_id": "000777",[39m
+[31m+     },[39m
+[31m+   },[39m
+[2m  }[22m
+
+[36m [2m❯[22m tests/integration/browser-message.test.ts:[2m255:8[22m[39m
+    [90m253|[39m       beforeSubmit: async () => { intentRequested = true; },
+    [90m254|[39m       liveness: { 'awaiting-intent': 1500, grace: 1000, force: 5000 },
+    [90m255|[39m     })).rejects.toMatchObject({ code: 'GUARDIAN_NO_PROGRESS' });
+    [90m   |[39m        [31m^[39m
+    [90m256|[39m   } finally { for (const [key, stored] of previous) { if (stored === u…
+    [90m257|[39m   // A child frozen inside the callback that opens the context never a…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[33m10 skipped[39m[90m (12)[39m
+[2m   Start at [22m 21:04:06
+[2m   Duration [22m 100.62s[2m (tests 98%, transform 1%, import 1%)[22m
+
+JSON report written to C:/Users/17731/Desktop/KFF/.kff/checks/integration-results.json
+Retained isolated failed-test database: kff_test_7a73d010281f661d09a1

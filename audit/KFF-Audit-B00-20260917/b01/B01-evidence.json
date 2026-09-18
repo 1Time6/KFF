@@ -1,0 +1,288 @@
+{
+  "batch": "B01",
+  "title": "Guardian trust closure — startup failure, terminal evidence, journal recovery, quiescence, execution slot release",
+  "executed_at": "2026-09-17",
+  "role": "executor",
+
+  "baseline": {
+    "branch": "codex/facebook-foundation",
+    "head_sha": "752042bc466b10b07cad455757a41bb10bbaf39f",
+    "origin_sha": "752042bc466b10b07cad455757a41bb10bbaf39f",
+    "b00_audit_sha": "752042bc466b10b07cad455757a41bb10bbaf39f",
+    "mixed_baseline": false,
+    "confirmed_at_start": true,
+    "confirmed_at_end": true,
+    "committed": false,
+    "pushed": false,
+    "merged": false,
+    "deployed": false
+  },
+
+  "artifact_hashes_after_fix": {
+    "apps/agent/src/guardian.ts": "1045a09845e873abdf1f3fb54f8b55003afa291f75eb28120208a923705e814a",
+    "apps/agent/src/guardian-protocol.ts": "c14cc0c93494c0f5ea6897a0cea16f6e8645e272aad41494388fe3879bc9d936",
+    "apps/agent/src/main.ts": "57029931b7805289e5730d05d675f529f6f2f8d7c0fd79f1a06d0983e321c5cf",
+    "packages/contracts/src/index.ts": "eb6aa5c310311bc5f56ea6c57941365c31580aaef0e5f95edd69247681db08a8",
+    "packages/core/src/reconciliation.ts": "50dd8213717b5d180a927b3efad6b60d7b3cdb9ebe6b640f5f5ea4943f43352f",
+    "tests/integration/guardian-recovery.test.ts": "b1f391142773386674ac5a48964c641313fb3fa32808fde7c168b40dbd781562"
+  },
+
+  "findings": {
+    "KFF-B00-002": {
+      "status": "FIXED",
+      "root_cause": "A failed spawn emits `error` and `close` and never `exit`; terminal-evidence logic hung off the `exit` path, so no startup-failure closure was ever written, flushActionJournal could not release the command, and the agent_single_execution_slot stayed occupied across restarts.",
+      "fix": [
+        "apps/agent/src/guardian.ts: one-shot `settle()` reached from `error` (only when child.pid === undefined), `exit` and `close`; startup-failure evidence written only when started/submitted/contextOpened are all false.",
+        "apps/agent/src/main.ts: flushJournal() now runs in `finally` even when the run rejects, so the closure written for a failed start actually releases the slot."
+      ],
+      "proof": [
+        "journal phase stays `claimed` with no guardian_pid and no quarantined flag",
+        "closure on disk is kff.guardian-closure-startup-failed.v1 with context_opened:false and no context_closed",
+        "wire endpoints for the failed command are exactly ['commands/<id>/status','commands/<id>/quiescence'] — zero /submit, zero /context-opened, zero platform write",
+        "DB: command DONE with quiesced_at, action CANCELED/GUARDIAN_STARTUP_FAILED, one attempt, one action.reported, one guardian.quiesced",
+        "SELECT count(*) FROM kff.agent_commands WHERE agent_id=$1 AND state IN ('READY','CLAIMED') === 0"
+      ]
+    },
+    "KFF-B00-004": {
+      "status": "FIXED",
+      "requirement": "Tests must truly enter the production Guardian startup-failure path and prove the target branch was hit, not merely construct a similar object, test helper, mocked return value, or observe exit code 0.",
+      "how": [
+        "tests/unit/guardian-termination.test.ts drives the real runGuardian against a real child process; the fault is a real libuv ENOENT produced by pointing process.cwd() at a path that does not exist, which is exactly the production spawn call site (spawn(process.execPath, ..., { cwd: process.cwd() })).",
+        "tests/integration/guardian-recovery.test.ts launches the real apps/agent/src/main.ts from a copy of the node binary and renames that copy away, turning the agent's own spawn into a real ENOENT, then restores it for the next command.",
+        "Branch-hit evidence is the closure protocol version on disk, the journal phase/guardian_pid pair, and the exact set of controller endpoints reached."
+      ]
+    },
+    "KFF-B00-003": {
+      "status": "FIXED_IN_THIS_BATCH",
+      "in_scope": true,
+      "reason": "It sits directly on the Guardian closure / compactClosure / quiescence trust chain.",
+      "principle_applied": "'never opened a context' and 'opened one and later proved it closed' are two different facts; compaction may shorten evidence but must not change its meaning.",
+      "fix": [
+        "new protocol version kff.guardian-closure-startup-failed.v1 carrying context_opened: literal(false) and deliberately no context_closed",
+        "compactClosure now refuses anything that is not kff.guardian-closure.v1, so a startup-failed or already-compact record is returned untouched",
+        "closureProof keeps the originating version, so a startup failure can never be read back as a closed context and every proof already on record stays byte-identical",
+        "recordQuiescence projects browser_status='CLOSED' only for kff.guardian-closure.v1"
+      ],
+      "real_path_proof": "In the integration run the retention pass really executed compactClosure over the startup-failure entry (collection_redaction.reason === 'DELIVERED') and the record on disk still carried the startup-failed version with context_opened:false and no context_closed."
+    }
+  },
+
+  "red_then_green": {
+    "red": {
+      "log": "b01-red.log",
+      "against_sha": "752042bc466b10b07cad455757a41bb10bbaf39f",
+      "guardian_ts_hash_at_red": "344a12a5ee004410b9205ea5f1c419233a3f73dc",
+      "result": "Tests 2 failed | 3 passed (5)",
+      "observed_error": "Error { \"code\": \"ENOENT\" } propagated raw out of runGuardian instead of GUARDIAN_STARTUP_FAILED",
+      "note": "C / D / E were already green on the old code by design: they assert behaviour that must not change."
+    },
+    "green": {
+      "unit": "13 files, 77/77 passed",
+      "targeted_unit": "5 files, 30/30 passed",
+      "integration": "5 files, 45/45 passed",
+      "typecheck": "clean (tsc --noEmit)",
+      "lint": "clean (eslint .)"
+    }
+  },
+
+  "acceptance": {
+    "command_1": {
+      "scenario": "deliberate pre-start spawn failure (real libuv ENOENT inside runGuardian)",
+      "correct_startup_failure_evidence": true,
+      "journal_recoverable": true,
+      "controller_accepted_terminal_evidence": true,
+      "submit_permission_produced": false,
+      "platform_writes": 0,
+      "endpoints_reached": ["commands/<id>/status", "commands/<id>/quiescence"],
+      "replayed": false,
+      "claimed_count": 1,
+      "report_count": 1,
+      "attempt_count": 1,
+      "slot_released_via_normal_state_machine": true,
+      "index_bypassed": false,
+      "rows_deleted": false
+    },
+    "command_2": {
+      "scenario": "independent legal command, queued only after the slot came back",
+      "agent_claimed": true,
+      "guardian_ready": true,
+      "real_child_pid": ">0",
+      "executor_really_ran": true,
+      "context_opened_reported": true,
+      "completed_normally": true,
+      "action_state": "VERIFIED_SUCCEEDED",
+      "command_state": "DONE",
+      "quiesced_at": "non-null",
+      "closure_context_closed": true,
+      "closure_proof_protocol": "kff.guardian-closure.v1",
+      "command_1_executed_again": false
+    },
+    "same_test_flow": true,
+    "stability_sample": {
+      "guardian_recovery_standalone": "8/8 PASS",
+      "guardian_recovery_this_session_total": "11/11 PASS",
+      "prior_session_observed_failures": "2 in ~30 runs (~10%)",
+      "honest_note": "The residual failure is KFF-B01-NEW-01. It did not reproduce after clearing orphaned guardian processes and 34 leftover temp roots. This does NOT prove it is gone. No failure was masked by retrying."
+    }
+  },
+
+  "idempotency_and_race": {
+    "error_only": "NOT_OBSERVED — a failed spawn always emits error then close",
+    "error_then_close": "OBSERVED — exactly one terminal decision; a second would surface as IDEMPOTENCY_CONFLICT and as a second closure file (unit scenario B)",
+    "error_then_exit": "NOT_OBSERVED — the only error sources are a failed spawn (no exit) and a failed IPC send, and the production send path both checks child.connected and always passes a callback, which is where the failure is delivered (unit scenario F pins both halves with a real probe)",
+    "normal_exit": "OBSERVED (unit scenarios C/D/E)",
+    "double_callback_duplicate_event": "OBSERVED as error+close; settled flag guarantees one decision",
+    "agent_restart_during_recovery": "OBSERVED (integration test 2): the restarted agent re-sends the same event_id, kff.inbound_events absorbs it as duplicate with no side effects, and the same proof is resumed",
+    "repeated_flush": "OBSERVED at unit and integration level: a second flush over a settled entry performs no work; exactly one action.reported and one guardian.quiesced",
+    "double_slot_release": "none observed — quiesced_at is COALESCE-guarded and the audit event is digest-guarded",
+    "deliberately_not_fabricated": "Combinations this platform does not produce were recorded as NOT_OBSERVED with the reason, not turned into synthetic platform facts."
+  },
+
+  "environment": {
+    "database_url": "postgresql://kff_local:<redacted>@127.0.0.1:55432/kff_test_<20hex> (created and dropped per run by scripts/integration.ts)",
+    "kff_test_database": "kff_test_<20hex>, enforced to match /^kff_test_[a-f0-9]{20}$/ and to equal current_database()",
+    "kff_root": "%TEMP%\\kff-b01-run-<8hex> — temporary root with junctions to supabase/packages/apps/scripts/node_modules plus its own .kff",
+    "runtime_directory": "<KFF_ROOT>\\.kff  (journal, closures, browser-environments, local-config.json)",
+    "journal_path": "<KFF_ROOT>\\.kff\\agent\\journal.json",
+    "embedded_postgres": "127.0.0.1:55432 (started for the isolated test database only)",
+    "user_database": "kff — never modified",
+    "note": "KFF_ROOT is also the project root in this codebase (supabase/migrations, adapter implementation digest, scripts/ paths). A bare temporary directory changes product behaviour and hangs the Worker drain case; measured, recorded, and worked around with junctions rather than by changing product code."
+  },
+
+  "data_safety": {
+    "user_real_journal_mtime": "2026-09-17 02:19:39 +0800 (unchanged)",
+    "user_real_process_lock_mtime": "2026-09-17 02:14:47 +0800 (unchanged)",
+    "user_real_browser_environments_newest": "2026-09-17 15:06 (no new entries)",
+    "in_test_hard_assertion": "guardian-recovery.test.ts snapshots .kff/agent/journal.json and process.lock (mtimeMs:size) in beforeAll and asserts equality in afterAll",
+    "official_services_started": false,
+    "real_facebook_operations": false,
+    "real_whatsapp_operations": false,
+    "real_stripe_operations": false,
+    "retained_test_databases_dropped": 3,
+    "orphan_guardian_processes_killed": 2,
+    "leftover_temp_roots_removed": 34
+  },
+
+  "files": {
+    "modified": [
+      "apps/agent/src/guardian.ts",
+      "apps/agent/src/guardian-protocol.ts",
+      "apps/agent/src/main.ts",
+      "packages/contracts/src/index.ts",
+      "packages/core/src/reconciliation.ts",
+      "scripts/integration.ts",
+      "tests/helpers/collection-journal.ts",
+      "tests/integration/local-supervision.test.ts",
+      "tests/unit/action-journal.test.ts"
+    ],
+    "added_tests": [
+      "tests/unit/guardian-termination.test.ts",
+      "tests/unit/guardian-closure-proof.test.ts",
+      "tests/unit/guardian-startup-fault-injection.test.ts",
+      "tests/integration/guardian-recovery.test.ts"
+    ],
+    "deleted_tests": [],
+    "changed_assertions": [
+      {
+        "file": "tests/unit/guardian-termination.test.ts",
+        "change": "afterAll directory guard regex widened from /^kff-b01-guardian-/ to /^kff-b01-(guardian|missing)-/ so newly registered cleanup directories are covered",
+        "is_product_behaviour_assertion": false,
+        "direction": "tightened coverage; the path.dirname(root) === os.tmpdir() check is retained"
+      }
+    ],
+    "assertions_weakened_to_fit_current_behaviour": false,
+    "new_assertions_added_to_the_new_tests_only": [
+      "Command 2 may have been compacted by retention, so the assertion reads context_closed plus closureProof(closure).protocol_version and takes the outcome from the authoritative kff.actions.state",
+      "retention races the assertion by about a second, so collection_redaction.reason === 'DELIVERED' is awaited with expect.poll"
+    ]
+  },
+
+  "scope_respected": {
+    "handled": ["Guardian startup failure", "terminal evidence", "journal recovery", "quiescence", "execution slot release"],
+    "not_handled": [
+      "KFF-B00-001",
+      "KFF-B00-006",
+      "Reception opt-out",
+      "不要发广告",
+      "historical OPTED_OUT",
+      "Messenger role",
+      "Inbox locator",
+      "Acquisition",
+      "WhatsApp referral",
+      "current-status.md"
+    ],
+    "planner_decisions_not_implemented": ["Q1", "Q2", "Q3"],
+    "forbidden_fixes_not_used": [
+      "journal was not cleared",
+      "no stuck command or action was deleted",
+      "agent_single_execution_slot was not bypassed",
+      "no database unique constraint was relaxed",
+      "unknown states were not force-written as CANCELED",
+      "no startup failure was fabricated where execution could not be disproven",
+      "no old command was replayed",
+      "no assertion semantics were changed to pass",
+      "no compensating command was used to hide an incorrectly finished command"
+    ],
+    "forbidden_mechanisms_not_created": [
+      "no second Guardian state machine",
+      "no second journal",
+      "no bypass recovery scheduler",
+      "no temporary database cleanup mechanism"
+    ]
+  },
+
+  "new_findings": [
+    {
+      "id": "KFF-B01-NEW-01",
+      "severity": "P1",
+      "status": "REPORTED_NOT_FIXED",
+      "title": "A guardian child that is spawned, sends ready, receives start and then stalls produces no terminal event at all",
+      "symptom": "Same user-visible failure as KFF-B00-002 through a different trigger: runGuardian's promise never settles, main.ts finally never runs, flushActionJournal never runs, the command stays CLAIMED with quiesced_at NULL and no closure, and the agent's main loop blocks inside await runGuardian. A restart does not self-heal.",
+      "evidence": [
+        "journal entries {phase:'claimed', guardian_pid:15388} and {phase:'claimed', guardian_pid:17248} with no closure file",
+        "profile directory WAS created (binding.json, owner.lock, user-data/Default)",
+        "controller seen log shows only repeated heartbeats after the claim — no /status, no /action-reports, no /quiescence",
+        "DB row state CLAIMED with quiesced_at NULL",
+        "two detached node-copy.exe guardian-child processes survived their parent on Windows",
+        "zero leaked Playwright chromium processes"
+      ],
+      "hang_site": "packages/adapters/src/browser-inbox.ts calls hooks.onContext(managed.context) unconditionally after openManagedBrowser, and the journal phase was still `claimed`, so the child hung inside openManagedBrowser — i.e. in chromium.launchPersistentContext(userData, {..., timeout: 20000}) or before it.",
+      "observed_rate": "2 in ~30 runs (~10%) in the prior session; 0 in 11 runs this session after clearing orphaned processes and leftover temp roots. Not reproduced is not fixed.",
+      "why_not_fixed_in_b01": [
+        "Phase 8 forbids creating a second Guardian state machine, journal or bypass recovery scheduler",
+        "a parent-side no-progress deadline would fire on legitimately long browser work unless the child reports progress, which is a protocol extension the planner must decide",
+        "an unprovable case must keep GUARDIAN_UNCONFIRMED / quarantine semantics rather than fabricate closure"
+      ],
+      "self_diagnosing_test": "tests/integration/guardian-recovery.test.ts waitForProof() now prints journal.phase, journal.guardian_pid, controller.state and controller.quiesced_at on timeout instead of failing with a bare timeout."
+    }
+  ],
+
+  "unknown_paths_remaining": [
+    "KFF-B01-NEW-01 (new P1, above)",
+    "A child that dies after `start` keeps GUARDIAN_UNCONFIRMED and its isolation by design — this is correct behaviour, covered by unit scenarios D and E",
+    "A startup-failure record paired with an action already in SUBMITTING is rewritten to UNKNOWN_OUTCOME at unit level; unreachable in production because a startup failure always precedes PREPARING",
+    "error + exit is NOT_OBSERVED on this platform, with the reason captured by a real probe (unit scenario F)"
+  ],
+
+  "final_answers": {
+    "B01_BASE_SHA": "752042bc466b10b07cad455757a41bb10bbaf39f",
+    "KFF-B00-002_FIXED": true,
+    "KFF-B00-004_FIXED": true,
+    "KFF-B00-003_in_batch_and_handled": true,
+    "target_regression_red_then_green": true,
+    "command_1_zero_platform_writes": true,
+    "command_1_zero_replay": true,
+    "command_2_really_completed": true,
+    "journal_recovered": true,
+    "execution_slot_released_normally": true,
+    "unknown_path_still_exists": true,
+    "new_P0_or_P1_found": "1 P1 (KFF-B01-NEW-01)",
+    "recommend_entering_B02": "yes, after the planner rules on KFF-B01-NEW-01",
+    "stopped_after_b01": true,
+    "entered_b02": false,
+    "committed": false,
+    "pushed": false,
+    "merged": false,
+    "deployed": false
+  }
+}

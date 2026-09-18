@@ -1,0 +1,198 @@
+================================================================================
+B01.2 交接摘要（HANDOFF SUMMARY）
+生成时间：2026-09-18
+详细信息见同目录 B01.2-HANDOFF.md（本文件只是导航摘要，不含完整论证）
+================================================================================
+
+【1. Git 状态】
+--------------------------------------------------------------------------------
+项目            : 1Time6/KFF
+正式工作分支    : codex/facebook-foundation-b01.1
+审计 BASE       : 752042bc466b10b07cad455757a41bb10bbaf39f
+当前正式 HEAD   : c293aa77a9872270741dbe384841a3c4768327cb
+merge-base      : 752042bc... == BASE  ⇒ HEAD 是 BASE 的直接后代（无分叉）
+remote          : origin https://github.com/1Time6/KFF.git
+git stash list  : 空
+
+工作区状态      : 【未提交】
+  14 个已跟踪文件被修改
+   6 个新增测试文件（untracked）
+   + 新增 audit/ 证据树（93 文件）
+  git diff --stat : 14 files changed, 1294 insertions(+), 124 deletions(-)
+
+★★ 硬约束 ★★
+  - B01.2 修改【不得】向 codex/facebook-foundation-b01.1 提交
+  - 【不得】merge
+  - 【不得】进入 B02
+  - 迁移分支是【临时】快照，【不得】merge 到任何正式分支或 main
+
+
+【2. 总体进度】
+--------------------------------------------------------------------------------
+已 COMPLETED（代码 + 验证）：
+  P1-01  Guardian 统一终局与 IPC 失效（7 子项，6 项有确定性证据）
+  P1-02  command lifecycle / quiescence / browser closure 三者拆开
+  P1-03  retention 不得覆盖 Guardian safety facts
+  P1-04  taskkill 纳入真 deadline
+  P2-01  三态终态，禁止 catch => false 代表死亡
+  P2-03  liveness 参数边界统一 + fail fast
+  NEW-B012-01  recoverExpired 不再中断整轮 sweep
+  NEW-B012-02  清理失败不再中止 saveEvidence 重试（有证据，但缺确定性回归）
+  LEDGER-NEW-08  枚举预算修复（全量集成 418/420 -> 420/420）
+
+未决（已由规划端裁定，交台式机执行）：
+  §7  负载支持范围 / 容量基线
+  §8  flushActionJournal 在负载下返回 false 的机制
+
+
+【3. 主要阻塞项】
+--------------------------------------------------------------------------------
+(1) §8 机制未证实 —— 租约为什么 stale 不知道。
+    validateLeases 三个失败点中，:36（leases.length!==2）已通过（观测到恰好 2 条），
+    其余两个【未区分】。原因是我自己的诊断查询写错了三个列名
+    （lease_expires_at / held / environment_id），返回 PostgreSQL 42703，
+    导致证明"租约确已过期"的时间戳【没有被捕获】。
+    修复版诊断已写好并通过 tsc/eslint，但【未运行、未验证】。
+
+(2) §7 权威容量基线未建立 —— force=10000 矩阵已由 Machine A 跑完一轮，
+    但 1.0× 行被我自己的一次 find 磁盘扫描污染（数据无效），
+    其余行是【单次观测】。必须由 Machine B 重跑。
+
+(3) POSIX 全链路 UNVERIFIED —— runGroupKill / 进程组 / EPERM 分类 / deadline
+    在本机从未执行（platform !== 'win32' 分支）。2 条 it.skip 是【跳过，不是通过】。
+    本机无 Linux/macOS 主机 ⇒ 物理上不可验。
+
+
+【4. §7 下一步（裁定：采纳 A + D；B/C/E/F 全部未执行）】
+--------------------------------------------------------------------------------
+A = 只补测量，不动生产代码
+D = 按生产配置（force=10000）补测 3.0×
+未执行：B（提高 KILL_RESERVE_MAX_MS）/ C（kill 份额 1/3->1/2）/ E（接受 2.0× 为上限）
+        / F（改集成用例 force 5000->10000）
+
+Machine B 要做的：
+  - 重跑 force=10000 容量矩阵：0× / 1.0× / 1.5× / 2.0× / 2.5× / 3.0×
+  - 3.0× 下【分开】测枚举耗时与 kill 耗时
+  - 失败时【务必落盘 termination 记录】（R2 那次 3.0× 失败在 :180 就退出，
+    没走到 :185，所以 tool 是 TIMEOUT 还是 SUCCESS 没被捕获，
+    因此无法排除 PID 复用导致 isProcessAlive 报 true）
+
+已知算术事实（会改变选项判断）：
+  force=5000 : settleReserve 1000, deadlineMs 4000, enumDeadline 2667, killReserve 1333
+               kill 保底由 floor(budget/3) 约束，【不是】由上限约束
+               ⇒ 提高 KILL_RESERVE_MAX_MS 对失败的集成用例是【空操作】
+  force=10000: settleReserve 1000, deadlineMs 9000, enumDeadline 7500, killReserve 1500
+               由上限约束（生产默认）
+
+★ 禁止：不得为了让 3.0× 变绿而修改 Guardian 安全语义。
+  3.0× 是极限退化测试；它的失败是 fail-closed，不是安全缺陷。
+
+
+【5. §8 下一步（裁定：G + H 先行）】
+--------------------------------------------------------------------------------
+G = 非侵入式记录（包一层 controller，记录每次调用与 AppError.code，失败时 dump）
+    —— 已实现在工作区 browser-message.test.ts 内，但【尚未验证】
+H = 控制端故障注入（让 controller 可按指令抛 LEASE_STALE / 返回非 READY /
+    触发 mid-flush redaction）—— 确定性
+J = 新增 flush 确定性单测 —— 【仅在 G 或 H 定位到根因之后】才做
+I = 测试内 heartbeat 循环 —— 【仅当证据明确指向 heartbeat/lease freshness】；
+    当前证据不指向它（朴素 30s TTL 假设已被证伪）
+K = 调 TTL / 放宽测试 —— 【禁止】
+
+★ 禁止用以下任何手段把测试人为改绿：
+    延长 TTL / 放宽 assertion / 修改安全状态机 / 增加无依据 retry / 修改 test force
+
+已 PROVEN 的部分：
+  拒绝分支 = apps/agent/src/action-journal.ts:96（acceptReport -> validateLeases 抛
+  LEASE_STALE -> quarantined=true -> :100 every(entry => entry.quiesced) 为 false）
+  已排除 :68（无 closure）/ :77（status 分支）/ :91（redaction）
+  确认 fail-closed：条目被 quarantine 而非 quiesce，槽位【没有】被错误释放
+  但【不得】写"这不是回归"—— 同条件对照在结构上不可得
+
+
+【6. 主要证据 / 日志路径】
+--------------------------------------------------------------------------------
+证据树根：  audit/KFF-Audit-B00-20260917/
+            （原位于仓库【外】的 C:\Users\17731\Desktop\KFF-Audit-B00-20260917，
+              93 文件 / 1.4 MB，已逐文件校验 sha256 一致后复制进仓库）
+
+必读：
+  audit/.../b01.2/B01.2-HANDOFF.md            ← 交接总入口（10 节）
+  audit/.../b01.2/B01.2-R2-delivery.md        ← R2 交付与裁定（489 行）
+  audit/.../b01.2/B01.2-R3-evidence-prereg.md ← 预登记 + 测量完整性事故
+  audit/.../b01.2/B01.2-summary.md            ← 逐项证据与最终语义
+  audit/.../b01.2/B01.2-test-results.md       ← 测试明细（含 POSIX 未验证清单）
+  audit/.../b01.2/B01.2-evidence.json         ← 结构化证据
+  audit/.../b01.2/B01.2-R2-patch.diff         ← R2 补丁快照（2821 行 / 205,677 B）
+                                                注意：工作区在 R3 轮新增了诊断代码，
+                                                当前工作区 ≠ 该快照
+
+关键日志：
+  b01.2-matrix-24.log          ← §8 拒绝现场【唯一一次捕获】（3.0× / force=10000）
+  b01.2-matrix-{0,8,12,16,20}.log
+                               ← 矩阵其余行；row 8（1.0×）【无效：受污染】
+  b01.2-r2-full-integration.log   ← 修复后 420/420，exit 0，1218.09s
+  b01.2-green.log                 ← 单测 124 passed / 契约 316 passed / tsc / eslint
+                                     + 修复前全量集成 418/420
+  b01.2-full-integration-fail.log ← LEDGER-NEW-08 直接对照（修复前）
+  b01.2-enumeration-under-load.log ← 2500ms 份额在 24 进程下 0/12
+  b01.2-repro-loaded.log          ← ★ HISTORICAL OBSERVATION /
+                                     EXACT LOAD MULTIPLIER UNKNOWN
+                                     （无表头、未记 spinner 数；只能定性，
+                                      不得再作精确倍率证据）
+  b01.2-g-try{1..8}.log           ← §8-G 8 次尝试（3 failed / 8，captured=0）
+
+Harness 脚本：
+  b01.2-matrix.sh   容量矩阵（force 可注入，默认不变）
+  b01.2-one.sh      单用例
+  b01.2-g-loop.sh   §8-G 循环
+
+
+【7. Machine A 信息（本机）】
+--------------------------------------------------------------------------------
+机器标记  : Machine A
+型号      : Lenovo Air14 2020
+CPU       : Intel Core i5-1035G1 @ 1.00GHz（Intel 10th Gen i5 mobile）
+逻辑核数  : 8
+RAM       : 16937574400 bytes（~15.8 GiB，标称 16GB）
+OS        : Windows 11 build 26200
+Node      : v24.14.1
+
+负载单位  : 自旋进程数 / 逻辑核数（8 逻辑核）
+            8 = 1.0×   12 = 1.5×   16 = 2.0×   20 = 2.5×   24 = 3.0×
+
+★★ 两机数据禁止混合统计 ★★
+  本机（笔记本）的全部压力测试结果【全部标记 Machine A】。
+  以后台式机的测试结果【必须单独标记 Machine B】。
+  【禁止】把两台机器的数字合并求平均、合并成功率或互相校准。
+
+
+【8. 台式机（Machine B）恢复现场的方法】
+--------------------------------------------------------------------------------
+1) git clone https://github.com/1Time6/KFF.git
+2) git switch migration/b01.2-handoff-20260918      # 临时迁移分支
+3) 阅读 audit/KFF-Audit-B00-20260917/b01.2/B01.2-HANDOFF.md  （本摘要的完整版）
+   并先读其 §0.1 状态词汇、§0.2 结论强度词汇、§0.3 四件独立的事
+4) 恢复本地环境（以下内容【不在】快照内，因被 gitignore）：
+     pnpm install
+     生成 .env（参照 .env.example）
+     启动本地 supabase（supabase/.temp/ 与 .kff/ 需重新生成）
+     注意 .kff/ 下有浏览器 profile 与认证缓存，【不】随快照迁移
+5) 【在读完 B01.2-HANDOFF.md 第 3、4 节之前，不要跑任何负载测试】
+6) 执行 §11 的任务清单；结果单独标记 Machine B
+
+快照【不含】：node_modules/ .kff/ .env dist/ .next/ .next-production/
+              test-results/ supabase/.temp/  （均为 gitignore 项）
+
+
+【9. 机器保留声明】
+--------------------------------------------------------------------------------
+笔记本（Machine A）【保留整个仓库】：不删除、不 clean、不 reset。
+迁移分支即 Machine A 的完整快照，保留备查。
+
+迁移完成后：【不要】继续跑测试、【不要】继续修改代码、
+              【不要】merge、【不要】进入 B02。
+
+================================================================================
+（摘要结束）
+================================================================================

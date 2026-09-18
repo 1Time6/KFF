@@ -1,0 +1,75 @@
+# B01 Phase 1 - RED against frozen baseline 752042bc466b10b07cad455757a41bb10bbaf39f
+?? tests/unit/guardian-termination.test.ts
+--- unmodified: apps/agent/src/guardian.ts 344a12a5ee004410b9205ea5f1c419233a3f73dc
+--- npx vitest run tests/unit/guardian-termination.test.ts
+
+ RUN  v5.0.0 C:/Users/17731/Desktop/KFF
+
+ × tests/unit/guardian-termination.test.ts > A: a child killed before it can ever start is settled as a proven startup failure 37ms
+   → expected Error: spawn C:\Program Files\nodejs\node… { …(5) } to match object { code: 'GUARDIAN_STARTUP_FAILED' }
+(4 matching properties omitted from actual)
+ × tests/unit/guardian-termination.test.ts > B: the failing spawn emits error then close and never exit, and produces exactly one terminal decision 760ms
+   → expected Error: spawn C:\Program Files\nodejs\node… { …(5) } to match object { code: 'GUARDIAN_STARTUP_FAILED' }
+(4 matching properties omitted from actual)
+ ✓ tests/unit/guardian-termination.test.ts > C: a child that really starts closes its context and the run resolves with that proof 1295ms
+ ✓ tests/unit/guardian-termination.test.ts > D: a child that had started and left no proof keeps its isolation instead of being written off as a startup failure 1284ms
+ ✓ tests/unit/guardian-termination.test.ts > E: a child that died after asking for submission authority is never recorded as a startup failure 1225ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/guardian-termination.test.ts > A: a child killed before it can ever start is settled as a proven startup failure
+AssertionError: expected Error: spawn C:\Program Files\nodejs\node… { …(5) } to match object { code: 'GUARDIAN_STARTUP_FAILED' }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "GUARDIAN_STARTUP_FAILED",
++ Error {
++   "code": "ENOENT",
+  }
+
+ ❯ tests/unit/guardian-termination.test.ts:73:188
+     71|   let spawned = false; let submitRequested = false;
+     72|   await withUnusableWorkingDirectory(async () => {
+     73|     await expect(runGuardian(command, runtime, value, { beforeSubmit: …
+       |                                                                                                                                                                                            ^
+     74|       .rejects.toMatchObject({ code: 'GUARDIAN_STARTUP_FAILED' });
+     75|   });
+ ❯ withUnusableWorkingDirectory tests/unit/guardian-termination.test.ts:43:22
+ ❯ tests/unit/guardian-termination.test.ts:72:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/guardian-termination.test.ts > B: the failing spawn emits error then close and never exit, and produces exactly one terminal decision
+AssertionError: expected Error: spawn C:\Program Files\nodejs\node… { …(5) } to match object { code: 'GUARDIAN_STARTUP_FAILED' }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   "code": "GUARDIAN_STARTUP_FAILED",
++ Error {
++   "code": "ENOENT",
+  }
+
+ ❯ tests/unit/guardian-termination.test.ts:94:127
+     92|   const runtime = runtimeRoot(); const command = closureCommand(); con…
+     93|   await withUnusableWorkingDirectory(async () => {
+     94|     await expect(runGuardian(command, runtime, value, { beforeSubmit: …
+       |                                                                                                                               ^
+     95|   });
+     96|   // `error` and `close` both arrive; a second decision would surface …
+ ❯ withUnusableWorkingDirectory tests/unit/guardian-termination.test.ts:43:22
+ ❯ tests/unit/guardian-termination.test.ts:93:9
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 3 passed (5)
+   Start at  17:16:55
+   Duration  5.33s (tests 90%, transform 5%, import 5%)
+

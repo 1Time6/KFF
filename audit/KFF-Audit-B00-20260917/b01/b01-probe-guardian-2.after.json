@@ -1,0 +1,23 @@
+﻿{
+  "probe": "guardian-2",
+  "read_semantics_before_compaction": {
+    "closure_protocol_on_disk": "kff.guardian-closure-startup-failed.v1",
+    "context_opened_on_disk": false,
+    "readClosure_result": {
+      "threw": "GUARDIAN_STARTUP_FAILED"
+    }
+  },
+  "compaction_reachability": {
+    "message_command": {
+      "reached_compaction": false,
+      "protocol_on_disk_after": "kff.guardian-closure-startup-failed.v1",
+      "context_closed_after": null
+    },
+    "collection_command": {
+      "reached_compaction": false,
+      "protocol_on_disk_after": "kff.guardian-closure-startup-failed.v1",
+      "context_closed_after": null,
+      "reason": null
+    }
+  }
+}

@@ -1,0 +1,123 @@
+===== ONE-TEST PROBE load=2.00x =====
+preflight_spinners=0
+spinners_running=16
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.0 [39m[90mC:/Users/17731/Desktop/KFF[39m
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911164326_g1_execution_core.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911173241_g1_permits_reconciliation.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911175249_g1_capability_evidence.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911175746_g1_agent_slot_guard.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911181005_g1_stop_and_agent_management.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911185039_g1_contact_eligibility.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911190913_g2_cost_ledger.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911194100_g1_action_adjudication.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911200056_g2_template_versions.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911203355_g2_collection_checkpoints.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911213439_g2_import_export.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911221017_g2_target_snapshots.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911224129_g2_schedule_rules.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911235946_g3_owned_inbound.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912003348_g3_owned_order_snapshots.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912012250_g3_stripe_payments.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912022322_g3_stripe_refunds.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912031707_facebook_lead_inbound.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912032804_lead_reception_execution.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912034626_lead_automation_rules.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912040653_lead_metrics_and_ingress_limits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912061549_acquisition_automation.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912121030_acquisition_external_sources.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912131442_browser_environment_runtime.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912151353_browser_collection_tasks.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912162852_browser_inbox_identity.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912164913_browser_inbox_polling.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912172904_browser_message_transport.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913012544_real_browser_collection_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913042407_real_browser_inbox_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913052626_real_browser_message_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913154300_browser_comment_outreach.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260915022051_acquisition_source_continuation.sql
+
+[90mstderr[2m | tests/integration/browser-message.test.ts[2m > [22m[2mends a guardian that stopped answering while it held submission authority, and keeps the unknown outcome isolated
+[22m[39mR2DIAG_STATUS {"command":"a18be1cf-8ed9-4d17-ba92-1c6257f15699","state":"CLAIMED","action_state":"SUBMITTING"}
+
+[90mstderr[2m | tests/integration/browser-message.test.ts[2m > [22m[2mends a guardian that stopped answering while it held submission authority, and keeps the unknown outcome isolated
+[22m[39mR2DIAG_TAIL [{"id":"a18be1cf-8ed9-4d17-ba92-1c6257f15699","quiesced":true,"acknowledged":true,"quarantined":false,"hasReport":true,"redacted":false}]
+
+ [32m✓[39m tests/integration/browser-message.test.ts [2m([22m[2m12 tests[22m[2m | [22m[33m11 skipped[39m[2m)[22m[33m 34379[2mms[22m[39m
+   [33m[2m✓[22m[39m ends a guardian that stopped answering while it held submission authority, and keeps the unknown outcome isolated[33m 28970[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m1 passed[39m[22m[2m | [22m[33m11 skipped[39m[90m (12)[39m
+[2m   Start at [22m 09:17:30
+[2m   Duration [22m 44.90s[2m (tests 78%, transform 19%, import 2%)[22m
+
+
+===== PROBE_DATABASE_NAME=kff_test_2c4abc777246330ac54d exit=0 =====
+exit=0
+post_run_spinners=0

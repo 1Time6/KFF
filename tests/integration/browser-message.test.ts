@@ -6,7 +6,7 @@ import { migrate } from '../../scripts/migrate';
 import { seed } from '../../scripts/seed';
 import { startFixtureServer } from '../../scripts/fixture-server';
 import { query, closePool } from '@kff/database';
-import { digest } from '@kff/core';
+import { AppError, digest } from '@kff/core';
 import { quiescenceInput, type ActionReport, type AgentCommand } from '@kff/contracts';
 import { receptionPolicy } from '../../packages/contracts/src/lead';
 import type { BrowserFixtureEvent } from '../../packages/adapters/src/browser-message-fixture';
@@ -75,6 +75,118 @@ const controller = async <T>(endpoint: string, data?: unknown): Promise<T> => {
   if (parts[0] === 'commands' && parts[2] === 'quiescence') return await recordQuiescence(agent, parts[1], quiescenceInput.parse(data)) as T;
   throw new Error('Unexpected controller endpoint ' + endpoint);
 };
+
+/**
+ * The liveness ladder the two stall cases run under. Production uses `force: 10000`; these cases pin a
+ * shorter one so a single case does not spend ten seconds waiting on a decision that is already made.
+ *
+ * The override exists so the §7 capacity matrix can measure the *production* budget under load without
+ * the two configurations drifting apart in any other respect. It changes no default - an unset variable
+ * reproduces the pinned value exactly - and it is read here rather than plumbed through the policy so
+ * that a mis-set variable fails loudly instead of silently running a ladder nobody asked for.
+ */
+const livenessForce = () => {
+  const raw = process.env.KFF_TEST_LIVENESS_FORCE;
+  if (raw === undefined) return 5000;
+  const value = Number(raw);
+  if (!Number.isSafeInteger(value) || value < 1000) throw new Error('KFF_TEST_LIVENESS_FORCE must be an integer >= 1000, got ' + raw);
+  return value;
+};
+const liveness = (phase: 'granting' | 'awaiting-intent') => ({ [phase]: 1500, grace: 1000, force: livenessForce() });
+
+/**
+ * §8-G: a recording wrapper around the controller. It appends to an array and does nothing else - it
+ * does not retry, reorder, delay or swallow - so the flush it observes runs as close to unperturbed as
+ * an observation can be. What it buys is that a failure carries its own explanation: which endpoint
+ * refused and with which domain code, instead of another load run spent guessing at it.
+ */
+function recordingController() {
+  const log: Array<{ endpoint: string; error?: string }> = [];
+  const wrapped = async <T>(endpoint: string, data?: unknown): Promise<T> => {
+    try { const value = await controller<T>(endpoint, data); log.push({ endpoint }); return value; }
+    catch (error) { log.push({ endpoint, error: error instanceof AppError ? error.code : String((error as Error)?.message ?? error) }); throw error; }
+  };
+  return { wrapped, log };
+}
+
+/**
+ * §8-G: what the machine looked like at the moment the flush refused. Printed rather than asserted,
+ * because the run this exists to explain is the failing one, and the assertions that would describe it
+ * are downstream of the failure. The five facts are the ones a reader needs to place the refusal: the
+ * command's lifecycle and its quiescence, the action's adjudicated state, the leases and whether they
+ * had aged out, the journal entry the flush was working from, and the guardian proof it read.
+ */
+async function flushDiagnostics(command: AgentCommand, runtime: string, journal: Record<string, JournalEntry>, identity: { command_id: string; action_id: string; guardian_nonce: string }, calls: unknown[]) {
+  const report = async (label: string, body: () => Promise<unknown>) => { try { return await body(); } catch (error) { return { 'read_error': (error as { code?: string }).code ?? String(error) }; } };
+  const evidence = await report('proof', async () => readClosureEvidence(runtime, identity));
+  console.log('[§8-G] flush refused: ' + JSON.stringify({
+    calls,
+    // `since_claim` is the number this whole question turns on: the resource leases are issued for 30s
+    // at dispatch and are renewed only by a heartbeat, so the flush's distance from the claim is what
+    // decides whether `validateLeases` still finds them live.
+    command: await report('command', async () => (await query('SELECT state, quiesced_at, expires_at, created_at, claimed_at, clock_timestamp() AS now, clock_timestamp() - claimed_at AS since_claim FROM kff.agent_commands WHERE id=$1', [command.id]))[0]),
+    action: await report('action', async () => (await query('SELECT state, error_code FROM kff.actions WHERE id=$1', [command.action_id]))[0]),
+    attempt: await report('attempt', async () => (await query('SELECT state, leases FROM kff.action_attempts WHERE id=$1', [command.attempt_id]))[0]),
+    // Column names here are the schema's, not the words the prose uses: there is no `held` column and
+    // the environment is reached through `resource_id`. The three conditions of `validateLeases` are
+    // evaluated explicitly so the refusal is read off the row rather than inferred from the code.
+    leases: await report('leases', async () => await query('SELECT resource_type, resource_id, token, expires_at, quarantined, expires_at < clock_timestamp() AS expired, clock_timestamp() AS now FROM kff.resource_leases WHERE holder_attempt_id=$1 ORDER BY resource_type', [command.attempt_id])),
+    lease_gate: await report('lease_gate', async () => (await query("SELECT (SELECT state='CLAIMED' FROM kff.agent_commands WHERE id=$1) AS command_claimed, (SELECT expires_at>clock_timestamp() FROM kff.agent_commands WHERE id=$1) AS command_unexpired, (SELECT jsonb_array_length(leases)=2 FROM kff.action_attempts WHERE id=$2) AS leases_complete", [command.id, command.attempt_id]))[0]),
+    environment: await report('environment', async () => (await query("SELECT state, browser_status FROM kff.environments WHERE id=(SELECT resource_id FROM kff.resource_leases WHERE holder_attempt_id=$1 AND resource_type='environment' LIMIT 1)", [command.attempt_id]))[0]),
+    journal: journal[command.id],
+    proof: evidence,
+  }, null, 2));
+}
+
+type EvidenceRef = { command_id: string; action_id: string; guardian_nonce: string };
+
+/**
+ * §7-A: the record a failing run needs, read from the run that is already failing.
+ *
+ * The case asserts two things in order - the process is gone, then the tree was proven dead - and both
+ * assertions sit *upstream* of the read that would explain them, so the run that would answer the
+ * question is the one run that cannot reach the answer. This reads it anyway. The fresh probe is the
+ * part the ruling's open question turns on: a record saying `DEAD` beside a pid that is alive again is
+ * what a reused pid looks like, and without both readings the two cannot be told apart.
+ *
+ * Every read here is guarded, the liveness probe included. A diagnostic that throws would replace the
+ * failure it was written to explain, and a substituted error is worse than no diagnostic at all: it
+ * would send the reader after a fault in the instrument.
+ */
+async function explainTree(pid: number | undefined, runtime: string, identity: EvidenceRef) {
+  const read = (body: () => unknown) => { try { return body(); } catch (error) { return { 'read_error': (error as { code?: string }).code ?? String(error) }; } };
+  read(() => console.log('[§7-A] failure diagnostics: ' + JSON.stringify({
+    guardian_pid: pid, pid_alive_now: read(() => isProcessAlive(pid)), record: read(() => readClosureEvidence(runtime, identity)),
+  }, null, 2)));
+}
+/**
+ * §7-A: runs an assertion, and when it fails records the process facts before rethrowing the original
+ * error unchanged. The error is rethrown rather than replaced, so the case still fails exactly where it
+ * failed before - this adds an explanation, not a verdict.
+ */
+async function withTreeDiagnostics<T>(pid: number | undefined, runtime: string, identity: EvidenceRef, body: () => Promise<T>): Promise<T> {
+  try { return await body(); } catch (error) {
+    try { await explainTree(pid, runtime, identity); } catch (diagnostic) { console.log('[§7-A] diagnostics themselves failed: ' + String(diagnostic)); }
+    throw error;
+  }
+}
+
+/**
+ * §8-G: the flush, observed. The assertion is unchanged - `true` or the case fails - so nothing here
+ * widens what the batch accepts; it only makes a refusal legible when it happens.
+ *
+ * The controller is wrapped rather than replaced, so the flush talks to the real endpoints and every
+ * call it makes is recorded on the way past - a refusal is only placeable if the sequence that led to
+ * it is known. The wrapper rethrows untouched, so the real refusal still propagates as itself.
+ */
+async function flushObserved(command: AgentCommand, runtime: string, journal: Record<string, JournalEntry>, identity: { command_id: string; action_id: string; guardian_nonce: string }) {
+  const { wrapped, log } = recordingController();
+  const flushed = await flushActionJournal(runtime, journal, () => {}, wrapped);
+  if (!flushed) {
+    try { await flushDiagnostics(command, runtime, journal, identity, log); } catch (diagnostic) { console.log('[§8-G] diagnostics themselves failed: ' + String(diagnostic)); }
+  }
+  return flushed;
+}
 
 it('reads actual Inbox DOM, sends one browser WhatsApp invitation, persists the receipt and deduplicates the later echo', async () => {
   const h = await setup(false, true); await seedDestination(h.account_id); await scan(h.environment_id); const id = await conversation(h.account_id);
@@ -173,28 +285,34 @@ it('ends a guardian that stopped answering while it held submission authority, a
       // The journal reaches `submitting` because the real controller call really happened. The phase
       // the parent observed is still `granting`, because the grant it decided on was never delivered.
       beforeSubmit: async () => { journal[command.id].phase = 'intent_requested'; await beginSubmission(agent, command.id); journal[command.id].phase = 'submitting'; return new Promise(() => {}); },
-      liveness: { granting: 1500, grace: 1000, force: 5000 },
+      liveness: liveness('granting'),
     })).rejects.toMatchObject({ code: 'GUARDIAN_NO_PROGRESS' });
   } finally { for (const [key, stored] of previous) { if (stored === undefined) delete environment[key]; else environment[key] = stored; } }
   expect(guardian).toBeGreaterThan(0);
-  await expect.poll(() => isProcessAlive(guardian), { timeout: 10000 }).toBe(false);
+  const identity = { command_id: command.id, action_id: command.action_id, guardian_nonce: value };
+  await withTreeDiagnostics(guardian, runtime, identity, () => expect.poll(() => isProcessAlive(guardian), { timeout: 10000 }).toBe(false));
   // Three facts, recorded as three facts: the process is proven gone, a context really was opened, and
   // whether the platform write happened is precisely what nobody can answer any more. There is no
   // `context_closed` to read, because ending a process never closes anything.
-  const identity = { command_id: command.id, action_id: command.action_id, guardian_nonce: value };
   const record = readClosureEvidence(runtime, identity);
-  expect(record).toMatchObject({
+  await withTreeDiagnostics(guardian, runtime, identity, async () => expect(record).toMatchObject({
     protocol_version: noProgressProtocolVersion, command_id: command.id, action_id: command.action_id, nonce: value,
-    phase: 'granting', process_terminated: true, context_opened: true, submission_state: 'UNKNOWN', forced: true, grace_ms: 1000,
+    phase: 'granting', context_opened: true, submission_state: 'UNKNOWN', forced: true, grace_ms: 1000,
+    // What the parent proved about the process is a three-state fact with its observations, not the
+    // boolean this file used to assert. The tree here really was enumerated and really was killed, and
+    // the probes afterwards are what let the command be completed at all - so the state is asserted,
+    // not tolerated: `UNKNOWN` or `ALIVE` would leave the command unfinished and the environment
+    // isolated, which the assertions below depend on.
+    termination: { process_tree: 'DEAD', root: 'DEAD', descendants: 'DEAD', enumeration: 'LISTED', tool: expect.any(String), sampled: expect.any(Number), elapsed_ms: expect.any(Number) },
     result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' },
-  });
+  }));
   expect(record).not.toHaveProperty('context_closed');
   expect((record as { waited_ms: number }).waited_ms).toBeGreaterThanOrEqual(1500);
   // A termination is not a closure, so the weaker record can never be read back as one.
   const asClosure = (() => { try { readClosure(runtime, identity); return 'closed'; } catch (error) { return (error as { code?: string }).code; } })();
   expect(asClosure).toBe('GUARDIAN_UNCONFIRMED');
   // The real flush against the real controller: the same three endpoints `main.ts` uses.
-  expect(await flushActionJournal(runtime, journal, () => {}, controller)).toBe(true);
+  expect(await flushObserved(command, runtime, journal, identity)).toBe(true);
   // The parent's own record said NEEDS_HUMAN. The action state is what corrects it: a persisted submit
   // intention means nobody may be told this was harmless, so what actually leaves the machine is
   // UNKNOWN_OUTCOME - never CANCELED and never VERIFIED_FAILED.
@@ -251,26 +369,28 @@ it('ends a child that went silent just after it opened a real browser, and never
       // The parent only sets this phase because it really received `context-opened` from the child.
       onContextOpened: async () => { journal[command.id].phase = 'context_open'; await recordBrowserOpened(agent, command.id); },
       beforeSubmit: async () => { intentRequested = true; },
-      liveness: { 'awaiting-intent': 1500, grace: 1000, force: 5000 },
+      liveness: liveness('awaiting-intent'),
     })).rejects.toMatchObject({ code: 'GUARDIAN_NO_PROGRESS' });
   } finally { for (const [key, stored] of previous) { if (stored === undefined) delete environment[key]; else environment[key] = stored; } }
   // A child frozen inside the callback that opens the context never asks to submit, so this run never
   // held submission authority at any point.
   expect(intentRequested).toBe(false);
   expect(guardian).toBeGreaterThan(0);
-  await expect.poll(() => isProcessAlive(guardian), { timeout: 10000 }).toBe(false);
   const identity = { command_id: command.id, action_id: command.action_id, guardian_nonce: value };
+  await withTreeDiagnostics(guardian, runtime, identity, () => expect.poll(() => isProcessAlive(guardian), { timeout: 10000 }).toBe(false));
   const record = readClosureEvidence(runtime, identity);
   // Three separate facts, recorded as three separate facts: the process is gone, the context really
   // opened, and no submission was ever attempted. A termination proves only the first of them.
-  expect(record).toMatchObject({ protocol_version: noProgressProtocolVersion, command_id: command.id, action_id: command.action_id, nonce: value,
-    phase: 'awaiting-intent', process_terminated: true, context_opened: true, submission_state: 'NOT_SUBMITTED', forced: true, grace_ms: 1000,
-    result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' } });
+  await withTreeDiagnostics(guardian, runtime, identity, async () => expect(record).toMatchObject({ protocol_version: noProgressProtocolVersion, command_id: command.id, action_id: command.action_id, nonce: value,
+    phase: 'awaiting-intent', context_opened: true, submission_state: 'NOT_SUBMITTED', forced: true, grace_ms: 1000,
+    // Same three-state fact as the case above: the process tree was enumerated, killed, and probed.
+    termination: { process_tree: 'DEAD', root: 'DEAD', descendants: 'DEAD', enumeration: 'LISTED', tool: expect.any(String), sampled: expect.any(Number), elapsed_ms: expect.any(Number) },
+    result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' } }));
   expect(record).not.toHaveProperty('context_closed');
   expect((record as { waited_ms: number }).waited_ms).toBeGreaterThanOrEqual(1500);
   const asClosure = (() => { try { readClosure(runtime, identity); return 'closed'; } catch (error) { return (error as { code?: string }).code; } })();
   expect(asClosure).toBe('GUARDIAN_UNCONFIRMED');
-  expect(await flushActionJournal(runtime, journal, () => {}, controller)).toBe(true);
+  expect(await flushObserved(command, runtime, journal, identity)).toBe(true);
   // The action never left PREPARING, so the outcome the parent recorded stands: the run is handed to a
   // human, and the browser it had really opened is not written off as closed.
   expect(journal[command.id].report).toMatchObject({ outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' });

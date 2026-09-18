@@ -3,7 +3,7 @@ import { expect, it } from 'vitest';
 import { digest } from '../../packages/core/src/index';
 import { flushActionJournal, maintainActionJournal } from '../../apps/agent/src/action-journal';
 import { closureFile, closureProof, readClosureEvidence, startupFailedProtocolVersion } from '../../apps/agent/src/guardian-protocol';
-import { collectionJournalFixture, startupFailureJournalFixture } from '../helpers/collection-journal';
+import { collectionJournalFixture, noProgressJournalFixture, startupFailureJournalFixture } from '../helpers/collection-journal';
 
 const offline = () => { throw new Error('Controller unavailable'); };
 function expectRedacted(h: ReturnType<typeof collectionJournalFixture>) {
@@ -165,4 +165,58 @@ it('does not transmit a raw page that expires while waiting for command status',
   const api = async <T>(endpoint: string) => { calls.push(endpoint); h.entry.collection_expires_at = new Date(0).toISOString(); return { state: 'CLAIMED', action_state: 'PREPARING' } as T; };
   expect(await flushActionJournal(h.runtime, h.journal, h.save, api)).toBe(false);
   expect(calls).toEqual(['commands/' + h.entry.command_id + '/status']); expectRedacted(h);
+});
+
+/**
+ * Retention answers exactly one question - may this payload be kept - and the guardian's process fact
+ * is not part of it. These three cases pin the boundary from both sides: a fact that exists is carried
+ * through the expiry, a fact that exists only in the record is restored from it, and a record that
+ * proves nothing gains nothing. The last one is as important as the first: an invented termination fact
+ * would be indistinguishable from a measured one downstream.
+ */
+it('carries the guardian process fact through retention expiry instead of replacing the report', async () => {
+  const h = noProgressJournalFixture(true, 'UNKNOWN'), reports: unknown[] = [];
+  const api = async <T>(endpoint: string, data?: unknown): Promise<T> => {
+    if (endpoint.endsWith('/status')) return { state: 'CLAIMED', action_state: 'SUBMITTING' } as T;
+    if (endpoint === 'action-reports') { reports.push(structuredClone(data)); return { accepted: true } as T; }
+    expect(data).toEqual(h.proof); return {} as T;
+  };
+  maintainActionJournal(h.runtime, h.journal, h.save);
+  // The page is gone, the outcome is the retention one, and the safety fact is untouched.
+  expect(h.entry.report).toMatchObject({ outcome: 'BLOCKED', error_code: 'GUARDIAN_NO_PROGRESS', guardian: { process_tree: 'UNKNOWN', tool: 'ERROR' } });
+  expect(h.entry.report?.collection_page).toBeUndefined();
+  expect(JSON.stringify(h.entry)).not.toContain('Synthetic raw page marker');
+  expect(h.entry.collection_redaction?.reason).toBe('RETENTION_EXPIRED');
+  expect(await flushActionJournal(h.runtime, h.journal, h.save, api)).toBe(true);
+  // The same fact is what the receiver is handed, unchanged by the second redaction round.
+  expect(reports).toHaveLength(1);
+  expect(reports[0]).toMatchObject({ outcome: 'BLOCKED', error_code: 'GUARDIAN_NO_PROGRESS', guardian: { process_tree: 'UNKNOWN', tool: 'ERROR', enumeration: 'UNAVAILABLE' } });
+  expect(h.entry.quiesced).toBe(true);
+});
+
+it('restores the guardian process fact from the record when retention had to synthesize the report', async () => {
+  const h = noProgressJournalFixture(false, 'UNKNOWN'), reports: unknown[] = [];
+  // A restart between the forced termination and the flush: no page, and no report either.
+  expect(h.entry.report).toBeUndefined();
+  maintainActionJournal(h.runtime, h.journal, h.save);
+  expect(h.entry.collection_redaction?.reason).toBe('RETENTION_EXPIRED');
+  expect(h.entry.report).toMatchObject({ outcome: 'BLOCKED', error_code: 'GUARDIAN_NO_PROGRESS', guardian: { process_tree: 'UNKNOWN' } });
+  const api = async <T>(endpoint: string, data?: unknown): Promise<T> => {
+    if (endpoint.endsWith('/status')) return { state: 'CLAIMED', action_state: 'SUBMITTING' } as T;
+    if (endpoint === 'action-reports') { reports.push(structuredClone(data)); return { accepted: true } as T; }
+    expect(data).toEqual(h.proof); return {} as T;
+  };
+  expect(await flushActionJournal(h.runtime, h.journal, h.save, api)).toBe(true);
+  expect(reports).toHaveLength(1);
+  expect(reports[0]).toMatchObject({ outcome: 'BLOCKED', error_code: 'GUARDIAN_NO_PROGRESS', guardian: { process_tree: 'UNKNOWN', tool: 'ERROR' } });
+});
+
+it('invents no process fact for a record that proves the context was closed', async () => {
+  const h = collectionJournalFixture();
+  h.entry.collection_expires_at = new Date(0).toISOString();
+  maintainActionJournal(h.runtime, h.journal, h.save);
+  expect(h.entry.report).toMatchObject({ outcome: 'BLOCKED', error_code: 'RETENTION_EXPIRED' });
+  expect(h.entry.report).not.toHaveProperty('guardian');
+  expect(h.entry.report).not.toHaveProperty('process_tree');
+  expect(h.entry.quiesced).toBeUndefined();
 });

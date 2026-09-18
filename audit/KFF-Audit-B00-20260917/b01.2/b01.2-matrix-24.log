@@ -1,0 +1,248 @@
+===== §7 MATRIX: browser-message, force=10000, load=3.00x logical cores =====
+start=2026-09-18T10:43:05+08:00  spinners_armed=24  logical_cpus=8  force=10000
+preflight_spinners=0
+spinners_running=24
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.0 [39m[90mC:/Users/17731/Desktop/KFF[39m
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911164326_g1_execution_core.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911173241_g1_permits_reconciliation.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911175249_g1_capability_evidence.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911175746_g1_agent_slot_guard.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911181005_g1_stop_and_agent_management.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911185039_g1_contact_eligibility.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911190913_g2_cost_ledger.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911194100_g1_action_adjudication.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911200056_g2_template_versions.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911203355_g2_collection_checkpoints.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911213439_g2_import_export.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911221017_g2_target_snapshots.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911224129_g2_schedule_rules.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911235946_g3_owned_inbound.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912003348_g3_owned_order_snapshots.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912012250_g3_stripe_payments.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912022322_g3_stripe_refunds.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912031707_facebook_lead_inbound.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912032804_lead_reception_execution.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912034626_lead_automation_rules.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912040653_lead_metrics_and_ingress_limits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912061549_acquisition_automation.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912121030_acquisition_external_sources.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912131442_browser_environment_runtime.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912151353_browser_collection_tasks.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912162852_browser_inbox_identity.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912164913_browser_inbox_polling.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912172904_browser_message_transport.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913012544_real_browser_collection_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913042407_real_browser_inbox_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913052626_real_browser_message_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913154300_browser_comment_outreach.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260915022051_acquisition_source_continuation.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts[2m > [22m[2mends a guardian that stopped answering while it held submission authority, and keeps the unknown outcome isolated
+[22m[39m[§8-G] flush refused: {
+  "calls": [
+    {
+      "endpoint": "commands/1271b01d-c886-4b1d-adac-4241ca8cc93c/status"
+    },
+    {
+      "endpoint": "action-reports",
+      "error": "LEASE_STALE"
+    }
+  ],
+  "command": {
+    "read_error": "42703"
+  },
+  "action": {
+    "state": "SUBMITTING",
+    "error_code": null
+  },
+  "attempt": {
+    "state": "SUBMITTING",
+    "leases": [
+      {
+        "token": "1",
+        "resource_id": "df3c0027-3fd9-406a-9484-914e6dbe3ef7",
+        "resource_type": "account"
+      },
+      {
+        "token": "1",
+        "resource_id": "1015bb96-4dfe-4464-a89a-924275a8e90c",
+        "resource_type": "environment"
+      }
+    ]
+  },
+  "leases": {
+    "read_error": "42703"
+  },
+  "environment": {
+    "read_error": "42703"
+  },
+  "journal": {
+    "command_id": "1271b01d-c886-4b1d-adac-4241ca8cc93c",
+    "action_id": "8849110c-1e5b-4967-93fa-bcb7cdd59cde",
+    "phase": "submitting",
+    "guardian_nonce": "e106ff81e280c67cc041b254115a955078fed12bc12fabdcfd55cb592e4543a1",
+    "guardian_pid": 15780,
+    "report": {
+      "outcome": "UNKNOWN_OUTCOME",
+      "error_code": "GUARDIAN_NO_PROGRESS",
+      "diagnostic": {
+        "step": "guardian-no-progress"
+      },
+      "guardian": {
+        "process_tree": "DEAD",
+        "tool": "SUCCESS",
+        "root": "DEAD",
+        "descendants": "DEAD",
+        "sampled": 6,
+        "enumeration": "LISTED",
+        "elapsed_ms": 6010
+      },
+      "event_id": "af7caf7b-8f16-4e0f-8674-51bcec8beb72",
+      "command_id": "1271b01d-c886-4b1d-adac-4241ca8cc93c"
+    },
+    "quarantined": true
+  },
+  "proof": {
+    "protocol_version": "kff.guardian-closure-no-progress.v1",
+    "command_id": "1271b01d-c886-4b1d-adac-4241ca8cc93c",
+    "action_id": "8849110c-1e5b-4967-93fa-bcb7cdd59cde",
+    "nonce": "e106ff81e280c67cc041b254115a955078fed12bc12fabdcfd55cb592e4543a1",
+    "closed_at": "2026-09-18T02:51:47.027Z",
+    "phase": "granting",
+    "termination": {
+      "process_tree": "DEAD",
+      "tool": "SUCCESS",
+      "root": "DEAD",
+      "descendants": "DEAD",
+      "sampled": 6,
+      "enumeration": "LISTED",
+      "elapsed_ms": 6010
+    },
+    "context_opened": true,
+    "submission_state": "UNKNOWN",
+    "forced": true,
+    "waited_ms": 8881,
+    "grace_ms": 1000,
+    "result": {
+      "outcome": "NEEDS_HUMAN",
+      "error_code": "GUARDIAN_NO_PROGRESS",
+      "diagnostic": {
+        "step": "guardian-no-progress"
+      }
+    }
+  }
+}
+
+ [31m❯[39m tests/integration/browser-message.test.ts [2m([22m[2m12 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 493084[2mms[22m[39m
+   [33m[2m✓[22m[39m reads actual Inbox DOM, sends one browser WhatsApp invitation, persists the receipt and deduplicates the later echo[33m 73529[2mms[22m[39m
+   [33m[2m✓[22m[39m retains an unknown browser submission, rejects the wrong thread or peer and reconciles the original message once[33m 24480[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks wrong_account before a persisted submit intention or browser write[33m 35809[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks login_expired before a persisted submit intention or browser write[33m 30977[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks duplicate_control before a persisted submit intention or browser write[33m 40221[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks new-visible-message before a persisted submit intention or browser write[33m 51336[2mms[22m[39m
+   [33m[2m✓[22m[39m invalidates a claimed reply on new-inbound through the shared submit gate[33m 62422[2mms[22m[39m
+   [33m[2m✓[22m[39m invalidates a claimed reply on transport-change through the shared submit gate[33m 27265[2mms[22m[39m
+   [33m[2m✓[22m[39m uses the existing AI preparation queue for browser replies and respects human takeover of a later prepared reply[33m 31560[2mms[22m[39m
+   [33m[2m✓[22m[39m requires both thread and peer for human review of an unknown browser message[33m 32697[2mms[22m[39m
+[31m   [31m×[31m ends a guardian that stopped answering while it held submission authority, and keeps the unknown outcome isolated[39m[33m 50940[2mms[22m[39m
+   [33m[2m✓[22m[39m ends a child that went silent just after it opened a real browser, and never records that browser as closed[33m 24322[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/browser-message.test.ts[2m > [22mends a guardian that stopped answering while it held submission authority, and keeps the unknown outcome isolated
+[31m[1mAssertionError[22m: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2m❯[22m tests/integration/browser-message.test.ts:[2m308:68[22m[39m
+    [90m306|[39m   expect(asClosure).toBe('GUARDIAN_UNCONFIRMED');
+    [90m307|[39m   // The real flush against the real controller: the same three endpoi…
+    [90m308|[39m   expect(await flushObserved(command, runtime, journal, identity)).toB…
+    [90m   |[39m                                                                    [31m^[39m
+    [90m309|[39m   // The parent's own record said NEEDS_HUMAN. The action state is wha…
+    [90m310|[39m   // intention means nobody may be told this was harmless, so what act…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m11 passed[39m[22m[90m (12)[39m
+[2m   Start at [22m 10:43:45
+[2m   Duration [22m 506.17s[2m (tests 98%, transform 2%)[22m
+
+JSON report written to C:/Users/17731/Desktop/KFF/.kff/checks/integration-results.json
+Retained isolated failed-test database: kff_test_dd34e9f595cf71a3245b
+exit=1
+post_run_spinners=0
+end=2026-09-18T10:52:28+08:00

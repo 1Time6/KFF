@@ -1,0 +1,41 @@
+===== kill cost under load =====
+start=2026-09-18T08:45:09+08:00
+KILL-COST load=0 trials=6 cap=15000ms logical_cpus=8
+  trial  1  tool=SUCCESS code=0    303ms  root_gone=true  leaf_gone=true
+  trial  2  tool=SUCCESS code=0    275ms  root_gone=true  leaf_gone=true
+  trial  3  tool=SUCCESS code=0    252ms  root_gone=true  leaf_gone=true
+  trial  4  tool=SUCCESS code=0    268ms  root_gone=true  leaf_gone=true
+  trial  5  tool=SUCCESS code=0    251ms  root_gone=true  leaf_gone=true
+  trial  6  tool=SUCCESS code=0    268ms  root_gone=true  leaf_gone=true
+SUMMARY kill median=268ms p90=303ms max=303ms
+  finish_in: 500ms=6/6 1000ms=6/6 1250ms=6/6 2500ms=6/6
+  tool_outcomes=SUCCESS  root_gone=6/6  leaf_gone=6/6
+load stopped
+
+KILL-COST load=8 trials=6 cap=15000ms logical_cpus=8
+load armed: 8 spinners (1.00x logical cores)
+  trial  1  tool=SUCCESS code=0    330ms  root_gone=true  leaf_gone=true
+  trial  2  tool=SUCCESS code=0    300ms  root_gone=true  leaf_gone=true
+  trial  3  tool=SUCCESS code=0    310ms  root_gone=true  leaf_gone=true
+  trial  4  tool=SUCCESS code=0    301ms  root_gone=true  leaf_gone=true
+  trial  5  tool=SUCCESS code=0    300ms  root_gone=true  leaf_gone=true
+  trial  6  tool=SUCCESS code=0    305ms  root_gone=true  leaf_gone=true
+SUMMARY kill median=305ms p90=330ms max=330ms
+  finish_in: 500ms=6/6 1000ms=6/6 1250ms=6/6 2500ms=6/6
+  tool_outcomes=SUCCESS  root_gone=6/6  leaf_gone=6/6
+load stopped
+
+KILL-COST load=16 trials=6 cap=15000ms logical_cpus=8
+load armed: 16 spinners (2.00x logical cores)
+  trial  1  tool=SUCCESS code=0    690ms  root_gone=true  leaf_gone=true
+  trial  2  tool=SUCCESS code=0    776ms  root_gone=true  leaf_gone=true
+  trial  3  tool=SUCCESS code=0    686ms  root_gone=true  leaf_gone=true
+  trial  4  tool=SUCCESS code=0    658ms  root_gone=true  leaf_gone=true
+  trial  5  tool=SUCCESS code=0    535ms  root_gone=true  leaf_gone=true
+  trial  6  tool=SUCCESS code=0    585ms  root_gone=true  leaf_gone=true
+SUMMARY kill median=686ms p90=776ms max=776ms
+  finish_in: 500ms=0/6 1000ms=6/6 1250ms=6/6 2500ms=6/6
+  tool_outcomes=SUCCESS  root_gone=6/6  leaf_gone=6/6
+load stopped
+
+end=2026-09-18T08:45:33+08:00

@@ -1,0 +1,132 @@
+=== B01.1 GREEN for the same eight cases (fixed guardian.ts restored) ===
+date: 2026-09-17T21:11:17+08:00
+baseline HEAD: 752042bc466b10b07cad455757a41bb10bbaf39f
+apps/agent/src/guardian.ts sha256 (fixed): c70ff1a56535c6bcbe0d254d500a883293f0ead477414ad8a76d09c6a0d0c2c3
+same selection as b01.1-red.log: tests/unit/guardian-liveness.test.ts plus the two liveness cases of tests/integration/browser-message.test.ts.
+
+--- unit: tests/unit/guardian-liveness.test.ts (12s per-case deadline) ---
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.0 [39m[90mC:/Users/17731/Desktop/KFF[39m
+
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m6 passed[39m[22m[90m (6)[39m
+[2m   Start at [22m 21:11:19
+[2m   Duration [22m 19.06s[2m (tests 97%, transform 2%, import 1%)[22m
+
+vitest exit=0
+
+--- integration: tests/integration/browser-message.test.ts -t "ends a" (90s per-case deadline) ---
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.0 [39m[90mC:/Users/17731/Desktop/KFF[39m
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911164326_g1_execution_core.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911173241_g1_permits_reconciliation.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911175249_g1_capability_evidence.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911175746_g1_agent_slot_guard.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911181005_g1_stop_and_agent_management.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911185039_g1_contact_eligibility.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911190913_g2_cost_ledger.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911194100_g1_action_adjudication.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911200056_g2_template_versions.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911203355_g2_collection_checkpoints.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911213439_g2_import_export.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911221017_g2_target_snapshots.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911224129_g2_schedule_rules.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911235946_g3_owned_inbound.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912003348_g3_owned_order_snapshots.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912012250_g3_stripe_payments.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912022322_g3_stripe_refunds.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912031707_facebook_lead_inbound.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912032804_lead_reception_execution.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912034626_lead_automation_rules.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912040653_lead_metrics_and_ingress_limits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912061549_acquisition_automation.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912121030_acquisition_external_sources.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912131442_browser_environment_runtime.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912151353_browser_collection_tasks.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912162852_browser_inbox_identity.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912164913_browser_inbox_polling.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912172904_browser_message_transport.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913012544_real_browser_collection_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913042407_real_browser_inbox_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913052626_real_browser_message_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913154300_browser_comment_outreach.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260915022051_acquisition_source_continuation.sql
+
+ [32m✓[39m tests/integration/browser-message.test.ts [2m([22m[2m12 tests[22m[2m | [22m[33m10 skipped[39m[2m)[22m[33m 17328[2mms[22m[39m
+   [33m[2m✓[22m[39m ends a guardian that stopped answering while it held submission authority, and keeps the unknown outcome isolated[33m 7908[2mms[22m[39m
+   [33m[2m✓[22m[39m ends a child that went silent just after it opened a real browser, and never records that browser as closed[33m 7409[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m2 passed[39m[22m[2m | [22m[33m10 skipped[39m[90m (12)[39m
+[2m   Start at [22m 21:11:42
+[2m   Duration [22m 19.28s[2m (tests 91%, transform 5%, import 3%)[22m
+
+JSON report written to C:/Users/17731/Desktop/KFF/.kff/checks/integration-results.json
+integration exit=0

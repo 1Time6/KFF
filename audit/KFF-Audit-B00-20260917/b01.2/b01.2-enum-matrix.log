@@ -1,0 +1,92 @@
+===== enumeration cost matrix =====
+start=2026-09-18T08:32:36+08:00  logical_cpus=8  node=v24.14.1
+preflight_spinners=0
+--- load=0 (0.00x logical cores) ---
+ENUM-COST load=0 trials=12 cap=15000ms logical_cpus=8
+  trial  1  prod=LISTED rows=337  1001ms   classified=SUCCESS   962ms rows=337
+  trial  2  prod=LISTED rows=337   888ms   classified=SUCCESS   937ms rows=337
+  trial  3  prod=LISTED rows=337  1053ms   classified=SUCCESS  1056ms rows=337
+  trial  4  prod=LISTED rows=337   931ms   classified=SUCCESS   782ms rows=337
+  trial  5  prod=LISTED rows=337   801ms   classified=SUCCESS   729ms rows=337
+  trial  6  prod=LISTED rows=337   737ms   classified=SUCCESS   746ms rows=337
+  trial  7  prod=LISTED rows=337   806ms   classified=SUCCESS   783ms rows=337
+  trial  8  prod=LISTED rows=337   754ms   classified=SUCCESS   743ms rows=337
+  trial  9  prod=LISTED rows=337   755ms   classified=SUCCESS   752ms rows=337
+  trial 10  prod=LISTED rows=337   749ms   classified=SUCCESS   860ms rows=337
+  trial 11  prod=LISTED rows=337   792ms   classified=SUCCESS   779ms rows=337
+  trial 12  prod=LISTED rows=337   787ms   classified=SUCCESS   791ms rows=337
+SUMMARY production median=801ms p75=931ms p90=1001ms max=1053ms
+  would_finish_in: 1250ms=12/12  2500ms=12/12  5000ms=12/12
+SUMMARY classified median=783ms p75=937ms p90=962ms max=1056ms
+  would_finish_in: 1250ms=12/12  2500ms=12/12  5000ms=12/12
+CLASSIFIED outcomes=SUCCESS  production_listed=12/12
+load stopped
+--- post_run_spinners=0 ---
+--- load=4 (0.50x logical cores) ---
+ENUM-COST load=4 trials=12 cap=15000ms logical_cpus=8
+load armed: 4 spinners (0.50x logical cores)
+  trial  1  prod=LISTED rows=344  1151ms   classified=SUCCESS  1193ms rows=344
+  trial  2  prod=LISTED rows=344  1289ms   classified=SUCCESS  1080ms rows=344
+  trial  3  prod=LISTED rows=345  1429ms   classified=SUCCESS  1653ms rows=346
+  trial  4  prod=LISTED rows=349  2042ms   classified=SUCCESS  1809ms rows=351
+  trial  5  prod=LISTED rows=352  2374ms   classified=SUCCESS  2267ms rows=353
+  trial  6  prod=LISTED rows=350  2083ms   classified=SUCCESS  2440ms rows=352
+  trial  7  prod=LISTED rows=351  3177ms   classified=SUCCESS  2386ms rows=358
+  trial  8  prod=LISTED rows=356  2186ms   classified=SUCCESS  1121ms rows=347
+  trial  9  prod=LISTED rows=347   978ms   classified=SUCCESS  1119ms rows=347
+  trial 10  prod=LISTED rows=347  1181ms   classified=SUCCESS   972ms rows=349
+  trial 11  prod=LISTED rows=349  1090ms   classified=SUCCESS   977ms rows=349
+  trial 12  prod=LISTED rows=349   853ms   classified=SUCCESS   817ms rows=351
+SUMMARY production median=1429ms p75=2186ms p90=2374ms max=3177ms
+  would_finish_in: 1250ms=5/12  2500ms=11/12  5000ms=12/12
+SUMMARY classified median=1193ms p75=2267ms p90=2386ms max=2440ms
+  would_finish_in: 1250ms=7/12  2500ms=12/12  5000ms=12/12
+CLASSIFIED outcomes=SUCCESS  production_listed=12/12
+load stopped
+--- post_run_spinners=0 ---
+--- load=8 (1.00x logical cores) ---
+ENUM-COST load=8 trials=12 cap=15000ms logical_cpus=8
+load armed: 8 spinners (1.00x logical cores)
+  trial  1  prod=LISTED rows=352  2448ms   classified=SUCCESS  1930ms rows=352
+  trial  2  prod=LISTED rows=352  1966ms   classified=SUCCESS  1929ms rows=352
+  trial  3  prod=LISTED rows=352  1790ms   classified=SUCCESS  1891ms rows=353
+  trial  4  prod=LISTED rows=352  1988ms   classified=SUCCESS  2469ms rows=353
+  trial  5  prod=LISTED rows=352  2353ms   classified=SUCCESS  2441ms rows=352
+  trial  6  prod=LISTED rows=353  2671ms   classified=SUCCESS  2350ms rows=353
+  trial  7  prod=LISTED rows=353  2737ms   classified=SUCCESS  2633ms rows=352
+  trial  8  prod=LISTED rows=352  2643ms   classified=SUCCESS  2781ms rows=352
+  trial  9  prod=LISTED rows=352  2823ms   classified=SUCCESS  3009ms rows=352
+  trial 10  prod=LISTED rows=352  5515ms   classified=SUCCESS  2467ms rows=352
+  trial 11  prod=LISTED rows=352  2564ms   classified=SUCCESS  2669ms rows=352
+  trial 12  prod=LISTED rows=352  2475ms   classified=SUCCESS  2412ms rows=351
+SUMMARY production median=2564ms p75=2737ms p90=2823ms max=5515ms
+  would_finish_in: 1250ms=0/12  2500ms=6/12  5000ms=11/12
+SUMMARY classified median=2467ms p75=2669ms p90=2781ms max=3009ms
+  would_finish_in: 1250ms=0/12  2500ms=8/12  5000ms=12/12
+CLASSIFIED outcomes=SUCCESS  production_listed=12/12
+load stopped
+--- post_run_spinners=0 ---
+--- load=16 (2.00x logical cores) ---
+ENUM-COST load=16 trials=12 cap=15000ms logical_cpus=8
+load armed: 16 spinners (2.00x logical cores)
+  trial  1  prod=LISTED rows=371  7133ms   classified=SUCCESS  6949ms rows=371
+  trial  2  prod=LISTED rows=377  9181ms   classified=SUCCESS  7618ms rows=371
+  trial  3  prod=LISTED rows=371 13837ms   classified=SUCCESS  8302ms rows=371
+  trial  4  prod=LISTED rows=371  7425ms   classified=SUCCESS  9251ms rows=371
+  trial  5  prod=LISTED rows=371 11134ms   classified=SUCCESS 14008ms rows=370
+  trial  6  prod=LISTED rows=370 11794ms   classified=SUCCESS  8920ms rows=371
+  trial  7  prod=LISTED rows=372 10283ms   classified=SUCCESS  7846ms rows=374
+  trial  8  prod=LISTED rows=372  9141ms   classified=SUCCESS 15033ms rows=368
+  trial  9  prod=LISTED rows=366  6845ms   classified=SUCCESS  7394ms rows=364
+  trial 10  prod=LISTED rows=364  7815ms   classified=SUCCESS  8133ms rows=363
+  trial 11  prod=LISTED rows=361  7477ms   classified=SUCCESS  9130ms rows=361
+  trial 12  prod=LISTED rows=362 10574ms   classified=SUCCESS  9196ms rows=363
+SUMMARY production median=9181ms p75=11134ms p90=11794ms max=13837ms
+  would_finish_in: 1250ms=0/12  2500ms=0/12  5000ms=0/12
+SUMMARY classified median=8920ms p75=9251ms p90=14008ms max=15033ms
+  would_finish_in: 1250ms=0/12  2500ms=0/12  5000ms=0/12
+CLASSIFIED outcomes=SUCCESS  production_listed=12/12
+load stopped
+--- post_run_spinners=0 ---
+end=2026-09-18T08:38:59+08:00
+===== matrix done =====

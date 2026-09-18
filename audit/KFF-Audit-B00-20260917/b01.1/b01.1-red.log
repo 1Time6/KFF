@@ -1,0 +1,288 @@
+=== B01.1 deterministic RED for KFF-B01-NEW-01 (guardian with no progress for ever) ===
+date: 2026-09-17T21:06:37+08:00
+baseline HEAD: 752042bc466b10b07cad455757a41bb10bbaf39f  (branch codex/facebook-foundation)
+
+variant under test: apps/agent/src/guardian.ts replaced by HEAD's version (sha256 78c0c9931176d0ba8da2b86547593bb45dd3a2e76636adf4b0ac32ba00779bf1)
+plus one shim, and nothing else: the sealed fixture arming (guardianHangPoints / insideAgentProcessTests / guardianHangInjection
+and the two lines that copy the point into the child's allowlisted environment). The child, the protocol, the journal and the controller are the fixed ones.
+The shim adds no liveness, deadline, termination or settle logic, so a child that stops progressing still leaves runGuardian pending for ever - which is the defect.
+
+expected: every case fails by hitting its own deadline instead of settling.
+
+--- unit: tests/unit/guardian-liveness.test.ts (12s per-case deadline) ---
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.0 [39m[90mC:/Users/17731/Desktop/KFF[39m
+
+ [31m❯[39m tests/unit/guardian-liveness.test.ts [2m([22m[2m6 tests[22m[2m | [22m[31m6 failed[39m[2m)[22m[33m 72050[2mms[22m[39m
+[31m   [31m×[31m ends a child that never became ready, and records only that the process is gone[39m[33m 12012[2mms[22m[39m
+[31m   [31m×[31m ends a child that received start but never confirmed it, keeping the environment isolated[39m[33m 12011[2mms[22m[39m
+[31m   [31m×[31m ends a child that stalled before the context it was launching ever reported, keeping the environment isolated[39m[33m 12012[2mms[22m[39m
+[31m   [31m×[31m ends a child that stalled while asking for submission authority, and never claims a submission did not happen[39m[33m 12001[2mms[22m[39m
+[31m   [31m×[31m ends a child that stalled after the submission it was granted, and reports an unknown outcome[39m[33m 12002[2mms[22m[39m
+[31m   [31m×[31m prefers a real closure from a child that stops cleanly over a recorded termination[39m[33m 12001[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 6 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/unit/guardian-liveness.test.ts[2m > [22mends a child that never became ready, and records only that the process is gone
+[31m[1mError[22m: Test timed out in 12000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m tests/unit/guardian-liveness.test.ts:[2m85:1[22m[39m
+    [90m 83|[39m }
+    [90m 84|[39m
+    [90m 85|[39m it('ends a child that never became ready, and records only that the pr…
+    [90m   |[39m [31m^[39m
+    [90m 86|[39m   const hung = await runHung('before-ready', closureCommand(), { budge…
+    [90m 87|[39m   expect(hung.outcome).toEqual({ kind: 'rejected', code: 'GUARDIAN_NO_…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/guardian-liveness.test.ts[2m > [22mends a child that received start but never confirmed it, keeping the environment isolated
+[31m[1mError[22m: Test timed out in 12000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m tests/unit/guardian-liveness.test.ts:[2m102:1[22m[39m
+    [90m100|[39m }, caseDeadline);
+    [90m101|[39m
+    [90m102|[39m it('ends a child that received start but never confirmed it, keeping t…
+    [90m   |[39m [31m^[39m
+    [90m103|[39m   const hung = await runHung('before-start-ack', closureCommand());
+    [90m104|[39m   expect(hung.outcome).toEqual({ kind: 'rejected', code: 'GUARDIAN_NO_…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/guardian-liveness.test.ts[2m > [22mends a child that stalled before the context it was launching ever reported, keeping the environment isolated
+[31m[1mError[22m: Test timed out in 12000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m tests/unit/guardian-liveness.test.ts:[2m113:1[22m[39m
+    [90m111|[39m }, caseDeadline);
+    [90m112|[39m
+    [90m113|[39m it('ends a child that stalled before the context it was launching ever…
+    [90m   |[39m [31m^[39m
+    [90m114|[39m   const hung = await runHung('after-start', closureCommand());
+    [90m115|[39m   expect(hung.outcome).toEqual({ kind: 'rejected', code: 'GUARDIAN_NO_…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/guardian-liveness.test.ts[2m > [22mends a child that stalled while asking for submission authority, and never claims a submission did not happen
+[31m[1mError[22m: Test timed out in 12000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m tests/unit/guardian-liveness.test.ts:[2m121:1[22m[39m
+    [90m119|[39m }, caseDeadline);
+    [90m120|[39m
+    [90m121|[39m it('ends a child that stalled while asking for submission authority, a…
+    [90m   |[39m [31m^[39m
+    [90m122|[39m   const hung = await runHung('before-grant', submitBoundaryCommand(), …
+    [90m123|[39m   expect(hung.outcome).toEqual({ kind: 'rejected', code: 'GUARDIAN_NO_…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/guardian-liveness.test.ts[2m > [22mends a child that stalled after the submission it was granted, and reports an unknown outcome
+[31m[1mError[22m: Test timed out in 12000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m tests/unit/guardian-liveness.test.ts:[2m129:1[22m[39m
+    [90m127|[39m }, caseDeadline);
+    [90m128|[39m
+    [90m129|[39m it('ends a child that stalled after the submission it was granted, and…
+    [90m   |[39m [31m^[39m
+    [90m130|[39m   const hung = await runHung('after-grant', submitBoundaryCommand());
+    [90m131|[39m   expect(hung.outcome).toEqual({ kind: 'rejected', code: 'GUARDIAN_NO_…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/guardian-liveness.test.ts[2m > [22mprefers a real closure from a child that stops cleanly over a recorded termination
+[31m[1mError[22m: Test timed out in 12000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m tests/unit/guardian-liveness.test.ts:[2m142:1[22m[39m
+    [90m140|[39m  * write, so the watchdog waits for it and uses it instead of recordin…
+    [90m141|[39m  */
+    [90m142|[39m it('prefers a real closure from a child that stops cleanly over a reco…
+    [90m   |[39m [31m^[39m
+    [90m143|[39m   const hung = await runHung(undefined, submitBoundaryCommand(), { sub…
+    [90m144|[39m   expect(hung.outcome).toEqual({ kind: 'resolved', code: 'kff.guardian…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m6 failed[39m[22m[90m (6)[39m
+[2m   Start at [22m 21:06:40
+[2m   Duration [22m 72.74s[2m (tests 99%)[22m
+
+vitest exit=1
+
+--- integration: tests/integration/browser-message.test.ts -t "ends a" (90s per-case deadline) ---
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.0 [39m[90mC:/Users/17731/Desktop/KFF[39m
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911164326_g1_execution_core.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911173241_g1_permits_reconciliation.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911175249_g1_capability_evidence.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911175746_g1_agent_slot_guard.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911181005_g1_stop_and_agent_management.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911185039_g1_contact_eligibility.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911190913_g2_cost_ledger.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911194100_g1_action_adjudication.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911200056_g2_template_versions.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911203355_g2_collection_checkpoints.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911213439_g2_import_export.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911221017_g2_target_snapshots.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911224129_g2_schedule_rules.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911235946_g3_owned_inbound.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912003348_g3_owned_order_snapshots.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912012250_g3_stripe_payments.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912022322_g3_stripe_refunds.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912031707_facebook_lead_inbound.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912032804_lead_reception_execution.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912034626_lead_automation_rules.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912040653_lead_metrics_and_ingress_limits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912061549_acquisition_automation.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912121030_acquisition_external_sources.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912131442_browser_environment_runtime.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912151353_browser_collection_tasks.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912162852_browser_inbox_identity.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912164913_browser_inbox_polling.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912172904_browser_message_transport.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913012544_real_browser_collection_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913042407_real_browser_inbox_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913052626_real_browser_message_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913154300_browser_comment_outreach.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260915022051_acquisition_source_continuation.sql
+
+ [31m❯[39m tests/integration/browser-message.test.ts [2m([22m[2m12 tests[22m[2m | [22m[31m2 failed[39m[2m | [22m[33m10 skipped[39m[2m)[22m[33m 159211[2mms[22m[39m
+   [2m[90m↓[39m[22m reads actual Inbox DOM, sends one browser WhatsApp invitation, persists the receipt and deduplicates the later echo
+   [2m[90m↓[39m[22m retains an unknown browser submission, rejects the wrong thread or peer and reconciles the original message once
+   [2m[90m↓[39m[22m blocks wrong_account before a persisted submit intention or browser write
+   [2m[90m↓[39m[22m blocks login_expired before a persisted submit intention or browser write
+   [2m[90m↓[39m[22m blocks duplicate_control before a persisted submit intention or browser write
+   [2m[90m↓[39m[22m blocks new-visible-message before a persisted submit intention or browser write
+   [2m[90m↓[39m[22m invalidates a claimed reply on new-inbound through the shared submit gate
+   [2m[90m↓[39m[22m invalidates a claimed reply on transport-change through the shared submit gate
+   [2m[90m↓[39m[22m uses the existing AI preparation queue for browser replies and respects human takeover of a later prepared reply
+   [2m[90m↓[39m[22m requires both thread and peer for human review of an unknown browser message
+[31m   [31m×[31m ends a guardian that stopped answering while it held submission authority, and keeps the unknown outcome isolated[39m[33m 91966[2mms[22m[39m
+[31m   [31m×[31m ends a child that went silent just after it opened a real browser, and never records that browser as closed[39m[33m 64650[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/browser-message.test.ts[2m > [22mends a guardian that stopped answering while it held submission authority, and keeps the unknown outcome isolated
+[31m[1mError[22m: Test timed out in 90000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".[39m
+[36m [2m❯[22m tests/integration/browser-message.test.ts:[2m152:1[22m[39m
+    [90m150|[39m  * the record is that it says exactly that much and nothing more.
+    [90m151|[39m  */
+    [90m152|[39m it('ends a guardian that stopped answering while it held submission au…
+    [90m   |[39m [31m^[39m
+    [90m153|[39m   const h = await setup(), id = await conversation(h.account_id);
+    [90m154|[39m   await sendConversationReply(scope, id, reply());
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/browser-message.test.ts[2m > [22mends a child that went silent just after it opened a real browser, and never records that browser as closed
+[31m[1mAssertionError[22m: promise resolved "{ …(7) }" instead of rejecting[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Error {[39m
+[32m-   "message": "rejected promise",[39m
+[31m+ {[39m
+[31m+   "action_id": "13e677ba-20ea-4d80-9b72-e5550d17ad88",[39m
+[31m+   "closed_at": "2026-09-17T13:10:38.086Z",[39m
+[31m+   "command_id": "558db9f6-0b55-483b-bc7c-ccf32f11e83a",[39m
+[31m+   "context_closed": true,[39m
+[31m+   "nonce": "23031297e934f0735bfc45ab1a6b9c03f24aec83c45524cd215b70a039aa0e73",[39m
+[31m+   "protocol_version": "kff.guardian-closure.v1",[39m
+[31m+   "result": {[39m
+[31m+     "diagnostic": {[39m
+[31m+       "duration_ms": 60792,[39m
+[31m+       "executor_version": "kff-agent-0.1.0_node-24.14.1",[39m
+[31m+       "step": "prepare",[39m
+[31m+     },[39m
+[31m+     "error_code": "STOP_REQUESTED",[39m
+[31m+     "outcome": "CANCELED",[39m
+[31m+   },[39m
+[2m  }[22m
+
+[36m [2m❯[22m tests/integration/browser-message.test.ts:[2m255:8[22m[39m
+    [90m253|[39m       beforeSubmit: async () => { intentRequested = true; },
+    [90m254|[39m       liveness: { 'awaiting-intent': 1500, grace: 1000, force: 5000 },
+    [90m255|[39m     })).rejects.toMatchObject({ code: 'GUARDIAN_NO_PROGRESS' });
+    [90m   |[39m        [31m^[39m
+    [90m256|[39m   } finally { for (const [key, stored] of previous) { if (stored === u…
+    [90m257|[39m   // A child frozen inside the callback that opens the context never a…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[33m10 skipped[39m[90m (12)[39m
+[2m   Start at [22m 21:07:57
+[2m   Duration [22m 161.15s[2m (tests 99%, transform 1%)[22m
+
+JSON report written to C:/Users/17731/Desktop/KFF/.kff/checks/integration-results.json
+Retained isolated failed-test database: kff_test_8f30aeb8f207b05d0175
+integration exit=1

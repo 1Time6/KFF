@@ -1,0 +1,954 @@
+
+===== SHA at verification start =====
+c293aa77a9872270741dbe384841a3c4768327cb
+ M apps/agent/src/action-journal.ts
+ M apps/agent/src/guardian-protocol.ts
+ M apps/agent/src/guardian.ts
+ M apps/agent/src/main.ts
+ M apps/agent/src/process-tree.ts
+ M packages/contracts/src/index.ts
+ M packages/core/src/execution.ts
+ M packages/core/src/reconciliation.ts
+ M tests/helpers/collection-journal.ts
+ M tests/integration/agent-closure-gate.test.ts
+ M tests/integration/browser-message.test.ts
+ M tests/unit/action-journal.test.ts
+ M tests/unit/guardian-liveness.test.ts
+ M tests/unit/process-tree.test.ts
+?? tests/unit/guardian-evidence-upgrade.test.ts
+?? tests/unit/guardian-late-message.test.ts
+?? tests/unit/guardian-liveness-policy.test.ts
+?? tests/unit/guardian-termination-proof.test.ts
+
+===== npx vitest run tests/unit =====
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.0 [39m[90mC:/Users/17731/Desktop/KFF[39m
+
+ [32m✓[39m tests/unit/guardian-liveness.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 25465[2mms[22m[39m
+   [33m[2m✓[22m[39m ends a child that never became ready, and records only that the process is gone[33m 6205[2mms[22m[39m
+   [33m[2m✓[22m[39m ends a child that received start but never confirmed it, keeping the environment isolated[33m 4381[2mms[22m[39m
+   [33m[2m✓[22m[39m ends a child that stalled before the context it was launching ever reported, keeping the environment isolated[33m 4092[2mms[22m[39m
+   [33m[2m✓[22m[39m ends a child that stalled while asking for submission authority, and never claims a submission did not happen[33m 4229[2mms[22m[39m
+   [33m[2m✓[22m[39m ends a child that stalled after the submission it was granted, and reports an unknown outcome[33m 4230[2mms[22m[39m
+   [33m[2m✓[22m[39m prefers a real closure from a child that stops cleanly over a recorded termination[33m 2308[2mms[22m[39m
+ [32m✓[39m tests/unit/guardian-termination-proof.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 23157[2mms[22m[39m
+   [33m[2m✓[22m[39m records a Guardian that is still alive as needing a human instead of freeing its slot[33m 9006[2mms[22m[39m
+   [33m[2m✓[22m[39m never calls a command cancelled while its process is still answering[33m 5372[2mms[22m[39m
+   [33m[2m✓[22m[39m records a Guardian that is still alive after the submission boundary as needing a human, not as an unknown outcome[33m 8764[2mms[22m[39m
+ [32m✓[39m tests/unit/guardian-late-message.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 13929[2mms[22m[39m
+   [33m[2m✓[22m[39m sends no start and writes no evidence when the decision is taken while ready is being handled[33m 2245[2mms[22m[39m
+   [33m[2m✓[22m[39m refuses submission authority when the controller answers after the watchdog has fired[33m 4254[2mms[22m[39m
+   [33m[2m✓[22m[39m cannot reopen or rewrite a settled run when the controller answers long afterwards[33m 7417[2mms[22m[39m
+ [32m✓[39m tests/unit/guardian-evidence-upgrade.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 6721[2mms[22m[39m
+   [33m[2m✓[22m[39m upgrades the record a run had to fall back on as soon as the execution proves its own closure[33m 3333[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps the weak writer from displacing a closure written at the same time[33m 1508[2mms[22m[39m
+   [33m[2m✓[22m[39m only ever cleans up the temporary file its own kind of record writes through[33m 1687[2mms[22m[39m
+ [32m✓[39m tests/unit/guardian-termination.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 6506[2mms[22m[39m
+   [33m[2m✓[22m[39m B: the failing spawn emits error then close and never exit, and produces exactly one terminal decision[33m 788[2mms[22m[39m
+   [33m[2m✓[22m[39m C: a child that really starts closes its context and the run resolves with that proof[33m 1534[2mms[22m[39m
+   [33m[2m✓[22m[39m D: a child that had started and left no proof keeps its isolation instead of being written off as a startup failure[33m 1562[2mms[22m[39m
+   [33m[2m✓[22m[39m F: a failed IPC send goes to its callback, so no error event can follow exit[33m 366[2mms[22m[39m
+   [33m[2m✓[22m[39m E: a child that died after asking for submission authority is never recorded as a startup failure[33m 2177[2mms[22m[39m
+ [32m✓[39m tests/unit/process-tree.test.ts [2m([22m[2m16 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m[33m 6223[2mms[22m[39m
+   [33m[2m✓[22m[39m ends a tool that outlives its deadline instead of waiting for it[33m 661[2mms[22m[39m
+   [33m[2m✓[22m[39m lists the descendants of a real process before anything is killed[33m 1274[2mms[22m[39m
+   [33m[2m✓[22m[39m ends the guardian and everything it started, and says so[33m 1497[2mms[22m[39m
+   [33m[2m✓[22m[39m reports ALIVE when the root is gone but a descendant it started is still running[33m 1287[2mms[22m[39m
+   [33m[2m✓[22m[39m separates what the termination tool did from what the probes proved[33m 1228[2mms[22m[39m
+ [32m✓[39m tests/unit/local-runtime-state.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 3998[2mms[22m[39m
+   [33m[2m✓[22m[39m survives a real Windows reader temporarily denying file replacement[33m 1467[2mms[22m[39m
+   [33m[2m✓[22m[39m bounds a persistent lock failure while preserving the previous complete state[33m 2507[2mms[22m[39m
+ [32m✓[39m tests/unit/guardian-startup-fault-injection.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 1772[2mms[22m[39m
+   [33m[2m✓[22m[39m leaves the sibling directory sealed under the very same root: the child starts and proves a closed context[33m 1679[2mms[22m[39m
+ [32m✓[39m tests/unit/guardian-liveness-policy.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 1475[2mms[22m[39m
+   [33m[2m✓[22m[39m refuses to start the Agent at all when a production budget is illegal[33m 606[2mms[22m[39m
+   [33m[2m✓[22m[39m starts the Agent on the same pairing file once the budgets are legal[33m 849[2mms[22m[39m
+ [32m✓[39m tests/unit/action-journal.test.ts [2m([22m[2m14 tests[22m[2m)[22m[33m 736[2mms[22m[39m
+ [32m✓[39m tests/unit/core.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 163[2mms[22m[39m
+ [32m✓[39m tests/unit/inbox-journal.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 166[2mms[22m[39m
+ [32m✓[39m tests/unit/guardian-closure-proof.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 158[2mms[22m[39m
+ [32m✓[39m tests/unit/schedule-rules.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 67[2mms[22m[39m
+ [32m✓[39m tests/unit/login-throttle-login.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 34[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-configuration.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m tests/unit/login-throttle.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m tests/unit/lead-audit-cursor.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/unit/reception-activation.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m19 passed[39m[22m[90m (19)[39m
+[2m      Tests [22m [1m[32m120 passed[39m[22m[2m | [22m[33m2 skipped[39m[90m (122)[39m
+[2m   Start at [22m 00:06:23
+[2m   Duration [22m 100.74s[2m (tests 94%, import 4%, transform 1%)[22m
+
+unit-exit=0
+
+===== npx vitest run tests/contracts =====
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.0 [39m[90mC:/Users/17731/Desktop/KFF[39m
+
+ [32m✓[39m tests/contracts/browser-environment.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 24565[2mms[22m[39m
+   [33m[2m✓[22m[39m waits for an acknowledged AdsPower stop to become Inactive without issuing another stop[33m 2227[2mms[22m[39m
+   [33m[2m✓[22m[39m tolerates a throttled status read after stop without interpreting it as closure[33m 1127[2mms[22m[39m
+   [33m[2m✓[22m[39m waits for a slow acknowledged startup without issuing another start[33m 21015[2mms[22m[39m
+ [32m✓[39m tests/contracts/adapter-integrity.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 311[2mms[22m[39m
+ [32m✓[39m tests/contracts/facebook-browser-comment.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 268[2mms[22m[39m
+ [32m✓[39m tests/contracts/acquisition.test.ts [2m([22m[2m38 tests[22m[2m)[22m[32m 168[2mms[22m[39m
+ [32m✓[39m tests/contracts/apify.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 116[2mms[22m[39m
+<claude-code-hint v="1" type="plugin" value="stripe@claude-plugins-official" />
+ [32m✓[39m tests/contracts/refund.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 102[2mms[22m[39m
+ [32m✓[39m tests/contracts/reception-model.test.ts [2m([22m[2m90 tests[22m[2m)[22m[32m 90[2mms[22m[39m
+ [32m✓[39m tests/contracts/facebook-browser-discovery.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 68[2mms[22m[39m
+<claude-code-hint v="1" type="plugin" value="stripe@claude-plugins-official" />
+ [32m✓[39m tests/contracts/payment.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 69[2mms[22m[39m
+ [32m✓[39m tests/contracts/apify-dataset.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 64[2mms[22m[39m
+ [32m✓[39m tests/contracts/facebook.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 56[2mms[22m[39m
+ [32m✓[39m tests/contracts/facebook-browser-message.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 58[2mms[22m[39m
+ [32m✓[39m tests/contracts/facebook-messenger.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 49[2mms[22m[39m
+[90mstderr[2m | tests/contracts/environment-accounts.test.ts[2m > [22m[2mkeeps a wrapped control associated with its label
+[22m[39mEach child in a list should have a unique "key" prop.
+
+Check the render method of `Field`. See https://react.dev/link/warning-keys for more information.
+Each child in a list should have a unique "key" prop.
+
+Check the render method of `Field`. See https://react.dev/link/warning-keys for more information.
+Each child in a list should have a unique "key" prop.
+
+Check the render method of `Field`. See https://react.dev/link/warning-keys for more information.
+
+ [32m✓[39m tests/contracts/environment-accounts.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 52[2mms[22m[39m
+ [32m✓[39m tests/contracts/input.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 36[2mms[22m[39m
+ [32m✓[39m tests/contracts/acquisition-candidates.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 50[2mms[22m[39m
+ [32m✓[39m tests/contracts/imports.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 38[2mms[22m[39m
+ [32m✓[39m tests/contracts/templates.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+ [32m✓[39m tests/contracts/schedule.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m tests/contracts/browser-inbox-discovery.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 30[2mms[22m[39m
+ [32m✓[39m tests/contracts/facebook-events.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m tests/contracts/browser-inbox-failure-diagnostic.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m tests/contracts/order.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m tests/contracts/browser-collection.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+ [32m✓[39m tests/contracts/collections.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m tests/contracts/acquisition-continuation.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m tests/contracts/publication-time.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m tests/contracts/cost-decisions.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m tests/contracts/browser-inbox.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m tests/contracts/whatsapp-correction.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m tests/contracts/api-errors.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m tests/contracts/capability-descriptions.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m tests/contracts/inbox.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m tests/contracts/target-selection.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m tests/contracts/contact-channel.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m tests/contracts/import-mapping.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m tests/contracts/reception-transport.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m tests/contracts/task-capabilities.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m tests/contracts/contact-list.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/contracts/request-guard.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m tests/contracts/template-enable.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/contracts/collection-export-fields.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/contracts/facebook-inbox-growth.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m43 passed[39m[22m[90m (43)[39m
+[2m      Tests [22m [1m[32m316 passed[39m[22m[90m (316)[39m
+[2m   Start at [22m 00:08:06
+[2m   Duration [22m 51.61s[2m (tests 62%, import 33%, transform 4%, worker 1%)[22m
+
+[2m     Import [22m [33m139 modules were evaluated 198 times[39m[2m · 14.23s total, 33% of tracked time[22m
+[2m            [22m [2m~4.24s faster with [22m[33misolate: false[39m[2m — shared modules are evaluated once per worker instead of once per file[22m
+[2m            [22m [2mlearn more: https://vitest.dev/guide/improving-performance#test-isolation[22m
+
+contracts-exit=0
+
+===== npx tsc --noEmit =====
+tsc-exit=0
+
+===== npx eslint . (repo-wide) =====
+eslint-exit=0
+
+===== integration: tests/integration/browser-message.test.ts =====
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.0 [39m[90mC:/Users/17731/Desktop/KFF[39m
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911164326_g1_execution_core.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911173241_g1_permits_reconciliation.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911175249_g1_capability_evidence.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911175746_g1_agent_slot_guard.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911181005_g1_stop_and_agent_management.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911185039_g1_contact_eligibility.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911190913_g2_cost_ledger.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911194100_g1_action_adjudication.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911200056_g2_template_versions.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911203355_g2_collection_checkpoints.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911213439_g2_import_export.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911221017_g2_target_snapshots.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911224129_g2_schedule_rules.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911235946_g3_owned_inbound.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912003348_g3_owned_order_snapshots.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912012250_g3_stripe_payments.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912022322_g3_stripe_refunds.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912031707_facebook_lead_inbound.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912032804_lead_reception_execution.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912034626_lead_automation_rules.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912040653_lead_metrics_and_ingress_limits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912061549_acquisition_automation.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912121030_acquisition_external_sources.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912131442_browser_environment_runtime.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912151353_browser_collection_tasks.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912162852_browser_inbox_identity.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912164913_browser_inbox_polling.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912172904_browser_message_transport.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913012544_real_browser_collection_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913042407_real_browser_inbox_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913052626_real_browser_message_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913154300_browser_comment_outreach.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260915022051_acquisition_source_continuation.sql
+
+ [32m✓[39m tests/integration/browser-message.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 117115[2mms[22m[39m
+   [33m[2m✓[22m[39m reads actual Inbox DOM, sends one browser WhatsApp invitation, persists the receipt and deduplicates the later echo[33m 15192[2mms[22m[39m
+   [33m[2m✓[22m[39m retains an unknown browser submission, rejects the wrong thread or peer and reconciles the original message once[33m 6396[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks wrong_account before a persisted submit intention or browser write[33m 5505[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks login_expired before a persisted submit intention or browser write[33m 5297[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks duplicate_control before a persisted submit intention or browser write[33m 7975[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks new-visible-message before a persisted submit intention or browser write[33m 10174[2mms[22m[39m
+   [33m[2m✓[22m[39m invalidates a claimed reply on new-inbound through the shared submit gate[33m 9541[2mms[22m[39m
+   [33m[2m✓[22m[39m invalidates a claimed reply on transport-change through the shared submit gate[33m 10913[2mms[22m[39m
+   [33m[2m✓[22m[39m uses the existing AI preparation queue for browser replies and respects human takeover of a later prepared reply[33m 11309[2mms[22m[39m
+   [33m[2m✓[22m[39m requires both thread and peer for human review of an unknown browser message[33m 9545[2mms[22m[39m
+   [33m[2m✓[22m[39m ends a guardian that stopped answering while it held submission authority, and keeps the unknown outcome isolated[33m 13312[2mms[22m[39m
+   [33m[2m✓[22m[39m ends a child that went silent just after it opened a real browser, and never records that browser as closed[33m 8985[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m12 passed[39m[22m[90m (12)[39m
+[2m   Start at [22m 00:09:38
+[2m   Duration [22m 119.32s[2m (tests 98%, transform 1%, import 1%)[22m
+
+JSON report written to C:/Users/17731/Desktop/KFF/.kff/checks/integration-results.json
+browser-message-exit=0
+
+===== integration: full suite =====
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.0 [39m[90mC:/Users/17731/Desktop/KFF[39m
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911164326_g1_execution_core.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911173241_g1_permits_reconciliation.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911175249_g1_capability_evidence.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911175746_g1_agent_slot_guard.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911181005_g1_stop_and_agent_management.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911185039_g1_contact_eligibility.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911190913_g2_cost_ledger.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911194100_g1_action_adjudication.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911200056_g2_template_versions.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911203355_g2_collection_checkpoints.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911213439_g2_import_export.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911221017_g2_target_snapshots.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911224129_g2_schedule_rules.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260911235946_g3_owned_inbound.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912003348_g3_owned_order_snapshots.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912012250_g3_stripe_payments.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912022322_g3_stripe_refunds.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912031707_facebook_lead_inbound.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912032804_lead_reception_execution.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912034626_lead_automation_rules.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912040653_lead_metrics_and_ingress_limits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912061549_acquisition_automation.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912121030_acquisition_external_sources.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912131442_browser_environment_runtime.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912151353_browser_collection_tasks.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912162852_browser_inbox_identity.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912164913_browser_inbox_polling.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260912172904_browser_message_transport.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913012544_real_browser_collection_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913042407_real_browser_inbox_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913052626_real_browser_message_permits.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260913154300_browser_comment_outreach.sql
+
+[90mstdout[2m | tests/integration/browser-message.test.ts
+[22m[39mApplied migration: 20260915022051_acquisition_source_continuation.sql
+
+ [31m❯[39m tests/integration/browser-message.test.ts [2m([22m[2m12 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[33m 141889[2mms[22m[39m
+   [33m[2m✓[22m[39m reads actual Inbox DOM, sends one browser WhatsApp invitation, persists the receipt and deduplicates the later echo[33m 19587[2mms[22m[39m
+   [33m[2m✓[22m[39m retains an unknown browser submission, rejects the wrong thread or peer and reconciles the original message once[33m 7451[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks wrong_account before a persisted submit intention or browser write[33m 7899[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks login_expired before a persisted submit intention or browser write[33m 11445[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks duplicate_control before a persisted submit intention or browser write[33m 11447[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks new-visible-message before a persisted submit intention or browser write[33m 9777[2mms[22m[39m
+   [33m[2m✓[22m[39m invalidates a claimed reply on new-inbound through the shared submit gate[33m 9413[2mms[22m[39m
+   [33m[2m✓[22m[39m invalidates a claimed reply on transport-change through the shared submit gate[33m 12068[2mms[22m[39m
+   [33m[2m✓[22m[39m uses the existing AI preparation queue for browser replies and respects human takeover of a later prepared reply[33m 13633[2mms[22m[39m
+   [33m[2m✓[22m[39m requires both thread and peer for human review of an unknown browser message[33m 10565[2mms[22m[39m
+[31m   [31m×[31m ends a guardian that stopped answering while it held submission authority, and keeps the unknown outcome isolated[39m[33m 13605[2mms[22m[39m
+[31m   [31m×[31m ends a child that went silent just after it opened a real browser, and never records that browser as closed[39m[33m 12283[2mms[22m[39m
+ [32m✓[39m tests/integration/execution.test.ts [2m([22m[2m28 tests[22m[2m)[22m[33m 77182[2mms[22m[39m
+   [32m✓[39m Postgres execution and failure boundaries [2m(28)[22m
+     [33m[2m✓[22m[39m atomically deduplicates concurrent create requests and content versions[33m 3156[2mms[22m[39m
+     [33m[2m✓[22m[39m requires an approval of the immutable snapshot[33m 2825[2mms[22m[39m
+     [33m[2m✓[22m[39m creates exactly one run, action and durable job for repeated enqueues[33m 3152[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps a stopped queued action canceled and never dispatches it[33m 2927[2mms[22m[39m
+     [33m[2m✓[22m[39m blocks cross-brand reads even for another brand in the same organization[33m 2840[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects mutations by viewers[33m 2877[2mms[22m[39m
+     [33m[2m✓[22m[39m does not dispatch when the bound Agent is offline[33m 2359[2mms[22m[39m
+     [33m[2m✓[22m[39m allocates one Agent slot across different environments and concurrent dispatchers[33m 2322[2mms[22m[39m
+     [33m[2m✓[22m[39m accepts a scoped read receipt once and rejects a changed replay[33m 2330[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects a wrong-account receipt and success without a write intent[33m 2239[2mms[22m[39m
+     [33m[2m✓[22m[39m blocks another write attempt and preserves unknown outcome with isolated resources[33m 2346[2mms[22m[39m
+     [33m[2m✓[22m[39m honors stop at the final submission gate[33m 2086[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects new submissions after account pause[33m 2127[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects new submissions after brand pause[33m 2106[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects new submissions after organization pause[33m 2041[2mms[22m[39m
+     [33m[2m✓[22m[39m rejects new submissions after agent pause[33m 2066[2mms[22m[39m
+     [33m[2m✓[22m[39m orders concurrent submission and account pause without hiding an in-flight action[33m 2228[2mms[22m[39m
+     [33m[2m✓[22m[39m orders concurrent submission and brand pause without hiding an in-flight action[33m 2840[2mms[22m[39m
+     [33m[2m✓[22m[39m orders concurrent submission and organization pause without hiding an in-flight action[33m 3148[2mms[22m[39m
+     [33m[2m✓[22m[39m orders concurrent submission and agent pause without hiding an in-flight action[33m 3525[2mms[22m[39m
+     [33m[2m✓[22m[39m does not give organization controls to a brand administrator without organization membership[33m 2889[2mms[22m[39m
+     [33m[2m✓[22m[39m cancels an unclaimed command with explicit proof it never reached an executor[33m 3051[2mms[22m[39m
+     [33m[2m✓[22m[39m pairs with a hashed credential and makes revocation permanent[33m 3066[2mms[22m[39m
+     [33m[2m✓[22m[39m does not steal expired leases or replay an expired action (submitted=false)[33m 2918[2mms[22m[39m
+     [33m[2m✓[22m[39m does not steal expired leases or replay an expired action (submitted=true)[33m 3031[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps an unknown result until positive evidence and guardian closure are both recorded[33m 3140[2mms[22m[39m
+     [33m[2m✓[22m[39m exports diagnostics only after scope, permission and content checks with an audit event[33m 3280[2mms[22m[39m
+     [33m[2m✓[22m[39m reserves a controlled read exactly once, rejects expiry and keeps scope immutable[33m 3825[2mms[22m[39m
+ [32m✓[39m tests/integration/browser-collections.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 71299[2mms[22m[39m
+   [33m[2m✓[22m[39m uses the existing Agent queue and commits two DOM pages, duplicates, incremental comments and persistent opt-out[33m 25468[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects a different account environment and fails stale environment snapshots before creating a task[33m 2437[2mms[22m[39m
+   [33m[2m✓[22m[39m stops an active collection on heartbeat and discards its late page without importing data[33m 2336[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects changed page evidence atomically then accepts the original contract receipt[33m 2249[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects a wrong visible account in the actual browser and closes without importing[33m 6129[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps the environment quarantined after an expired claimed command and does not enqueue another page[33m 3339[2mms[22m[39m
+   [33m[2m✓[22m[39m cancels a queued page when its monitor is paused and prevents Agent delivery[33m 3235[2mms[22m[39m
+   [33m[2m✓[22m[39m discards a page that naturally expires after the Agent claims it[33m 18552[2mms[22m[39m
+   [33m[2m✓[22m[39m resumes only a confirmed read failure at the same cursor[33m 3621[2mms[22m[39m
+   [33m[2m✓[22m[39m does not let a paused account prevent another account from scheduling a browser page[33m 3435[2mms[22m[39m
+ [32m✓[39m tests/integration/lead-reception.test.ts [2m([22m[2m22 tests[22m[2m)[22m[33m 76968[2mms[22m[39m
+   [33m[2m✓[22m[39m requires recipient and guardian closure for manual message adjudication, then projects the original referral once[33m 3367[2mms[22m[39m
+   [33m[2m✓[22m[39m atomically switches to human and queues in the original execution core; concurrent request replay sends once[33m 4068[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects two distinct concurrent manual replies with the same control version[33m 3226[2mms[22m[39m
+   [33m[2m✓[22m[39m takeover invalidates queued and already claimed AI tasks before their submission[33m 3541[2mms[22m[39m
+   [33m[2m✓[22m[39m shows in-flight AI at takeover and prevents a human send until the original submission is known[33m 3370[2mms[22m[39m
+   [33m[2m✓[22m[39m a newer inbound message invalidates the older reply and service-window expiry blocks submission[33m 3356[2mms[22m[39m
+   [33m[2m✓[22m[39m account pause/resume cannot revive a claimed old send[33m 3282[2mms[22m[39m
+   [33m[2m✓[22m[39m brand pause/resume cannot revive a claimed old send[33m 3185[2mms[22m[39m
+   [33m[2m✓[22m[39m organization pause/resume cannot revive a claimed old send[33m 3186[2mms[22m[39m
+   [33m[2m✓[22m[39m agent pause/resume cannot revive a claimed old send[33m 3424[2mms[22m[39m
+   [33m[2m✓[22m[39m resolves the account destination ahead of default, snapshots the right number and confirms referral only after acceptance[33m 3983[2mms[22m[39m
+   [33m[2m✓[22m[39m a paused account override never silently falls back to another number; changed destinations invalidate old tasks[33m 3328[2mms[22m[39m
+   [33m[2m✓[22m[39m reception config revisions cancel queued work through the common dispatcher[33m 3199[2mms[22m[39m
+   [33m[2m✓[22m[39m multiple Workers and Agents retain the binding and cannot take another agent message command[33m 4049[2mms[22m[39m
+   [33m[2m✓[22m[39m verifies recipient in reports and uses one scoped outgoing message even after repeated acknowledgement[33m 3396[2mms[22m[39m
+   [33m[2m✓[22m[39m an interrupted Agent after submit stays unknown and reserves the conversation until original receipt reconciliation[33m 3525[2mms[22m[39m
+   [33m[2m✓[22m[39m executes an actual local HTTP message once and records account, recipient and acceptance in the existing chain[33m 3669[2mms[22m[39m
+   [33m[2m✓[22m[39m enforces viewer and cross-brand access for reception, controls, configuration and replies[33m 3324[2mms[22m[39m
+   [33m[2m✓[22m[39m cancelling a run that never executed projects its queued invitation to a terminal state[33m 3309[2mms[22m[39m
+   [33m[2m✓[22m[39m cancelling a run that never executed leaves a reply without an invitation untouched[33m 3190[2mms[22m[39m
+   [33m[2m✓[22m[39m human takeover and reply survive caller death before commit without half-state or duplicates[33m 3833[2mms[22m[39m
+   [33m[2m✓[22m[39m human takeover and reply survive caller death after commit without half-state or duplicates[33m 3648[2mms[22m[39m
+ [32m✓[39m tests/integration/browser-comment-outreach.test.ts [2m([22m[2m13 tests[22m[2m)[22m[33m 50600[2mms[22m[39m
+   [33m[2m✓[22m[39m creates an immutable reviewable draft with source text, displayed time and no Messenger contact or send[33m 3615[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects foreign environments, private reply, unreviewed leads and expired preparation[33m 3260[2mms[22m[39m
+   [33m[2m✓[22m[39m requires explicit draft replacement and retains both snapshots without permitting replacement after approval[33m 3269[2mms[22m[39m
+   [33m[2m✓[22m[39m rebuilds a closed unsubmitted locator failure only after an implementation change and requires new approval[33m 3191[2mms[22m[39m
+   [33m[2m✓[22m[39m refuses failed preparation replacement with open-command[33m 3470[2mms[22m[39m
+   [33m[2m✓[22m[39m refuses failed preparation replacement with missing-proof[33m 3570[2mms[22m[39m
+   [33m[2m✓[22m[39m refuses failed preparation replacement with submission-intent[33m 3568[2mms[22m[39m
+   [33m[2m✓[22m[39m refuses failed preparation replacement with login-challenge[33m 3388[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps the one-action permit, live switch and original submit-once protocol[33m 3370[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks the original command when a lead opts out after preparation and before submit[33m 3669[2mms[22m[39m
+   [33m[2m✓[22m[39m refuses modified source, expired scope and a closed identity prerequisite[33m 4492[2mms[22m[39m
+   [33m[2m✓[22m[39m shows a same-profile public interaction only after verified receipt and closure without granting reception permission[33m 5496[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps same-name and cross-account conversations out of the public interaction trace and enforces brand scope[33m 5900[2mms[22m[39m
+ [32m✓[39m tests/integration/existing-database.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 50798[2mms[22m[39m
+   [33m[2m✓[22m[39m starts only an existing cluster and cleanly rolls back an open transaction on shutdown, retaining committed data after restart[33m 22484[2mms[22m[39m
+   [33m[2m✓[22m[39m uses the clean lifecycle from the existing bootstrap entry point and preserves its created KFF database[33m 28309[2mms[22m[39m
+ [32m✓[39m tests/integration/templates.test.ts [2m([22m[2m14 tests[22m[2m)[22m[33m 51942[2mms[22m[39m
+   [33m[2m✓[22m[39m reports enable readiness from every preview, not from the page window[33m 4114[2mms[22m[39m
+   [33m[2m✓[22m[39m deduplicates new versions and allocates unique version numbers under concurrent changes[33m 3581[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps manifest definitions immutable and requires a successful input preview before allowing a derived version[33m 3405[2mms[22m[39m
+   [33m[2m✓[22m[39m previews without external calls, tasks, commands or approval and preserves an immutable preview record[33m 3425[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps approved snapshots pinned while later tasks can choose a new allowed version[33m 3297[2mms[22m[39m
+   [33m[2m✓[22m[39m returns an original creation request even when its default template selection later changes[33m 3236[2mms[22m[39m
+   [33m[2m✓[22m[39m enforces a selected version input bound on task creation[33m 3129[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks queueing an approved task after its version is disabled and reflects that in workspace eligibility[33m 3470[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks a queued action after deprecation without making an execution attempt[33m 3571[2mms[22m[39m
+   [33m[2m✓[22m[39m rechecks version policy at the final write gate after the command was claimed[33m 4202[2mms[22m[39m
+   [33m[2m✓[22m[39m serializes a final submission against a concurrent version stop without losing either record[33m 4635[2mms[22m[39m
+   [33m[2m✓[22m[39m allows the original result report and reconciliation after its version is deprecated[33m 3593[2mms[22m[39m
+   [33m[2m✓[22m[39m deduplicates policy changes and refuses to reactivate a permanently deprecated version[33m 3366[2mms[22m[39m
+   [33m[2m✓[22m[39m separates template scopes and refuses wrong action bindings or viewer changes[33m 2494[2mms[22m[39m
+ [32m✓[39m tests/integration/browser-inbox-polling.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 70777[2mms[22m[39m
+   [33m[2m✓[22m[39m reads two actual DOM pages through the guardian, waits for closure, deduplicates later scans and imports incremental replies[33m 25802[2mms[22m[39m
+   [33m[2m✓[22m[39m rolls back the report and checkpoint together when a later message changes peer identity[33m 3086[2mms[22m[39m
+   [33m[2m✓[22m[39m pauses on heartbeat and discards a late successful page without advancing the cursor[33m 3466[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects stale environment bindings before enqueue, enforces role/brand boundaries, and reconfigures only while idle[33m 3095[2mms[22m[39m
+   [33m[2m✓[22m[39m retains the current task and quarantines the environment after a claimed command expires[33m 3310[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks a wrong visible identity in a real browser and commits no messages[33m 9797[2mms[22m[39m
+   [33m[2m✓[22m[39m stops repeated cursors and prevents a stalled page from importing data[33m 3565[2mms[22m[39m
+   [33m[2m✓[22m[39m scans two accounts independently and skips a paused account without starving the next monitor[33m 3900[2mms[22m[39m
+   [33m[2m✓[22m[39m continuously polls only when due and cancels a queued page on pause[33m 3830[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects changed evidence and a foreign Agent before committing a checkpoint[33m 3573[2mms[22m[39m
+   [33m[2m✓[22m[39m refuses an expired page in the guardian before opening the browser[33m 6901[2mms[22m[39m
+ [32m✓[39m tests/integration/guardian-recovery.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 69154[2mms[22m[39m
+   [33m[2m✓[22m[39m recovers a real pre-start spawn failure through the normal state machine and then really runs the next command[33m 17249[2mms[22m[39m
+   [33m[2m✓[22m[39m ends a real guardian stalled inside a real navigation and really runs the next command afterwards[33m 42137[2mms[22m[39m
+   [33m[2m✓[22m[39m resumes the same original proof after a lost acknowledgement and a restart during recovery[33m 9043[2mms[22m[39m
+ [32m✓[39m tests/integration/acquisition.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 34003[2mms[22m[39m
+   [33m[2m✓[22m[39m deduplicates monitor requests and repeated observations without increasing unique leads[33m 3408[2mms[22m[39m
+   [33m[2m✓[22m[39m supports Instagram and isolates accounts, roles and brands[33m 3403[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps an approved delayed action valid when a new scan returns the exact same comment[33m 3338[2mms[22m[39m
+   [33m[2m✓[22m[39m a pause fences a page already claimed by a worker and prevents stale data commit[33m 2331[2mms[22m[39m
+   [33m[2m✓[22m[39m turns a selected comment into exactly one original task and validates its recipient receipt[33m 3030[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks author opt-out even when the same customer is collected again in another monitor[33m 2619[2mms[22m[39m
+   [33m[2m✓[22m[39m a due monitor generates a real queued scan, then automated delayed tasks with no duplicate scheduling[33m 2576[2mms[22m[39m
+   [33m[2m✓[22m[39m does not turn provider/competitor matches into private-message permission[33m 2598[2mms[22m[39m
+   [33m[2m✓[22m[39m accepts Apify observations without Meta credentials, preserves account state and blocks provider outreach[33m 2453[2mms[22m[39m
+   [33m[2m✓[22m[39m excludes old matches, keeps unknown dates for review and preserves decisions on identical rescan[33m 2560[2mms[22m[39m
+   [33m[2m✓[22m[39m stores promotional observations without making them leads or automatic outreach tasks[33m 2603[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps the original manual decision reason when a later observation is screened out[33m 2606[2mms[22m[39m
+ [32m✓[39m tests/integration/reception-worker.test.ts [2m([22m[2m18 tests[22m[2m)[22m[33m 64768[2mms[22m[39m
+   [33m[2m✓[22m[39m a full batch of old waiting jobs does not starve an inquiry collected while another account was paused[33m 2788[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps native human context when AI resumes and does not re-answer an already answered customer message[33m 2553[2mms[22m[39m
+   [33m[2m✓[22m[39m runs greeting -> valid inquiry -> WhatsApp acceptance through the original command chain and pauses AI[33m 3056[2mms[22m[39m
+   [33m[2m✓[22m[39m concurrent Workers claim one preparation job and create one execution action[33m 3212[2mms[22m[39m
+   [33m[2m✓[22m[39m drops late model output after takeover[33m 3358[2mms[22m[39m
+   [33m[2m✓[22m[39m drops late model output after new-input[33m 3382[2mms[22m[39m
+   [33m[2m✓[22m[39m drops late model output after pause-resume[33m 3247[2mms[22m[39m
+   [33m[2m✓[22m[39m drops late model output after rules[33m 3140[2mms[22m[39m
+   [33m[2m✓[22m[39m an expired Worker lease fences the old owner, and the replacement creates only one action[33m 3485[2mms[22m[39m
+   [33m[2m✓[22m[39m model timeouts retry three times then hand over; operator retry is explicit and idempotent[33m 3514[2mms[22m[39m
+   [33m[2m✓[22m[39m missing model configuration records the actual blocker rather than silently using local rules[33m 3302[2mms[22m[39m
+   [33m[2m✓[22m[39m opt-out stops the whole identity and later inbound cannot silently re-enable contact[33m 3439[2mms[22m[39m
+   [33m[2m✓[22m[39m native human echoes seize control while a correlated KFF echo does not duplicate the outgoing message[33m 3542[2mms[22m[39m
+   [33m[2m✓[22m[39m history and chosen destinations stay with the sending account even for identical customer IDs[33m 3761[2mms[22m[39m
+   [33m[2m✓[22m[39m daily submission quota defers new work without consuming model failure attempts[33m 3769[2mms[22m[39m
+   [33m[2m✓[22m[39m old failed work cannot overwrite a newer human decision[33m 3256[2mms[22m[39m
+   [33m[2m✓[22m[39m reception survives actual Worker death before commit[33m 6122[2mms[22m[39m
+   [33m[2m✓[22m[39m reception survives actual Worker death after commit[33m 5437[2mms[22m[39m
+ [32m✓[39m tests/integration/inbox.test.ts [2m([22m[2m17 tests[22m[2m)[22m[33m 47051[2mms[22m[39m
+   [33m[2m✓[22m[39m creates one independent channel account, preserves its policy and issues sessions without creating customers[33m 3375[2mms[22m[39m
+   [33m[2m✓[22m[39m commits event, customer, identity, conversation, message, service basis and timeline together without authorizing execution[33m 3161[2mms[22m[39m
+   [33m[2m✓[22m[39m deduplicates concurrent deliveries and rejects changed content under the same message identity[33m 3414[2mms[22m[39m
+   [33m[2m✓[22m[39m orders by server receipt, preserves untrusted client time, and pages without repeating or dropping accepted messages[33m 2999[2mms[22m[39m
+   [33m[2m✓[22m[39m isolates visitors and channels even when their names and client message IDs are identical[33m 3109[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks expired and revoked sessions while retaining already stored customer messages[33m 3220[2mms[22m[39m
+   [33m[2m✓[22m[39m rechecks session expiry after waiting for its database lock before accepting any inquiry[33m 2575[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps inbound customer service available when organization, brand and account outbound execution are paused[33m 2123[2mms[22m[39m
+   [33m[2m✓[22m[39m pauses new inquiry admission but permits safe duplicate acknowledgements and existing history[33m 2028[2mms[22m[39m
+   [33m[2m✓[22m[39m enforces durable session and channel quotas without charging duplicates or creating rejected customers[33m 2117[2mms[22m[39m
+   [33m[2m✓[22m[39m enforces per-visitor quota atomically when distinct messages arrive concurrently[33m 3173[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects viewer writes, foreign owners and forged brand reads with database tenant boundaries[33m 2029[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps identical visitor identifiers separate across actual brands and rejects cross-customer message references[33m 1928[2mms[22m[39m
+   [33m[2m✓[22m[39m preserves customer edits, version conflicts and request ownership while recording notes once[33m 2232[2mms[22m[39m
+   [33m[2m✓[22m[39m makes customer opt-out effective and never restores contact consent through a new inquiry or a stage edit[33m 2046[2mms[22m[39m
+   [33m[2m✓[22m[39m rolls back all inquiry records and quotas when the actual process dies before commit[33m 3427[2mms[22m[39m
+   [33m[2m✓[22m[39m retains the committed receipt after the actual process dies before acknowledgement and replays it once[33m 3560[2mms[22m[39m
+ [32m✓[39m tests/integration/contacts.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 41672[2mms[22m[39m
+   [33m[2m✓[22m[39m preserves opaque identities and deduplicates one target without changing its identity[33m 1831[2mms[22m[39m
+   [33m[2m✓[22m[39m records one immutable permission under concurrent identical requests[33m 2762[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks UNKNOWN source permission regardless of any marketing ranking[33m 2847[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks DENIED source permission regardless of any marketing ranking[33m 2831[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps contact basis separate from platform or execution authorization and rejects another purpose[33m 2662[2mms[22m[39m
+   [33m[2m✓[22m[39m distinguishes expired basis and unknown or expired contact windows 0[33m 2667[2mms[22m[39m
+   [33m[2m✓[22m[39m distinguishes expired basis and unknown or expired contact windows 1[33m 2723[2mms[22m[39m
+   [33m[2m✓[22m[39m distinguishes expired basis and unknown or expired contact windows 2[33m 2704[2mms[22m[39m
+   [33m[2m✓[22m[39m requires an explicit service window for an inbound inquiry and never expands it to marketing[33m 2805[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks a queued selection immediately after opt-out and replays the exit without another state change[33m 2871[2mms[22m[39m
+   [33m[2m✓[22m[39m requires fresh explicit consent to resume and keeps every older permission invalid[33m 2760[2mms[22m[39m
+   [33m[2m✓[22m[39m serializes final basis checking with opt-out and then refuses the old selection[33m 3065[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks revoked permission and paused account at final checking[33m 2876[2mms[22m[39m
+   [33m[2m✓[22m[39m applies brand isolation and refuses viewer changes[33m 2808[2mms[22m[39m
+   [33m[2m✓[22m[39m returns an older account's contact records that a brand-wide truncation would hide[33m 3096[2mms[22m[39m
+ [32m✓[39m tests/integration/lead-management.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 32912[2mms[22m[39m
+   [33m[2m✓[22m[39m measures subsequent customer inquiries after confirmed AI replies without counting model suggestions as sends[33m 3743[2mms[22m[39m
+   [33m[2m✓[22m[39m applies explicit exit before any model job and blocks immediate human sends[33m 3086[2mms[22m[39m
+   [33m[2m✓[22m[39m preserves lead edits idempotently, fences stale AI and records who changed classification[33m 3115[2mms[22m[39m
+   [33m[2m✓[22m[39m counts distinct valid customers, excludes pending sends and separates account and synthetic cohorts[33m 3905[2mms[22m[39m
+   [33m[2m✓[22m[39m separates actual contact from sent invitations and exposes versioned template/source evidence[33m 3458[2mms[22m[39m
+   [33m[2m✓[22m[39m counts comment origins separately from private messages and manual handovers[33m 3191[2mms[22m[39m
+   [33m[2m✓[22m[39m isolates reporting, edits and audit by brand and keeps records immutable[33m 3103[2mms[22m[39m
+   [33m[2m✓[22m[39m bounds account intake while duplicate retry returns its original receipt[33m 2905[2mms[22m[39m
+   [33m[2m✓[22m[39m pages same-timestamp audit events without dropping or repeating any[33m 3192[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps the legacy timestamp cursor working and labels its boundary[33m 2720[2mms[22m[39m
+ [32m✓[39m tests/integration/costs.test.ts [2m([22m[2m14 tests[22m[2m)[22m[33m 30839[2mms[22m[39m
+   [33m[2m✓[22m[39m requires an explicit budget even when the proposed maximum cost is zero[33m 2962[2mms[22m[39m
+   [33m[2m✓[22m[39m deduplicates budget configuration and rejects stale versions or reinterpretation of currency precision[33m 2766[2mms[22m[39m
+   [33m[2m✓[22m[39m does not overbook a shared budget under concurrent actions[33m 2366[2mms[22m[39m
+   [33m[2m✓[22m[39m reserves one action once and rejects changed repeated amounts[33m 2244[2mms[22m[39m
+   [33m[2m✓[22m[39m retains the complete estimate while actual cost is unknown and records the pending transition once[33m 2144[2mms[22m[39m
+   [33m[2m✓[22m[39m reports the decisions the server accepts for each reservation[33m 1901[2mms[22m[39m
+   [33m[2m✓[22m[39m refuses to settle an in-flight action or to label a null amount as a settlement[33m 1863[2mms[22m[39m
+   [33m[2m✓[22m[39m settles and adjusts with immutable events while a repeated earlier settlement cannot overwrite the adjustment[33m 1962[2mms[22m[39m
+   [33m[2m✓[22m[39m records an over-estimate bill truthfully and blocks new reservations when the budget is exceeded[33m 2032[2mms[22m[39m
+   [33m[2m✓[22m[39m rechecks an existing reservation against the current budget without double counting it[33m 1961[2mms[22m[39m
+   [33m[2m✓[22m[39m releases only an explicitly reconciled zero, and never reopens the same action reservation[33m 2128[2mms[22m[39m
+   [33m[2m✓[22m[39m separates currencies and stores configured zero-decimal precision without floating point[33m 1952[2mms[22m[39m
+   [33m[2m✓[22m[39m requires guardian closure for unknown actions and leaves execution isolation intact after cost settlement[33m 2128[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps budgets and cost records scoped and disallows viewer mutations[33m 1878[2mms[22m[39m
+ [32m✓[39m tests/integration/real-browser-inbox.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 43237[2mms[22m[39m
+   [33m[2m✓[22m[39m uses original read permits and closure gates, stores unknown dates as null, and deduplicates changed time labels[33m 3142[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects another sender, thread, timestamp, and evidence kind without partially ingesting a page[33m 2863[2mms[22m[39m
+   [33m[2m✓[22m[39m requires registered evidence, explicit feature enablement, and the monitor-bound snapshot[33m 3568[2mms[22m[39m
+   [33m[2m✓[22m[39m discovers multiple threads into the owning Inbox without creating reply permission, then deduplicates a reread[33m 3975[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects a directory report over its approved thread bound before storing messages[33m 3739[2mms[22m[39m
+   [33m[2m✓[22m[39m preserves a skipped thread failure phase through report ingestion without ingesting or authorizing that peer[33m 3835[2mms[22m[39m
+   [33m[2m✓[22m[39m discards a discovered page after the operator pauses its monitor[33m 4097[2mms[22m[39m
+   [33m[2m✓[22m[39m ingests a read-only conversation, records its reason, and never counts a skipped one as read[33m 4340[2mms[22m[39m
+   [33m[2m✓[22m[39m refuses a window whose read counts or coverage do not match the stored messages[33m 3997[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps the same discovered thread identifiers isolated between two operating accounts[33m 4523[2mms[22m[39m
+   [33m[2m✓[22m[39m stores photo-presence markers with text, preserves deduplication and leaves unread images for human handling[33m 4748[2mms[22m[39m
+<claude-code-hint v="1" type="plugin" value="stripe@claude-plugins-official" />
+ [32m✓[39m tests/integration/refunds.test.ts [2m([22m[2m23 tests[22m[2m)[22m[33m 59508[2mms[22m[39m
+   [33m[2m✓[22m[39m serializes concurrent partial requests, holds their amounts and replays only identical requests[33m 3394[2mms[22m[39m
+   [33m[2m✓[22m[39m supports multiple partial successes up to the exact total without changing payment or delivery facts[33m 2910[2mms[22m[39m
+   [33m[2m✓[22m[39m reserves pending and requires-action amounts, releases failed/canceled amounts and retains every observation[33m 2890[2mms[22m[39m
+   [33m[2m✓[22m[39m requeries old callbacks and records success, bank return, renewed success and later failure without double reduction[33m 2982[2mms[22m[39m
+   [33m[2m✓[22m[39m recovers a lost POST acknowledgement by original metadata without issuing a new refund[33m 2437[2mms[22m[39m
+   [33m[2m✓[22m[39m reuses identical POST parameters if a lost response is also absent from provider lists[33m 2473[2mms[22m[39m
+   [33m[2m✓[22m[39m binds a returned refund before a failed follow-up query and recovers the same object after a restart[33m 2166[2mms[22m[39m
+   [33m[2m✓[22m[39m retains unknown refunds beyond the safe idempotency window and forbids local cancellation after submission[33m 1905[2mms[22m[39m
+   [33m[2m✓[22m[39m releases a definite first POST rejection but preserves unknown results after exhausted transient retries[33m 2124[2mms[22m[39m
+   [33m[2m✓[22m[39m fences expired owners after remote creation and lets a new owner recover the original refund[33m 1729[2mms[22m[39m
+   [33m[2m✓[22m[39m accounts for dashboard refunds and paginates beyond 100 objects while rejecting cursor loops[33m 2677[2mms[22m[39m
+   [33m[2m✓[22m[39m fails closed on new provider statuses, identity, immutable amount and current payment metadata mismatches[33m 1997[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects bad signed-event mode, amount and forged KFF request metadata before any financial posting[33m 1887[2mms[22m[39m
+   [33m[2m✓[22m[39m commits financial objects, postings and event acknowledgement atomically after a persistence failure[33m 1942[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps disputes and provider balance movements distinct, including different-currency fees and later reinstatement[33m 2081[2mms[22m[39m
+   [33m[2m✓[22m[39m stops new POSTs on connection, brand, organization pause and revoked administrator authority while reconciling incoming refunds[33m 2088[2mms[22m[39m
+   [33m[2m✓[22m[39m allows an authorized, unsubmitted cancellation once and does not call Stripe[33m 1920[2mms[22m[39m
+   [33m[2m✓[22m[39m records immutable adjustments with explicit currency and unique evidence, exact one-time reversal and preserved originals[33m 1994[2mms[22m[39m
+   [33m[2m✓[22m[39m enforces administrator writes, brand RLS, immutable requests and a fresh verified available amount[33m 2633[2mms[22m[39m
+   [33m[2m✓[22m[39m recovers after the actual refund worker process dies after Stripe accepts creation but before acknowledgement[33m 8966[2mms[22m[39m
+   [33m[2m✓[22m[39m applies a returned successful refund before its replacement debit when the original payment was fully refunded[33m 1729[2mms[22m[39m
+   [33m[2m✓[22m[39m blocks stale local reservations when an external refund reduces available funds before submission[33m 1816[2mms[22m[39m
+   [33m[2m✓[22m[39m preserves a successful posting through unknown provider status without releasing its refund amount[33m 1974[2mms[22m[39m
+ [32m✓[39m tests/integration/adjudication.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 37460[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps inconclusive findings pending instead of counting a failure or permitting a resubmission[33m 3681[2mms[22m[39m
+   [33m[2m✓[22m[39m records a manual success without re-execution, cost settlement, capability promotion or automatic isolation release[33m 3231[2mms[22m[39m
+   [33m[2m✓[22m[39m deduplicates concurrent identical reviews and ignores a delayed replay of the original unknown report[33m 3687[2mms[22m[39m
+   [33m[2m✓[22m[39m allows only one of two conflicting final reviews to project the same version[33m 3419[2mms[22m[39m
+   [33m[2m✓[22m[39m continues after an inconclusive review through an explicit event while older request replay cannot overwrite it[33m 3667[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects evidence for another account, content version, source scope or observation time[33m 3180[2mms[22m[39m
+   [33m[2m✓[22m[39m requires a durable submission intent before a write can be manually confirmed as successful[33m 3145[2mms[22m[39m
+   [33m[2m✓[22m[39m does not accept a missing record as proof of a final failure[33m 3046[2mms[22m[39m
+   [33m[2m✓[22m[39m records a final rejection as a human finding and leaves automatic retries disabled[33m 2324[2mms[22m[39m
+   [33m[2m✓[22m[39m prevents automatic reconciliation from overwriting the provenance of a manual finding[33m 2357[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps adjudication events immutable and requires a matching state projection in the same transaction[33m 2999[2mms[22m[39m
+   [33m[2m✓[22m[39m scopes all reviews to the original brand and rejects non-admin adjudication[33m 2181[2mms[22m[39m
+ [32m✓[39m tests/integration/facebook-inbound.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 30141[2mms[22m[39m
+   [33m[2m✓[22m[39m reuses existing customer, identity and inbox models with stable account/source and event evidence[33m 2432[2mms[22m[39m
+   [33m[2m✓[22m[39m deduplicates concurrent events and messages, but rejects replacing one event body or sender[33m 2629[2mms[22m[39m
+   [33m[2m✓[22m[39m preserves first source and chronological bounds for out-of-order messages without merging same-name customers[33m 2428[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps same remote customer on two Facebook accounts isolated throughout history and attribution[33m 2251[2mms[22m[39m
+   [33m[2m✓[22m[39m receives comments/engagement without inventing Messenger permission or merging platform identity namespaces[33m 2328[2mms[22m[39m
+   [33m[2m✓[22m[39m native Facebook human echoes and unsupported attachments place conversation under human control[33m 2274[2mms[22m[39m
+   [33m[2m✓[22m[39m paused reception continues to collect customers with no automatic handling[33m 2131[2mms[22m[39m
+   [33m[2m✓[22m[39m enforces viewer, brand, account/environment scope, immutable identity and optimistic config version[33m 2341[2mms[22m[39m
+   [33m[2m✓[22m[39m signed batched webhook resolves only configured real pages and does not admit unsigned fixture injection into real accounts[33m 2299[2mms[22m[39m
+   [33m[2m✓[22m[39m recovers after actual inbound process dies before transaction commit[33m 3612[2mms[22m[39m
+   [33m[2m✓[22m[39m recovers after actual inbound process dies after transaction commit[33m 5008[2mms[22m[39m
+ [32m✓[39m tests/integration/local-supervision.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 37584[2mms[22m[39m
+   [33m[2m✓[22m[39m preserves the original receipt after lost acknowledgement and drain[33m 15880[2mms[22m[39m
+   [33m[2m✓[22m[39m preserves the original receipt after lost acknowledgement and parent-disconnect[33m 13702[2mms[22m[39m
+   [33m[2m✓[22m[39m drains the actual Worker and closes its database pool through local IPC on Windows[33m 7421[2mms[22m[39m
+ [32m✓[39m tests/integration/environments.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 31921[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects cross-brand reads/configuration and unauthorized operators[33m 2559[2mms[22m[39m
+   [33m[2m✓[22m[39m pins new configuration and rejects wrong identity and stale task approval[33m 2934[2mms[22m[39m
+   [33m[2m✓[22m[39m deduplicates concurrent requests and refuses a changed replay[33m 2925[2mms[22m[39m
+   [33m[2m✓[22m[39m reserves one Agent and both resources, and cannot reconfigure an open login window[33m 3030[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps expired controls isolated until the exact closure is reported, and deduplicates that result[33m 2831[2mms[22m[39m
+   [33m[2m✓[22m[39m stops login control without claiming login success or releasing resources early[33m 2774[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects delayed heartbeat on expired leases and a revoked Agent[33m 2664[2mms[22m[39m
+   [33m[2m✓[22m[39m does not steal an account already running an ordinary task, including another environment[33m 2890[2mms[22m[39m
+   [33m[2m✓[22m[39m prevents duplicate AdsPower binding and disabling an occupied environment[33m 2859[2mms[22m[39m
+   [33m[2m✓[22m[39m allows independent accounts on two Agents while preserving command ownership[33m 3054[2mms[22m[39m
+   [33m[2m✓[22m[39m registers a browser profile without Page capabilities and pins a real identity receipt to its checked configuration[33m 2899[2mms[22m[39m
+ [32m✓[39m tests/integration/browser-matrix-process.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 48856[2mms[22m[39m
+   [33m[2m✓[22m[39m runs two isolated browser Agents, continues the second account while the first is unknown, and recovers the exact lost acknowledgement after restart[33m 48367[2mms[22m[39m
+ [32m✓[39m tests/integration/real-browser-message.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 42369[2mms[22m[39m
+   [33m[2m✓[22m[39m requires explicit consent and prepares once without a job or a fabricated inbound window[33m 6215[2mms[22m[39m
+   [33m[2m✓[22m[39m runs through original submission intent and records a WhatsApp referral once from the browser receipt[33m 5614[2mms[22m[39m
+   [33m[2m✓[22m[39m reconciles a receipt echo plus new incoming through the original read report, then rescans without duplicate messages or reusable old consent[33m 6792[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps native outgoing separate, preserves unknown dates, and rejects a changed identity or reused message ID atomically[33m 5649[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects expanded permits and identity evidence that is missing its original closure[33m 4521[2mms[22m[39m
+   [33m[2m✓[22m[39m rechecks revoked consent at submission and keeps the source message unchanged[33m 4319[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects another recipient or graph receipt and preserves uncertainty without repeating the action[33m 4565[2mms[22m[39m
+   [33m[2m✓[22m[39m adopts a draft in the browser pilot path without creating a send, approval bypass or inbound service window[33m 4148[2mms[22m[39m
+ [32m✓[39m tests/integration/agent-closure-gate.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 37144[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps another account queued without attempts until DONE command closure[33m 3450[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps another account queued without attempts until EXPIRED command closure[33m 3462[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps another account environment check queued until DONE command closure[33m 3220[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps another account environment check queued until EXPIRED command closure[33m 3224[2mms[22m[39m
+   [33m[2m✓[22m[39m refuses an already dispatched legacy command while another DONE command lacks closure[33m 3345[2mms[22m[39m
+   [33m[2m✓[22m[39m refuses an already dispatched legacy command while another EXPIRED command lacks closure[33m 3532[2mms[22m[39m
+   [33m[2m✓[22m[39m does not let a never-claimed canceled command block subsequent work[33m 3341[2mms[22m[39m
+   [33m[2m✓[22m[39m refuses a legacy READY task while an environment operation holds the Agent[33m 3138[2mms[22m[39m
+   [33m[2m✓[22m[39m refuses to release an environment on a termination proof even when the tree was proven dead[33m 3357[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps a no-progress termination quarantined through retention expiry and recovery[33m 3243[2mms[22m[39m
+   [33m[2m✓[22m[39m completes a command on a proven-dead tree and still refuses to release its environment[33m 3259[2mms[22m[39m
+ [32m✓[39m tests/integration/durability.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 24972[2mms[22m[39m
+   [33m[2m✓[22m[39m rolls back the entire enqueue when its actual caller dies inside the final transaction write[33m 5491[2mms[22m[39m
+   [33m[2m✓[22m[39m reuses the committed business intent after the enqueue caller dies before sending its response[33m 4313[2mms[22m[39m
+   [33m[2m✓[22m[39m recovers the queued job after the actual Worker dies before its dispatch transaction commits[33m 7671[2mms[22m[39m
+   [33m[2m✓[22m[39m does not create another command after the actual Worker restarts after dispatch commit[33m 6921[2mms[22m[39m
+ [32m✓[39m tests/integration/real-browser-collections.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 27671[2mms[22m[39m
+   [33m[2m✓[22m[39m dispatches through the original permit and Agent queue with discovery enabled and all writes disabled[33m 3370[2mms[22m[39m
+   [33m[2m✓[22m[39m ingests fixed-post comment receipts through the original read permit and rejects another parent[33m 3200[2mms[22m[39m
+   [33m[2m✓[22m[39m fails unregistered implementations and disabled discovery before delivering a browser command[33m 3217[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps Page observations in the original read queue and refuses an unverified publisher[33m 3365[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects generic task creation and discards a real-scope contract page after the monitor is paused[33m 4280[2mms[22m[39m
+   [33m[2m✓[22m[39m derives one bounded source through the original worker queue, deduplicates, and pauses children with the parent[33m 5352[2mms[22m[39m
+   [33m[2m✓[22m[39m expires derived sources without recreating them or reusing failed/paused parent evidence[33m 4545[2mms[22m[39m
+ [32m✓[39m tests/integration/reception-drafts.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 34086[2mms[22m[39m
+   [33m[2m✓[22m[39m generates a reviewable suggestion through the existing queue, with no task or customer mutation, and replays requests[33m 3538[2mms[22m[39m
+   [33m[2m✓[22m[39m discards a late draft after takeover without changing conversation control[33m 3199[2mms[22m[39m
+   [33m[2m✓[22m[39m discards a late draft after inbound without changing conversation control[33m 3291[2mms[22m[39m
+   [33m[2m✓[22m[39m discards a late draft after stop-resume without changing conversation control[33m 3819[2mms[22m[39m
+   [33m[2m✓[22m[39m discards a late draft after expiry without changing conversation control[33m 3219[2mms[22m[39m
+   [33m[2m✓[22m[39m pins human adoption and the edited body to the original task, then fences new inbound messages[33m 3487[2mms[22m[39m
+   [33m[2m✓[22m[39m refuses foreign, expired and delayed-beyond-expiry suggestions before creating a task[33m 3407[2mms[22m[39m
+   [33m[2m✓[22m[39m fails a provider once without auto retry or changing human control[33m 3229[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps handoff advice as advice and rejects viewer or paused-conversation requests[33m 3185[2mms[22m[39m
+   [33m[2m✓[22m[39m reports missing AI configuration without queuing or silently generating a rules draft[33m 3164[2mms[22m[39m
+ [32m✓[39m tests/integration/imports.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 27903[2mms[22m[39m
+   [33m[2m✓[22m[39m reads an independently authored namespaced XLSX, preserves exact text IDs and reports formula/numeric ID rows[33m 2720[2mms[22m[39m
+   [33m[2m✓[22m[39m handles selected UTF-8 BOM, GB18030 and UTF-16LE without lossy replacement or ID coercion[33m 2896[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects forged container, excessive bytes, row/column expansion and external workbook relationships[33m 3421[2mms[22m[39m
+   [33m[2m✓[22m[39m deduplicates concurrent uploads and refuses changed bytes using an existing request ID[33m 1356[2mms[22m[39m
+   [33m[2m✓[22m[39m requires explicit error exclusion and binds confirmation to an immutable scoped preview[33m 1575[2mms[22m[39m
+   [33m[2m✓[22m[39m confirms once under concurrent retries and reuses repeated same-content imports without duplicate observations[33m 2031[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects a stale duplicate preview then appends new same-source observations after an explicit new preview[33m 1859[2mms[22m[39m
+   [33m[2m✓[22m[39m does not reassign a confirmation request ID when both its import and another import already exist[33m 1818[2mms[22m[39m
+   [33m[2m✓[22m[39m prevents cross-brand file, preview, confirmation, export and object selection access[33m 1325[2mms[22m[39m
+   [33m[2m✓[22m[39m enforces original access independently of normalized results and blocks viewer mutations[33m 1683[2mms[22m[39m
+   [33m[2m✓[22m[39m round-trips long IDs, formula text, newlines, zero and field states through csv with permitted selection only[33m 1438[2mms[22m[39m
+   [33m[2m✓[22m[39m round-trips long IDs, formula text, newlines, zero and field states through xlsx with permitted selection only[33m 1865[2mms[22m[39m
+   [33m[2m✓[22m[39m preserves NULL, hidden, absent, empty string and zero independently in a collection CSV round trip[33m 925[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects unauthorized export fields and records exact download scope without customer content in audit[33m 924[2mms[22m[39m
+   [33m[2m✓[22m[39m hides expired originals and previews immediately and purges payloads without touching live files[33m 959[2mms[22m[39m
+<claude-code-hint v="1" type="plugin" value="stripe@claude-plugins-official" />
+[90mstderr[2m | tests/integration/payments.test.ts[2m > [22m[2mdoes not acknowledge a webhook until both durable event records have committed
+[22m[39mAPI request failed: e4d187a1-bb06-452b-9da8-6ad0dc3d535d error
+
+ [32m✓[39m tests/integration/payments.test.ts [2m([22m[2m16 tests[22m[2m)[22m[33m 18652[2mms[22m[39m
+   [33m[2m✓[22m[39m queues once, freezes price and exact provider parameters, and recovers a lost create response with the same key[33m 1452[2mms[22m[39m
+   [33m[2m✓[22m[39m persists before acknowledgement, deduplicates concurrent events and payment objects, and separates test receipts from revenue[33m 1419[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps a successful creation with a rejected follow-up query unresolved and recovers it from the original webhook[33m 888[2mms[22m[39m
+   [33m[2m✓[22m[39m handles delayed payment and old failure events without regressing a verified payment[33m 888[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects wrong amount, currency, order, brand, snapshot, payment object, mode and received amount[33m 1697[2mms[22m[39m
+   [33m[2m✓[22m[39m will not accept another merchant or another PaymentIntent with copied metadata[33m 846[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects forged, expired, future, wrong-mode and changed duplicate events without recording payment[33m 791[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps failures durable and processes a retry after the Stripe API recovers[33m 858[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps receipt, order state and processed acknowledgement atomic when payment persistence fails[33m 937[2mms[22m[39m
+   [33m[2m✓[22m[39m pauses new checkout submission but still accepts and verifies incoming payments[33m 1117[2mms[22m[39m
+   [33m[2m✓[22m[39m prevents cancellation in flight, permits cancellation after verified expiry, and guards RLS and immutable identities[33m 924[2mms[22m[39m
+   [33m[2m✓[22m[39m never recreates an unknown session after the idempotency retention window[33m 1146[2mms[22m[39m
+   [33m[2m✓[22m[39m supports a server query of the original object and does not infer payment from browser redirects[33m 1216[2mms[22m[39m
+   [33m[2m✓[22m[39m receives signed raw HTTP requests without staff login and refuses altered bodies or oversized streams[33m 1133[2mms[22m[39m
+   [33m[2m✓[22m[39m does not acknowledge a webhook until both durable event records have committed[33m 1506[2mms[22m[39m
+   [33m[2m✓[22m[39m fences an expired event worker so its late observation cannot overwrite the new owner[33m 1454[2mms[22m[39m
+ [32m✓[39m tests/integration/browser-inbox.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 25668[2mms[22m[39m
+   [33m[2m✓[22m[39m projects browser messages into the original Inbox with provenance and a distinct identity namespace[33m 3225[2mms[22m[39m
+   [33m[2m✓[22m[39m deduplicates concurrent reads and later observations with changed display names without extending API eligibility[33m 3383[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps identical browser/API numeric IDs and event keys in separate existing customer records[33m 3324[2mms[22m[39m
+   [33m[2m✓[22m[39m rolls back the entire batch when a later message changes the peer of the same thread[33m 3138[2mms[22m[39m
+   [33m[2m✓[22m[39m tracks native human replies once, preserves newest inbound sequence, and retains opt-out on later messages[33m 3141[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects wrong actor, environment configuration, brand and viewer before importing a page[33m 2938[2mms[22m[39m
+   [33m[2m✓[22m[39m rolls back browser inbox writes when the surrounding Agent receipt transaction fails[33m 2990[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps one browser thread on two accounts isolated[33m 2989[2mms[22m[39m
+ [32m✓[39m tests/integration/whatsapp-correction.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 22797[2mms[22m[39m
+   [33m[2m✓[22m[39m requires explicit correction, preserves the old receipt, and confirms only the corrected destination[33m 4236[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects correction when the phone has not changed and rejects references to another conversation[33m 3790[2mms[22m[39m
+   [33m[2m✓[22m[39m retains the account reply interval even for an explicitly corrected number[33m 3515[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects a correction of an original that is unclosed[33m 3546[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects a correction of an original that is missing-proof[33m 3577[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects a correction of an original that is confirmed[33m 3596[2mms[22m[39m
+ [32m✓[39m tests/integration/collections.test.ts [2m([22m[2m19 tests[22m[2m)[22m[33m 23642[2mms[22m[39m
+   [33m[2m✓[22m[39m creates one durable query and run under concurrent duplicate requests and rejects changed input[33m 1041[2mms[22m[39m
+   [33m[2m✓[22m[39m commits five observations as four identities and preserves both versions of a repeated object[33m 969[2mms[22m[39m
+   [33m[2m✓[22m[39m reuses an exact committed page while rejecting a different body and concurrent checkpoint writers[33m 1017[2mms[22m[39m
+   [33m[2m✓[22m[39m rolls back observations and checkpoint when its actual process dies before COMMIT and resumes the same page[33m 2877[2mms[22m[39m
+   [33m[2m✓[22m[39m starts at the next confirmed page when its actual process dies after COMMIT without acknowledging it[33m 2695[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects expired and replaced tokens for both successful pages and failure writes[33m 798[2mms[22m[39m
+   [33m[2m✓[22m[39m preserves partial data when cursor_loop prevents further source progress[33m 820[2mms[22m[39m
+   [33m[2m✓[22m[39m preserves partial data when cursor_expired prevents further source progress[33m 815[2mms[22m[39m
+   [33m[2m✓[22m[39m preserves partial data when fail_second_page prevents further source progress[33m 913[2mms[22m[39m
+   [33m[2m✓[22m[39m separates a valid empty source from an empty first page with a continuation cursor[33m 985[2mms[22m[39m
+   [33m[2m✓[22m[39m enforces exact returned-row and page limits while retaining unknown source totals[33m 949[2mms[22m[39m
+   [33m[2m✓[22m[39m retains the newest observation in this query when an older observation arrives on a later page[33m 885[2mms[22m[39m
+   [33m[2m✓[22m[39m stops a claimed read without accepting its later page and does not broaden stop into deleting results[33m 982[2mms[22m[39m
+   [33m[2m✓[22m[39m resumes only a recoverable read failure at the original cursor with explicit version and request deduplication[33m 916[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps query result pages stable and identities separate across query and account scopes[33m 1067[2mms[22m[39m
+   [33m[2m✓[22m[39m respects account and organization pause before reading and records malformed source failure without rows[33m 862[2mms[22m[39m
+   [33m[2m✓[22m[39m prevents a result from pointing to an observation from another query even within the same brand[33m 1308[2mms[22m[39m
+   [33m[2m✓[22m[39m does not merge matching source IDs across different execution accounts[33m 1589[2mms[22m[39m
+   [33m[2m✓[22m[39m hides expired observations immediately and purges only expired data while retaining live observations[33m 1004[2mms[22m[39m
+ [32m✓[39m tests/integration/target-snapshots.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 13814[2mms[22m[39m
+   [33m[2m✓[22m[39m distinguishes the exact current page, manual rows across pages and all filtered results[33m 1018[2mms[22m[39m
+   [33m[2m✓[22m[39m treats zero, null, literal ID prefixes and requested field filters independently[33m 999[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects changed current pages and stale manual observation versions before preview creation[33m 709[2mms[22m[39m
+   [33m[2m✓[22m[39m freezes old observations and membership despite later source increments and changed filters[33m 938[2mms[22m[39m
+   [33m[2m✓[22m[39m deduplicates previews and confirmed snapshots and refuses altered counts or request content[33m 1289[2mms[22m[39m
+   [33m[2m✓[22m[39m records source-purpose and action/contact exclusions without creating any executable task[33m 1065[2mms[22m[39m
+   [33m[2m✓[22m[39m refuses cross-brand references, foreign-query selections and viewer mutations[33m 1218[2mms[22m[39m
+   [33m[2m✓[22m[39m prioritizes a used request key over a separately existing preview resource[33m 1031[2mms[22m[39m
+   [33m[2m✓[22m[39m limits snapshot exports to frozen fields and rejects explicit IDs mixed into a snapshot request[33m 1226[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects an association between a preview and another query at the database boundary[33m 1138[2mms[22m[39m
+   [33m[2m✓[22m[39m coordinates revocation with an existing reader and blocks all later exports[33m 1258[2mms[22m[39m
+   [33m[2m✓[22m[39m hides expired definitions immediately and purges copied evidence while retaining current snapshots[33m 1009[2mms[22m[39m
+ [32m✓[39m tests/integration/orders.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 10915[2mms[22m[39m
+   [33m[2m✓[22m[39m saves draft product versions once, requires explicit activation, and retains old price and terms[33m 1312[2mms[22m[39m
+   [33m[2m✓[22m[39m confirms one immutable standalone order under concurrent duplicate requests and keeps payment unverified[33m 1278[2mms[22m[39m
+   [33m[2m✓[22m[39m invalidates unconfirmed old prices and preserves the original order after a product price revision[33m 1076[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects paused products, changed customers and another customer conversation without guessing a relationship[33m 1109[2mms[22m[39m
+   [33m[2m✓[22m[39m retains exact integer arithmetic for zero and large totals, refusing overflow and mixed currencies[33m 1025[2mms[22m[39m
+   [33m[2m✓[22m[39m rejects fake totals, mismatched hashes, expired evidence and preview reassignment[33m 971[2mms[22m[39m
+   [33m[2m✓[22m[39m rechecks preview expiry after waiting for a locked product[33m 1415[2mms[22m[39m
+   [33m[2m✓[22m[39m enforces role and tenant access for product, preview, order and staff operations[33m 1085[2mms[22m[39m
+   [33m[2m✓[22m[39m allows one audited cancellation and never edits historical totals or reopens an order[33m 1350[2mms[22m[39m
+ [32m✓[39m tests/integration/provider-browser-verification.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 15639[2mms[22m[39m
+   [33m[2m✓[22m[39m flows a reviewed provider comment into one paused original browser monitor while preserving source and customer state[33m 5564[2mms[22m[39m
+   [33m[2m✓[22m[39m requires current human review and never infers a read or send from an expired, ignored or foreign source[33m 4787[2mms[22m[39m
+   [33m[2m✓[22m[39m keeps request replay exact and rejects unsupported source shapes without opening a browser[33m 4731[2mms[22m[39m
+ [32m✓[39m tests/integration/schedules.test.ts [2m([22m[2m10 tests[22m[2m)[22m[33m 9686[2mms[22m[39m
+   [33m[2m✓[22m[39m saves one paused immutable version from a preview under concurrent duplicate requests[33m 753[2mms[22m[39m
+   [33m[2m✓[22m[39m atomically prepares a bounded backlog, spaces release times and never refills the same backlog[33m 626[2mms[22m[39m
+   [33m[2m✓[22m[39m rolls back both prepared points and cursor when the actual process dies before COMMIT[33m 2708[2mms[22m[39m
+   [33m[2m✓[22m[39m retains committed points and cursor when the actual process dies before acknowledging COMMIT[33m 2701[2mms[22m[39m
+   [33m[2m✓[22m[39m pauses without discarding history, resumes with saved misfire policy and permanently stops future preparation[33m 396[2mms[22m[39m
+   [33m[2m✓[22m[39m requires pause and a new preview for rule revisions and preserves old calendar and point evidence[33m 389[2mms[22m[39m
+   [33m[2m✓[22m[39m refuses wrong brand, viewer writes, request reassignment and stale control versions[33m 404[2mms[22m[39m
+ [32m✓[39m tests/integration/inbox-capability-digest.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 7599[2mms[22m[39m
+   [33m[2m✓[22m[39m stale capability evidence blocks the inbox command before the Agent can claim it[33m 3568[2mms[22m[39m
+   [33m[2m✓[22m[39m current capability evidence lets the same inbox command reach the Agent[33m 3510[2mms[22m[39m
+ [32m✓[39m tests/integration/messenger-pilot.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 7685[2mms[22m[39m
+   [33m[2m✓[22m[39m prepares a scoped real Messenger pilot once without queuing a send, preserving its delay[33m 3725[2mms[22m[39m
+   [33m[2m✓[22m[39m does not dispatch a delayed reply until due and keeps one job after replay[33m 3410[2mms[22m[39m
+ [32m✓[39m tests/integration/acquisition-provider.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 2247[2mms[22m[39m
+   [33m[2m✓[22m[39m stores real provider data without any new Meta account and idempotently imports each run[33m 408[2mms[22m[39m
+   [33m[2m✓[22m[39m fences concurrent imports and preserves review state across a newer run[33m 497[2mms[22m[39m
+   [33m[2m✓[22m[39m isolates brands with RLS and blocks viewers and unrelated provider owners before writing[33m 313[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/integration/browser-message.test.ts[2m > [22mends a guardian that stopped answering while it held submission authority, and keeps the unknown outcome isolated
+[31m[1mAssertionError[22m: expected { …(13) } to match object { …(11) }
+(2 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -13,12 +13,12 @@[39m
+[2m    },[22m
+[2m    "submission_state": "UNKNOWN",[22m
+[2m    "termination": {[22m
+[2m      "descendants": "DEAD",[22m
+[2m      "elapsed_ms": 1736,[22m
+[32m-     "enumeration": "LISTED",[39m
+[32m-     "process_tree": "DEAD",[39m
+[31m+     "enumeration": "UNAVAILABLE",[39m
+[31m+     "process_tree": "UNKNOWN",[39m
+[2m      "root": "DEAD",[22m
+[2m      "sampled": 0,[22m
+[2m      "tool": "SUCCESS",[22m
+[2m    },[22m
+[2m  }[22m
+
+[36m [2m❯[22m tests/integration/browser-message.test.ts:[2m186:18[22m[39m
+    [90m184|[39m   const identity = { command_id: command.id, action_id: command.action…
+    [90m185|[39m   const record = readClosureEvidence(runtime, identity);
+    [90m186|[39m   expect(record).toMatchObject({
+    [90m   |[39m                  [31m^[39m
+    [90m187|[39m     protocol_version: noProgressProtocolVersion, command_id: command.i…
+    [90m188|[39m     phase: 'granting', context_opened: true, submission_state: 'UNKNOW…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/browser-message.test.ts[2m > [22mends a child that went silent just after it opened a real browser, and never records that browser as closed
+[31m[1mAssertionError[22m: expected { …(13) } to match object { …(11) }
+(2 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -13,12 +13,12 @@[39m
+[2m    },[22m
+[2m    "submission_state": "NOT_SUBMITTED",[22m
+[2m    "termination": {[22m
+[2m      "descendants": "DEAD",[22m
+[2m      "elapsed_ms": 1767,[22m
+[32m-     "enumeration": "LISTED",[39m
+[32m-     "process_tree": "DEAD",[39m
+[31m+     "enumeration": "UNAVAILABLE",[39m
+[31m+     "process_tree": "UNKNOWN",[39m
+[2m      "root": "DEAD",[22m
+[2m      "sampled": 0,[22m
+[2m      "tool": "SUCCESS",[22m
+[2m    },[22m
+[2m  }[22m
+
+[36m [2m❯[22m tests/integration/browser-message.test.ts:[2m272:18[22m[39m
+    [90m270|[39m   // Three separate facts, recorded as three separate facts: the proce…
+    [90m271|[39m   // opened, and no submission was ever attempted. A termination prove…
+    [90m272|[39m   expect(record).toMatchObject({ protocol_version: noProgressProtocolV…
+    [90m   |[39m                  [31m^[39m
+    [90m273|[39m     phase: 'awaiting-intent', context_opened: true, submission_state: …
+    [90m274|[39m     // Same three-state fact as the case above: the process tree was e…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m38 passed[39m[22m[90m (39)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m418 passed[39m[22m[90m (420)[39m
+[2m   Start at [22m 00:11:48
+[2m   Duration [22m 1651.50s[2m (tests 95%, import 4%)[22m
+
+[2m    Isolate [22m [33m39 workers spawned[39m[2m · ~507ms startup each (spawn + environment, per file)[22m
+[2m            [22m [2mat least ~19.25s faster with [22m[33misolate: false[39m[2m — reuses workers across files instead of one per file[22m
+
+JSON report written to C:/Users/17731/Desktop/KFF/.kff/checks/integration-results.json
+Retained isolated failed-test database: kff_test_3811cd845ec585885fa1
+full-integration-exit=1
+
+===== SHA at verification end =====
+c293aa77a9872270741dbe384841a3c4768327cb
+ M apps/agent/src/action-journal.ts
+ M apps/agent/src/guardian-protocol.ts
+ M apps/agent/src/guardian.ts
+ M apps/agent/src/main.ts
+ M apps/agent/src/process-tree.ts
+ M packages/contracts/src/index.ts
+ M packages/core/src/execution.ts
+ M packages/core/src/reconciliation.ts
+ M tests/helpers/collection-journal.ts
+ M tests/integration/agent-closure-gate.test.ts
+ M tests/integration/browser-message.test.ts
+ M tests/unit/action-journal.test.ts
+ M tests/unit/guardian-liveness.test.ts
+ M tests/unit/process-tree.test.ts
+?? tests/unit/guardian-evidence-upgrade.test.ts
+?? tests/unit/guardian-late-message.test.ts
+?? tests/unit/guardian-liveness-policy.test.ts
+?? tests/unit/guardian-termination-proof.test.ts

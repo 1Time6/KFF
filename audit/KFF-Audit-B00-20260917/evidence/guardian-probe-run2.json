@@ -1,0 +1,80 @@
+{
+  "probe": "guardian",
+  "repo": "C:/Users/17731/Desktop/KFF",
+  "spawn_event_observation": {
+    "events": [
+      "error:ENOENT",
+      "close:-4058"
+    ],
+    "cwd_used": "C:\\Users\\17731\\AppData\\Local\\Temp\\kff-b00-does-not-exist-ebd6c412-7973-4086-b192-5628aee65ab5",
+    "exit_event_emitted": false
+  },
+  "guardian_real_spawn_error": {
+    "injected_failure": "spawn cwd does not exist (real ENOENT from libuv)",
+    "caller_rejected_with": {
+      "code": "ENOENT",
+      "name": "Error",
+      "message": "spawn C:\\Program Files\\nodejs\\node.exe ENOENT"
+    },
+    "startup_failure_record_written": false,
+    "record_contents": null,
+    "journal_after": {
+      "command_id": "731c6326-5acc-4df2-9a10-13b867c5a3c0",
+      "action_id": "dde5d1af-4c77-47ad-99f0-0796124900b0",
+      "phase": "claimed",
+      "guardian_nonce": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "flushActionJournal_result": false,
+    "flushActionJournal_threw": null,
+    "controller_calls_made": []
+  },
+  "guardian_intended_fault_switch": {
+    "fault_switch_active": true,
+    "caller_rejected_with": {
+      "code": "GUARDIAN_STARTUP_FAILED",
+      "message": "执行进程在启动阶段退出，没有浏览器上下文可以关闭"
+    },
+    "startup_failure_record_written": true,
+    "record_contents": {
+      "protocol_version": "kff.guardian-closure-startup-failed.v1",
+      "command_id": "2396f2a5-da5c-49a0-bd1d-bc4db5d48e86",
+      "action_id": "2244fa5b-0db9-4d90-9809-fa37439d6cb6",
+      "nonce": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "closed_at": "2026-09-17T08:51:13.753Z",
+      "context_opened": false,
+      "result": {
+        "outcome": "CANCELED",
+        "error_code": "GUARDIAN_STARTUP_FAILED",
+        "diagnostic": {
+          "step": "guardian-startup-failed"
+        }
+      }
+    }
+  },
+  "evidence_semantics": {
+    "startup_record_protocol": "kff.guardian-closure-startup-failed.v1",
+    "startup_record_context_opened": false,
+    "closureProof_for_startup_failure": {
+      "protocol_version": "kff.guardian-closure.v1",
+      "command_id": "2396f2a5-da5c-49a0-bd1d-bc4db5d48e86",
+      "action_id": "2244fa5b-0db9-4d90-9809-fa37439d6cb6",
+      "closed_at": "2026-09-17T08:51:13.753Z",
+      "proof_sha256": "d01e2856f8442aa0e008d0145f87c0729a2373809f5a35215ea07a92a3e640e0"
+    },
+    "compacted_from_startup_failure": {
+      "command_id": "2396f2a5-da5c-49a0-bd1d-bc4db5d48e86",
+      "action_id": "2244fa5b-0db9-4d90-9809-fa37439d6cb6",
+      "nonce": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "closed_at": "2026-09-17T08:51:13.753Z",
+      "context_closed": true,
+      "protocol_version": "kff.guardian-closure-compact.v1",
+      "proof_sha256": "d01e2856f8442aa0e008d0145f87c0729a2373809f5a35215ea07a92a3e640e0",
+      "result_sha256": "5b30dc9bb6c98e53a045fbe03d96bafa00115df6d59afa84d3ac6d2cb4ce73c9",
+      "compacted_at": "2026-09-17T08:51:13.778Z",
+      "reason": "DELIVERED"
+    },
+    "readClosure_on_startup_failure": {
+      "threw": "GUARDIAN_UNCONFIRMED"
+    }
+  }
+}

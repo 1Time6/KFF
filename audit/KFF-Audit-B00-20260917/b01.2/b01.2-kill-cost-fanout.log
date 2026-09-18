@@ -1,0 +1,37 @@
+===== kill cost, 12 detached descendants =====
+KILL-COST load=0 trials=5 cap=15000ms fanout=12 logical_cpus=8
+  trial  1  tool=SUCCESS code=0    308ms  root_gone=true  leaf_gone=true  all_12_gone=true
+  trial  2  tool=SUCCESS code=0    301ms  root_gone=true  leaf_gone=true  all_12_gone=true
+  trial  3  tool=SUCCESS code=0    305ms  root_gone=true  leaf_gone=true  all_12_gone=true
+  trial  4  tool=SUCCESS code=0    290ms  root_gone=true  leaf_gone=true  all_12_gone=true
+  trial  5  tool=SUCCESS code=0    307ms  root_gone=true  leaf_gone=true  all_12_gone=true
+SUMMARY kill median=305ms p90=308ms max=308ms
+  finish_in: 500ms=5/5 1000ms=5/5 1250ms=5/5 2500ms=5/5
+  tool_outcomes=SUCCESS  root_gone=5/5  all_descendants_gone=5/5
+load stopped
+
+KILL-COST load=8 trials=5 cap=15000ms fanout=12 logical_cpus=8
+load armed: 8 spinners (1.00x logical cores)
+  trial  1  tool=SUCCESS code=0    517ms  root_gone=true  leaf_gone=true  all_12_gone=true
+  trial  2  tool=SUCCESS code=0    450ms  root_gone=true  leaf_gone=true  all_12_gone=true
+  trial  3  tool=SUCCESS code=0    438ms  root_gone=true  leaf_gone=true  all_12_gone=true
+  trial  4  tool=SUCCESS code=0    460ms  root_gone=true  leaf_gone=true  all_12_gone=true
+  trial  5  tool=SUCCESS code=0    508ms  root_gone=true  leaf_gone=true  all_12_gone=true
+SUMMARY kill median=460ms p90=517ms max=517ms
+  finish_in: 500ms=3/5 1000ms=5/5 1250ms=5/5 2500ms=5/5
+  tool_outcomes=SUCCESS  root_gone=5/5  all_descendants_gone=5/5
+load stopped
+
+KILL-COST load=16 trials=5 cap=15000ms fanout=12 logical_cpus=8
+load armed: 16 spinners (2.00x logical cores)
+  trial  1  tool=SUCCESS code=0    888ms  root_gone=true  leaf_gone=true  all_12_gone=true
+  trial  2  tool=SUCCESS code=0    966ms  root_gone=true  leaf_gone=true  all_12_gone=true
+  trial  3  tool=SUCCESS code=0    850ms  root_gone=true  leaf_gone=true  all_12_gone=true
+  trial  4  tool=SUCCESS code=0   1143ms  root_gone=true  leaf_gone=true  all_12_gone=true
+  trial  5  tool=SUCCESS code=0    993ms  root_gone=true  leaf_gone=true  all_12_gone=true
+SUMMARY kill median=966ms p90=1143ms max=1143ms
+  finish_in: 500ms=0/5 1000ms=4/5 1250ms=5/5 2500ms=5/5
+  tool_outcomes=SUCCESS  root_gone=5/5  all_descendants_gone=5/5
+load stopped
+
+end=2026-09-18T08:46:15+08:00

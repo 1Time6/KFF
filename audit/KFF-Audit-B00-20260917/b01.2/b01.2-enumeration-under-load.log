@@ -1,0 +1,49 @@
+# LEDGER-NEW-08 实测：进程枚举在负载下超时（诊断脚本输出，非交付测试）
+
+脚本：`C:\Users\17731\.claude\jobs\56e0ddcf\tmp\diag-enum-load.ts`（仅诊断，复制 `listProcesses` 的 spawn 调用并区分它折叠成 `null` 的 5 种失败分支）
+命令：`npx tsx diag-enum-load.ts 24 12`（24 个 CPU 占满的 node 子进程 + 本进程；每个 deadline 12 次）
+日期：2026-09-18
+
+```
+load: 24 busy node processes + this one; trials per deadline: 12
+deadline=2500ms {"counts":{"TIMEOUT":12},"median_ms":2616,"max_ms":4792,"success_rows":0}
+   TIMEOUT code=null after 4792ms bytes=0
+   TIMEOUT code=null after 2624ms bytes=0
+   TIMEOUT code=null after 2604ms bytes=0
+   TIMEOUT code=null after 2621ms bytes=0
+   TIMEOUT code=null after 2589ms bytes=0
+   TIMEOUT code=null after 2616ms bytes=0
+   TIMEOUT code=null after 2582ms bytes=0
+   TIMEOUT code=null after 2619ms bytes=0
+   TIMEOUT code=null after 2604ms bytes=0
+   TIMEOUT code=null after 2602ms bytes=0
+   TIMEOUT code=null after 2618ms bytes=0
+   TIMEOUT code=null after 2594ms bytes=0
+deadline=5000ms {"counts":{"TIMEOUT":6,"SUCCESS":6},"median_ms":5012,"max_ms":5083,"success_rows":343}
+   TIMEOUT code=null after 5083ms bytes=860
+   TIMEOUT code=null after 5022ms bytes=882
+   TIMEOUT code=null after 5014ms bytes=706
+   TIMEOUT code=null after 5025ms bytes=607
+   TIMEOUT code=null after 5012ms bytes=871
+   TIMEOUT code=null after 5012ms bytes=1793
+deadline=2500ms (load removed) {"counts":{"SUCCESS":12},"median_ms":815,"max_ms":898,"success_rows":342}
+```
+
+## 读法
+
+| 条件 | 结果 | 说明 |
+| --- | --- | --- |
+| 空载 / 2500ms | **12/12 成功**，中位 815ms，342 行 | 空载时枚举远快于预算 |
+| 负载 / 2500ms | **12/12 超时**，bytes=0 | 失败分支是 **TIMEOUT**（不是 spawn error、不是非零退出、不是空输出）；被杀时一个字节都还没输出 |
+| 负载 / 5000ms | **6/12 成功**，中位 5012ms，343 行 | 5s 只到"一半概率"的边缘，而且这 6 次全部贴着 deadline 才返回 |
+
+三个结论：
+
+1. **失败模式是超时**，`listProcesses` 把 `TIMEOUT` 折叠成 `null`，于是 `enumeration='UNAVAILABLE'`、`sampled=0`、`treeStateFrom ⇒ process_tree='UNKNOWN'`。与全量集成里观测到的记录完全一致。
+2. **`elapsed_ms` 不是枚举份额**：全量集成失败记录里 `elapsed_ms` 为 1736/1767ms，看似没超 2500ms，实际那两条用例传的是 `liveness.force = 5000` ⇒ `budget = force/2 = 2500` ⇒ `enumerateMs = min(5000, 2500/2) = 1250ms`。枚举在 1250ms 被杀，剩余预算才给 `taskkill`。**枚举份额 = force/4**。
+3. **生产默认同样不够**：生产 `force = 10000` ⇒ 枚举份额 2500ms，而负载下 2500ms 是 **0/12**。也就是说这不是"测试预算太小"的问题，生产路径在机器繁忙时同样会落到 `UNKNOWN`。
+
+## 边界（不得外推）
+
+- 本诊断是**模拟负载**（24 个占满 CPU 的 node 进程），不等于项目的 39 worker 集成套件；它只解释机制与量级，不作为生产容量结论。
+- 未测 POSIX（本机 Windows 11）；未测其他 Windows 版本的 WMI 行为。

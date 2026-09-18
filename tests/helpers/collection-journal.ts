@@ -5,7 +5,7 @@ import path from 'node:path';
 import { afterAll } from 'vitest';
 import { digest } from '../../packages/core/src/index';
 import type { CollectionPage } from '../../packages/contracts/src/index';
-import { saveClosure, saveStartupFailure, closureProof, type GuardianClosure } from '../../apps/agent/src/guardian-protocol';
+import { saveClosure, saveNoProgress, saveStartupFailure, closureProof, type GuardianClosure } from '../../apps/agent/src/guardian-protocol';
 import type { JournalEntry } from '../../apps/agent/src/action-journal';
 
 // A fixture call has no teardown of its own, so every root it creates is recorded here and removed
@@ -31,6 +31,33 @@ export function startupFailureJournalFixture() {
   discardAfterFile(root);
   const entry: JournalEntry = { command_id: randomUUID(), action_id: randomUUID(), phase: 'claimed', guardian_nonce: digest(randomUUID()), collection_expires_at: new Date(Date.now() + 3600000).toISOString() };
   const record = saveStartupFailure(runtime, { command_id: entry.command_id, action_id: entry.action_id, nonce: entry.guardian_nonce!, result: { outcome: 'CANCELED', error_code: 'GUARDIAN_STARTUP_FAILED', diagnostic: { step: 'guardian-startup-failed' } } });
+  const journal = { [entry.command_id]: entry }, file = path.join(runtime, 'agent', 'journal.json');
+  const save = () => { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file + '.tmp', JSON.stringify(journal), { mode: 0o600, flush: true }); renameSync(file + '.tmp', file); };
+  save();
+  return { root, runtime, file, journal, entry, save, record, proof: closureProof(record), reload: () => JSON.parse(readFileSync(file, 'utf8')) as Record<string, JournalEntry> };
+}
+
+/**
+ * The container for the other ending: a child the parent had to end itself. The record proves the
+ * process is gone and deliberately says nothing about the browser, so it is exactly the fact whose loss
+ * would hand a quarantined environment back.
+ *
+ * `withReport` is the two states a real journal is found in when a page expires. A run that produced a
+ * child outcome has a report; a restart between the forced termination and the flush has none, and the
+ * flush then derives one from the record. `tree` is the judgement the parent actually reached - the
+ * default is the one that must never release anything.
+ */
+export function noProgressJournalFixture(withReport: boolean, tree: 'DEAD' | 'UNKNOWN' = 'UNKNOWN') {
+  const root = mkdtempSync(path.join(os.tmpdir(), 'kff-collection-journal-')), runtime = path.join(root, '.kff');
+  discardAfterFile(root);
+  const entry: JournalEntry = { command_id: randomUUID(), action_id: randomUUID(), phase: 'submitting', guardian_nonce: digest(randomUUID()), collection_expires_at: new Date(Date.now() - 1000).toISOString() };
+  const record = saveNoProgress(runtime, {
+    command_id: entry.command_id, action_id: entry.action_id, nonce: entry.guardian_nonce!, phase: 'submitting',
+    termination: { process_tree: tree, tool: 'ERROR', root: 'ALIVE', descendants: 'DEAD', sampled: 0, enumeration: 'UNAVAILABLE', elapsed_ms: 30 },
+    context_opened: true, submission_state: 'UNKNOWN', forced: true, waited_ms: 900000, grace_ms: 15000,
+    result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS', diagnostic: { step: 'guardian-no-progress' } },
+  });
+  if (withReport) entry.report = { ...record.result, event_id: randomUUID(), command_id: entry.command_id, guardian: record.termination };
   const journal = { [entry.command_id]: entry }, file = path.join(runtime, 'agent', 'journal.json');
   const save = () => { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file + '.tmp', JSON.stringify(journal), { mode: 0o600, flush: true }); renameSync(file + '.tmp', file); };
   save();
