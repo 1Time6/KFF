@@ -7,6 +7,11 @@ import { composerLabelPerson, composerNamePattern, inspectFacebookInboxComposerD
 // reply path may only run after the reader accepted the same peer, so a prefix it matches on a label
 // the reader refused is never reached. What must never diverge is `found`.
 const peer = 'Peer Fullname';
+// The live conversation area is a `<div role="main">` with no `<main>` element (observed 2026-09-18 on
+// the real Messenger thread). The reader accepted the input box through `main,[role="main"]` while the
+// reply path still looked for a `<main>` tag, so the missing box was reported as an existing draft.
+const roleMainShell = (content: string) => '<div role="main">' + content + '</div>';
+const composerBox = (label: string) => '<div role="textbox" aria-label="' + label + '" contenteditable="true"></div>';
 const cases = [
   ['the exact supported label', '发消息给' + peer, true, 'EXACT_NAME', 1],
   ['a single space after the prefix', '发消息给 ' + peer, true, 'EXACT_NAME', 1],
@@ -55,4 +60,21 @@ test('a peer name with regex metacharacters is matched literally', async ({ page
   await page.setContent('<main><div role="textbox" aria-label="发消息给' + odd + '" contenteditable="true"></div></main>');
   expect(await page.locator('main').getByRole('textbox', { name: composerNamePattern(odd) }).count()).toBe(1);
   expect(await page.locator('main').getByRole('textbox', { name: composerNamePattern('AXB (C)+') }).count()).toBe(0);
+});
+
+// The container rule must cover the role-based main element, because the live thread renders its
+// conversation area without a `<main>` tag.
+test('the reply locator finds the accepted composer inside a role=main container', async ({ page }) => {
+  await page.setContent(roleMainShell(composerBox('发消息给' + peer)));
+  const probe = await page.evaluate(inspectFacebookInboxComposerDom, { display_name: peer, allow_other_name: false, operating_identity_id: '9999', peer_name: peer });
+  expect(Boolean(probe.composer), 'the reader accepts this page state').toBe(true);
+  expect(await page.locator('main,[role="main"]').getByRole('textbox', { name: composerNamePattern(peer) }).count()).toBe(1);
+  // The tag-only lookup is the regression: it missed a page state the reader had just accepted.
+  expect(await page.locator('main').getByRole('textbox', { name: composerNamePattern(peer) }).count()).toBe(0);
+});
+
+// Two boxes inside a role=main container stay an ambiguity the reply path must refuse.
+test('two matching inputs inside role=main keep the reply ambiguous', async ({ page }) => {
+  await page.setContent(roleMainShell(composerBox('发消息给 ' + peer) + composerBox('发信息给' + peer)));
+  expect(await page.locator('main,[role="main"]').getByRole('textbox', { name: composerNamePattern(peer) }).count()).toBe(2);
 });

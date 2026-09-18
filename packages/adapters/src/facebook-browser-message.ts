@@ -27,7 +27,11 @@ export async function executeFacebookBrowserMessage(command:AgentCommand,root:st
     // lookup rejected the page state the reader had just accepted, because the reader normalises the
     // label's whitespace. The same supported prefixes and the same peer name are required here, and a
     // second matching input stays ambiguous instead of being silently chosen.
-    const editor=page.locator('main').getByRole('textbox',{name:composerNamePattern(context.display_name)}),source='https://www.facebook.com/messages/e2ee/t/'+context.thread_id+'/';
+    // The container rule is the reader's: one real conversation renders its message area in a
+    // `<div role="main">` with no `<main>` element at all, so a tag-only lookup found nothing and the
+    // reply path reported the missing input box as an existing draft. The input box is still addressed
+    // by the same supported prefixes and the same verified peer name, and two matches stay ambiguous.
+    const editor=page.locator('main,[role="main"]').getByRole('textbox',{name:composerNamePattern(context.display_name)}),source='https://www.facebook.com/messages/e2ee/t/'+context.thread_id+'/';
     requireCondition(await editor.count()<=1,'THREAD_COMPOSER_AMBIGUOUS','会话输入框不唯一，请人工处理');
     requireCondition(await editor.count()===1&&!(await editor.innerText()).trim(),'DRAFT_PRESENT','原会话已有草稿，请先人工处理');
     const current=async()=>{hooks.assertControlled();requireCondition(page.url()===source,'MESSAGE_IDENTITY_MISMATCH','会话地址已变化');const latest=await page.evaluate(inspectFacebookInboxDom);requireCondition(!latest.invalid&&digest(latest.rows.map(r=>({id:r.message_id,body:r.body,name:r.display_name,direction:r.direction})))===fingerprint,'INBOUND_SUPERSEDED','会话内容已变化，请重新收件');};
