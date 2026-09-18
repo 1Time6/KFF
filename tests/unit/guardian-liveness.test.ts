@@ -31,15 +31,26 @@ function closureCommand(): AgentCommand { return { ...fixtureCommand(), snapshot
  * larger. `startup` is the one budget that cannot be shortened to a test-scale number: it has to
  * cover a real interpreter booting the real guardian child, which is over a second, so a budget
  * below that would fire before the child could ever report and would measure nothing.
+ *
+ * `force` is not a style choice either, and the arithmetic is worth stating because it is easy to get
+ * wrong. The termination call gets `force` less a 1000ms reserve for the settle wait, and the listing
+ * inside it gets that less a 1500ms reserve for the kill: at `force: 24000` the listing's share is
+ * 21500ms. The margin has to be that wide because the listing is what load destroys - it costs ~0.7s on
+ * an idle machine and ~8s with every logical core busy, a spread of more than ten times - and a share
+ * too small for the load turns these cases into `UNKNOWN` trees: the fail-closed answer, but not the
+ * fact these assertions are about. A budget in the low seconds does exactly that. Under the previous
+ * even split `force: 24000` gave the listing 5000ms and a 5000ms `force` gave it 1250ms, which half the
+ * measured attempts at 1x load already exceeded.
  */
-const phaseBudget = 700, terminationGrace = 600, forceKill = 3000;
+const phaseBudget = 700, terminationGrace = 600, forceKill = 24000;
 const startupBudget = 10000, hungBeforeReady = 4000;
 /**
  * The deadline that turns a guardian which never settles into a failure instead of a hung suite. The
- * slowest healthy case spends its whole phase budget plus the termination grace, so this sits well
- * above the healthy worst case and well below anything a human would wait for.
+ * slowest healthy case spends its whole phase budget, the termination grace, and the forced phase that
+ * now covers a real process listing, so this sits well above the healthy worst case and well below
+ * anything a human would wait for.
  */
-const caseDeadline = 12000;
+const caseDeadline = 45000;
 const budgets = (startup: number) => ({ 'awaiting-ready': startup, 'awaiting-start': phaseBudget, 'awaiting-context': phaseBudget, 'awaiting-intent': phaseBudget, granting: phaseBudget, submitting: phaseBudget, grace: terminationGrace, force: forceKill });
 
 function injectionRoot(point: string) {
@@ -86,9 +97,12 @@ it('ends a child that never became ready, and records only that the process is g
   const hung = await runHung('before-ready', closureCommand(), { budgets: budgets(hungBeforeReady) });
   expect(hung.outcome).toEqual({ kind: 'rejected', code: 'GUARDIAN_NO_PROGRESS' });
   // Nothing downstream of `ready` can have happened here, so this is the one phase that is cancelled.
+  // The record no longer carries a boolean: it carries the fact the boolean was standing in for, which
+  // is the whole tree and how much of it was actually examined.
   expect(hung.evidence).toEqual({
     protocol_version: 'kff.guardian-closure-no-progress.v1', command_id: hung.command.id, action_id: hung.command.action_id,
-    nonce: hung.value, closed_at: expect.any(String), phase: 'awaiting-ready', process_terminated: true,
+    nonce: hung.value, closed_at: expect.any(String), phase: 'awaiting-ready',
+    termination: { process_tree: 'DEAD', tool: expect.any(String), root: 'DEAD', descendants: 'DEAD', sampled: expect.any(Number), enumeration: 'LISTED', elapsed_ms: expect.any(Number) },
     context_opened: false, submission_state: 'NOT_SUBMITTED', forced: true, waited_ms: expect.any(Number), grace_ms: terminationGrace,
     result: { outcome: 'CANCELED', error_code: 'GUARDIAN_NO_PROGRESS', diagnostic: { step: 'guardian-no-progress' } },
   });
@@ -104,7 +118,7 @@ it('ends a child that received start but never confirmed it, keeping the environ
   expect(hung.outcome).toEqual({ kind: 'rejected', code: 'GUARDIAN_NO_PROGRESS' });
   // `start` was sent and never acknowledged: the parent must not treat this as a browser that failed
   // to launch, because it has no evidence that the launch was even attempted.
-  expect(hung.evidence).toMatchObject({ phase: 'awaiting-start', process_terminated: true, context_opened: false, submission_state: 'NOT_SUBMITTED', forced: true, result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' } });
+  expect(hung.evidence).toMatchObject({ phase: 'awaiting-start', termination: { process_tree: 'DEAD' }, context_opened: false, submission_state: 'NOT_SUBMITTED', forced: true, result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' } });
   expect(hung.evidence).not.toHaveProperty('context_closed');
   expect(hung.gone).toBe(true);
   expect(hung.closed).toBe('GUARDIAN_UNCONFIRMED');
@@ -113,7 +127,7 @@ it('ends a child that received start but never confirmed it, keeping the environ
 it('ends a child that stalled before the context it was launching ever reported, keeping the environment isolated', async () => {
   const hung = await runHung('after-start', closureCommand());
   expect(hung.outcome).toEqual({ kind: 'rejected', code: 'GUARDIAN_NO_PROGRESS' });
-  expect(hung.evidence).toMatchObject({ phase: 'awaiting-context', process_terminated: true, context_opened: false, submission_state: 'NOT_SUBMITTED', forced: true, result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' } });
+  expect(hung.evidence).toMatchObject({ phase: 'awaiting-context', termination: { process_tree: 'DEAD' }, context_opened: false, submission_state: 'NOT_SUBMITTED', forced: true, result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' } });
   expect(hung.evidence).not.toHaveProperty('context_closed');
   expect(hung.gone).toBe(true);
 }, caseDeadline);
@@ -121,7 +135,7 @@ it('ends a child that stalled before the context it was launching ever reported,
 it('ends a child that stalled while asking for submission authority, and never claims a submission did not happen', async () => {
   const hung = await runHung('before-grant', submitBoundaryCommand(), { submit: () => new Promise(() => {}) });
   expect(hung.outcome).toEqual({ kind: 'rejected', code: 'GUARDIAN_NO_PROGRESS' });
-  expect(hung.evidence).toMatchObject({ phase: 'granting', process_terminated: true, context_opened: false, submission_state: 'UNKNOWN', forced: true, result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' } });
+  expect(hung.evidence).toMatchObject({ phase: 'granting', termination: { process_tree: 'DEAD' }, context_opened: false, submission_state: 'UNKNOWN', forced: true, result: { outcome: 'NEEDS_HUMAN', error_code: 'GUARDIAN_NO_PROGRESS' } });
   expect(hung.evidence).not.toHaveProperty('context_closed');
   expect(hung.gone).toBe(true);
 }, caseDeadline);
@@ -129,7 +143,7 @@ it('ends a child that stalled while asking for submission authority, and never c
 it('ends a child that stalled after the submission it was granted, and reports an unknown outcome', async () => {
   const hung = await runHung('after-grant', submitBoundaryCommand());
   expect(hung.outcome).toEqual({ kind: 'rejected', code: 'GUARDIAN_NO_PROGRESS' });
-  expect(hung.evidence).toMatchObject({ phase: 'submitting', process_terminated: true, submission_state: 'UNKNOWN', result: { outcome: 'UNKNOWN_OUTCOME', error_code: 'GUARDIAN_NO_PROGRESS' } });
+  expect(hung.evidence).toMatchObject({ phase: 'submitting', termination: { process_tree: 'DEAD' }, submission_state: 'UNKNOWN', result: { outcome: 'UNKNOWN_OUTCOME', error_code: 'GUARDIAN_NO_PROGRESS' } });
   expect(hung.evidence).not.toHaveProperty('context_closed');
   expect(hung.gone).toBe(true);
 }, caseDeadline);

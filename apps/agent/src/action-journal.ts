@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import type { ActionReport, ActionState } from '@kff/contracts';
 import { AppError, digest } from '@kff/core';
-import { closureProof, compactClosure, readClosureEvidence } from './guardian-protocol';
+import { closureProof, compactClosure, noProgressProtocolVersion, readClosureEvidence, type ClosureEvidence } from './guardian-protocol';
 
 export interface JournalEntry {
   command_id: string; action_id: string; phase: string; guardian_nonce?: string; guardian_pid?: number;
@@ -12,6 +12,23 @@ export interface JournalEntry {
 }
 type Journal = Record<string, JournalEntry>;
 type Controller = <T>(endpoint: string, data?: unknown) => Promise<T>;
+/**
+ * The part of a report that states a safety fact rather than a business result, carried across a
+ * retention redaction. It is read from the closure record rather than from the report, because the
+ * record is the authority on both facts and because the two are not always present together: retention
+ * also synthesizes a report for an entry that never received one - a restart after the page expired -
+ * and the record is then the only place the fact exists.
+ *
+ * The list is deliberately explicit: anything not named here is business state that retention owns and
+ * may replace, so adding a field means deciding, once, which half it belongs to.
+ */
+function retainedSafety(record: ClosureEvidence | null) {
+  const guardian = record && 'termination' in record ? record.termination : undefined;
+  return {
+    ...(guardian ? { guardian } : {}),
+    ...(record?.protocol_version === noProgressProtocolVersion ? { error_code: 'GUARDIAN_NO_PROGRESS' as const } : {}),
+  };
+}
 
 /** Entirely local: a failed controller heartbeat must never postpone retention cleanup. */
 export function maintainActionJournal(runtime: string, journal: Journal, save: () => void, now = Date.now()) {
@@ -22,10 +39,19 @@ export function maintainActionJournal(runtime: string, journal: Journal, save: (
     const expired = !entry.collection_expires_at || !(Date.parse(entry.collection_expires_at) > now);
     if (!delivered && !expired && !entry.collection_redaction) continue;
     if (!entry.collection_redaction) {
+      // Read before anything is mutated: a record that cannot be trusted has to stop the redaction
+      // outright rather than leave a half-applied one behind.
+      const safety = retainedSafety(delivered ? null : readClosureEvidence(runtime, entry));
       entry.collection_redaction = { reason: delivered ? 'DELIVERED' : 'RETENTION_EXPIRED', at: new Date(now).toISOString(),
         ...(entry.report ? { report_event_id: entry.report.event_id, report_sha256: digest(entry.report) } : {}) };
       if (delivered) delete entry.report;
-      else entry.report = { event_id: randomUUID(), command_id: entry.command_id, outcome: 'BLOCKED', error_code: 'RETENTION_EXPIRED', diagnostic: { step: 'collection-retention-expired' } };
+      // Retention owns the page payload and the terminal outcome, and nothing else. The safety facts
+      // come from the record, so replacing the report - as this used to do wholesale - can no longer
+      // turn "the guardian never proved this browser closed" into "the page expired, nothing was at
+      // risk", which is how a quarantined environment became an idle one the moment its payload
+      // expired. This holds for the entry that never received a report at all, which is the same
+      // restart more than one page length later.
+      else entry.report = { event_id: randomUUID(), command_id: entry.command_id, outcome: 'BLOCKED', error_code: 'RETENTION_EXPIRED', diagnostic: { step: 'collection-retention-expired' }, ...safety };
       // Persist the redaction intent before replacing the closure. Either crash point is resumed locally.
       save();
     }
@@ -51,7 +77,11 @@ export async function flushActionJournal(runtime: string, journal: Journal, save
         if (!['READY', 'CLAIMED'].includes(status.state)) { entry.quarantined = true; save(); continue; }
         if (!entry.report) {
           if (!('result' in closure)) throw new AppError('GUARDIAN_UNCONFIRMED', '原始回执已经清理，缺少可发送的终止回执');
-          const result = { ...closure.result };
+          // The process fact travels with the report whenever there is one. The receiver has to decide
+          // whether an execution slot may be freed, and it cannot make that decision from an outcome
+          // string alone: "the command stopped" and "the tree is dead" are different facts, and only
+          // the second one licenses reuse.
+          const result = { ...closure.result, ...('termination' in closure && closure.termination ? { guardian: closure.termination } : {}) };
           if (['SUBMITTING', 'SUBMITTED'].includes(status.action_state) && result.outcome !== 'VERIFIED_SUCCEEDED') result.outcome = 'UNKNOWN_OUTCOME';
           entry.report = { ...result, event_id: randomUUID(), command_id: entry.command_id }; save();
         }

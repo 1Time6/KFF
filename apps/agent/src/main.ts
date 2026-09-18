@@ -6,7 +6,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { agentConfig, runtimeDir } from './config';
 import { AppError, digest, requireCondition } from '@kff/core';
 import { agentCommandSchema, type AgentCommand } from '@kff/contracts';
-import { runGuardian } from './guardian';
+import { runGuardian, assertGuardianLivenessConfiguration } from './guardian';
 import { environmentRunner } from './environment-runner';
 import type { EnvironmentCommand } from '../../../packages/contracts/src/environment';
 import { flushActionJournal, maintainActionJournal, type JournalEntry } from './action-journal';
@@ -14,6 +14,11 @@ import {isDrainRequest,localSupervisionProtocol} from '../../../packages/contrac
 
 const origin = agentConfig.controller_origin;
 const token = agentConfig.token;
+// Refused before the lock is even considered. An illegal watchdog budget is a safety configuration
+// error, and the previous behaviour - quietly substituting the default - meant a typo turned into a
+// guardian that waited the wrong amount of time with nobody able to tell. Failing here also means a
+// refused boot never leaves a lock file behind for the next start to trip over.
+assertGuardianLivenessConfiguration();
 const journalDir = path.join(runtimeDir, 'agent'); mkdirSync(journalDir, { recursive: true });
 const lockFile = path.join(journalDir, 'process.lock');
 if (existsSync(lockFile)) {
