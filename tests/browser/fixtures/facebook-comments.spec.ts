@@ -60,6 +60,19 @@ for(const role of ['roleless','complementary'])test('reads the bounded Reel pane
  if(role==='roleless'){expect(scope.container_path).toBeTruthy();expect(await page.locator(scope.container_path!).getByRole('heading',{name:'Owner'}).count()).toBe(1);}
 });
 
+test('finds the unique visible Reel comment entry outside main and ignores the neighbouring reel',async({page})=>{
+ const reel='https://www.facebook.com/reel/123456/',rows=comment('21').replaceAll(target,reel)+comment('22').replaceAll(target,reel);
+ const panel=`<div role="complementary"><h2><a href="https://www.facebook.com/profile.php?id=555">Owner</a></h2><button aria-label="分享对象： 公开"></button><section><button>由新到旧</button><h2>评论</h2>${rows}</section><div role="textbox">Never collect the composer</div></div>`;
+ // Mirrors the real page: the action bar lives outside <main>, two reels are present, and only the
+ // active reel's comment entry is inside the viewport. The off-screen button must be ignored.
+ const html=`<main><video></video></main><div><button aria-label="评论" onclick="window.clicks=(window.clicks||0)+1;setTimeout(()=>document.getElementById('panel').innerHTML=${JSON.stringify(panel).replaceAll('"','&quot;')},150)">Comments</button></div><div style="position:absolute;top:2000px"><button aria-label="评论">Comments</button></div><div id="panel"></div>`;
+ await page.route('**/*',route=>route.fulfill({contentType:'text/html; charset=utf-8',body:html}));
+ const input=request();input.snapshot={...input.snapshot,max_pages:1,discovery:{...input.snapshot.discovery!,target:reel,browser:{...input.snapshot.discovery!.browser!,comment_order:'VISIBLE_WINDOW'}}};
+ const result=await readFacebookCommentsPage(page,input,()=>{});
+ expect(result.rows.map(r=>r.source_object_id)).toEqual(['facebook:comment:21','facebook:comment:22']);
+ expect(await page.evaluate(()=>(window as unknown as {clicks?:number}).clicks)).toBe(1);
+});
+
 test('roleless Reel scope rejects private, duplicate or page-wide panels',async({page})=>{
  const reel='https://www.facebook.com/reel/123456/';
  await page.route('**/*',route=>route.fulfill({contentType:'text/html',body:'<main></main>'}));await page.goto(reel);

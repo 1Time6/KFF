@@ -27,7 +27,10 @@ export async function readFacebookCommentsPage(page: Page, request: CollectionRe
   const reel = /^\/reel\/[0-9]+\/$/.test(new URL(target).pathname);
   if (reel) {
     onStep?.('wait-comment-entry');
-    const buttons = page.getByRole('main').getByRole('button', { name: /^(评论|Comments)$/, exact: true });
+    // The observed Reel layout renders its action bar outside <main>, so a main-scoped lookup finds
+    // nothing at all. The viewport check below is what rejects a neighbouring reel's button; the
+    // main scope was never the safety property and its removal does not loosen that check.
+    const buttons = page.getByRole('button', { name: /^(评论|Comments)$/, exact: true });
     await buttons.first().waitFor({ state: 'visible', timeout: 20000 });
     onStep?.('locate-comment-entry');
     const viewport = await page.evaluate(() => ({ width: innerWidth, height: innerHeight }));
