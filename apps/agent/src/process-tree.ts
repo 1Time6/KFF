@@ -1,4 +1,4 @@
-import { spawn } from 'node:child_process';
+import { spawn, type ChildProcess } from 'node:child_process';
 import type { GuardianTermination } from '@kff/contracts';
 
 /**
@@ -70,6 +70,31 @@ export async function runToolWithDeadline(file: string, args: string[], deadline
 
 interface ProcessRow { pid: number; ppid: number }
 
+type ListingSpawn = (file: string, args: string[], options: { stdio: ['ignore', 'pipe', 'ignore']; windowsHide: boolean }) => ChildProcess;
+
+/**
+ * Parses one complete listing. A non-empty line that does not match the current output contract makes
+ * the whole listing unusable: dropping it would let a truncated row pass as a smaller, complete list,
+ * and this list is what decides whether an execution slot may be reused. Zero rows are `null` for the
+ * same reason - every machine this Agent runs on has processes, so an empty answer is not a listing.
+ */
+function parseProcessListing(text: string): ProcessRow[] | null {
+  const rows: ProcessRow[] = [];
+  for (const raw of text.split('\n')) {
+    const line = raw.trim();
+    if (!line) continue;
+    const parts = line.split(/\s+/);
+    if (parts.length !== 2 || !/^\d+$/.test(parts[0]) || !/^\d+$/.test(parts[1])) return null;
+    const pid = Number(parts[0]), ppid = Number(parts[1]);
+    // The listing contract includes pid 0 (the Windows idle process) and ppid 0 (its legal parent
+    // value); `probeProcess` refuses pid 0 because signalling it is meaningless, but that is a
+    // different question from whether the platform reported it in a complete listing.
+    if (!Number.isSafeInteger(pid) || pid < 0 || !Number.isSafeInteger(ppid) || ppid < 0) return null;
+    rows.push({ pid, ppid });
+  }
+  return rows.length ? rows : null;
+}
+
 /**
  * One process listing, used only to learn which processes the guardian owns. `pid 0 answering alive`
  * and localized tool output both rule out text parsing games: only the numeric listing is read, and
@@ -93,22 +118,29 @@ interface ProcessRow { pid: number; ppid: number }
  * zipping two independently enumerated lists by position, which is an assumption about ordering that
  * this shape does not need, in exchange for nothing.
  */
-export async function listProcesses(deadlineMs: number): Promise<ProcessRow[] | null> {
+export async function listProcesses(deadlineMs: number, spawnListing: ListingSpawn = spawn): Promise<ProcessRow[] | null> {
   const windows = process.platform === 'win32';
   const file = windows ? 'powershell' : 'ps';
   const args = windows ? ['-NoProfile', '-NonInteractive', '-Command', '$p = Get-CimInstance -ClassName Win32_Process -Property ProcessId,ParentProcessId; $s = foreach ($x in $p) { "$($x.ProcessId) $($x.ParentProcessId)" }; $s -join [char]10'] : ['-eo', 'pid=,ppid='];
   return new Promise(resolve => {
     let settled = false;
     const finish = (rows: ProcessRow[] | null) => { if (settled) return; settled = true; clearTimeout(timer); resolve(rows); };
-    const child = spawn(file, args, { stdio: ['ignore', 'pipe', 'ignore'], windowsHide: true });
+    const child = spawnListing(file, args, { stdio: ['ignore', 'pipe', 'ignore'], windowsHide: true });
     const timer = setTimeout(() => { try { child.kill('SIGKILL'); } catch { /* already gone */ } finish(null); }, Math.max(1, deadlineMs));
     let text = '';
+    let exitCode: number | null = null;
     child.stdout?.on('data', chunk => { text += String(chunk); if (text.length > 4_000_000) { try { child.kill('SIGKILL'); } catch { /* already gone */ } finish(null); } });
     child.once('error', () => finish(null));
-    child.once('exit', code => {
-      if (code !== 0) { finish(null); return; }
-      const rows = text.split('\n').map(line => line.trim().split(/\s+/)).filter(parts => parts.length === 2 && /^\d+$/.test(parts[0]) && /^\d+$/.test(parts[1])).map(parts => ({ pid: Number(parts[0]), ppid: Number(parts[1]) }));
-      finish(rows.length ? rows : null);
+    // Node documents `exit` and `close` as different events: exit means the process is gone, close
+    // means its stdio pipes are closed too. Parsing at exit races rows still in the pipe (observed
+    // with an inherited stdout handle), so a zero exit only records the status here and the single
+    // settlement happens on close, after the output has actually ended. A non-zero exit stays final
+    // immediately: no amount of later output can turn a failed listing into a complete one.
+    child.once('exit', code => { exitCode = code; if (code !== 0) finish(null); });
+    child.once('close', code => {
+      const finalCode = code ?? exitCode;
+      if (finalCode !== 0) { finish(null); return; }
+      finish(parseProcessListing(text));
     });
   });
 }
@@ -179,6 +211,23 @@ const MIN_ENUM_MS = 250;
 /** A failed kill is only worth repeating if this much time is still left for the retry to run. */
 const MIN_KILL_RETRY_MS = 400;
 
+type LateDescendantCheck = 'CLEAN' | 'SURVIVOR' | 'UNAVAILABLE';
+
+/**
+ * One bounded re-listing after the kill, used only when every sampled process is already gone. The
+ * pre-kill snapshot cannot see a process created after it was taken; a row whose parent is in the
+ * captured set but which was not itself captured is exactly that late process. This runs inside the
+ * caller's existing deadline: when the re-listing cannot be obtained, or cannot start, the tree stays
+ * unproven instead of being rounded up to DEAD.
+ */
+async function checkForLateDescendants(captured: number[], deadlineMs: number): Promise<LateDescendantCheck> {
+  if (deadlineMs < MIN_ENUM_MS) return 'UNAVAILABLE';
+  const rows = await listProcesses(deadlineMs);
+  if (!rows) return 'UNAVAILABLE';
+  const known = new Set(captured);
+  return rows.some(row => known.has(row.ppid) && !known.has(row.pid)) ? 'SURVIVOR' : 'CLEAN';
+}
+
 /**
  * Ends the guardian and the tree it owns, then reports what could be proven about it.
  *
@@ -215,6 +264,11 @@ export async function terminateProcessTree(pid: number | undefined, options: { d
     if (Date.now() - attemptStarted < Math.floor(slice * 0.8)) break;
   }
 
+  // What the termination tool was actually asked to end. A tool that did not succeed can only be
+  // excused when there was nothing left to kill at that moment: anything else may have been a partial
+  // kill, and a partial kill plus a snapshot of the pids seen before it cannot prove the tree dead.
+  const rootBeforeKill = probeProcess(pid);
+
   // The reserve above is what actually cures a starved kill: measured `taskkill /T /F` against twelve
   // detached descendants peaks at ~1.1 s at 2x load, so 1.5 s is a sufficient share rather than a
   // hopeful one, and it is held back before the listing can spend it. This loop is the backstop. It
@@ -234,12 +288,30 @@ export async function terminateProcessTree(pid: number | undefined, options: { d
   }
 
   const root = probeProcess(pid);
-  const descendants = pids.map(probeProcess);
+  const descendantStates = pids.map(probeProcess);
+  let descendants = composeTreeState('DEAD', descendantStates);
+  let processTree = treeStateFrom(enumeration, root, descendants);
+  if (processTree === 'DEAD') {
+    const late = await checkForLateDescendants([pid, ...pids], deadline - Date.now());
+    const nothingNeededKilling = rootBeforeKill === 'DEAD' && pids.length === 0;
+    if (late === 'SURVIVOR') {
+      // A process born after the snapshot and still parented to it: the tool did not reach everything.
+      descendants = 'ALIVE';
+      processTree = 'ALIVE';
+    } else if (late === 'UNAVAILABLE' || (tool.outcome !== 'SUCCESS' && !nothingNeededKilling)) {
+      // Either the tree could not be re-checked, or the tool itself did not finish successfully. The
+      // snapshot plus "the pids I saw are gone" does not cover processes it never saw, so this is not
+      // DEAD; keeping the facts in `descendants` also stops the guardian's later root re-probe from
+      // composing that UNKNOWN back into a DEAD tree.
+      descendants = 'UNKNOWN';
+      processTree = 'UNKNOWN';
+    }
+  }
   return {
-    process_tree: treeStateFrom(enumeration, root, composeTreeState('DEAD', descendants)),
+    process_tree: processTree,
     tool: tool.outcome,
     root,
-    descendants: composeTreeState('DEAD', descendants),
+    descendants,
     sampled: pids.length,
     enumeration,
     elapsed_ms: Date.now() - started,
