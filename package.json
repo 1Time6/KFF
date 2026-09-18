@@ -1,6 +1,6 @@
 {
   "name": "kff",
-  "version": "0.1.53",
+  "version": "0.1.55",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@11.19.0",
