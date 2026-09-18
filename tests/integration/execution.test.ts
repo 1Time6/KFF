@@ -117,6 +117,27 @@ describe('Postgres execution and failure boundaries', () => {
     await expect(beginSubmission(agent, command.id)).rejects.toMatchObject({ code: 'STOP_REQUESTED' });
     expect((await query('SELECT submitted_at FROM kff.action_attempts WHERE id=$1', [command.attempt_id]))[0].submitted_at).toBeNull();
   });
+  // A real thread read plus one verified send took 134.8 s, past the command's original two-minute
+  // deadline, so the command expired while its executor was still working and the verified result was
+  // recorded as an unknown outcome. The heartbeat is the only liveness signal, and it now moves the
+  // claimed command exactly as it already moved the leases.
+  it('keeps a claimed command alive while its executor heartbeats and still recovers it without one', async () => {
+    const { command } = await claimed(true);
+    await query("UPDATE kff.agent_commands SET expires_at=clock_timestamp()+interval '2 seconds' WHERE id=$1", [command.id]);
+    expect((await agentHeartbeat(agent, command.id)).continue).toBe(true);
+    const remaining = (await query<{ command_seconds: number; lease_seconds: number }>("SELECT extract(epoch FROM (c.expires_at-clock_timestamp()))::int AS command_seconds, extract(epoch FROM (l.expires_at-clock_timestamp()))::int AS lease_seconds FROM kff.agent_commands c JOIN kff.resource_leases l ON l.holder_attempt_id=c.attempt_id WHERE c.id=$1", [command.id]))[0];
+    expect(remaining.command_seconds).toBeGreaterThan(60);
+    expect(remaining.lease_seconds).toBeGreaterThan(0);
+    expect(remaining.lease_seconds).toBeLessThanOrEqual(30);
+    expect(await recoverExpired()).toBe(0);
+    expect((await query('SELECT state FROM kff.agent_commands WHERE id=$1', [command.id]))[0].state).toBe('CLAIMED');
+    // The lease stays the death signal: without a heartbeat the slot is taken back and the action keeps
+    // the conservative state instead of being reported as a success.
+    await query("UPDATE kff.resource_leases SET expires_at=clock_timestamp()-interval '1 second' WHERE holder_attempt_id=$1", [command.attempt_id]);
+    expect(await recoverExpired()).toBe(1);
+    expect((await query('SELECT state FROM kff.agent_commands WHERE id=$1', [command.id]))[0].state).toBe('EXPIRED');
+    expect((await query('SELECT state FROM kff.actions WHERE id=$1', [command.action_id]))[0].state).toBe('NEEDS_HUMAN');
+  });
   const pause = {
     account: () => setAccountPause(scope, localIds.account, true, 'Test account pause'),
     brand: () => setBrandPause(scope, true),

@@ -124,6 +124,12 @@ export async function agentHeartbeat(agent: AgentIdentity, commandId?: string) {
     const collectionActive = await browserCollectionTaskActive(client, command.task_id, command.snapshot) && await browserInboxTaskActive(client, command.task_id, command.snapshot);
     const proceed = (!(command.stop_requested || paused || current.status === 'DRAINING') || !beforeSubmission) && collectionActive;
     for (const lease of command.leases) await client.query("UPDATE kff.resource_leases SET expires_at=clock_timestamp()+interval '30 seconds' WHERE organization_id=$1 AND resource_type=$2 AND resource_id=$3 AND token=$4 AND holder_attempt_id=$5", [command.organization_id, lease.resource_type, lease.resource_id, lease.token, command.attempt_id]);
+    // The command's own deadline moves with the same heartbeat. Leases still lapse within 30 seconds
+    // without one, so a dead or hung executor loses the slot as before, but a long verified run - a real
+    // thread read plus one send measured at 134.8 s - no longer has its command expire underneath a live
+    // executor and get written off as an unknown outcome. Only a claimed command moves: a READY command
+    // keeps the enqueue deadline that cancels work no executor ever claimed.
+    await client.query("UPDATE kff.agent_commands SET expires_at=clock_timestamp()+interval '2 minutes' WHERE id=$1 AND state='CLAIMED'", [command.id]);
     return { continue: proceed, lease_ms: 30000 };
   });
 }
